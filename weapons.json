@@ -1,0 +1,2292 @@
+[
+    {
+        "name": "DullBlade",
+        "rarity": 1,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WasterGreatsword",
+        "rarity": 1,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BeginnersProtector",
+        "rarity": 1,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ApprenticesNotes",
+        "rarity": 1,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "HuntersBow",
+        "rarity": 1,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SilverSword",
+        "rarity": 2,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "OldMercsPal",
+        "rarity": 2,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "IronPoint",
+        "rarity": 2,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PocketGrimoire",
+        "rarity": 2,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SeasonedHuntersBow",
+        "rarity": 2,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CoolSteel",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "HarbingerofDawn",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TravelersHandySword",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "DarkIronSword",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FilletBlade",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SkyriderSword",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FerrousShadow",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BloodtaintedGreatsword",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WhiteIronGreatsword",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "DebateClub",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SkyriderGreatsword",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WhiteTassel",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Halberd",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BlackTassel",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MagicGuide",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ThrillingTalesofDragonSlayers",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "OtherworldlyStory",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "EmeraldOrb",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TwinNephrite",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RavenBow",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SharpshootersOath",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RecurveBow",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Slingshot",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Messenger",
+        "rarity": 3,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FavoniusSword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheFlute",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SacrificialSword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RoyalLongsword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LionsRoar",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PrototypeRancour",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "IronSting",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BlackcliffLongsword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheBlackSword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SwordofDescension",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FesteringDesire",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheAlleyFlash",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AmenomaKageuchi",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CinnabarSpindle",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "KagotsurubeIsshin",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SapwoodBlade",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "XiphosMoonlight",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ToukabouShigure",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WolfFang",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FinaleoftheDeep",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FleuveCendreFerryman",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheDockhandsAssistant",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SwordofNarzissenkreuz",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FluteofEzpitzal",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SturdyBone",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MoonweaversDawn",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CalamityofEshu",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SerenitysCall",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FavoniusGreatsword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheBell",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SacrificialGreatsword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RoyalGreatsword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Rainslasher",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PrototypeArchaic",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Whiteblind",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BlackcliffSlasher",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SerpentSpine",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SnowTombedStarsilver",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LithicBlade",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "KatsuragikiriNagamasa",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LuxuriousSeaLord",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Akuoumaru",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ForestRegalia",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MakhairaAquamarine",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MailedFlower",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TalkingStick",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TidalShadow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PortablePowerSaw",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "UltimateOverlordsMegaMagicSword",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "EarthShaker",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FruitfulHook",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FlameForgedInsight",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MasterKey",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "DragonsBane",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PrototypeStarglitter",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CrescentPike",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BlackcliffPole",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Deathmatch",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FavoniusLance",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RoyalSpear",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "DragonspineSpear",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LithicSpear",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "KitainCrossSpear",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheCatch",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WavebreakersFin",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Moonpiercer",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MissiveWindspear",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RightfulReward",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BalladoftheFjords",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ProspectorsDrill",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "DialoguesoftheDesertSages",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FootprintoftheRainbow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MountainBracingBolt",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TamayurateinoOhanashi",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ProspectorsShovel",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SacrificersStaff",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FavoniusCodex",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheWidsith",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SacrificialFragments",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RoyalGrimoire",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SolarPearl",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PrototypeAmber",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MappaMare",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BlackcliffAgate",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "EyeofPerception",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Frostbearer",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WineandSong",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "DodocoTales",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "HakushinRing",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "OathswornEye",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FruitofFulfillment",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WanderingEvenstar",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SacrificialJade",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FlowingPurity",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BalladoftheBoundlessBlue",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AshGravenDrinkingHorn",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RingofYaxche",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WaveridingWhirl",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "EtherlightSpindlelute",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BlackmarrowLantern",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "DawningFrost",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FavoniusWarbow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheStringless",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SacrificialBow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RoyalBow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Rust",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PrototypeCrescent",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CompoundBow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BlackcliffWarbow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheViridescentHunt",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AlleyHunter",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WindblumeOde",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MitternachtsWaltz",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Hamayumi",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Predator",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MouunsMoon",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FadingTwilight",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "KingsSquire",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "EndoftheLine",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "IbisPiercer",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ScionoftheBlazingSun",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SongofStillness",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RangeGauge",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Cloudforged",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ChainBreaker",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FlowerWreathedFeathers",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SequenceofSolitude",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SnareHook",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RainbowSerpentsRainBow",
+        "rarity": 4,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AquilaFavonia",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SkywardBlade",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SummitShaper",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PrimordialJadeCutter",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FreedomSworn",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MistsplitterReforged",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "HaranGeppakuFutsu",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "KeyofKhajNisut",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LightofFoliarIncision",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SplendorofTranquilWaters",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "UrakuMisugiri",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Absolution",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PeakPatrolSong",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Azurelight",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AthameArtis",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LightbearingMoonshard",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SkywardPride",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "WolfsGravestone",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheUnforged",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SongofBrokenPines",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "RedhornStonethresher",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BeaconoftheReedSea",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "Verdict",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FangoftheMountainKing",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AThousandBlazingSuns",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PrimordialJadeWingedSpear",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SkywardSpine",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "VortexVanquisher",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "StaffofHoma",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "EngulfingLightning",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CalamityQueller",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "StaffoftheScarletSands",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CrimsonMoonsSemblance",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LumidouceElegy",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SymphonistofScents",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "FracturedHalo",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "BloodsoakedRuins",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SkywardAtlas",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "LostPrayertotheSacredWinds",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "MemoryofDust",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "EverlastingMoonglow",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "KagurasVerity",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AThousandFloatingDreams",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TulaytullahsRemembrance",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "JadefallsSplendor",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CashflowSupervision",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TomeoftheEternalFlow",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "CranesEchoingCall",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SurfsUp",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "StarcallersWatch",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SunnyMorningSleepIn",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "VividNotions",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "NightweaversLookingGlass",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ReliquaryofTruth",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "NocturnesCurtainCall",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SkywardHarp",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AmosBow",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ElegyfortheEnd",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "ThunderingPulse",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "PolarStar",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AquaSimulacra",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "HuntersPath",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheFirstGreatMagic",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "SilvershowerHeartstrings",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "AstralVulturesCrimsonPlumage",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    },
+    {
+        "name": "TheDaybreakChronicles",
+        "rarity": 5,
+        "type": "",
+        "materials": {
+            "ascension_mat": "",
+            "elite_mat": "",
+            "mob_mat": ""
+        }
+    }
+]

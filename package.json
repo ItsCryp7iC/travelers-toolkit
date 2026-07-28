@@ -1,0 +1,24 @@
+{
+  "name": "travelers-toolkit",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.4",
+    "vite": "^8.1.5"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.23",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.1",
+    "tailwindcss": "^3.4.19",
+    "zustand": "^5.0.14"
+  }
+}

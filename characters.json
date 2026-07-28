@@ -1,0 +1,1626 @@
+[
+    {
+        "name": "TravelerAnemo",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "nan",
+            "weekly_boss": "DvalinsSigh",
+            "talent_book": "nan",
+            "mob_material": "Samachurl",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "BrilliantDiamond"
+        }
+    },
+    {
+        "name": "TravelerGeo",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "nan",
+            "weekly_boss": "TailofBoreas",
+            "talent_book": "nan",
+            "mob_material": "HilichurlShooter",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "BrilliantDiamond"
+        }
+    },
+    {
+        "name": "TravelerElectro",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "nan",
+            "weekly_boss": "DragonLordsCrown",
+            "talent_book": "nan",
+            "mob_material": "Nobushi",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "BrilliantDiamond"
+        }
+    },
+    {
+        "name": "TravelerDendro",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "nan",
+            "weekly_boss": "MudraoftheMaleficGeneral",
+            "talent_book": "nan",
+            "mob_material": "Fungi",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "BrilliantDiamond"
+        }
+    },
+    {
+        "name": "TravelerHydro",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "nan",
+            "weekly_boss": "WorldspanFern",
+            "talent_book": "nan",
+            "mob_material": "FontemerAberrant",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "BrilliantDiamond"
+        }
+    },
+    {
+        "name": "TravelerPyro",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "nan",
+            "weekly_boss": "TheCornerstoneofStarsandFlames",
+            "talent_book": "nan",
+            "mob_material": "NatlanSaurian",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "BrilliantDiamond"
+        }
+    },
+    {
+        "name": "Amber",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EverflameSeed",
+            "weekly_boss": "DvalinsSigh",
+            "talent_book": "Freedom",
+            "mob_material": "HilichurlShooter",
+            "local_specialty": "SmallLampGrass",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Kaeya",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "HoarfrostCore",
+            "weekly_boss": "SpiritLocketofBoreas",
+            "talent_book": "Ballad",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "CallaLily",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Lisa",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "LightningPrism",
+            "weekly_boss": "DvalinsClaw",
+            "talent_book": "Ballad",
+            "mob_material": "Slime",
+            "local_specialty": "Valberry",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Barbara",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "CleansingHeart",
+            "weekly_boss": "RingofBoreas",
+            "talent_book": "Freedom",
+            "mob_material": "Samachurl",
+            "local_specialty": "PhilanemoMushroom",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Razor",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "LightningPrism",
+            "weekly_boss": "DvalinsClaw",
+            "talent_book": "Resistance",
+            "mob_material": "Hilichurl",
+            "local_specialty": "Wolfhook",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Xiangling",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EverflameSeed",
+            "weekly_boss": "DvalinsClaw",
+            "talent_book": "Diligence",
+            "mob_material": "Slime",
+            "local_specialty": "JueyunChili",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Beidou",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "LightningPrism",
+            "weekly_boss": "DvalinsSigh",
+            "talent_book": "Gold",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "NoctilucousJade",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Xingqiu",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "CleansingHeart",
+            "weekly_boss": "TailofBoreas",
+            "talent_book": "Gold",
+            "mob_material": "Hilichurl",
+            "local_specialty": "SilkFlower",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Ningguang",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "BasaltPillar",
+            "weekly_boss": "SpiritLocketofBoreas",
+            "talent_book": "Prosperity",
+            "mob_material": "Fatui",
+            "local_specialty": "GlazeLily",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Fischl",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "LightningPrism",
+            "weekly_boss": "SpiritLocketofBoreas",
+            "talent_book": "Ballad",
+            "mob_material": "HilichurlShooter",
+            "local_specialty": "SmallLampGrass",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Bennett",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EverflameSeed",
+            "weekly_boss": "DvalinsPlume",
+            "talent_book": "Resistance",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Noelle",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "BasaltPillar",
+            "weekly_boss": "DvalinsClaw",
+            "talent_book": "Resistance",
+            "mob_material": "Hilichurl",
+            "local_specialty": "Valberry",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Chongyun",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "HoarfrostCore",
+            "weekly_boss": "DvalinsSigh",
+            "talent_book": "Diligence",
+            "mob_material": "Hilichurl",
+            "local_specialty": "CorLapis",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Sucrose",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "HurricaneSeed",
+            "weekly_boss": "SpiritLocketofBoreas",
+            "talent_book": "Freedom",
+            "mob_material": "$CV$9",
+            "local_specialty": "WindwheelAster",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Jean",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "HurricaneSeed",
+            "weekly_boss": "DvalinsPlume",
+            "talent_book": "Resistance",
+            "mob_material": "Hilichurl",
+            "local_specialty": "DandelionSeed",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Diluc",
+        "rarity": 5,
+        "weapon_type": "Claymore",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EverflameSeed",
+            "weekly_boss": "DvalinsPlume",
+            "talent_book": "Resistance",
+            "mob_material": "Fatui",
+            "local_specialty": "SmallLampGrass",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Qiqi",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "HoarfrostCore",
+            "weekly_boss": "TailofBoreas",
+            "talent_book": "Prosperity",
+            "mob_material": "Samachurl",
+            "local_specialty": "Violetgrass",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Mona",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "CleansingHeart",
+            "weekly_boss": "RingofBoreas",
+            "talent_book": "Resistance",
+            "mob_material": "Whopperflower",
+            "local_specialty": "PhilanemoMushroom",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Keqing",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "LightningPrism",
+            "weekly_boss": "RingofBoreas",
+            "talent_book": "Prosperity",
+            "mob_material": "Whopperflower",
+            "local_specialty": "CorLapis",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Venti",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "HurricaneSeed",
+            "weekly_boss": "TailofBoreas",
+            "talent_book": "Ballad",
+            "mob_material": "Slime",
+            "local_specialty": "Cecilia",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Klee",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EverflameSeed",
+            "weekly_boss": "RingofBoreas",
+            "talent_book": "Freedom",
+            "mob_material": "Samachurl",
+            "local_specialty": "PhilanemoMushroom",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Diona",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "HoarfrostCore",
+            "weekly_boss": "ShardofaFoulLegacy",
+            "talent_book": "Freedom",
+            "mob_material": "HilichurlShooter",
+            "local_specialty": "CallaLily",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Tartaglia",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "CleansingHeart",
+            "weekly_boss": "ShardofaFoulLegacy",
+            "talent_book": "Freedom",
+            "mob_material": "Fatui",
+            "local_specialty": "Starconch",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Xinyan",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EverflameSeed",
+            "weekly_boss": "TuskofMonocerosCaeli",
+            "talent_book": "Gold",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "Violetgrass",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Zhongli",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "BasaltPillar",
+            "weekly_boss": "TuskofMonocerosCaeli",
+            "talent_book": "Gold",
+            "mob_material": "Slime",
+            "local_specialty": "CorLapis",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Albedo",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "BasaltPillar",
+            "weekly_boss": "TuskofMonocerosCaeli",
+            "talent_book": "Ballad",
+            "mob_material": "Samachurl",
+            "local_specialty": "Cecilia",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Ganyu",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "HoarfrostCore",
+            "weekly_boss": "ShadowoftheWarrior",
+            "talent_book": "Diligence",
+            "mob_material": "Whopperflower",
+            "local_specialty": "Qingxin",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Xiao",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "JuvenileJade",
+            "weekly_boss": "ShadowoftheWarrior",
+            "talent_book": "Prosperity",
+            "mob_material": "Slime",
+            "local_specialty": "Qingxin",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "HuTao",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "JuvenileJade",
+            "weekly_boss": "ShardofaFoulLegacy",
+            "talent_book": "Diligence",
+            "mob_material": "Whopperflower",
+            "local_specialty": "SilkFlower",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Rosaria",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "HoarfrostCore",
+            "weekly_boss": "ShadowoftheWarrior",
+            "talent_book": "Ballad",
+            "mob_material": "Fatui",
+            "local_specialty": "Valberry",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Yanfei",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "JuvenileJade",
+            "weekly_boss": "BloodjadeBranch",
+            "talent_book": "Gold",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "NoctilucousJade",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Eula",
+        "rarity": 5,
+        "weapon_type": "Claymore",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "CrystallineBloom",
+            "weekly_boss": "DragonLordsCrown",
+            "talent_book": "Resistance",
+            "mob_material": "Hilichurl",
+            "local_specialty": "DandelionSeed",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "KaedeharaKazuha",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "MarionetteCore",
+            "weekly_boss": "GildedScale",
+            "talent_book": "Diligence",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "SeaGanoderma",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "KamisatoAyaka",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "PerpetualHeart",
+            "weekly_boss": "BloodjadeBranch",
+            "talent_book": "Elegance",
+            "mob_material": "Nobushi",
+            "local_specialty": "SakuraBloom",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Sayu",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "MarionetteCore",
+            "weekly_boss": "GildedScale",
+            "talent_book": "Light",
+            "mob_material": "Whopperflower",
+            "local_specialty": "CrystalMarrow",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Yoimiya",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "SmolderingPearl",
+            "weekly_boss": "DragonLordsCrown",
+            "talent_book": "Transience",
+            "mob_material": "Samachurl",
+            "local_specialty": "NakuWeed",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Aloy",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "CrystallineBloom",
+            "weekly_boss": "MoltenMoment",
+            "talent_book": "Freedom",
+            "mob_material": "Specters",
+            "local_specialty": "CrystalMarrow",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "KujouSara",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "StormBeads",
+            "weekly_boss": "AshenHeart",
+            "talent_book": "Elegance",
+            "mob_material": "Hilichurl",
+            "local_specialty": "Dendrobium",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "RaidenShogun",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "StormBeads",
+            "weekly_boss": "MoltenMoment",
+            "talent_book": "Light",
+            "mob_material": "Nobushi",
+            "local_specialty": "AmakumoFruit",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "SangonomiyaKokomi",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "DewofRepudiation",
+            "weekly_boss": "HellfireButterfly",
+            "talent_book": "Transience",
+            "mob_material": "Specters",
+            "local_specialty": "SangoPearl",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Thoma",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "SmolderingPearl",
+            "weekly_boss": "HellfireButterfly",
+            "talent_book": "Transience",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "FluorescentFungus",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Gorou",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "PerpetualHeart",
+            "weekly_boss": "MoltenMoment",
+            "talent_book": "Light",
+            "mob_material": "Specters",
+            "local_specialty": "SangoPearl",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "AratakiItto",
+        "rarity": 5,
+        "weapon_type": "Claymore",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "RiftbornRegalia",
+            "weekly_boss": "AshenHeart",
+            "talent_book": "Elegance",
+            "mob_material": "Slime",
+            "local_specialty": "Onikabuto",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "YunJin",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "RiftbornRegalia",
+            "weekly_boss": "AshenHeart",
+            "talent_book": "Diligence",
+            "mob_material": "Hilichurl",
+            "local_specialty": "GlazeLily",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Shenhe",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "DragonheirsFalseFin",
+            "weekly_boss": "HellfireButterfly",
+            "talent_book": "Prosperity",
+            "mob_material": "Whopperflower",
+            "local_specialty": "Qingxin",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "YaeMiko",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "DragonheirsFalseFin",
+            "weekly_boss": "TheMeaningofAeons",
+            "talent_book": "Light",
+            "mob_material": "Nobushi",
+            "local_specialty": "SeaGanoderma",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "KamisatoAyato",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "DewofRepudiation",
+            "weekly_boss": "MudraoftheMaleficGeneral",
+            "talent_book": "Elegance",
+            "mob_material": "Nobushi",
+            "local_specialty": "SakuraBloom",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Yelan",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "RunicFang",
+            "weekly_boss": "GildedScale",
+            "talent_book": "Prosperity",
+            "mob_material": "Fatui",
+            "local_specialty": "Starconch",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "KukiShinobu",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "RunicFang",
+            "weekly_boss": "TearsoftheCalamitousGod",
+            "talent_book": "Elegance",
+            "mob_material": "Specters",
+            "local_specialty": "NakuWeed",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "ShikanoinHeizou",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "RunicFang",
+            "weekly_boss": "TheMeaningofAeons",
+            "talent_book": "Transience",
+            "mob_material": "TreasureHoarder",
+            "local_specialty": "Onikabuto",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Collei",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "MajesticHookedBeak",
+            "weekly_boss": "TearsoftheCalamitousGod",
+            "talent_book": "Praxis",
+            "mob_material": "HilichurlShooter",
+            "local_specialty": "RukkhashavaMushrooms",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Tighnari",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "MajesticHookedBeak",
+            "weekly_boss": "TheMeaningofAeons",
+            "talent_book": "Admonition",
+            "mob_material": "Fungi",
+            "local_specialty": "NilotpalaLotus",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Dori",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "ThunderclapFruitcore",
+            "weekly_boss": "BloodjadeBranch",
+            "talent_book": "Ingenuity",
+            "mob_material": "TheEremites",
+            "local_specialty": "KalpalataLotus",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Candace",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "LightGuidingTetrahedron",
+            "weekly_boss": "TearsoftheCalamitousGod",
+            "talent_book": "Admonition",
+            "mob_material": "TheEremites",
+            "local_specialty": "HennaBerry",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Cyno",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "ThunderclapFruitcore",
+            "weekly_boss": "MudraoftheMaleficGeneral",
+            "talent_book": "Admonition",
+            "mob_material": "Samachurl",
+            "local_specialty": "Scarab",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Nilou",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "PerpetualCaliber",
+            "weekly_boss": "TearsoftheCalamitousGod",
+            "talent_book": "Praxis",
+            "mob_material": "Fungi",
+            "local_specialty": "Padisarah",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Nahida",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "QuelledCreeper",
+            "weekly_boss": "PuppetStrings",
+            "talent_book": "Ingenuity",
+            "mob_material": "Fungi",
+            "local_specialty": "KalpalataLotus",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Layla",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "PerpetualCaliber",
+            "weekly_boss": "MirrorofMushin",
+            "talent_book": "Ingenuity",
+            "mob_material": "Samachurl",
+            "local_specialty": "NilotpalaLotus",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Faruzan",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "LightGuidingTetrahedron",
+            "weekly_boss": "PuppetStrings",
+            "talent_book": "Admonition",
+            "mob_material": "TheEremites",
+            "local_specialty": "HennaBerry",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Wanderer",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "PerpetualCaliber",
+            "weekly_boss": "DakasBell",
+            "talent_book": "Praxis",
+            "mob_material": "Nobushi",
+            "local_specialty": "RukkhashavaMushrooms",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Yaoyao",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "QuelledCreeper",
+            "weekly_boss": "DakasBell",
+            "talent_book": "Diligence",
+            "mob_material": "Slime",
+            "local_specialty": "JueyunChili",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Alhaitham",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "PseudoStamens",
+            "weekly_boss": "MirrorofMushin",
+            "talent_book": "Ingenuity",
+            "mob_material": "TheEremites",
+            "local_specialty": "SandGreasePupa",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Dehya",
+        "rarity": 5,
+        "weapon_type": "Claymore",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "LightGuidingTetrahedron",
+            "weekly_boss": "PuppetStrings",
+            "talent_book": "Praxis",
+            "mob_material": "TheEremites",
+            "local_specialty": "SandGreasePupa",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Mika",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "PseudoStamens",
+            "weekly_boss": "MirrorofMushin",
+            "talent_book": "Ballad",
+            "mob_material": "Fatui",
+            "local_specialty": "Wolfhook",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Kaveh",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "QuelledCreeper",
+            "weekly_boss": "PrimordialGreenbloom",
+            "talent_book": "Ingenuity",
+            "mob_material": "Fungi",
+            "local_specialty": "MourningFlower",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Baizhu",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "EvergloomRing",
+            "weekly_boss": "WorldspanFern",
+            "talent_book": "Gold",
+            "mob_material": "Fungi",
+            "local_specialty": "Violetgrass",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Kirara",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "EvergloomRing",
+            "weekly_boss": "Everamber",
+            "talent_book": "Transience",
+            "mob_material": "Specters",
+            "local_specialty": "AmakumoFruit",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Lynette",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "ArtificedSpareClockworkComponentCoppelia",
+            "weekly_boss": "Everamber",
+            "talent_book": "Order",
+            "mob_material": "ClockworkMeka",
+            "local_specialty": "LumidouceBell",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Lyney",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EmperorsResolution",
+            "weekly_boss": "PrimordialGreenbloom",
+            "talent_book": "Equity",
+            "mob_material": "Fatui",
+            "local_specialty": "RainbowRose",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Freminet",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "ArtificedSpareClockworkComponentCoppelius",
+            "weekly_boss": "WorldspanFern",
+            "talent_book": "Justice",
+            "mob_material": "FontemerAberrant",
+            "local_specialty": "RomaritimeFlower",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Neuvillette",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "FontemerUnihorn",
+            "weekly_boss": "Everamber",
+            "talent_book": "Equity",
+            "mob_material": "FontemerAberrant",
+            "local_specialty": "Lumitoile",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Wriothesley",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "TourbillonDevice",
+            "weekly_boss": "PrimordialGreenbloom",
+            "talent_book": "Order",
+            "mob_material": "ClockworkMeka",
+            "local_specialty": "SubdetectionUnit",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Charlotte",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "TourbillonDevice",
+            "weekly_boss": "LightlessSilkString",
+            "talent_book": "Justice",
+            "mob_material": "ClockworkMeka",
+            "local_specialty": "BerylConch",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Furina",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "WaterThatFailedToTranscend",
+            "weekly_boss": "LightlessMass",
+            "talent_book": "Justice",
+            "mob_material": "Whopperflower",
+            "local_specialty": "LakelightLily",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Navia",
+        "rarity": 5,
+        "weapon_type": "Claymore",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "ArtificedSpareClockworkComponentCoppelius",
+            "weekly_boss": "LightlessSilkString",
+            "talent_book": "Equity",
+            "mob_material": "FontemerAberrant",
+            "local_specialty": "SpringoftheFirstDewdrop",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Chevreuse",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "FontemerUnihorn",
+            "weekly_boss": "LightlessEyeoftheMaelstrom",
+            "talent_book": "Order",
+            "mob_material": "ClockworkMeka",
+            "local_specialty": "LumidouceBell",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Gaming",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "EmperorsResolution",
+            "weekly_boss": "LightlessMass",
+            "talent_book": "Prosperity",
+            "mob_material": "Slime",
+            "local_specialty": "Starconch",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Xianyun",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "CloudseamScale",
+            "weekly_boss": "LightlessEyeoftheMaelstrom",
+            "talent_book": "Gold",
+            "mob_material": "Samachurl",
+            "local_specialty": "ClearwaterJade",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Chiori",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "ArtificedSpareClockworkComponentCoppelia",
+            "weekly_boss": "LightlessSilkString",
+            "talent_book": "Light",
+            "mob_material": "Specters",
+            "local_specialty": "HennaBerry",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Arlecchino",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "FragmentofaGoldenMelody",
+            "weekly_boss": "FadingCandle",
+            "talent_book": "Order",
+            "mob_material": "Fatui",
+            "local_specialty": "RainbowRose",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Sethos",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "CloudseamScale",
+            "weekly_boss": "DakasBell",
+            "talent_book": "Praxis",
+            "mob_material": "TheEremites",
+            "local_specialty": "Trishiraite",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Clorinde",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "FontemerUnihorn",
+            "weekly_boss": "Everamber",
+            "talent_book": "Justice",
+            "mob_material": "FontemerAberrant",
+            "local_specialty": "Lumitoile",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Sigewinne",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "WaterThatFailedToTranscend",
+            "weekly_boss": "LightlessEyeoftheMaelstrom",
+            "talent_book": "Equity",
+            "mob_material": "FontemerAberrant",
+            "local_specialty": "RomaritimeFlower",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Emilie",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "FragmentofaGoldenMelody",
+            "weekly_boss": "SilkenFeather",
+            "talent_book": "Order",
+            "mob_material": "ClockworkMeka",
+            "local_specialty": "LakelightLily",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Kachina",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "OverripeFlamegranate",
+            "weekly_boss": "FadingCandle",
+            "talent_book": "Conflict",
+            "mob_material": "NatlanSaurian",
+            "local_specialty": "QuenepaBerry",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Mualani",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "MarkoftheBindingBlessing",
+            "weekly_boss": "LightlessMass",
+            "talent_book": "Contention",
+            "mob_material": "NatlanSaurian",
+            "local_specialty": "SprayfeatherGill",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Kinich",
+        "rarity": 5,
+        "weapon_type": "Claymore",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "OverripeFlamegranate",
+            "weekly_boss": "DenialandJudgment",
+            "talent_book": "Kindling",
+            "mob_material": "SauroformTribalWarriors",
+            "local_specialty": "SaurianClawSucculent",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Xilonen",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "GoldInscribedSecretSourceCore",
+            "weekly_boss": "MirrorofMushin",
+            "talent_book": "Kindling",
+            "mob_material": "NatlanSaurian",
+            "local_specialty": "BrilliantChrysanthemum",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Ororon",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "MarkoftheBindingBlessing",
+            "weekly_boss": "LightlessSilkString",
+            "talent_book": "Kindling",
+            "mob_material": "SauroformTribalWarriors",
+            "local_specialty": "GlowingHornshroom",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Chasca",
+        "rarity": 5,
+        "weapon_type": "Bow",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "EnsnaringGaze",
+            "weekly_boss": "SilkenFeather",
+            "talent_book": "Conflict",
+            "mob_material": "SauroformTribalWarriors",
+            "local_specialty": "WitheringPurpurbloom",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Citlali",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "TalismanoftheEnigmaticLand",
+            "weekly_boss": "DenialandJudgment",
+            "talent_book": "Kindling",
+            "mob_material": "SauroformTribalWarriors",
+            "local_specialty": "QuenepaBerry",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Mavuika",
+        "rarity": 5,
+        "weapon_type": "Claymore",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "GoldInscribedSecretSourceCore",
+            "weekly_boss": "ErodedHorn",
+            "talent_book": "Contention",
+            "mob_material": "NatlanSaurian",
+            "local_specialty": "WitheringPurpurbloom",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "LanYan",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "GoldInscribedSecretSourceCore",
+            "weekly_boss": "ErodedSunfire",
+            "talent_book": "Diligence",
+            "mob_material": "Whopperflower",
+            "local_specialty": "ClearwaterJade",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "YumemizukiMizuki",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "TalismanoftheEnigmaticLand",
+            "weekly_boss": "FadingCandle",
+            "talent_book": "Transience",
+            "mob_material": "Nobushi",
+            "local_specialty": "SeaGanoderma",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Iansan",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "EnsnaringGaze",
+            "weekly_boss": "DenialandJudgment",
+            "talent_book": "Contention",
+            "mob_material": "SauroformTribalWarriors",
+            "local_specialty": "Dracolite",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Varesa",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "SparklessStatueCore",
+            "weekly_boss": "ErodedScaleFeather",
+            "talent_book": "Conflict",
+            "mob_material": "NatlanSaurian",
+            "local_specialty": "SkysplitGembloom",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Ifa",
+        "rarity": 4,
+        "weapon_type": "Catalyst",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "SparklessStatueCore",
+            "weekly_boss": "AscendedSampleRook",
+            "talent_book": "Conflict",
+            "mob_material": "NatlanSaurian",
+            "local_specialty": "SaurianClawSucculent",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Escoffier",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "SecretSourceAirflowAccumulator",
+            "weekly_boss": "ErodedHorn",
+            "talent_book": "Justice",
+            "mob_material": "ClockworkMeka",
+            "local_specialty": "BerylConch",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Dahlia",
+        "rarity": 4,
+        "weapon_type": "Sword",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "SecretSourceAirflowAccumulator",
+            "weekly_boss": "ErodedScaleFeather",
+            "talent_book": "Ballad",
+            "mob_material": "HilichurlShooter",
+            "local_specialty": "CallaLily",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Skirk",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Cryo",
+        "materials": {
+            "world_boss": "EnsnaringGaze",
+            "weekly_boss": "AscendedSampleKnight",
+            "talent_book": "Contention",
+            "mob_material": "ClockworkMeka",
+            "local_specialty": "SkysplitGembloom",
+            "gemstone": "ShivadaJade"
+        }
+    },
+    {
+        "name": "Ineffa",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "SecretSourceAirflowAccumulator",
+            "weekly_boss": "ErodedSunfire",
+            "talent_book": "Conflict",
+            "mob_material": "SauroformTribalWarriors",
+            "local_specialty": "GlowingHornshroom",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Aino",
+        "rarity": 4,
+        "weapon_type": "Claymore",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "PrecisionKuuvahkiStampingDie",
+            "weekly_boss": "SilkenFeather",
+            "talent_book": "Elysium",
+            "mob_material": "Landcruisers",
+            "local_specialty": "PortableBearing",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Lauma",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "LightbearingScaleFeather",
+            "weekly_boss": "ErodedScaleFeather",
+            "talent_book": "Moonlight",
+            "mob_material": "FatuiOprichniki",
+            "local_specialty": "MoonfallSilver",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Flins",
+        "rarity": 5,
+        "weapon_type": "Polearm",
+        "element": "Electro",
+        "materials": {
+            "world_boss": "PrecisionKuuvahkiStampingDie",
+            "weekly_boss": "AscendedSampleQueen",
+            "talent_book": "Vagrancy",
+            "mob_material": "Landcruisers",
+            "local_specialty": "FrostlampFlower",
+            "gemstone": "VajradaAmethyst"
+        }
+    },
+    {
+        "name": "Nefer",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Dendro",
+        "materials": {
+            "world_boss": "RadiantAntler",
+            "weekly_boss": "AscendedSampleRook",
+            "talent_book": "Elysium",
+            "mob_material": "FatuiOprichniki",
+            "local_specialty": "MoonfallSilver",
+            "gemstone": "NagadusEmerald"
+        }
+    },
+    {
+        "name": "Jahoda",
+        "rarity": 4,
+        "weapon_type": "Bow",
+        "element": "Anemo",
+        "materials": {
+            "world_boss": "LightbearingScaleFeather",
+            "weekly_boss": "AscendedSampleKnight",
+            "talent_book": "Vagrancy",
+            "mob_material": "Landcruisers",
+            "local_specialty": "PortableBearing",
+            "gemstone": "VayudaTurquoise"
+        }
+    },
+    {
+        "name": "Durin",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Pyro",
+        "materials": {
+            "world_boss": "CyclicMilitaryKuuvahkiCore",
+            "weekly_boss": "ErodedSunfire",
+            "talent_book": "Ballad",
+            "mob_material": "FatuiOprichniki",
+            "local_specialty": "FrostlampFlower",
+            "gemstone": "AgnidusAgate"
+        }
+    },
+    {
+        "name": "Columbina",
+        "rarity": 5,
+        "weapon_type": "Catalyst",
+        "element": "Hydro",
+        "materials": {
+            "world_boss": "RadiantAntler",
+            "weekly_boss": "MaskoftheVirtuousDoctor",
+            "talent_book": "Moonlight",
+            "mob_material": "Slime",
+            "local_specialty": "WinterIcelea",
+            "gemstone": "VarunadaLazurite"
+        }
+    },
+    {
+        "name": "Illuga",
+        "rarity": 4,
+        "weapon_type": "Polearm",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "CyclicMilitaryKuuvahkiCore",
+            "weekly_boss": "ErodedHorn",
+            "talent_book": "Elysium",
+            "mob_material": "Landcruisers",
+            "local_specialty": "PineAmber",
+            "gemstone": "PrithivaTopaz"
+        }
+    },
+    {
+        "name": "Zibai",
+        "rarity": 5,
+        "weapon_type": "Sword",
+        "element": "Geo",
+        "materials": {
+            "world_boss": "RemnantoftheDreadwing",
+            "weekly_boss": "AscendedSampleQueen",
+            "talent_book": "Gold",
+            "mob_material": "FatuiOprichniki",
+            "local_specialty": "GlazeLily",
+            "gemstone": "PrithivaTopaz"
+        }
+    }
+]

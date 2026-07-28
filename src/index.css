@@ -1,0 +1,719 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────
+   CSS Custom Properties — Genshin Dark Theme
+─────────────────────────────────────────────── */
+:root {
+  --bg:           #0D0F1A;
+  --surface:      #141626;
+  --elevated:     #1E2235;
+  --border:       rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.14);
+  --gold:         #C8A96E;
+  --gold-light:   #E8C98A;
+  --text:         #E8E3D5;
+  --muted:        #8B8BA0;
+  --sidebar-w:    260px;
+
+  /* Element colors */
+  --anemo:   #4EC9B0;
+  --geo:     #FAB632;
+  --electro: #A855F7;
+  --dendro:  #4ADE80;
+  --hydro:   #60A5FA;
+  --pyro:    #F97316;
+  --cryo:    #BAE6FD;
+}
+
+/* ──────────────────────────────────────────────
+   Base Resets & Body
+─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ──────────────────────────────────────────────
+   Scrollbar Styling
+─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 169, 110, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 169, 110, 0.6);
+}
+
+/* ──────────────────────────────────────────────
+   Typography Utilities
+─────────────────────────────────────────────── */
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+.text-gold {
+  color: var(--gold);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+/* ──────────────────────────────────────────────
+   Genshin Component Classes
+─────────────────────────────────────────────── */
+.genshin-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+.genshin-card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.genshin-btn {
+  background: linear-gradient(135deg, var(--gold), #A07840);
+  color: #0D0F1A;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.genshin-btn:hover {
+  background: linear-gradient(135deg, var(--gold-light), #C8A86E);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(200, 169, 110, 0.4);
+}
+
+.genshin-btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.genshin-btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(200, 169, 110, 0.06);
+}
+
+/* ──────────────────────────────────────────────
+   Sidebar
+─────────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: linear-gradient(180deg, #10121f 0%, #0d0f1a 100%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  border-radius: 0 8px 8px 0;
+  margin-right: 12px;
+  letter-spacing: 0.01em;
+}
+
+.sidebar-nav-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: rgba(200, 169, 110, 0.4);
+}
+
+.sidebar-nav-link.active {
+  color: var(--gold);
+  background: rgba(200, 169, 110, 0.1);
+  border-left-color: var(--gold);
+}
+
+.sidebar-nav-link.active .nav-icon {
+  filter: drop-shadow(0 0 6px rgba(200, 169, 110, 0.6));
+}
+
+/* ──────────────────────────────────────────────
+   Main Content Area
+─────────────────────────────────────────────── */
+.main-content {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ──────────────────────────────────────────────
+   Top Bar
+─────────────────────────────────────────────── */
+.topbar {
+  height: 64px;
+  background: rgba(13, 15, 26, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* ──────────────────────────────────────────────
+   Filter Pills
+─────────────────────────────────────────────── */
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.filter-pill:hover {
+  border-color: var(--border-light);
+  color: var(--text);
+}
+
+.filter-pill.active {
+  background: rgba(200, 169, 110, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ──────────────────────────────────────────────
+   Element Specific Pill Colors
+─────────────────────────────────────────────── */
+.filter-pill.active[data-element="Anemo"]   { background: rgba(78,201,176,0.15); border-color: var(--anemo); color: var(--anemo); }
+.filter-pill.active[data-element="Geo"]     { background: rgba(250,182,50,0.15);  border-color: var(--geo);   color: var(--geo); }
+.filter-pill.active[data-element="Electro"] { background: rgba(168,85,247,0.15); border-color: var(--electro); color: var(--electro); }
+.filter-pill.active[data-element="Dendro"]  { background: rgba(74,222,128,0.15); border-color: var(--dendro); color: var(--dendro); }
+.filter-pill.active[data-element="Hydro"]   { background: rgba(96,165,250,0.15); border-color: var(--hydro); color: var(--hydro); }
+.filter-pill.active[data-element="Pyro"]    { background: rgba(249,115,22,0.15); border-color: var(--pyro);  color: var(--pyro); }
+.filter-pill.active[data-element="Cryo"]    { background: rgba(186,230,253,0.15); border-color: var(--cryo); color: var(--cryo); }
+
+/* ──────────────────────────────────────────────
+   Character Card
+─────────────────────────────────────────────── */
+.char-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 0.35s ease-out both;
+}
+
+.char-card:hover {
+  transform: translateY(-5px) scale(1.015);
+  border-color: var(--border-light);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Element-specific hover glow */
+.char-card[data-element="Anemo"]:hover   { box-shadow: 0 12px 40px rgba(78,201,176,0.2); }
+.char-card[data-element="Geo"]:hover     { box-shadow: 0 12px 40px rgba(250,182,50,0.2); }
+.char-card[data-element="Electro"]:hover { box-shadow: 0 12px 40px rgba(168,85,247,0.2); }
+.char-card[data-element="Dendro"]:hover  { box-shadow: 0 12px 40px rgba(74,222,128,0.2); }
+.char-card[data-element="Hydro"]:hover   { box-shadow: 0 12px 40px rgba(96,165,250,0.2); }
+.char-card[data-element="Pyro"]:hover    { box-shadow: 0 12px 40px rgba(249,115,22,0.2); }
+.char-card[data-element="Cryo"]:hover    { box-shadow: 0 12px 40px rgba(186,230,253,0.2); }
+
+.char-card-avatar {
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.char-card-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, var(--surface), transparent);
+  pointer-events: none;
+}
+
+.char-card-body {
+  padding: 10px 12px 12px;
+}
+
+/* ──────────────────────────────────────────────
+   Stars / Rarity
+─────────────────────────────────────────────── */
+.stars-5 { color: #FFD700; text-shadow: 0 0 8px rgba(255,215,0,0.5); }
+.stars-4 { color: #B07FE8; text-shadow: 0 0 8px rgba(176,127,232,0.5); }
+.stars-3 { color: #6AAFE6; }
+.stars-2 { color: #5CA66A; }
+.stars-1 { color: #9E9E9E; }
+
+/* ──────────────────────────────────────────────
+   Search Input
+─────────────────────────────────────────────── */
+.search-input {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 16px 9px 40px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 280px;
+}
+
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus {
+  border-color: rgba(200, 169, 110, 0.5);
+  box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.08);
+}
+
+/* ──────────────────────────────────────────────
+   Stat Cards
+─────────────────────────────────────────────── */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: var(--border-light);
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* ──────────────────────────────────────────────
+   Roster Badge
+─────────────────────────────────────────────── */
+.roster-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C8A96E, #A07840);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(200,169,110,0.5);
+  z-index: 10;
+}
+
+/* ──────────────────────────────────────────────
+   Staggered Animation Delays
+─────────────────────────────────────────────── */
+.char-card:nth-child(1)  { animation-delay: 0.00s; }
+.char-card:nth-child(2)  { animation-delay: 0.03s; }
+.char-card:nth-child(3)  { animation-delay: 0.06s; }
+.char-card:nth-child(4)  { animation-delay: 0.09s; }
+.char-card:nth-child(5)  { animation-delay: 0.12s; }
+.char-card:nth-child(6)  { animation-delay: 0.15s; }
+.char-card:nth-child(n+7){ animation-delay: 0.18s; }
+
+/* ──────────────────────────────────────────────
+   Divider
+─────────────────────────────────────────────── */
+.genshin-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+  margin: 0;
+}
+
+/* ──────────────────────────────────────────────
+   Page Background Texture
+─────────────────────────────────────────────── */
+.page-bg {
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(200,169,110,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(78,201,176,0.03) 0%, transparent 50%),
+    var(--bg);
+}
+
+/* ──────────────────────────────────────────────
+   Mobile Responsive — Sidebar Collapse
+─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+
+  .sidebar {
+    transform: translateX(-260px);
+    width: 260px;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Modal Overlay
+─────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 9, 20, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ── Modal Panel ───────────────────────────── */
+.modal-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 32px 80px rgba(0, 0, 0, 0.7),
+    0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-header {
+  position: relative;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px 8px;
+}
+
+/* ── Modal Section Title ─────────────────── */
+.modal-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── State Panel (Current / Target) ─────── */
+.modal-state-panel {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+/* ──────────────────────────────────────────────
+   Custom Level Range Slider
+─────────────────────────────────────────────── */
+.level-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-light);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.level-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--slider-color, var(--gold));
+  border: 2px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--slider-color, var(--gold)) 20%, transparent);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.level-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--slider-color, var(--gold)) 30%, transparent);
+  transform: scale(1.15);
+}
+
+.level-slider::-webkit-slider-thumb:active {
+  transform: scale(1.25);
+}
+
+.level-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--slider-color, var(--gold));
+  border: 2px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--slider-color, var(--gold)) 20%, transparent);
+}
+
+.level-slider::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--slider-color, var(--gold)) 0%,
+    var(--slider-color, var(--gold)) var(--pct, 0%),
+    var(--border-light) var(--pct, 0%),
+    var(--border-light) 100%
+  );
+  height: 4px;
+  border-radius: 2px;
+}
+
+/* ──────────────────────────────────────────────
+   Mobile Modal
+─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-panel {
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 20px 20px 0 0;
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Inventory — Material Card
+─────────────────────────────────────────────── */
+.material-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.material-card:hover {
+  border-color: var(--mat-accent, var(--border-light));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35),
+              0 0 0 1px color-mix(in srgb, var(--mat-accent, transparent) 20%, transparent);
+}
+
+.material-card-bar {
+  height: 3px;
+  width: 100%;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+/* ─── Stepper Controls ─────────────────────── */
+.stepper-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  line-height: 1;
+  user-select: none;
+}
+
+.stepper-btn:hover {
+  background: color-mix(in srgb, var(--mat-accent, var(--gold)) 15%, transparent);
+  border-color: var(--mat-accent, var(--gold));
+  color: var(--mat-accent, var(--gold));
+}
+
+.stepper-btn:active {
+  transform: scale(0.92);
+}
+
+.stepper-input {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 4px;
+  outline: none;
+  transition: border-color 0.15s ease;
+  -moz-appearance: textfield;
+}
+
+.stepper-input::-webkit-outer-spin-button,
+.stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stepper-input:focus {
+  border-color: var(--mat-accent, var(--gold));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mat-accent, var(--gold)) 15%, transparent);
+}
+
+/* ──────────────────────────────────────────────
+   Planner — To-Farm Card
+─────────────────────────────────────────────── */
+.to-farm-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: all 0.2s ease;
+  border-left: 3px solid var(--farm-accent, var(--gold));
+}
+
+.to-farm-card:hover {
+  background: var(--elevated);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3),
+              0 0 0 1px color-mix(in srgb, var(--farm-accent, var(--gold)) 20%, transparent);
+  transform: translateY(-1px);
+}
+
+/* ── Planner Section Title ──────────────────── */
+.planner-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+

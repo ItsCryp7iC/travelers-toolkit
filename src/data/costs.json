@@ -1,0 +1,454 @@
+{
+    "character_levels": [
+        {
+            "level": 1,
+            "mora_required": 2092530,
+            "hero_wits": 419
+        },
+        {
+            "level": 2,
+            "mora_required": 2092330,
+            "hero_wits": 419
+        },
+        {
+            "level": 3,
+            "mora_required": 2092065,
+            "hero_wits": 419
+        },
+        {
+            "level": 4,
+            "mora_required": 2091725,
+            "hero_wits": 418
+        },
+        {
+            "level": 5,
+            "mora_required": 2091295,
+            "hero_wits": 418
+        },
+        {
+            "level": 6,
+            "mora_required": 2090770,
+            "hero_wits": 418
+        },
+        {
+            "level": 7,
+            "mora_required": 2090140,
+            "hero_wits": 418
+        },
+        {
+            "level": 8,
+            "mora_required": 2089395,
+            "hero_wits": 418
+        },
+        {
+            "level": 9,
+            "mora_required": 2088525,
+            "hero_wits": 418
+        },
+        {
+            "level": 10,
+            "mora_required": 2087525,
+            "hero_wits": 417
+        },
+        {
+            "level": 11,
+            "mora_required": 2086385,
+            "hero_wits": 417
+        },
+        {
+            "level": 12,
+            "mora_required": 2085095,
+            "hero_wits": 417
+        },
+        {
+            "level": 13,
+            "mora_required": 2083650,
+            "hero_wits": 416
+        },
+        {
+            "level": 14,
+            "mora_required": 2082040,
+            "hero_wits": 416
+        },
+        {
+            "level": 15,
+            "mora_required": 2080255,
+            "hero_wits": 416
+        },
+        {
+            "level": 16,
+            "mora_required": 2078290,
+            "hero_wits": 415
+        },
+        {
+            "level": 17,
+            "mora_required": 2076140,
+            "hero_wits": 415
+        },
+        {
+            "level": 18,
+            "mora_required": 2073795,
+            "hero_wits": 414
+        },
+        {
+            "level": 19,
+            "mora_required": 2071250,
+            "hero_wits": 413
+        },
+        {
+            "level": 20,
+            "mora_required": 2068495,
+            "hero_wits": 413
+        },
+        {
+            "level": 21,
+            "mora_required": 2045520,
+            "hero_wits": 412
+        },
+        {
+            "level": 22,
+            "mora_required": 2042160,
+            "hero_wits": 411
+        },
+        {
+            "level": 23,
+            "mora_required": 2038560,
+            "hero_wits": 410
+        },
+        {
+            "level": 24,
+            "mora_required": 2034710,
+            "hero_wits": 409
+        },
+        {
+            "level": 25,
+            "mora_required": 2030600,
+            "hero_wits": 408
+        },
+        {
+            "level": 26,
+            "mora_required": 2026225,
+            "hero_wits": 407
+        },
+        {
+            "level": 27,
+            "mora_required": 2021575,
+            "hero_wits": 406
+        },
+        {
+            "level": 28,
+            "mora_required": 2016645,
+            "hero_wits": 405
+        },
+        {
+            "level": 29,
+            "mora_required": 2011425,
+            "hero_wits": 403
+        },
+        {
+            "level": 30,
+            "mora_required": 2005910,
+            "hero_wits": 402
+        },
+        {
+            "level": 31,
+            "mora_required": 2000090,
+            "hero_wits": 401
+        },
+        {
+            "level": 32,
+            "mora_required": 1993960,
+            "hero_wits": 399
+        },
+        {
+            "level": 33,
+            "mora_required": 1987510,
+            "hero_wits": 397
+        },
+        {
+            "level": 34,
+            "mora_required": 1980735,
+            "hero_wits": 396
+        },
+        {
+            "level": 35,
+            "mora_required": 1973625,
+            "hero_wits": 394
+        },
+        {
+            "level": 36,
+            "mora_required": 1966175,
+            "hero_wits": 392
+        },
+        {
+            "level": 37,
+            "mora_required": 1958380,
+            "hero_wits": 390
+        },
+        {
+            "level": 38,
+            "mora_required": 1950230,
+            "hero_wits": 388
+        },
+        {
+            "level": 39,
+            "mora_required": 1941715,
+            "hero_wits": 386
+        },
+        {
+            "level": 40,
+            "mora_required": 1932830,
+            "hero_wits": 384
+        },
+        {
+            "level": 41,
+            "mora_required": 1883570,
+            "hero_wits": 381
+        },
+        {
+            "level": 42,
+            "mora_required": 1873445,
+            "hero_wits": 379
+        },
+        {
+            "level": 43,
+            "mora_required": 1862905,
+            "hero_wits": 376
+        },
+        {
+            "level": 44,
+            "mora_required": 1851950,
+            "hero_wits": 373
+        },
+        {
+            "level": 45,
+            "mora_required": 1840570,
+            "hero_wits": 371
+        },
+        {
+            "level": 46,
+            "mora_required": 1828755,
+            "hero_wits": 368
+        },
+        {
+            "level": 47,
+            "mora_required": 1816500,
+            "hero_wits": 365
+        },
+        {
+            "level": 48,
+            "mora_required": 1803795,
+            "hero_wits": 361
+        },
+        {
+            "level": 49,
+            "mora_required": 1790635,
+            "hero_wits": 358
+        },
+        {
+            "level": 50,
+            "mora_required": 1777010,
+            "hero_wits": 355
+        },
+        {
+            "level": 51,
+            "mora_required": 1702915,
+            "hero_wits": 351
+        },
+        {
+            "level": 52,
+            "mora_required": 1687615,
+            "hero_wits": 347
+        },
+        {
+            "level": 53,
+            "mora_required": 1671805,
+            "hero_wits": 343
+        },
+        {
+            "level": 54,
+            "mora_required": 1655475,
+            "hero_wits": 339
+        },
+        {
+            "level": 55,
+            "mora_required": 1638620,
+            "hero_wits": 335
+        },
+        {
+            "level": 56,
+            "mora_required": 1621230,
+            "hero_wits": 331
+        },
+        {
+            "level": 57,
+            "mora_required": 1603300,
+            "hero_wits": 326
+        },
+        {
+            "level": 58,
+            "mora_required": 1584820,
+            "hero_wits": 322
+        },
+        {
+            "level": 59,
+            "mora_required": 1565785,
+            "hero_wits": 317
+        },
+        {
+            "level": 60,
+            "mora_required": 1546185,
+            "hero_wits": 312
+        },
+        {
+            "level": 61,
+            "mora_required": 1446010,
+            "hero_wits": 307
+        },
+        {
+            "level": 62,
+            "mora_required": 1424220,
+            "hero_wits": 302
+        },
+        {
+            "level": 63,
+            "mora_required": 1401810,
+            "hero_wits": 296
+        },
+        {
+            "level": 64,
+            "mora_required": 1378775,
+            "hero_wits": 290
+        },
+        {
+            "level": 65,
+            "mora_required": 1355110,
+            "hero_wits": 284
+        },
+        {
+            "level": 66,
+            "mora_required": 1330805,
+            "hero_wits": 278
+        },
+        {
+            "level": 67,
+            "mora_required": 1305850,
+            "hero_wits": 272
+        },
+        {
+            "level": 68,
+            "mora_required": 1280235,
+            "hero_wits": 266
+        },
+        {
+            "level": 69,
+            "mora_required": 1253955,
+            "hero_wits": 259
+        },
+        {
+            "level": 70,
+            "mora_required": 1227000,
+            "hero_wits": 252
+        },
+        {
+            "level": 71,
+            "mora_required": 1099365,
+            "hero_wits": 245
+        },
+        {
+            "level": 72,
+            "mora_required": 1069625,
+            "hero_wits": 238
+        },
+        {
+            "level": 73,
+            "mora_required": 1039150,
+            "hero_wits": 230
+        },
+        {
+            "level": 74,
+            "mora_required": 1007935,
+            "hero_wits": 222
+        },
+        {
+            "level": 75,
+            "mora_required": 975970,
+            "hero_wits": 214
+        },
+        {
+            "level": 76,
+            "mora_required": 943250,
+            "hero_wits": 206
+        },
+        {
+            "level": 77,
+            "mora_required": 909765,
+            "hero_wits": 198
+        },
+        {
+            "level": 78,
+            "mora_required": 875505,
+            "hero_wits": 189
+        },
+        {
+            "level": 79,
+            "mora_required": 840460,
+            "hero_wits": 181
+        },
+        {
+            "level": 80,
+            "mora_required": 804625,
+            "hero_wits": 172
+        },
+        {
+            "level": 81,
+            "mora_required": 647990,
+            "hero_wits": 162
+        },
+        {
+            "level": 82,
+            "mora_required": 604745,
+            "hero_wits": 152
+        },
+        {
+            "level": 83,
+            "mora_required": 556140,
+            "hero_wits": 140
+        },
+        {
+            "level": 84,
+            "mora_required": 501520,
+            "hero_wits": 126
+        },
+        {
+            "level": 85,
+            "mora_required": 440160,
+            "hero_wits": 111
+        },
+        {
+            "level": 86,
+            "mora_required": 371240,
+            "hero_wits": 93
+        },
+        {
+            "level": 87,
+            "mora_required": 293850,
+            "hero_wits": 74
+        },
+        {
+            "level": 88,
+            "mora_required": 206965,
+            "hero_wits": 52
+        },
+        {
+            "level": 89,
+            "mora_required": 109440,
+            "hero_wits": 28
+        },
+        {
+            "level": 90,
+            "mora_required": 0,
+            "hero_wits": 0
+        }
+    ]
+}
