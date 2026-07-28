@@ -5,42 +5,58 @@ import { persist } from 'zustand/middleware'
  * Zustand global store for Traveler's Toolkit.
  *
  * Slices:
- *  - roster:    Characters the player is tracking { [charName]: { level, ascension, talents, tracked } }
- *  - inventory: Materials the player has { [materialName]: quantity }
- *  - goals:     Progression targets [{ charName, targetLevel, targetAscension }]
+ *  - roster:          Characters the player is tracking { [charName]: { ... , equippedWeaponId } }
+ *  - trackedWeapons:  Weapons in the armory [{ id, weaponName, level, ascension, targetLevel, targetAscension, assignedTo }]
+ *  - inventory:       Materials the player has { [materialName]: quantity }
+ *  - goals:           Progression targets
+ *  - resin:           Resin tracker { resinCount, resinTimestamp }
  */
 const useStore = create(
   persist(
     (set, get) => ({
+
+      // ─── RESIN ─────────────────────────────────────────────────────────
+      resinCount: 200,
+      resinTimestamp: Date.now(),
+
+      setResin: (amount) => set({
+        resinCount: Math.min(200, Math.max(0, amount)),
+        resinTimestamp: Date.now(),
+      }),
+
       // ─── ROSTER ────────────────────────────────────────────────────────
       roster: {},
 
       addCharacter: (name) =>
-        set((state) => ({
-          roster: {
-            ...state.roster,
-            [name]: {
-              level: 1,
-              ascension: 0,
-              targetLevel: 90,
-              targetAscension: 6,
-              talents:       { normal: 1, skill: 1, burst: 1 },
-              targetTalents: { normal: 1, skill: 1, burst: 1 },
-              equippedWeapon: null,
-              weaponLevel: 1,
-              weaponAscension: 0,
-              targetWeaponLevel: 90,
-              targetWeaponAscension: 6,
-              tracked: true,
+        set((state) => {
+          if (state.roster[name]) return state // already exists, no-op
+          return {
+            roster: {
+              ...state.roster,
+              [name]: {
+                level: 1,
+                ascension: 0,
+                targetLevel: 90,
+                targetAscension: 6,
+                talents:       { normal: 1, skill: 1, burst: 1 },
+                targetTalents: { normal: 1, skill: 1, burst: 1 },
+                equippedWeaponId: null, // references trackedWeapons[].id
+                tracked: true,
+              },
             },
-          },
-        })),
+          }
+        }),
 
       removeCharacter: (name) =>
         set((state) => {
           const next = { ...state.roster }
+          const entry = next[name]
           delete next[name]
-          return { roster: next }
+          // Unassign any weapon that was pointing to this character
+          const updatedWeapons = state.trackedWeapons.map((w) =>
+            w.assignedTo === name ? { ...w, assignedTo: null } : w
+          )
+          return { roster: next, trackedWeapons: updatedWeapons }
         }),
 
       updateCharacter: (name, patch) =>
@@ -52,6 +68,118 @@ const useStore = create(
         })),
 
       isInRoster: (name) => Boolean(get().roster[name]),
+
+      // ─── TRACKED WEAPONS (ARMORY) ──────────────────────────────────────
+      trackedWeapons: [],
+
+      addTrackedWeapon: (weaponName, assignedTo = null) => {
+        // Generate the ID outside set() so we can return it to the caller
+        const id = crypto.randomUUID()
+        const newWeapon = {
+          id,
+          weaponName,
+          level: 1,
+          ascension: 0,
+          targetLevel: 90,
+          targetAscension: 6,
+          assignedTo,
+        }
+        set((state) => {
+          let updatedRoster = state.roster
+          if (assignedTo && state.roster[assignedTo]) {
+            // Unassign the old weapon first
+            const oldId = state.roster[assignedTo].equippedWeaponId
+            const updatedWeapons = state.trackedWeapons.map((w) =>
+              w.id === oldId ? { ...w, assignedTo: null } : w
+            )
+            updatedRoster = {
+              ...state.roster,
+              [assignedTo]: { ...state.roster[assignedTo], equippedWeaponId: id },
+            }
+            return { trackedWeapons: [...updatedWeapons, newWeapon], roster: updatedRoster }
+          }
+          return { trackedWeapons: [...state.trackedWeapons, newWeapon] }
+        })
+        return id // ← caller can use this to update local draft state
+      },
+
+      removeTrackedWeapon: (id) =>
+        set((state) => {
+          const weapon = state.trackedWeapons.find((w) => w.id === id)
+          let updatedRoster = state.roster
+          if (weapon?.assignedTo && state.roster[weapon.assignedTo]) {
+            updatedRoster = {
+              ...state.roster,
+              [weapon.assignedTo]: {
+                ...state.roster[weapon.assignedTo],
+                equippedWeaponId: null,
+              },
+            }
+          }
+          return {
+            trackedWeapons: state.trackedWeapons.filter((w) => w.id !== id),
+            roster: updatedRoster,
+          }
+        }),
+
+      updateTrackedWeapon: (id, patch) =>
+        set((state) => ({
+          trackedWeapons: state.trackedWeapons.map((w) =>
+            w.id === id ? { ...w, ...patch } : w
+          ),
+        })),
+
+      assignWeaponToCharacter: (weaponId, charName) =>
+        set((state) => {
+          let updatedWeapons = state.trackedWeapons
+          let updatedRoster = { ...state.roster }
+
+          // Unassign old weapon currently on this character
+          const charEntry = updatedRoster[charName]
+          if (charEntry?.equippedWeaponId && charEntry.equippedWeaponId !== weaponId) {
+            updatedWeapons = updatedWeapons.map((w) =>
+              w.id === charEntry.equippedWeaponId ? { ...w, assignedTo: null } : w
+            )
+          }
+
+          // Unassign this weapon from any previous character
+          const weapon = updatedWeapons.find((w) => w.id === weaponId)
+          if (weapon?.assignedTo && weapon.assignedTo !== charName) {
+            updatedRoster = {
+              ...updatedRoster,
+              [weapon.assignedTo]: { ...updatedRoster[weapon.assignedTo], equippedWeaponId: null },
+            }
+          }
+
+          // Assign the weapon to the character
+          updatedWeapons = updatedWeapons.map((w) =>
+            w.id === weaponId ? { ...w, assignedTo: charName } : w
+          )
+          updatedRoster = {
+            ...updatedRoster,
+            [charName]: { ...updatedRoster[charName], equippedWeaponId: weaponId },
+          }
+
+          return { trackedWeapons: updatedWeapons, roster: updatedRoster }
+        }),
+
+      unassignWeapon: (weaponId) =>
+        set((state) => {
+          const weapon = state.trackedWeapons.find((w) => w.id === weaponId)
+          let updatedRoster = state.roster
+          if (weapon?.assignedTo && state.roster[weapon.assignedTo]) {
+            updatedRoster = {
+              ...state.roster,
+              [weapon.assignedTo]: { ...state.roster[weapon.assignedTo], equippedWeaponId: null },
+            }
+          }
+          return {
+            trackedWeapons: state.trackedWeapons.map((w) =>
+              w.id === weaponId ? { ...w, assignedTo: null } : w
+            ),
+            roster: updatedRoster,
+          }
+        }),
 
       // ─── INVENTORY ─────────────────────────────────────────────────────
       inventory: {},
@@ -90,14 +218,58 @@ const useStore = create(
         ).length,
     }),
     {
-      name: 'travelers-toolkit-store', // localStorage key
+      name: 'travelers-toolkit-store',
+      version: 2, // bump if you need another migration
+      migrate: (persistedState, fromVersion) => {
+        // v1 → v2: convert old string `equippedWeapon` fields into `trackedWeapons` entries
+        if (fromVersion < 2) {
+          const migrated = { ...persistedState }
+          migrated.trackedWeapons = migrated.trackedWeapons ?? []
+          const roster = migrated.roster ?? {}
+
+          for (const [charName, entry] of Object.entries(roster)) {
+            // Skip if already migrated or no legacy string weapon
+            if (entry.equippedWeaponId || !entry.equippedWeapon) continue
+
+            // Create a new tracked weapon from the legacy string
+            const id = crypto.randomUUID()
+            migrated.trackedWeapons.push({
+              id,
+              weaponName: entry.equippedWeapon,
+              level: entry.weaponLevel ?? 1,
+              ascension: entry.weaponAscension ?? 0,
+              targetLevel: entry.targetWeaponLevel ?? 90,
+              targetAscension: entry.targetWeaponAscension ?? 6,
+              assignedTo: charName,
+            })
+
+            // Update the roster entry to use the new ID
+            migrated.roster[charName] = {
+              ...entry,
+              equippedWeaponId: id,
+              // Remove legacy flat fields
+              equippedWeapon: undefined,
+              weaponLevel: undefined,
+              weaponAscension: undefined,
+              targetWeaponLevel: undefined,
+              targetWeaponAscension: undefined,
+            }
+          }
+          return migrated
+        }
+        return persistedState
+      },
       partialize: (state) => ({
         roster: state.roster,
+        trackedWeapons: state.trackedWeapons,
         inventory: state.inventory,
         goals: state.goals,
+        resinCount: state.resinCount,
+        resinTimestamp: state.resinTimestamp,
       }),
     }
   )
 )
+
 
 export default useStore

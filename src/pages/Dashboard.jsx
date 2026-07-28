@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import CharacterCard from '../components/CharacterCard'
+import ResinTracker from '../components/ResinTracker'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
 import { ELEMENTS, WEAPON_TYPES } from '../utils/gameData'
@@ -76,7 +77,7 @@ export default function Dashboard() {
   return (
     <div className="animate-fade-in">
       {/* ── Page Header ────────────────────────────── */}
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
           <span className="text-2xl">🏔️</span>
           <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">
@@ -86,6 +87,11 @@ export default function Dashboard() {
         <p className="text-[var(--muted)] text-sm ml-11">
           Browse all characters and manage your roster
         </p>
+      </div>
+
+      {/* ── Resin Tracker ────────────────────────────── */}
+      <div className="mb-8">
+        <ResinTracker />
       </div>
 
       {/* ── Stats Strip ────────────────────────────── */}

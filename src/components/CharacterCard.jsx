@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import useStore from '../store/useStore'
 import CharacterModal from './CharacterModal'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
+import weaponsData from '../data/weapons.json'
 
 /**
  * CharacterCard
@@ -19,6 +20,15 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
   const removeCharacter = useStore((s) => s.removeCharacter)
   const inRoster        = useStore((s) => Boolean(s.roster[name]))
   const rosterEntry     = useStore((s) => s.roster[name])
+  const trackedWeapons  = useStore((s) => s.trackedWeapons)
+
+  const equippedWeapon  = rosterEntry?.equippedWeaponId
+    ? trackedWeapons.find((w) => w.id === rosterEntry.equippedWeaponId)
+    : null
+  const equippedWeaponData = equippedWeapon
+    ? weaponsData.find((w) => w.name === equippedWeapon.weaponName)
+    : null
+  const equippedWpConfig = equippedWeaponData ? (WEAPON_TYPES[equippedWeaponData.type] || null) : null
 
   const elConfig    = ELEMENTS[element] || ELEMENTS.Unknown
   const wpConfig    = WEAPON_TYPES[weapon_type]
@@ -54,6 +64,16 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
         {/* ── Roster Badge ── */}
         {!hideRoster && inRoster && (
           <div className="roster-badge" title="In your roster">✓</div>
+        )}
+
+        {/* ── Weapon equipped badge ── */}
+        {!hideRoster && inRoster && equippedWpConfig && (
+          <div
+            className="absolute top-2 left-2 z-10 text-xs rounded-full px-1 py-0.5 bg-black/50 border border-white/20 leading-none"
+            title={`Equipped: ${equippedWeapon?.weaponName}`}
+          >
+            {equippedWpConfig.emoji}
+          </div>
         )}
 
         {/* ── Level indicator (if in roster) ── */}

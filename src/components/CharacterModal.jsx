@@ -173,10 +173,14 @@ function MaterialGroup({ icon, title, items, elementColor }) {
 export default function CharacterModal({ character, onClose }) {
   const { name, rarity, element, weapon_type, materials } = character
 
-  const rosterEntry     = useStore((s) => s.roster[name])
-  const addCharacter    = useStore((s) => s.addCharacter)
-  const updateCharacter = useStore((s) => s.updateCharacter)
-  const removeCharacter = useStore((s) => s.removeCharacter)
+  const rosterEntry        = useStore((s) => s.roster[name])
+  const addCharacter        = useStore((s) => s.addCharacter)
+  const updateCharacter     = useStore((s) => s.updateCharacter)
+  const removeCharacter     = useStore((s) => s.removeCharacter)
+  const trackedWeapons      = useStore((s) => s.trackedWeapons)
+  const addTrackedWeapon    = useStore((s) => s.addTrackedWeapon)
+  const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
+  const unassignWeapon      = useStore((s) => s.unassignWeapon)
   const inRoster = Boolean(rosterEntry)
 
   const elConfig    = ELEMENTS[element] || ELEMENTS.Unknown
@@ -200,12 +204,18 @@ export default function CharacterModal({ character, onClose }) {
   const [skillTo,    setSkillTo]    = useState(rosterEntry?.targetTalents?.skill    ?? 1)
   const [burstTo,    setBurstTo]    = useState(rosterEntry?.targetTalents?.burst    ?? 1)
 
-  // ── Weapon state ─────────────────────────────────────────────────────────
-  const [equippedWeapon, setEquippedWeapon] = useState(rosterEntry?.equippedWeapon ?? null)
-  const [weaponFromAsc,   setWeaponFromAsc]   = useState(rosterEntry?.weaponAscension ?? 0)
-  const [weaponFromLevel, setWeaponFromLevel] = useState(rosterEntry?.weaponLevel ?? 1)
-  const [weaponToAsc,     setWeaponToAsc]     = useState(rosterEntry?.targetWeaponAscension ?? 6)
-  const [weaponToLevel,   setWeaponToLevel]   = useState(rosterEntry?.targetWeaponLevel ?? 90)
+  // ── Weapon state — local draft mirrors equippedWeaponId until Save ──────────
+  const [localWeaponId, setLocalWeaponId] = useState(rosterEntry?.equippedWeaponId ?? null)
+
+  // Derive display data from localWeaponId against the live trackedWeapons list
+  const trackedWeapon      = localWeaponId ? trackedWeapons.find((w) => w.id === localWeaponId) : null
+  const equippedWeaponName = trackedWeapon?.weaponName ?? null
+
+  // Local slider state — mirrors the tracked weapon's progression
+  const [weaponFromAsc,   setWeaponFromAsc]   = useState(trackedWeapon?.ascension      ?? 0)
+  const [weaponFromLevel, setWeaponFromLevel] = useState(trackedWeapon?.level          ?? 1)
+  const [weaponToAsc,     setWeaponToAsc]     = useState(trackedWeapon?.targetAscension ?? 6)
+  const [weaponToLevel,   setWeaponToLevel]   = useState(trackedWeapon?.targetLevel    ?? 90)
 
   // Pre-filter valid weapons for this character's weapon type strictly
   const availableWeapons = useMemo(() => {
@@ -215,8 +225,8 @@ export default function CharacterModal({ character, onClose }) {
   }, [weapon_type])
 
   const selectedWeaponData = useMemo(() => {
-    return equippedWeapon ? weaponsData.find(w => w.name === equippedWeapon) : null
-  }, [equippedWeapon])
+    return equippedWeaponName ? weaponsData.find(w => w.name === equippedWeaponName) : null
+  }, [equippedWeaponName])
 
   // ── Sync externally (re-opening same modal) ───────────────────────────────
   useEffect(() => {
@@ -231,13 +241,23 @@ export default function CharacterModal({ character, onClose }) {
       setNormalTo(rosterEntry.targetTalents?.normal ?? 1)
       setSkillTo(rosterEntry.targetTalents?.skill ?? 1)
       setBurstTo(rosterEntry.targetTalents?.burst ?? 1)
-      setEquippedWeapon(rosterEntry.equippedWeapon ?? null)
-      setWeaponFromAsc(rosterEntry.weaponAscension ?? 0)
-      setWeaponFromLevel(rosterEntry.weaponLevel ?? 1)
-      setWeaponToAsc(rosterEntry.targetWeaponAscension ?? 6)
-      setWeaponToLevel(rosterEntry.targetWeaponLevel ?? 90)
     }
   }, [name]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Sync local weapon sliders when the tracked weapon changes
+  useEffect(() => {
+    if (trackedWeapon) {
+      setWeaponFromAsc(trackedWeapon.ascension ?? 0)
+      setWeaponFromLevel(trackedWeapon.level ?? 1)
+      setWeaponToAsc(trackedWeapon.targetAscension ?? 6)
+      setWeaponToLevel(trackedWeapon.targetLevel ?? 90)
+    } else {
+      setWeaponFromAsc(0)
+      setWeaponFromLevel(1)
+      setWeaponToAsc(6)
+      setWeaponToLevel(90)
+    }
+  }, [localWeaponId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   const handleFromAscChange = useCallback((a) => { setFromAsc(a); setFromLevel((lv) => clampLevel(lv, a)) }, [])
@@ -300,11 +320,7 @@ export default function CharacterModal({ character, onClose }) {
       targetAscension:  safeToAsc,
       talents:          { normal: normalFrom, skill: skillFrom, burst: burstFrom },
       targetTalents:    { normal: normalTo,   skill: skillTo,   burst: burstTo   },
-      equippedWeapon,
-      weaponLevel:      weaponFromLevel,
-      weaponAscension:  weaponFromAsc,
-      targetWeaponLevel: safeWeaponToLevel,
-      targetWeaponAscension: safeWeaponToAsc,
+      equippedWeaponId: localWeaponId, // write the draft ID to persist the link
     })
     onClose()
   }
@@ -430,10 +446,22 @@ export default function CharacterModal({ character, onClose }) {
           <section className="mb-6">
             <h3 className="modal-section-title">🗡️ Equipped Weapon</h3>
             <div className="mb-4">
-              <select
+            <select
                 className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] rounded-xl px-4 py-3 outline-none focus:border-[var(--gold)] transition-colors"
-                value={equippedWeapon || ''}
-                onChange={(e) => setEquippedWeapon(e.target.value || null)}
+                value={equippedWeaponName || ''}
+                onChange={(e) => {
+                  const newName = e.target.value || null
+                  if (!newName) {
+                    // User cleared the weapon
+                    if (localWeaponId) unassignWeapon(localWeaponId)
+                    setLocalWeaponId(null)
+                  } else if (newName !== equippedWeaponName) {
+                    // New weapon selected: unassign old, create new tracked entry, capture ID
+                    if (localWeaponId) unassignWeapon(localWeaponId)
+                    const newId = addTrackedWeapon(newName, name)
+                    setLocalWeaponId(newId)
+                  }
+                }}
               >
                 <option value="">-- No Weapon Equipped --</option>
                 {/* Group by rarity */}
@@ -441,7 +469,7 @@ export default function CharacterModal({ character, onClose }) {
                   const items = availableWeapons.filter(w => w.rarity === r)
                   if (items.length === 0) return null
                   return (
-                    <optgroup key={r} label={`${'★'.repeat(r)} Weapons`}>
+                    <optgroup key={r} label={`${'\u2605'.repeat(r)} Weapons`}>
                       {items.map(w => (
                         <option key={w.name} value={w.name}>{formatName(w.name)}</option>
                       ))}
@@ -451,20 +479,20 @@ export default function CharacterModal({ character, onClose }) {
               </select>
             </div>
 
-            {equippedWeapon && (
+            {equippedWeaponName && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                 <div className="modal-state-panel">
                   <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
-                  <AscensionSelector value={weaponFromAsc} onChange={handleWeaponFromAscChange} label="Ascension" elementColor="#9CA3AF" />
+                  <AscensionSelector value={weaponFromAsc} onChange={(a) => { setWeaponFromAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { ascension: a }) }} label="Ascension" elementColor="#9CA3AF" />
                   <div className="mt-4">
-                    <LevelSlider value={weaponFromLevel} onChange={setWeaponFromLevel} ascension={weaponFromAsc} label="Level" elementColor="#9CA3AF" />
+                    <LevelSlider value={weaponFromLevel} onChange={(lv) => { setWeaponFromLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { level: lv }) }} ascension={weaponFromAsc} label="Level" elementColor="#9CA3AF" />
                   </div>
                 </div>
                 <div className="modal-state-panel">
                   <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Weapon Target</p>
-                  <AscensionSelector value={safeWeaponToAsc} onChange={handleWeaponToAscChange} label="Ascension" elementColor="var(--gold)" />
+                  <AscensionSelector value={safeWeaponToAsc} onChange={(a) => { setWeaponToAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetAscension: a }) }} label="Ascension" elementColor="var(--gold)" />
                   <div className="mt-4">
-                    <LevelSlider value={safeWeaponToLevel} onChange={setWeaponToLevel} ascension={safeWeaponToAsc} label="Level" elementColor="var(--gold)" />
+                    <LevelSlider value={safeWeaponToLevel} onChange={(lv) => { setWeaponToLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetLevel: lv }) }} ascension={safeWeaponToAsc} label="Level" elementColor="var(--gold)" />
                   </div>
                 </div>
               </div>
