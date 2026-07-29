@@ -7,18 +7,22 @@ import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import { ELEMENTS } from '../utils/gameData'
 import { calculateWeaponCost, formatNumber, buildWeaponAscMatKey, buildWeaponEliteKey, buildMobNames, formatMaterialName } from '../utils/calculator'
+import GenshinImage from '../components/GenshinImage'
+import { getWeaponIcon, getCharacterAvatar, getMaterialIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 import MatQuantity from '../components/MatQuantity'
 
 const ALL_TYPES    = ['All', ...Object.keys(WEAPON_TYPES)]
 const ALL_RARITIES = ['All', '5★', '4★', '3★', '2★', '1★']
 
-const MatCell = ({ qty, nameKey, icon = '📦', color = '', className = '' }) => {
+const MatCell = ({ qty, color = 'text-[var(--text)]', nameKey, category, className = '' }) => {
   if (!qty) return <td className={`px-3 py-2 text-center ${className}`}><span className="text-[var(--muted)] opacity-50">-</span></td>
+  const fallbackStr = nameKey ? nameKey.substring(0, 2).toUpperCase() : '??'
+  const iconFallback = <span className="text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
   return (
     <td className={`px-3 py-1 text-center ${className}`}>
       <div className="flex flex-col items-center justify-center gap-1">
         <div className="flex items-center gap-1 text-[9px] text-[var(--muted)] leading-tight max-w-[65px]">
-          <span>{icon}</span>
+          <GenshinImage src={getMaterialIcon(nameKey, category)} alt={nameKey} className="w-3 h-3 object-contain" fallback={iconFallback} />
           <span className="truncate" title={formatMaterialName(nameKey)}>{formatMaterialName(nameKey)}</span>
         </div>
         <span className={`font-mono text-[11px] font-bold ${color}`}>{qty}</span>
@@ -163,7 +167,10 @@ export default function Weapons() {
             <div className="flex flex-wrap gap-2">
               {ALL_TYPES.map((t) => (
                 <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill ${typeFilter === t ? 'active' : ''}`}>
-                  {WEAPON_TYPES[t]?.emoji || '🌐'} {t}
+                  {t !== 'All' ? (
+                    <GenshinImage src={getWeaponTypeIcon(t)} alt={t} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{WEAPON_TYPES[t]?.emoji}</span>} />
+                  ) : <span className="mr-1">🌐</span>}
+                  <span>{t}</span>
                 </button>
               ))}
             </div>
@@ -251,8 +258,13 @@ export default function Weapons() {
                           <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-0 z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{wp.sl_no}</td>
                           <td className="px-4 py-2 sticky left-[48px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px]">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xl shrink-0 shadow" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
-                                {wpCfg.emoji}
+                              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xl shrink-0 shadow relative overflow-hidden" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
+                                <GenshinImage 
+                                  src={getWeaponIcon(wp.weaponName)} 
+                                  alt={wp.weaponName} 
+                                  className="w-full h-full object-cover absolute inset-0 z-10" 
+                                  fallback={<span className="font-cinzel text-sm relative z-10" style={{ color: rColor }}>{wpCfg.emoji}</span>} 
+                                />
                               </div>
                               <div className="truncate">
                                 <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.weaponName)}</p>
@@ -260,14 +272,19 @@ export default function Weapons() {
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-2 text-center sticky left-[248px] z-10 bg-inherit text-lg w-[82px] min-w-[82px] max-w-[82px]" title={wp.data?.type}>
-                            {wpCfg.emoji}
+                          <td className="px-4 py-2 text-center sticky left-[248px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px]" title={wp.data?.type}>
+                            <GenshinImage src={getWeaponTypeIcon(wp.data?.type)} alt={wp.data?.type} className="w-4 h-4 object-contain inline-block" fallback={<span>{wpCfg?.emoji}</span>} />
                           </td>
                           <td className="px-4 py-2 sticky left-[330px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">
                             {assignedChar && elCfg ? (
                               <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow" style={{ background: elCfg.avatarGradient }}>
-                                  <span className="font-cinzel text-[10px]" style={{ color: elCfg.color }}>{getInitials(assignedChar.name)}</span>
+                                <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow relative overflow-hidden" style={{ background: elCfg.avatarGradient }}>
+                                  <GenshinImage 
+                                    src={getCharacterAvatar(assignedChar.name)} 
+                                    alt={assignedChar.name} 
+                                    className="w-full h-full object-cover absolute inset-0 z-10" 
+                                    fallback={<span className="font-cinzel text-[10px] relative z-10" style={{ color: elCfg.color }}>{getInitials(assignedChar.name)}</span>} 
+                                  />
                                 </div>
                                 <span className="text-xs text-[var(--text)] truncate min-w-0">{formatName(assignedChar.name)}</span>
                               </div>
@@ -281,26 +298,26 @@ export default function Weapons() {
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)] border-r border-[var(--border)]">{wp.targetLevel}</td>
                           
                           {/* Enhancement Math */}
-                          <td className="px-3 py-2"><MatQuantity val={costs.mysticOre} icon="🔮" color="text-[#F472B6]" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={costs.fineOre} icon="🪨" color="text-[#60A5FA]" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={costs.normalOre} icon="🪨" color="text-[#9CA3AF]" /></td>
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs.weaponMora} icon="🪙" color="text-[#C8A96E]" align="right" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={costs.mysticOre} icon="🔮" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={costs.fineOre} icon="🪨" color="text-[#60A5FA]" nameKey="Fine Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={costs.normalOre} icon="🪨" color="text-[#9CA3AF]" nameKey="Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs.weaponMora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
 
                           {/* Ascension Mats */}
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 3)]} nameKey={buildWeaponAscMatKey(ascBase, 3)} icon="✨" color="text-[#FBBF24]" />
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 2)]} nameKey={buildWeaponAscMatKey(ascBase, 2)} icon="🔮" color="text-[#A78BFA]" />
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 1)]} nameKey={buildWeaponAscMatKey(ascBase, 1)} icon="💎" color="text-[#60A5FA]" />
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 0)]} nameKey={buildWeaponAscMatKey(ascBase, 0)} icon="🔸" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" />
+                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 3)]} nameKey={buildWeaponAscMatKey(ascBase, 3)} icon="✨" color="text-[#FBBF24]" category="Weapon Ascension Material" />
+                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 2)]} nameKey={buildWeaponAscMatKey(ascBase, 2)} icon="🔮" color="text-[#A78BFA]" category="Weapon Ascension Material" />
+                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 1)]} nameKey={buildWeaponAscMatKey(ascBase, 1)} icon="💎" color="text-[#60A5FA]" category="Weapon Ascension Material" />
+                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 0)]} nameKey={buildWeaponAscMatKey(ascBase, 0)} icon="🔸" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Weapon Ascension Material" />
 
                           {/* Elite Mats */}
-                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 2)]} nameKey={buildWeaponEliteKey(eliteBase, 2)} icon="👑" color="text-[#A78BFA]" />
-                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 1)]} nameKey={buildWeaponEliteKey(eliteBase, 1)} icon="🏵️" color="text-[#60A5FA]" />
-                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 0)]} nameKey={buildWeaponEliteKey(eliteBase, 0)} icon="🦴" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" />
+                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 2)]} nameKey={buildWeaponEliteKey(eliteBase, 2)} icon="👑" color="text-[#A78BFA]" category="Elite Enhancement Material" />
+                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 1)]} nameKey={buildWeaponEliteKey(eliteBase, 1)} icon="🏵️" color="text-[#60A5FA]" category="Elite Enhancement Material" />
+                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 0)]} nameKey={buildWeaponEliteKey(eliteBase, 0)} icon="🦴" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Elite Enhancement Material" />
 
                           {/* Mob Mats */}
-                          <MatCell qty={costs.mob?.[mobNames[2]]} nameKey={mobNames[2]} icon="👻" color="text-[#A78BFA]" />
-                          <MatCell qty={costs.mob?.[mobNames[1]]} nameKey={mobNames[1]} icon="💧" color="text-[#60A5FA]" />
-                          <MatCell qty={costs.mob?.[mobNames[0]]} nameKey={mobNames[0]} icon="🦠" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" />
+                          <MatCell qty={costs.mob?.[mobNames[2]]} nameKey={mobNames[2]} icon="👻" color="text-[#A78BFA]" category="Common Enhancement Material" />
+                          <MatCell qty={costs.mob?.[mobNames[1]]} nameKey={mobNames[1]} icon="💧" color="text-[#60A5FA]" category="Common Enhancement Material" />
+                          <MatCell qty={costs.mob?.[mobNames[0]]} nameKey={mobNames[0]} icon="🦠" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Common Enhancement Material" />
                           
                           {/* Actions */}
                           <td className="px-4 py-2">

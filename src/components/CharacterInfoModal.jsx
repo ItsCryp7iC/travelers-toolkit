@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
+import GenshinImage from './GenshinImage'
+import { getCharacterAvatar, getElementIcon } from '../utils/assetHelper'
 import { formatMaterialName } from '../utils/calculator'
 
 export default function CharacterInfoModal({ character, onClose }) {
@@ -61,16 +63,22 @@ export default function CharacterInfoModal({ character, onClose }) {
           </button>
 
           <div className="relative z-10 flex gap-5 items-center">
-            <div className="w-20 h-20 rounded-xl bg-black/20 flex items-center justify-center border-2 shadow-lg"
+            <div className="w-20 h-20 rounded-xl bg-black/20 flex items-center justify-center border-2 shadow-lg relative overflow-hidden"
                  style={{ borderColor: elConfig.color, color: elConfig.color, textShadow: `0 0 16px ${elConfig.color}` }}>
-              <span className="font-cinzel text-4xl">{getInitials(name)}</span>
+              <GenshinImage 
+                src={getCharacterAvatar(name)} 
+                alt={name} 
+                className="w-full h-full object-cover absolute inset-0 z-10" 
+                fallback={<span className="font-cinzel text-4xl relative z-10">{getInitials(name)}</span>} 
+              />
             </div>
             <div>
               <h2 className="font-cinzel font-bold text-2xl text-white drop-shadow-md mb-1">{displayName}</h2>
               <div className="flex gap-2 items-center flex-wrap">
                 <span className={`text-sm tracking-wide ${getRarityClass(rarity)} drop-shadow-md`}>{getStars(rarity)}</span>
                 <span className="text-white/60 text-xs px-2 py-0.5 rounded-full bg-black/30 border border-white/20 flex items-center gap-1">
-                  {elConfig.emoji} {element}
+                  <GenshinImage src={getElementIcon(element)} alt={element} className="w-3 h-3 object-contain" fallback={<span>{elConfig.emoji}</span>} />
+                  <span>{element}</span>
                 </span>
                 {wpConfig && (
                   <span className="text-white/60 text-xs px-2 py-0.5 rounded-full bg-black/30 border border-white/20 flex items-center gap-1">

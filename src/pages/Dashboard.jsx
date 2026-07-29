@@ -3,7 +3,9 @@ import CharacterCard from '../components/CharacterCard'
 import ResinTracker from '../components/ResinTracker'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
-import { ELEMENTS, WEAPON_TYPES } from '../utils/gameData'
+import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
+import GenshinImage from '../components/GenshinImage'
+import { getElementIcon, getWeaponTypeIcon, getCharacterAvatar } from '../utils/assetHelper'
 
 const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
 const ALL_WEAPONS  = ['All', ...Object.keys(WEAPON_TYPES)]
@@ -162,7 +164,9 @@ export default function Dashboard() {
                   className={`filter-pill ${elementFilter === el ? 'active' : ''}`}
                   aria-pressed={elementFilter === el}
                 >
-                  {config ? config.emoji : '🌐'}
+                  {el !== 'All' ? (
+                    <GenshinImage src={getElementIcon(el)} alt={el} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{config?.emoji}</span>} />
+                  ) : <span className="mr-1">🌐</span>}
                   <span>{el}</span>
                 </button>
               )
@@ -185,7 +189,10 @@ export default function Dashboard() {
                   className={`filter-pill ${weaponFilter === w ? 'active' : ''}`}
                   aria-pressed={weaponFilter === w}
                 >
-                  {WEAPON_TYPES[w]?.emoji || '🌐'} {w}
+                  {w !== 'All' ? (
+                    <GenshinImage src={getWeaponTypeIcon(w)} alt={w} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{WEAPON_TYPES[w]?.emoji}</span>} />
+                  ) : <span className="mr-1">🌐</span>}
+                  <span>{w}</span>
                 </button>
               ))}
             </div>

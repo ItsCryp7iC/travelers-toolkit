@@ -3,6 +3,8 @@ import useStore from '../store/useStore'
 import CharacterModal from './CharacterModal'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import weaponsData from '../data/weapons.json'
+import GenshinImage from './GenshinImage'
+import { getCharacterAvatar, getElementIcon, getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 
 /**
  * CharacterCard
@@ -72,7 +74,12 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
             className="absolute top-2 left-2 z-10 text-xs rounded-full px-1 py-0.5 bg-black/50 border border-white/20 leading-none"
             title={`Equipped: ${equippedWeapon?.weaponName}`}
           >
-            {equippedWpConfig.emoji}
+            <GenshinImage 
+              src={getWeaponIcon(equippedWeapon.weaponName)} 
+              alt={equippedWeapon.weaponName}
+              className="w-4 h-4 object-contain"
+              fallback={equippedWpConfig.emoji} 
+            />
           </div>
         )}
 
@@ -103,17 +110,24 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
             }}
           />
 
-          {/* Initials */}
-          <span
-            className="relative z-10 select-none"
-            style={{
-              color: elConfig.color,
-              textShadow: `0 0 24px ${elConfig.color}`,
-              fontSize: name.length > 10 ? '1.6rem' : '2.2rem',
-            }}
-          >
-            {initials}
-          </span>
+          {/* Avatar Image / Fallback Initials */}
+          <GenshinImage
+            src={getCharacterAvatar(name)}
+            alt={displayName}
+            className="w-full h-full object-cover absolute inset-0 z-10 rounded-t-[14px]"
+            fallback={
+              <span
+                className="relative z-10 select-none"
+                style={{
+                  color: elConfig.color,
+                  textShadow: `0 0 24px ${elConfig.color}`,
+                  fontSize: name.length > 10 ? '1.6rem' : '2.2rem',
+                }}
+              >
+                {initials}
+              </span>
+            }
+          />
 
           {/* View details hint on hover */}
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 rounded-t-[14px]"
@@ -140,25 +154,25 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
 
           {/* Element + Weapon badges */}
           <div className="flex flex-wrap gap-1 mb-3">
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border"
-              style={{
-                background: elConfig.colorDim,
-                borderColor: elConfig.color + '60',
-                color: elConfig.color,
-              }}
-            >
-              <span>{elConfig.emoji}</span>
-              <span>{element}</span>
-            </span>
-
-            {wpConfig && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-[var(--border)] text-[var(--muted)] bg-[var(--elevated)]">
-                <span>{wpConfig.emoji}</span>
-                <span>{weapon_type}</span>
+              <span
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border"
+                style={{
+                  background: elConfig.colorDim,
+                  borderColor: elConfig.color + '60',
+                  color: elConfig.color,
+                }}
+              >
+                <GenshinImage src={getElementIcon(element)} alt={element} className="w-3 h-3 object-contain" fallback={<span>{elConfig.emoji}</span>} />
+                <span>{element}</span>
               </span>
-            )}
-          </div>
+
+              {wpConfig && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-[var(--border)] text-[var(--muted)] bg-[var(--elevated)]">
+                  <GenshinImage src={getWeaponTypeIcon(weapon_type)} alt={weapon_type} className="w-3 h-3 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
+                  <span>{weapon_type}</span>
+                </span>
+              )}
+            </div>
 
           {/* Add / Remove Roster Button */}
           {!hideRoster && (

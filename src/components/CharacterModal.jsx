@@ -6,6 +6,8 @@ import weaponsData from '../data/weapons.json'
 import {
   ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass,
 } from '../utils/gameData'
+import GenshinImage from './GenshinImage'
+import { getElementIcon, getCharacterAvatar } from '../utils/assetHelper'
 import {
   calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost,
   clampLevel, getLevelRange, ASCENSION_CAPS,
@@ -351,9 +353,14 @@ export default function CharacterModal({ character, onClose }) {
         <div className="modal-header" style={{ background: elConfig.avatarGradient }}>
           <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse at 20% 50%, ${elColor}, transparent 60%)` }} />
           <div className="relative flex items-center gap-5 p-6 pb-5">
-            <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-cinzel font-bold text-3xl flex-shrink-0 border-2"
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-cinzel font-bold text-3xl flex-shrink-0 border-2 relative overflow-hidden"
               style={{ background: `${elColor}22`, borderColor: `${elColor}60`, color: elColor, textShadow: `0 0 20px ${elColor}` }}>
-              {initials}
+              <GenshinImage 
+                src={getCharacterAvatar(name)} 
+                alt={name} 
+                className="w-full h-full object-cover absolute inset-0 z-10" 
+                fallback={<span className="relative z-10">{initials}</span>} 
+              />
             </div>
             <div className="flex-1 min-w-0">
               <span className={`text-sm ${rarityClass}`}>{stars}</span>
@@ -361,7 +368,8 @@ export default function CharacterModal({ character, onClose }) {
               <div className="flex flex-wrap gap-1.5 mt-2">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border"
                   style={{ background: elConfig.colorDim, borderColor: `${elColor}60`, color: elColor }}>
-                  {elConfig.emoji} {element}
+                  <GenshinImage src={getElementIcon(element)} alt={element} className="w-4 h-4 object-contain" fallback={<span>{elConfig.emoji}</span>} />
+                  <span>{element}</span>
                 </span>
                 {wpConfig && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border border-[var(--border)] text-[var(--muted)] bg-black/20">
@@ -407,6 +415,15 @@ export default function CharacterModal({ character, onClose }) {
             {/* Range bar */}
             <div className="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl"
               style={{ background: `${elColor}10`, border: `1px solid ${elColor}30` }}>
+              {/* Character Avatar */}
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 shadow-lg relative overflow-hidden" style={{ background: elConfig.avatarGradient }}>
+                <GenshinImage 
+                  src={getCharacterAvatar(name)} 
+                  alt={name} 
+                  className="w-full h-full object-cover absolute inset-0 z-10" 
+                  fallback={<span className="font-cinzel text-xl relative z-10" style={{ color: elConfig.color }}>{name.substring(0, 1).toUpperCase()}</span>} 
+                />
+              </div>
               <span className="font-cinzel font-bold text-sm" style={{ color: elColor }}>A{fromAsc} Lv{fromLevel}</span>
               <div className="flex-1 flex items-center gap-1">
                 <div className="flex-1 h-px" style={{ background: `${elColor}40` }} />
