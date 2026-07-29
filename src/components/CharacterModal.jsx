@@ -529,7 +529,7 @@ export default function CharacterModal({ character, onClose }) {
                   )}
                 </div>
 
-                <MaterialGroup icon="💎" title="Gemstones"        items={ascCosts.gemstones}   elementColor={elColor} />
+                <MaterialGroup icon="💎" title="Character Ascension Gems"        items={ascCosts.gemstones}   elementColor={elColor} />
                 {ascCosts.worldBoss && (
                   <MaterialGroup icon="🐉" title="World Boss"     items={ascCosts.worldBoss}   elementColor={elColor} />
                 )}
@@ -558,12 +558,12 @@ export default function CharacterModal({ character, onClose }) {
               <h3 className="modal-section-title">📖 Material Sources</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: 'Gemstone',        value: materials.gemstone,        icon: '💎' },
-                  { label: 'World Boss',       value: materials.world_boss,      icon: '🐉' },
-                  { label: 'Weekly Boss',      value: materials.weekly_boss,     icon: '👑' },
-                  { label: 'Talent Book',      value: materials.talent_book,     icon: '📖' },
-                  { label: 'Local Specialty',  value: materials.local_specialty, icon: '🌸' },
-                  { label: 'Mob Material',     value: materials.mob_material,    icon: '⚔️' },
+                  { label: 'Character Ascension Gem', value: materials.gemstone,        icon: '💎' },
+                  { label: 'Local Specialty',         value: materials.local_specialty, icon: '🌸' },
+                  { label: 'Normal Boss Material',    value: materials.world_boss,      icon: '🐉' },
+                  { label: 'Weekly Boss Material',    value: materials.weekly_boss,     icon: '🐺' },
+                  { label: 'Talent Material',         value: materials.talent_book,     icon: '📚' },
+                  { label: 'Common Enhancement Material', value: materials.mob_material,    icon: '⚔️' },
                 ].filter(({ value }) => value && value !== 'nan').map(({ label, value, icon }) => (
                   <div key={label} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2">
                     <p className="text-[9px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-0.5">{icon} {label}</p>

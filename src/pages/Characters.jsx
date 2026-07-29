@@ -226,21 +226,21 @@ export default function Characters() {
 
                       {/* Ascension Math */}
                       <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="Hero's Wit">Wit</th>
-                      <th className="text-center px-3 py-2 font-semibold" title="World Boss Drop">W.Boss</th>
+                      <th className="text-center px-3 py-2 font-semibold" title="Normal Boss Material">N.Boss</th>
                       <th className="text-center px-3 py-2 font-semibold" title="Local Specialty">Local</th>
-                      <th className="text-center px-3 py-2 font-semibold" title="Gemstones (All Tiers)">Stones</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="3★ Mob Mats">Mob 3★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="2★ Mob Mats">Mob 2★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="1★ Mob Mats">Mob 1★</th>
+                      <th className="text-center px-3 py-2 font-semibold" title="Character Ascension Gem (All Tiers)">Stones</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="3★ Common Enhancement Material">Enh 3★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="2★ Common Enhancement Material">Enh 2★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="1★ Common Enhancement Material">Enh 1★</th>
                       <th className="text-right px-3 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]">Asc. Mora</th>
 
                       {/* Talent Math */}
-                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="4★ Talent Books">Bk 4★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="3★ Talent Books">Bk 3★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="2★ Talent Books">Bk 2★</th>
-                      <th className="text-center px-3 py-2 font-semibold" title="Weekly Boss Drop">Wk.Boss</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="4★ Talent Material">Tal 4★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="3★ Talent Material">Tal 3★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="2★ Talent Material">Tal 2★</th>
+                      <th className="text-center px-3 py-2 font-semibold" title="Weekly Boss Material">Wk.Boss</th>
                       <th className="text-center px-3 py-2 font-semibold text-[#FBBF24]" title="Crown of Insight">Crown</th>
-                      <th className="text-center px-3 py-2 font-semibold" title="Mob Mats (All Tiers)">Mob Mats</th>
+                      <th className="text-center px-3 py-2 font-semibold" title="Common Enhancement Material (All Tiers)">Enh Mats</th>
                       <th className="text-right px-3 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]">Talent Mora</th>
                       
                       <th className="px-4 py-2"></th>

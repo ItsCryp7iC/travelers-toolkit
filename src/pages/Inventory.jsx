@@ -142,7 +142,7 @@ function QuickStats() {
 function GemstoneSection() {
   return (
     <section className="mb-10">
-      <SectionHeader icon="💎" title="Gemstones" count={GEM_BASES.length * 4} accent="#C8A96E" />
+      <SectionHeader icon="💎" title="Character Ascension Gems" count={GEM_BASES.length * 4} accent="#C8A96E" />
       <div className="space-y-5">
         {GEM_BASES.map((base) => {
           const cfg = GEM_COLORS[base] || { color: '#C8A96E', label: '', emoji: '💎' }
@@ -187,7 +187,7 @@ function GemstoneSection() {
 function BossSection() {
   return (
     <section className="mb-10">
-      <SectionHeader icon="🐉" title="World Boss Drops" count={WORLD_BOSS_MATS.length} accent="#F97316" />
+      <SectionHeader icon="🐉" title="Normal Boss Materials" count={WORLD_BOSS_MATS.length} accent="#F97316" />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
         {WORLD_BOSS_MATS.map((mat) => (
           <MaterialCard
@@ -227,7 +227,7 @@ function LocalSection() {
 function MobSection() {
   return (
     <section className="mb-10">
-      <SectionHeader icon="⚔️" title="Mob Drops" count={MOB_BASES.length * 3} accent="#A855F7" />
+      <SectionHeader icon="⚔️" title="Enhancement Mats" count={MOB_BASES.length * 3} accent="#A855F7" />
       <div className="space-y-4">
         {MOB_BASES.map((base) => {
           const keys = getMobTierKeys(base)
@@ -281,10 +281,10 @@ export default function Inventory() {
   const [tab, setTab] = useState('gemstones')
 
   const tabs = [
-    { id: 'gemstones', label: 'Gemstones',  icon: '💎' },
+    { id: 'gemstones', label: 'Character Ascension Gems',  icon: '💎' },
     { id: 'boss',      label: 'Boss Drops', icon: '🐉' },
     { id: 'local',     label: 'Local Spec', icon: '🌸' },
-    { id: 'mob',       label: 'Mob Drops',  icon: '⚔️' },
+    { id: 'mob',       label: 'Enhancement Mats',  icon: '⚔️' },
     { id: 'currency',  label: 'Currency',   icon: '🪙' },
   ]
 

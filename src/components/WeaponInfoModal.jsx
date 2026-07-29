@@ -92,11 +92,11 @@ export default function WeaponInfoModal({ weapon, onClose }) {
             </h3>
             
             {hasMaterials ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {renderMaterial('Ascension Domain', materials?.ascension_mat, '🔗')}
-                {renderMaterial('Elite Mob Drop', materials?.elite_mat, '🛡️')}
-                {renderMaterial('Common Mob Drop', materials?.mob_mat, '⚔️')}
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {renderMaterial('Weapon Ascension Material', materials?.ascension_mat, '✨')}
+              {renderMaterial('Elite Enhancement Material', materials?.elite_mat, '🏵️')}
+              {renderMaterial('Common Enhancement Material', materials?.mob_mat, '⚔️')}
+            </div>
             ) : (
               <div className="text-center py-6 border border-[var(--border)] rounded-xl bg-[var(--surface)] text-[var(--muted)] text-sm">
                 Material data for this weapon is currently unavailable.

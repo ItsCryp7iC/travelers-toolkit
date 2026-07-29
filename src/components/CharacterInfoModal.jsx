@@ -94,12 +94,12 @@ export default function CharacterInfoModal({ character, onClose }) {
             </h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {renderMaterial('Gemstone', materials?.gemstone, '💎')}
+              {renderMaterial('Character Ascension Gem', materials?.gemstone, '💎')}
+              {renderMaterial('Normal Boss Material', materials?.world_boss, '🐉')}
+              {renderMaterial('Weekly Boss Material', materials?.weekly_boss, '👑')}
+              {renderMaterial('Talent Material', materials?.talent_book, '📖')}
               {renderMaterial('Local Specialty', materials?.local_specialty, '🌸')}
-              {renderMaterial('World Boss', materials?.world_boss, '🐉')}
-              {renderMaterial('Weekly Boss', materials?.weekly_boss, '👑')}
-              {renderMaterial('Mob Drop', materials?.mob_material, '⚔️')}
-              {renderMaterial('Talent Book', materials?.talent_book, '📖')}
+              {renderMaterial('Common Enhancement Material', materials?.mob_material, '⚔️')}
             </div>
           </div>
           

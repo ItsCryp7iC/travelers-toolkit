@@ -316,14 +316,14 @@ export default function Planner() {
             </div>
           )}
 
-          <ToFarmCategory icon="📖" title="Talent Books"      items={toFarm.talentBooks}    accent="#A855F7" emptyMsg="All talent books covered" />
-          <ToFarmCategory icon="👑" title="Weekly Boss Drops"  items={toFarm.weeklyBoss}     accent="#FBBF24" emptyMsg="All weekly boss drops covered" />
-          <ToFarmCategory icon="🔗" title="Weapon Ascension"   items={toFarm.weaponAscMats}  accent="var(--gold)" emptyMsg="All weapon domains covered" />
-          <ToFarmCategory icon="💎" title="Gemstones"          items={toFarm.gemstones}      accent="#C8A96E" emptyMsg="All gemstones covered" />
-          <ToFarmCategory icon="🐉" title="World Boss Drops"   items={toFarm.worldBoss}      accent="#F97316" emptyMsg="All boss drops covered" />
-          <ToFarmCategory icon="🛡️" title="Elite Mob Drops"    items={toFarm.eliteMob}       accent="var(--gold)" emptyMsg="All elite drops covered" />
-          <ToFarmCategory icon="🌸" title="Local Specialties"  items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
-          <ToFarmCategory icon="⚔️" title="Mob Drops"          items={toFarm.mob}            accent="#A855F7" emptyMsg="All mob drops covered" />
+          <ToFarmCategory icon="📖" title="Talent Material"      items={toFarm.talentBooks}    accent="#A855F7" emptyMsg="All talent books covered" />
+          <ToFarmCategory icon="👑" title="Weekly Boss Material"  items={toFarm.weeklyBoss}     accent="#FBBF24" emptyMsg="All weekly boss drops covered" />
+          <ToFarmCategory icon="🔗" title="Weapon Ascension Material"   items={toFarm.weaponAscMats}  accent="var(--gold)" emptyMsg="All weapon domains covered" />
+          <ToFarmCategory icon="💎" title="Character Ascension Gem"          items={toFarm.gemstones}      accent="#C8A96E" emptyMsg="All gemstones covered" />
+          <ToFarmCategory icon="🐉" title="Normal Boss Material"   items={toFarm.worldBoss}      accent="#F97316" emptyMsg="All boss drops covered" />
+          <ToFarmCategory icon="🛡️" title="Elite Enhancement Material"    items={toFarm.eliteMob}       accent="var(--gold)" emptyMsg="All elite drops covered" />
+          <ToFarmCategory icon="🌸" title="Local Specialty"  items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
+          <ToFarmCategory icon="⚔️" title="Common Enhancement Material"          items={toFarm.mob}            accent="#A855F7" emptyMsg="All mob drops covered" />
         </div>
       )}
 

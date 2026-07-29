@@ -187,9 +187,9 @@ export default function Weapons() {
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
                       <th colSpan="2" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">State</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Enhancement</th>
-                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Ascension Mats</th>
-                      <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Elite Mats</th>
-                      <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Mob Mats</th>
+                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Weapon Ascension Material</th>
+                      <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Elite Enhancement Material</th>
+                      <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Common Enhancement Material</th>
                       <th className="px-4 py-2 border-b border-[var(--border)]"></th>
                     </tr>
                     {/* Sub Headers */}
@@ -211,20 +211,20 @@ export default function Weapons() {
                       <th className="text-right px-3 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]">Mora</th>
 
                       {/* Ascension Mats */}
-                      <th className="text-center px-3 py-2 font-semibold text-[#FBBF24]" title="5★ Ascension Mats">Asc 5★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="4★ Ascension Mats">Asc 4★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="3★ Ascension Mats">Asc 3★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]" title="2★ Ascension Mats">Asc 2★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#FBBF24]" title="5★ Weapon Ascension Material">Asc 5★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="4★ Weapon Ascension Material">Asc 4★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="3★ Weapon Ascension Material">Asc 3★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]" title="2★ Weapon Ascension Material">Asc 2★</th>
 
                       {/* Elite Mats */}
-                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="4★ Elite Mob Mats">Elite 4★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="3★ Elite Mob Mats">Elite 3★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]" title="2★ Elite Mob Mats">Elite 2★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="4★ Elite Enhancement Material">Elite 4★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="3★ Elite Enhancement Material">Elite 3★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]" title="2★ Elite Enhancement Material">Elite 2★</th>
 
                       {/* Mob Mats */}
-                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="3★ Mob Mats">Mob 3★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="2★ Mob Mats">Mob 2★</th>
-                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]" title="1★ Mob Mats">Mob 1★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="3★ Common Enhancement Material">Enh 3★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="2★ Common Enhancement Material">Enh 2★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]" title="1★ Common Enhancement Material">Enh 1★</th>
                       
                       <th className="px-4 py-2"></th>
                     </tr>
