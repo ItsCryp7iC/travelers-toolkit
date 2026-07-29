@@ -83,6 +83,7 @@ const useStore = create(
           targetLevel: 90,
           targetAscension: 6,
           assignedTo,
+          createdAt: Date.now(),
         }
         set((state) => {
           let updatedRoster = state.roster

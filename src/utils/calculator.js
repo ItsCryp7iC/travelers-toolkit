@@ -556,7 +556,7 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  * @param {number} toAsc       — target ascension (0-6)
  *
  * @returns {Object} {
- *   weaponMora, mysticOre,
+ *   weaponMora, mysticOre, fineOre, normalOre,
  *   ascMats:  { [matKey]: qty },
  *   eliteMob: { [matKey]: qty },
  *   mob:      { [matKey]: qty },
@@ -564,7 +564,7 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  * }
  */
 export function calculateWeaponCost(weapon, fromLevel, fromAsc, toLevel, toAsc) {
-  if (!weapon) return { weaponMora: 0, mysticOre: 0, ascMats: {}, eliteMob: {}, mob: {}, hasAnyCost: false }
+  if (!weapon) return { weaponMora: 0, mysticOre: 0, fineOre: 0, normalOre: 0, ascMats: {}, eliteMob: {}, mob: {}, hasAnyCost: false }
 
   const rarity = weapon.rarity ?? 3
   const ascBase    = (weapon.materials?.ascension_mat && weapon.materials.ascension_mat !== '')
@@ -654,10 +654,12 @@ export function calculateWeaponCost(weapon, fromLevel, fromAsc, toLevel, toAsc) 
     levelingMora,
     ascensionMora,
     mysticOre,
+    fineOre: 0,
+    normalOre: 0,
     ascMats,
     eliteMob,
     mob,
-    hasAnyCost: weaponMora > 0 || mysticOre > 0 || Object.keys(ascMats).length > 0,
+    hasAnyCost: weaponMora > 0 || mysticOre > 0 || Object.keys(ascMats).length > 0
   }
 }
 
