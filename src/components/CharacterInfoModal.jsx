@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
-import { getCharacterAvatar, getElementIcon } from '../utils/assetHelper'
+import { getCharacterAvatar, getElementIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 import { formatMaterialName } from '../utils/calculator'
 
 export default function CharacterInfoModal({ character, onClose }) {
@@ -76,13 +76,14 @@ export default function CharacterInfoModal({ character, onClose }) {
               <h2 className="font-cinzel font-bold text-2xl text-white drop-shadow-md mb-1">{displayName}</h2>
               <div className="flex gap-2 items-center flex-wrap">
                 <span className={`text-sm tracking-wide ${getRarityClass(rarity)} drop-shadow-md`}>{getStars(rarity)}</span>
-                <span className="text-white/60 text-xs px-2 py-0.5 rounded-full bg-black/30 border border-white/20 flex items-center gap-1">
-                  <GenshinImage src={getElementIcon(element)} alt={element} className="w-3 h-3 object-contain" fallback={<span>{elConfig.emoji}</span>} />
+                <span className="text-white/80 text-sm px-3 py-1 rounded-full bg-black/30 border border-white/20 flex items-center gap-1.5">
+                  <GenshinImage src={getElementIcon(element)} alt={element} className="w-6 h-6 object-contain" fallback={<span>{elConfig.emoji}</span>} />
                   <span>{element}</span>
                 </span>
                 {wpConfig && (
-                  <span className="text-white/60 text-xs px-2 py-0.5 rounded-full bg-black/30 border border-white/20 flex items-center gap-1">
-                    {wpConfig.emoji} {weapon_type}
+                  <span className="text-white/80 text-sm px-3 py-1 rounded-full bg-black/30 border border-white/20 flex items-center gap-1.5">
+                    <GenshinImage src={getWeaponTypeIcon(weapon_type)} alt={weapon_type} className="w-6 h-6 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
+                    <span>{weapon_type}</span>
                   </span>
                 )}
               </div>

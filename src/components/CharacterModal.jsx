@@ -7,7 +7,7 @@ import {
   ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass,
 } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
-import { getElementIcon, getCharacterAvatar } from '../utils/assetHelper'
+import { getElementIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
 import {
   calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost,
   clampLevel, getLevelRange, ASCENSION_CAPS,
@@ -365,15 +365,16 @@ export default function CharacterModal({ character, onClose }) {
             <div className="flex-1 min-w-0">
               <span className={`text-sm ${rarityClass}`}>{stars}</span>
               <h2 className="font-cinzel font-bold text-2xl text-[var(--text)] leading-tight mt-0.5 truncate">{displayName}</h2>
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border"
+              <div className="flex flex-wrap gap-2 mt-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border"
                   style={{ background: elConfig.colorDim, borderColor: `${elColor}60`, color: elColor }}>
-                  <GenshinImage src={getElementIcon(element)} alt={element} className="w-4 h-4 object-contain" fallback={<span>{elConfig.emoji}</span>} />
+                  <GenshinImage src={getElementIcon(element)} alt={element} className="w-6 h-6 object-contain" fallback={<span>{elConfig.emoji}</span>} />
                   <span>{element}</span>
                 </span>
                 {wpConfig && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border border-[var(--border)] text-[var(--muted)] bg-black/20">
-                    {wpConfig.emoji} {weapon_type}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border border-[var(--border)] text-[var(--muted)] bg-black/20">
+                    <GenshinImage src={getWeaponTypeIcon(weapon_type)} alt={weapon_type} className="w-6 h-6 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
+                    <span>{weapon_type}</span>
                   </span>
                 )}
                 {inRoster && (

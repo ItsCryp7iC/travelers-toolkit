@@ -184,8 +184,8 @@ export default function Characters() {
                 return (
                   <button key={el} onClick={() => setElementFilter(el)} className={`filter-pill ${elementFilter === el ? 'active' : ''}`}>
                     {el !== 'All' ? (
-                      <GenshinImage src={getElementIcon(el)} alt={el} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{cfg?.emoji}</span>} />
-                    ) : <span className="mr-1">🌐</span>}
+                      <GenshinImage src={getElementIcon(el)} alt={el} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
+                    ) : <span className="mr-2">🌐</span>}
                     {el}
                   </button>
                 )
@@ -196,8 +196,8 @@ export default function Characters() {
                 return (
                   <button key={wp} onClick={() => setWeaponFilter(wp)} className={`filter-pill ${weaponFilter === wp ? 'active' : ''}`}>
                     {wp !== 'All' ? (
-                      <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{cfg?.emoji}</span>} />
-                    ) : <span className="mr-1">⚔️</span>}
+                      <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
+                    ) : <span className="mr-2">⚔️</span>}
                     {wp}
                   </button>
                 )
@@ -307,12 +307,12 @@ export default function Characters() {
                             </div>
                           </td>
                           <td className="px-4 py-2 text-center sticky left-[248px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px]">
-                            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full border overflow-hidden" style={{ background: elCfg.colorDim, borderColor: elCfg.color + '50', color: elCfg.color }} title={char.element}>
-                              <GenshinImage src={getElementIcon(char.element)} alt={char.element} className="w-4 h-4 object-contain" fallback={elCfg.emoji} />
+                            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border overflow-hidden" style={{ background: elCfg.colorDim, borderColor: elCfg.color + '50', color: elCfg.color }} title={char.element}>
+                              <GenshinImage src={getElementIcon(char.element)} alt={char.element} className="w-8 h-8 object-contain shrink-0" fallback={elCfg.emoji} />
                             </span>
                           </td>
                           <td className="px-4 py-2 text-center sticky left-[330px] z-10 bg-inherit w-[80px] min-w-[80px] max-w-[80px]">
-                            <GenshinImage src={getWeaponTypeIcon(char.weapon_type)} alt={char.weapon_type} className="w-4 h-4 object-contain inline-block" fallback={<span>{wpCfg?.emoji}</span>} />
+                            <GenshinImage src={getWeaponTypeIcon(char.weapon_type)} alt={char.weapon_type} className="w-8 h-8 object-contain inline-block shrink-0" fallback={<span>{wpCfg?.emoji}</span>} />
                           </td>
                           <td className="px-4 py-2 sticky left-[410px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">
                             {eqWeapon ? (

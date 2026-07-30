@@ -20,12 +20,12 @@ export default function MatQuantity({ val, color = 'text-[var(--text)]', align =
   const iconFallback = <span className="text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
 
   return (
-    <div className={`flex items-center gap-1.5 ${justifyClass}`}>
+    <div className={`flex items-center gap-2 ${justifyClass}`}>
       {nameKey ? (
         <GenshinImage 
           src={getMaterialIcon(nameKey, category)} 
           alt={nameKey} 
-          className="w-4 h-4 object-contain" 
+          className="w-8 h-8 object-contain shrink-0" 
           fallback={iconFallback} 
         />
       ) : (

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
-import { getWeaponIcon } from '../utils/assetHelper'
+import { getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 import { formatMaterialName } from '../utils/calculator'
 
 export default function WeaponInfoModal({ weapon, onClose }) {
@@ -79,8 +79,9 @@ export default function WeaponInfoModal({ weapon, onClose }) {
               <h2 className="font-cinzel font-bold text-2xl text-[var(--text)] drop-shadow-md mb-1">{displayName}</h2>
               <div className="flex gap-2 items-center flex-wrap">
                 <span className={`text-sm tracking-wide ${rarityClass} drop-shadow-md`}>{getStars(rarity)}</span>
-                <span className="text-white/60 text-xs px-2 py-0.5 rounded-full bg-black/30 border border-white/20 flex items-center gap-1">
-                  {wpConfig.emoji} {type || 'Unknown'}
+                <span className="text-white/80 text-sm px-3 py-1 rounded-full bg-black/30 border border-white/20 flex items-center gap-1.5">
+                  <GenshinImage src={getWeaponTypeIcon(type)} alt={type} className="w-6 h-6 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
+                  <span>{type || 'Unknown'}</span>
                 </span>
               </div>
             </div>

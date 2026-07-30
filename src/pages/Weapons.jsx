@@ -20,11 +20,8 @@ const MatCell = ({ qty, color = 'text-[var(--text)]', nameKey, category, classNa
   const iconFallback = <span className="text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
   return (
     <td className={`px-3 py-1 text-center ${className}`}>
-      <div className="flex flex-col items-center justify-center gap-1">
-        <div className="flex items-center gap-1 text-[9px] text-[var(--muted)] leading-tight max-w-[65px]">
-          <GenshinImage src={getMaterialIcon(nameKey, category)} alt={nameKey} className="w-3 h-3 object-contain" fallback={iconFallback} />
-          <span className="truncate" title={formatMaterialName(nameKey)}>{formatMaterialName(nameKey)}</span>
-        </div>
+      <div className="flex items-center justify-center gap-2">
+        <GenshinImage src={getMaterialIcon(nameKey, category)} alt={nameKey} className="w-8 h-8 object-contain shrink-0" fallback={iconFallback} />
         <span className={`font-mono text-[11px] font-bold ${color}`}>{qty}</span>
       </div>
     </td>
@@ -168,8 +165,8 @@ export default function Weapons() {
               {ALL_TYPES.map((t) => (
                 <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill ${typeFilter === t ? 'active' : ''}`}>
                   {t !== 'All' ? (
-                    <GenshinImage src={getWeaponTypeIcon(t)} alt={t} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{WEAPON_TYPES[t]?.emoji}</span>} />
-                  ) : <span className="mr-1">🌐</span>}
+                    <GenshinImage src={getWeaponTypeIcon(t)} alt={t} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{WEAPON_TYPES[t]?.emoji}</span>} />
+                  ) : <span className="mr-2">🌐</span>}
                   <span>{t}</span>
                 </button>
               ))}
@@ -273,7 +270,7 @@ export default function Weapons() {
                             </div>
                           </td>
                           <td className="px-4 py-2 text-center sticky left-[248px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px]" title={wp.data?.type}>
-                            <GenshinImage src={getWeaponTypeIcon(wp.data?.type)} alt={wp.data?.type} className="w-4 h-4 object-contain inline-block" fallback={<span>{wpCfg?.emoji}</span>} />
+                            <GenshinImage src={getWeaponTypeIcon(wp.data?.type)} alt={wp.data?.type} className="w-8 h-8 object-contain inline-block shrink-0" fallback={<span>{wpCfg?.emoji}</span>} />
                           </td>
                           <td className="px-4 py-2 sticky left-[330px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">
                             {assignedChar && elCfg ? (

@@ -165,8 +165,8 @@ export default function Dashboard() {
                   aria-pressed={elementFilter === el}
                 >
                   {el !== 'All' ? (
-                    <GenshinImage src={getElementIcon(el)} alt={el} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{config?.emoji}</span>} />
-                  ) : <span className="mr-1">🌐</span>}
+                    <GenshinImage src={getElementIcon(el)} alt={el} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{config?.emoji}</span>} />
+                  ) : <span className="mr-2">🌐</span>}
                   <span>{el}</span>
                 </button>
               )
@@ -190,8 +190,8 @@ export default function Dashboard() {
                   aria-pressed={weaponFilter === w}
                 >
                   {w !== 'All' ? (
-                    <GenshinImage src={getWeaponTypeIcon(w)} alt={w} className="w-4 h-4 object-contain inline-block mr-1" fallback={<span>{WEAPON_TYPES[w]?.emoji}</span>} />
-                  ) : <span className="mr-1">🌐</span>}
+                    <GenshinImage src={getWeaponTypeIcon(w)} alt={w} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{WEAPON_TYPES[w]?.emoji}</span>} />
+                  ) : <span className="mr-2">🌐</span>}
                   <span>{w}</span>
                 </button>
               ))}
