@@ -11,6 +11,10 @@ const navItems = [
   { to: '/settings',   label: 'Settings',    icon: '⚙️', id: 'nav-settings' },
 ]
 
+const devItems = [
+  { to: '/builder', label: 'DB Builder', icon: '🔧', id: 'nav-builder' },
+]
+
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const rosterCount = useStore((s) => Object.keys(s.roster).length)
@@ -52,6 +56,27 @@ export default function AppLayout() {
               key={item.to}
               to={item.to}
               end={item.to === '/'}
+              id={item.id}
+              className={({ isActive }) =>
+                `sidebar-nav-link ${isActive ? 'active' : ''}`
+              }
+              onClick={() => setSidebarOpen(false)}
+            >
+              <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Dev Tools */}
+        <nav className="pb-2 border-b border-[var(--border)]" aria-label="Dev navigation">
+          <p className="px-5 mb-2 text-[10px] font-semibold text-amber-500/60 tracking-widest uppercase">
+            Dev Tools
+          </p>
+          {devItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
               id={item.id}
               className={({ isActive }) =>
                 `sidebar-nav-link ${isActive ? 'active' : ''}`

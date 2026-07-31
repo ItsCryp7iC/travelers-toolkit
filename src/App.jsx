@@ -7,6 +7,7 @@ import Inventory from './pages/Inventory'
 import Characters from './pages/Characters'
 import Weapons from './pages/Weapons'
 import PlaceholderPage from './pages/PlaceholderPage'
+import DevBuilder from './pages/DevBuilder'
 
 export default function App() {
   return (
@@ -24,9 +25,7 @@ export default function App() {
           />
           <Route path="planner"   element={<Planner />} />
           <Route path="inventory" element={<Inventory />} />
-          <Route
-            path="settings"
-            element={
+          <Route path="settings" element={
               <PlaceholderPage
                 title="Settings"
                 icon="⚙️"
@@ -34,6 +33,7 @@ export default function App() {
               />
             }
           />
+          <Route path="builder" element={<DevBuilder />} />
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

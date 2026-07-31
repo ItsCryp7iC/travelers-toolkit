@@ -22,6 +22,7 @@ export const toPascalCase = (str) => {
   
   // 2. Replace special characters (like underscores, hyphens, parentheses, apostrophes) with spaces
   return spacedStr
+    .replace(/['’]/g, '') // CRITICAL: Strip apostrophes entirely (e.g., Hero's -> Heros)
     .replace(/[^a-zA-Z0-9 ]/g, ' ')
     .split(/\s+/) // Split by any whitespace
     .filter(word => word.length > 0)
@@ -55,8 +56,8 @@ const CATEGORY_MAP = {
   'Weapon Ascension Material': 'weapon_ascension_materials',
   'Elite Enhancement Material': 'elite_enhancement_materials',
   'Experience': 'experience',
-  'Currency': 'currency',
-  'Ores': 'ores',
+  'Currency': 'others',
+  'Ores': 'experience',
 }
 
 /**
