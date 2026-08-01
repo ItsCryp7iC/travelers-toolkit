@@ -1,11 +1,16 @@
 import React, { useState, useMemo } from 'react'
 import useStore from '../store/useStore'
-import { formatMaterialName } from '../utils/calculator'
-import {
-  GEM_BASES, GEM_TIERS, GEM_TIER_LABELS,
-  WORLD_BOSS_MATS, LOCAL_SPECIALTY_MATS,
-  MOB_BASES, getGemTierKeys, getMobTierKeys,
-} from '../utils/aggregator'
+import { 
+  formatMaterialName, 
+  buildGemName, 
+  buildMobNames, 
+  buildBookKey, 
+  buildWeaponAscMatKey, 
+  buildWeaponEliteKey, 
+  WEAPON_ORE_KEY 
+} from '../utils/calculator'
+import charactersData from '../data/characters.json'
+import weaponsData from '../data/weapons.json'
 
 // ─── Element / Gemstone Color Map ──────────────────────────────────────────
 const GEM_COLORS = {
@@ -91,24 +96,6 @@ function MaterialCard({ matKey, label, accent, sublabel, small }) {
   )
 }
 
-// ─── Section Header ────────────────────────────────────────────────────────
-function SectionHeader({ icon, title, count, accent }) {
-  return (
-    <div className="flex items-center gap-3 mb-4">
-      <div
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"
-        style={{ background: `${accent || '#C8A96E'}18` }}
-      >
-        {icon}
-      </div>
-      <div>
-        <h2 className="font-cinzel font-bold text-sm text-[var(--text)]">{title}</h2>
-        <p className="text-[9px] text-[var(--muted)] tracking-wider">{count} items</p>
-      </div>
-    </div>
-  )
-}
-
 // ─── Quick Stats Row ──────────────────────────────────────────────────────
 function QuickStats() {
   const inventory = useStore((s) => s.inventory)
@@ -138,155 +125,145 @@ function QuickStats() {
   )
 }
 
-// ─── Gemstone Section ────────────────────────────────────────────────────
-function GemstoneSection() {
-  return (
-    <section className="mb-10">
-      <SectionHeader icon="💎" title="Character Ascension Gems" count={GEM_BASES.length * 4} accent="#C8A96E" />
-      <div className="space-y-5">
-        {GEM_BASES.map((base) => {
-          const cfg = GEM_COLORS[base] || { color: '#C8A96E', label: '', emoji: '💎' }
-          return (
-            <div key={base}>
-              <div className="flex items-center gap-2 mb-2">
-                <span>{cfg.emoji}</span>
-                <span
-                  className="text-xs font-semibold font-cinzel"
-                  style={{ color: cfg.color }}
-                >
-                  {formatMaterialName(base)}
-                </span>
-                <span className="text-[9px] text-[var(--muted)] border border-[var(--border)] rounded px-1">
-                  {cfg.label}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {GEM_TIERS.map((tier, i) => {
-                  const key   = tier ? `${base}${tier}` : base
-                  const label = tier || formatMaterialName(base)
-                  return (
-                    <MaterialCard
-                      key={key}
-                      matKey={key}
-                      label={label || 'Gemstone'}
-                      sublabel={GEM_TIER_LABELS[i]}
-                      accent={cfg.color}
-                    />
-                  )
-                })}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
-
-// ─── Boss Drop Section ───────────────────────────────────────────────────
-function BossSection() {
-  return (
-    <section className="mb-10">
-      <SectionHeader icon="🐉" title="Normal Boss Materials" count={WORLD_BOSS_MATS.length} accent="#F97316" />
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-        {WORLD_BOSS_MATS.map((mat) => (
-          <MaterialCard
-            key={mat}
-            matKey={mat}
-            label={formatMaterialName(mat)}
-            accent="#EF6D22"
-            small
-          />
-        ))}
-      </div>
-    </section>
-  )
-}
-
-// ─── Local Specialty Section ─────────────────────────────────────────────
-function LocalSection() {
-  return (
-    <section className="mb-10">
-      <SectionHeader icon="🌸" title="Local Specialties" count={LOCAL_SPECIALTY_MATS.length} accent="#4ADE80" />
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-        {LOCAL_SPECIALTY_MATS.map((mat) => (
-          <MaterialCard
-            key={mat}
-            matKey={mat}
-            label={formatMaterialName(mat)}
-            accent="#22C55E"
-            small
-          />
-        ))}
-      </div>
-    </section>
-  )
-}
-
-// ─── Mob Material Section ────────────────────────────────────────────────
-function MobSection() {
-  return (
-    <section className="mb-10">
-      <SectionHeader icon="⚔️" title="Enhancement Mats" count={MOB_BASES.length * 3} accent="#A855F7" />
-      <div className="space-y-4">
-        {MOB_BASES.map((base) => {
-          const keys = getMobTierKeys(base)
-          const labels = [
-            formatMaterialName(base),
-            `${formatMaterialName(base)} (Uncommon)`,
-            `${formatMaterialName(base)} (Rare)`,
-          ]
-          return (
-            <div key={base}>
-              <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
-                ⚔️ {formatMaterialName(base)}
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {keys.map((k, i) => (
-                  <MaterialCard
-                    key={k}
-                    matKey={k}
-                    label={labels[i]}
-                    sublabel={['Common', 'Uncommon', 'Rare'][i]}
-                    accent={['#9CA3AF', '#A855F7', '#6366F1'][i]}
-                    small
-                  />
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
-
-// ─── Currency Section ────────────────────────────────────────────────────
-function CurrencySection() {
-  return (
-    <section className="mb-10">
-      <SectionHeader icon="🪙" title="Currency & EXP" count={2} accent="#FAB632" />
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <MaterialCard matKey="Mora"          label="Mora"          accent="#FAB632" sublabel="Currency" />
-        <MaterialCard matKey="HeroWit"       label="Hero's Wit"    accent="#60A5FA" sublabel="EXP Book ★★★★" />
-        <MaterialCard matKey="AdventurerExp" label="Adventurer Exp" accent="#4ADE80" sublabel="EXP Book ★★" />
-        <MaterialCard matKey="WandererAdvice" label="Wanderer's Advice" accent="#9CA3AF" sublabel="EXP Book ★" />
-      </div>
-    </section>
-  )
-}
-
 // ─── Main Inventory Page ─────────────────────────────────────────────────
-export default function Inventory() {
-  const [tab, setTab] = useState('gemstones')
 
-  const tabs = [
-    { id: 'gemstones', label: 'Character Ascension Gems',  icon: '💎' },
-    { id: 'boss',      label: 'Boss Drops', icon: '🐉' },
-    { id: 'local',     label: 'Local Spec', icon: '🌸' },
-    { id: 'mob',       label: 'Enhancement Mats',  icon: '⚔️' },
-    { id: 'currency',  label: 'Currency',   icon: '🪙' },
-  ]
+const PRIMARY_TABS = [
+  { id: 'Currency & Experience', label: 'Currency & Exp', icon: '🪙' },
+  { id: 'Boss Drops', label: 'Boss Drops', icon: '🐉' },
+  { id: 'Talent Materials', label: 'Talent Mats', icon: '📚' },
+  { id: 'Enemy Drops', label: 'Enemy Drops', icon: '⚔️' },
+  { id: 'Weapon Ascension Material', label: 'Weapon Asc', icon: '🗡️' },
+  { id: 'Local Specialty', label: 'Local Spec', icon: '🌸' },
+  { id: 'Character Ascension Gem', label: 'Character Gems', icon: '💎' },
+]
+
+const SUB_TABS = {
+  'Boss Drops': ['Normal Boss', 'Weekly Boss'],
+  'Enemy Drops': ['Common Enhancement Material', 'Elite Enhancement Material'],
+}
+
+export default function Inventory() {
+  const [activeTab, setActiveTab] = useState('Currency & Experience')
+  const [activeSubTab, setActiveSubTab] = useState('')
+
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId)
+    if (SUB_TABS[tabId]) {
+      setActiveSubTab(SUB_TABS[tabId][0])
+    } else {
+      setActiveSubTab('')
+    }
+  }
+
+  // Generate an exhaustive categorized list of all materials in the game
+  const allMaterials = useMemo(() => {
+    const mats = new Map()
+
+    const addMat = (key, cat, subCat, label, sublabel, accent) => {
+      if (!key || key === 'nan' || mats.has(key)) return
+      mats.set(key, { matKey: key, category: cat, subCategory: subCat, label, sublabel, accent })
+    }
+
+    // Currency & Experience
+    addMat('Mora', 'Currency', null, 'Mora', 'Currency', '#FAB632')
+    addMat('HeroWit', 'Experience', null, "Hero's Wit", 'EXP Book ★★★★', '#60A5FA')
+    addMat('AdventurerExp', 'Experience', null, 'Adventurer Exp', 'EXP Book ★★', '#4ADE80')
+    addMat('WandererAdvice', 'Experience', null, "Wanderer's Advice", 'EXP Book ★', '#9CA3AF')
+    addMat('Crown', 'Experience', null, 'Crown of Insight', 'Talent Level-Up', '#A855F7')
+    addMat(WEAPON_ORE_KEY, 'Experience', null, 'Mystic Enhancement Ore', 'Weapon EXP ★★★', '#60A5FA')
+
+    // Parse Characters
+    charactersData.forEach(char => {
+      const m = char.materials
+      if (!m) return
+
+      // Gems
+      if (m.gemstone && m.gemstone !== 'nan') {
+        const color = GEM_COLORS[m.gemstone]?.color || '#C8A96E'
+        for (let i = 0; i < 4; i++) {
+          const key = buildGemName(m.gemstone, i)
+          addMat(key, 'Character Ascension Gem', null, formatMaterialName(key), ['Sliver ★', 'Fragment ★★', 'Chunk ★★★', 'Gemstone ★★★★'][i], color)
+        }
+      }
+
+      // Local Specialty
+      if (m.local_specialty && m.local_specialty !== 'nan') {
+        addMat(m.local_specialty, 'Local Specialty', null, formatMaterialName(m.local_specialty), 'Local Specialty', '#22C55E')
+      }
+
+      // World Boss
+      if (m.world_boss && m.world_boss !== 'nan') {
+        addMat(m.world_boss, 'Boss Drops', 'Normal Boss', formatMaterialName(m.world_boss), 'Normal Boss', '#EF6D22')
+      }
+
+      // Weekly Boss
+      if (m.weekly_boss && m.weekly_boss !== 'nan') {
+        addMat(m.weekly_boss, 'Boss Drops', 'Weekly Boss', formatMaterialName(m.weekly_boss), 'Weekly Boss', '#A855F7')
+      }
+
+      // Talent Books
+      if (m.talent_book && m.talent_book !== 'nan') {
+        for (let i = 2; i <= 4; i++) {
+          const key = buildBookKey(m.talent_book, i)
+          addMat(key, 'Talent Material', null, formatMaterialName(key), ['Teachings', 'Guide', 'Philosophies'][i - 2], '#60A5FA')
+        }
+      }
+
+      // Mob Materials (Common)
+      if (m.mob_material && m.mob_material !== 'nan') {
+        const mobNames = buildMobNames(m.mob_material)
+        mobNames.forEach((key, i) => {
+          addMat(key, 'Enemy Drops', 'Common Enhancement Material', formatMaterialName(key), ['Common', 'Uncommon', 'Rare'][i], ['#9CA3AF', '#A855F7', '#6366F1'][i])
+        })
+      }
+    })
+
+    // Parse Weapons
+    weaponsData.forEach(w => {
+      const m = w.materials
+      if (!m) return
+
+      // Weapon Ascension
+      if (m.ascension_mat && m.ascension_mat !== 'nan' && m.ascension_mat !== '') {
+        for (let i = 0; i < 4; i++) {
+          const key = buildWeaponAscMatKey(m.ascension_mat, i)
+          addMat(key, 'Weapon Ascension Material', null, formatMaterialName(key), ['Debris ★', 'Fragment ★★', 'Chunk ★★★', 'Core ★★★★'][i], '#F59E0B')
+        }
+      }
+
+      // Elite Mat
+      if (m.elite_mat && m.elite_mat !== 'nan' && m.elite_mat !== '') {
+        for (let i = 0; i < 3; i++) {
+          const key = buildWeaponEliteKey(m.elite_mat, i)
+          addMat(key, 'Enemy Drops', 'Elite Enhancement Material', formatMaterialName(key), ['Common', 'Uncommon', 'Rare'][i], ['#9CA3AF', '#A855F7', '#6366F1'][i])
+        }
+      }
+
+      // Mob Mat (Common)
+      if (m.mob_mat && m.mob_mat !== 'nan' && m.mob_mat !== '') {
+        const mobNames = buildMobNames(m.mob_mat)
+        mobNames.forEach((key, i) => {
+          addMat(key, 'Enemy Drops', 'Common Enhancement Material', formatMaterialName(key), ['Common', 'Uncommon', 'Rare'][i], ['#9CA3AF', '#A855F7', '#6366F1'][i])
+        })
+      }
+    })
+
+    // Sort alphabetically by label
+    return Array.from(mats.values()).sort((a, b) => a.label.localeCompare(b.label))
+  }, [])
+
+  // Filter items based on active tabs
+  const filteredMats = useMemo(() => {
+    return allMaterials.filter(mat => {
+      if (activeTab === 'Currency & Experience') {
+        return mat.category === 'Currency' || mat.category === 'Experience'
+      }
+      if (activeTab === 'Boss Drops' || activeTab === 'Enemy Drops') {
+        return mat.subCategory === activeSubTab
+      }
+      return mat.category === activeTab
+    })
+  }, [allMaterials, activeTab, activeSubTab])
 
   return (
     <div className="animate-fade-in">
@@ -306,16 +283,16 @@ export default function Inventory() {
       {/* ── Quick Stats ── */}
       <QuickStats />
 
-      {/* ── Category Tabs ── */}
-      <div className="flex flex-wrap gap-2 mb-6 p-1 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
-        {tabs.map(({ id, label, icon }) => (
+      {/* ── Primary Tabs ── */}
+      <div className="flex flex-wrap gap-2 mb-4 p-1 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+        {PRIMARY_TABS.map(({ id, label, icon }) => (
           <button
             key={id}
-            id={`inv-tab-${id}`}
-            onClick={() => setTab(id)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex-1 justify-center"
+            id={`inv-tab-${id.replace(/\s+/g, '-')}`}
+            onClick={() => handleTabClick(id)}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex-1 justify-center whitespace-nowrap"
             style={
-              tab === id
+              activeTab === id
                 ? {
                     background: 'rgba(200,169,110,0.15)',
                     color: 'var(--gold)',
@@ -333,13 +310,50 @@ export default function Inventory() {
         ))}
       </div>
 
-      {/* ── Content Panel ── */}
-      <div className="animate-fade-in">
-        {tab === 'gemstones' && <GemstoneSection />}
-        {tab === 'boss'      && <BossSection />}
-        {tab === 'local'     && <LocalSection />}
-        {tab === 'mob'       && <MobSection />}
-        {tab === 'currency'  && <CurrencySection />}
+      {/* ── Secondary Tabs ── */}
+      {SUB_TABS[activeTab] && (
+        <div className="flex flex-wrap gap-2 mb-6 justify-center">
+          {SUB_TABS[activeTab].map((sub) => (
+            <button
+              key={sub}
+              onClick={() => setActiveSubTab(sub)}
+              className="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200"
+              style={
+                activeSubTab === sub
+                  ? {
+                      background: 'var(--gold)',
+                      color: '#000',
+                    }
+                  : {
+                      background: 'var(--surface)',
+                      color: 'var(--muted)',
+                      border: '1px solid var(--border)',
+                    }
+              }
+            >
+              {sub}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ── Content Grid ── */}
+      <div className="animate-fade-in grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+        {filteredMats.map((mat) => (
+          <MaterialCard
+            key={mat.matKey}
+            matKey={mat.matKey}
+            label={mat.label}
+            sublabel={mat.sublabel}
+            accent={mat.accent}
+            small={activeTab !== 'Currency & Experience'}
+          />
+        ))}
+        {filteredMats.length === 0 && (
+          <div className="col-span-full py-12 text-center text-[var(--muted)] text-sm">
+            No materials found for this category.
+          </div>
+        )}
       </div>
     </div>
   )
