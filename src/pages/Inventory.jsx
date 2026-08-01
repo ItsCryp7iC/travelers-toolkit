@@ -1,16 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import useStore from '../store/useStore'
-import { 
-  formatMaterialName, 
-  buildGemName, 
-  buildMobNames, 
-  buildBookKey, 
-  buildWeaponAscMatKey, 
-  buildWeaponEliteKey, 
-  WEAPON_ORE_KEY 
-} from '../utils/calculator'
-import charactersData from '../data/characters.json'
-import weaponsData from '../data/weapons.json'
+import { getPrimaryInventoryList } from '../utils/dataManager'
 
 // ─── Element / Gemstone Color Map ──────────────────────────────────────────
 const GEM_COLORS = {
@@ -156,101 +146,7 @@ export default function Inventory() {
   }
 
   // Generate an exhaustive categorized list of all materials in the game
-  const allMaterials = useMemo(() => {
-    const mats = new Map()
-
-    const addMat = (key, cat, subCat, label, sublabel, accent) => {
-      if (!key || key === 'nan' || mats.has(key)) return
-      mats.set(key, { matKey: key, category: cat, subCategory: subCat, label, sublabel, accent })
-    }
-
-    // Currency & Experience
-    addMat('Mora', 'Currency', null, 'Mora', 'Currency', '#FAB632')
-    addMat('HeroWit', 'Experience', null, "Hero's Wit", 'EXP Book ★★★★', '#60A5FA')
-    addMat('AdventurerExp', 'Experience', null, 'Adventurer Exp', 'EXP Book ★★', '#4ADE80')
-    addMat('WandererAdvice', 'Experience', null, "Wanderer's Advice", 'EXP Book ★', '#9CA3AF')
-    addMat('Crown', 'Experience', null, 'Crown of Insight', 'Talent Level-Up', '#A855F7')
-    addMat(WEAPON_ORE_KEY, 'Experience', null, 'Mystic Enhancement Ore', 'Weapon EXP ★★★', '#60A5FA')
-
-    // Parse Characters
-    charactersData.forEach(char => {
-      const m = char.materials
-      if (!m) return
-
-      // Gems
-      if (m.gemstone && m.gemstone !== 'nan') {
-        const color = GEM_COLORS[m.gemstone]?.color || '#C8A96E'
-        for (let i = 0; i < 4; i++) {
-          const key = buildGemName(m.gemstone, i)
-          addMat(key, 'Character Ascension Gem', null, formatMaterialName(key), ['Sliver ★', 'Fragment ★★', 'Chunk ★★★', 'Gemstone ★★★★'][i], color)
-        }
-      }
-
-      // Local Specialty
-      if (m.local_specialty && m.local_specialty !== 'nan') {
-        addMat(m.local_specialty, 'Local Specialty', null, formatMaterialName(m.local_specialty), 'Local Specialty', '#22C55E')
-      }
-
-      // World Boss
-      if (m.world_boss && m.world_boss !== 'nan') {
-        addMat(m.world_boss, 'Boss Drops', 'Normal Boss', formatMaterialName(m.world_boss), 'Normal Boss', '#EF6D22')
-      }
-
-      // Weekly Boss
-      if (m.weekly_boss && m.weekly_boss !== 'nan') {
-        addMat(m.weekly_boss, 'Boss Drops', 'Weekly Boss', formatMaterialName(m.weekly_boss), 'Weekly Boss', '#A855F7')
-      }
-
-      // Talent Books
-      if (m.talent_book && m.talent_book !== 'nan') {
-        for (let i = 2; i <= 4; i++) {
-          const key = buildBookKey(m.talent_book, i)
-          addMat(key, 'Talent Material', null, formatMaterialName(key), ['Teachings', 'Guide', 'Philosophies'][i - 2], '#60A5FA')
-        }
-      }
-
-      // Mob Materials (Common)
-      if (m.mob_material && m.mob_material !== 'nan') {
-        const mobNames = buildMobNames(m.mob_material)
-        mobNames.forEach((key, i) => {
-          addMat(key, 'Enemy Drops', 'Common Enhancement Material', formatMaterialName(key), ['Common', 'Uncommon', 'Rare'][i], ['#9CA3AF', '#A855F7', '#6366F1'][i])
-        })
-      }
-    })
-
-    // Parse Weapons
-    weaponsData.forEach(w => {
-      const m = w.materials
-      if (!m) return
-
-      // Weapon Ascension
-      if (m.ascension_mat && m.ascension_mat !== 'nan' && m.ascension_mat !== '') {
-        for (let i = 0; i < 4; i++) {
-          const key = buildWeaponAscMatKey(m.ascension_mat, i)
-          addMat(key, 'Weapon Ascension Material', null, formatMaterialName(key), ['Debris ★', 'Fragment ★★', 'Chunk ★★★', 'Core ★★★★'][i], '#F59E0B')
-        }
-      }
-
-      // Elite Mat
-      if (m.elite_mat && m.elite_mat !== 'nan' && m.elite_mat !== '') {
-        for (let i = 0; i < 3; i++) {
-          const key = buildWeaponEliteKey(m.elite_mat, i)
-          addMat(key, 'Enemy Drops', 'Elite Enhancement Material', formatMaterialName(key), ['Common', 'Uncommon', 'Rare'][i], ['#9CA3AF', '#A855F7', '#6366F1'][i])
-        }
-      }
-
-      // Mob Mat (Common)
-      if (m.mob_mat && m.mob_mat !== 'nan' && m.mob_mat !== '') {
-        const mobNames = buildMobNames(m.mob_mat)
-        mobNames.forEach((key, i) => {
-          addMat(key, 'Enemy Drops', 'Common Enhancement Material', formatMaterialName(key), ['Common', 'Uncommon', 'Rare'][i], ['#9CA3AF', '#A855F7', '#6366F1'][i])
-        })
-      }
-    })
-
-    // Sort alphabetically by label
-    return Array.from(mats.values()).sort((a, b) => a.label.localeCompare(b.label))
-  }, [])
+  const allMaterials = useMemo(() => getPrimaryInventoryList(), [])
 
   // Filter items based on active tabs
   const filteredMats = useMemo(() => {

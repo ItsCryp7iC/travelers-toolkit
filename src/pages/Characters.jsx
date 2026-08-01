@@ -6,14 +6,15 @@ import charactersData from '../data/characters.json'
 import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
 import useStore from '../store/useStore'
+import { resolveCharacterMaterials } from '../utils/dataManager'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
-import { calculateProgressionCost, calculateAllTalentsCost, formatNumber, buildMobNames, buildBookKey } from '../utils/calculator'
-import GenshinImage from '../components/GenshinImage'
 import { getCharacterAvatar, getElementIcon, getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
+import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, formatNumber, buildMobNames, buildBookKey } from '../utils/calculator'
+import GenshinImage from '../components/GenshinImage'
 import MatQuantity from '../components/MatQuantity'
 
-const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
-const ALL_WEAPONS  = ['All', ...Object.keys(WEAPON_TYPES)]
+const ALL_ELEMENTS = ['All', 'Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo']
+const ALL_WEAPONS  = ['All', 'Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
 const ALL_RARITIES = ['All', '5★', '4★']
 
 export default function Characters() {
@@ -46,16 +47,16 @@ export default function Characters() {
         const toLevel = entry.targetLevel ?? 90
         const toAsc = entry.targetAscension ?? 6
         
-        const ascCosts = calculateProgressionCost(data, fromLevel, fromAsc, Math.max(toLevel, fromLevel), Math.max(toAsc, fromAsc), costsData)
+        const ascCosts = calculateProgressionCost(data, fromLevel, toLevel)
         
         // Talent Math
         const talents = entry.talents || { normal: 1, skill: 1, burst: 1 }
         const targetTalents = entry.targetTalents || { normal: 1, skill: 1, burst: 1 }
         
         const talentCosts = calculateAllTalentsCost(data, {
-          normalFrom: talents.normal, normalTo: targetTalents.normal,
-          skillFrom: talents.skill,   skillTo: targetTalents.skill,
-          burstFrom: talents.burst,   burstTo: targetTalents.burst,
+          auto: { current: talents.normal, target: targetTalents.normal },
+          skill: { current: talents.skill, target: targetTalents.skill },
+          burst: { current: talents.burst, target: targetTalents.burst },
         })
 
         // Weapon
@@ -265,22 +266,22 @@ export default function Characters() {
                   </thead>
                   <tbody>
                     {filtered.map((char, idx) => {
-                      const elCfg = ELEMENTS[char.element] || ELEMENTS.Unknown
+                      try {
+                        const elCfg = ELEMENTS[char.element] || ELEMENTS.Unknown
                       const wpCfg = WEAPON_TYPES[char.weapon_type]
                       const entry = char.entry
                       const asc = char.ascCosts
                       const tal = char.talentCosts
                       const eqWeapon = char.eqWeapon
 
-                      // Aggregate Stones (Sum of all values in gemstones object)
-                      const totalStones = Object.values(asc.gemstones || {}).reduce((a, b) => a + b, 0)
-                      
-                      // Derive specific tier names to pluck from the cost objects
-                      const mobNames = buildMobNames(char.materials?.mob_material || 'Common')
-                      const bookBase = char.materials?.talent_book
+                      // Resolve full material objects
+                      const resolvedMats = resolveCharacterMaterials(char)
+
+                      // Aggregate Stones
+                      const totalStones = (asc.gem_silver || 0) + (asc.gem_fragment || 0) + (asc.gem_chunk || 0) + (asc.gem_gemstone || 0)
                       
                       // Talent Mob Mats (All Tiers combined for simplicity)
-                      const talMobTotal = Object.values(tal.mob || {}).reduce((a, b) => a + b, 0)
+                      const talMobTotal = (tal['3_star_enemy_material'] || 0) + (tal['2_star_enemy_material'] || 0) + (tal['1_star_enemy_material'] || 0)
 
                       return (
                         <tr
@@ -346,23 +347,24 @@ export default function Characters() {
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)] border-r border-[var(--border)]">{entry?.targetTalents?.burst ?? 1}</td>
 
                           {/* Ascension Math */}
-                          <td className="px-3 py-2"><MatQuantity val={asc.heroWits} icon="📘" color="text-[#60A5FA]" nameKey="Hero's Wit" category="Experience" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={asc.worldBoss ? Object.values(asc.worldBoss)[0] : 0} icon="👹" nameKey={asc.worldBoss ? Object.keys(asc.worldBoss)[0] : ''} category="Normal Boss Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={asc.localSpecialty ? Object.values(asc.localSpecialty)[0] : 0} icon="🌸" nameKey={asc.localSpecialty ? Object.keys(asc.localSpecialty)[0] : ''} category="Local Specialty" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={totalStones} icon="💎" nameKey={char.materials?.gemstone ? `${char.materials.gemstone}Gemstone` : ''} category="Character Ascension Gem" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={asc.mob?.[mobNames[2]] || 0} icon="💧" color="text-[#A78BFA]" nameKey={mobNames[2]} category="Common Enhancement Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={asc.mob?.[mobNames[1]] || 0} icon="💧" color="text-[#60A5FA]" nameKey={mobNames[1]} category="Common Enhancement Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={asc.mob?.[mobNames[0]] || 0} icon="💧" color="text-[#9CA3AF]" nameKey={mobNames[0]} category="Common Enhancement Material" /></td>
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={asc.totalMora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={asc?.heros_wit} icon="📘" color="text-[#60A5FA]" nameKey="Hero's Wit" category="Experience" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={asc?.boss_material} icon="👹" nameKey={resolvedMats?.worldBoss?.name || ''} category="Normal Boss Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={asc?.local_specialty} icon="🌸" nameKey={resolvedMats?.localSpecialty?.name || ''} category="Local Specialty" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={totalStones} icon="💎" nameKey={resolvedMats?.gem?.tiers?.['4_star']?.name || ''} category="Character Ascension Gem" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={asc?.['3_star_enemy_material']} icon="💧" color="text-[#A78BFA]" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={asc?.['2_star_enemy_material']} icon="💧" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={asc?.['1_star_enemy_material']} icon="💧" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={asc?.mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
 
                           {/* Talent Math */}
-                          <td className="px-3 py-2"><MatQuantity val={tal.books?.[buildBookKey(bookBase, 4)] || 0} icon="📜" color="text-[#A78BFA]" nameKey={buildBookKey(bookBase, 4)} category="Talent Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={tal.books?.[buildBookKey(bookBase, 3)] || 0} icon="📜" color="text-[#60A5FA]" nameKey={buildBookKey(bookBase, 3)} category="Talent Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={tal.books?.[buildBookKey(bookBase, 2)] || 0} icon="📜" color="text-[#9CA3AF]" nameKey={buildBookKey(bookBase, 2)} category="Talent Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={tal.weeklyBoss ? Object.values(tal.weeklyBoss)[0] : 0} icon="🐉" nameKey={tal.weeklyBoss ? Object.keys(tal.weeklyBoss)[0] : ''} category="Weekly Boss Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={tal.crown} icon="👑" color="text-[#FBBF24]" nameKey="Crown of Insight" category="Experience" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={talMobTotal} icon="💧" nameKey={mobNames[2]} category="Common Enhancement Material" /></td>
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={tal.talentMora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.['4_star_talent_material']} icon="📜" color="text-[#A78BFA]" nameKey={resolvedMats?.talent?.tiers?.['4_star']?.name} category="Talent Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.['3_star_talent_material']} icon="📜" color="text-[#60A5FA]" nameKey={resolvedMats?.talent?.tiers?.['3_star']?.name} category="Talent Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.['2_star_talent_material']} icon="📜" color="text-[#9CA3AF]" nameKey={resolvedMats?.talent?.tiers?.['2_star']?.name} category="Talent Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.weekly_boss_material} icon="🐉" nameKey={resolvedMats?.weeklyBoss?.name || ''} category="Weekly Boss Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.crown} icon="👑" color="text-[#FBBF24]" nameKey="Crown of Insight" category="Experience" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={talMobTotal} icon="💧" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={tal?.mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
+
                           
                           {/* Actions */}
                           <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>
@@ -375,7 +377,11 @@ export default function Characters() {
                           </td>
                         </tr>
                       )
-                    })}
+                    } catch (e) {
+                      console.error('Failed to render character row:', char.id, e)
+                      return null
+                    }
+                  })}
                   </tbody>
                 </table>
               </div>

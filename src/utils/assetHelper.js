@@ -65,6 +65,11 @@ const CATEGORY_MAP = {
  * If category is not provided, defaults to 'misc'.
  */
 export function getMaterialIcon(materialName, category) {
-  const folder = CATEGORY_MAP[category] || 'misc'
-  return `${BASE_URL}/${folder}/${toPascalCase(materialName)}.png`
+  if (!materialName) return ''
+  const fileName = materialName.replace(/[^a-zA-Z0-9]/g, '');
+  let folder = CATEGORY_MAP[category] || 'misc'
+  if (materialName === 'Crown of Insight' || fileName === 'CrownofInsight') {
+    folder = 'others'
+  }
+  return `${BASE_URL}/${folder}/${fileName}.png`
 }

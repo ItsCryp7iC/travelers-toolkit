@@ -1,2292 +1,2521 @@
 [
   {
-    "name": "DullBlade",
-    "rarity": 1,
+    "id": "dullblade",
+    "name": "Dull Blade",
+    "rarity": "★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "WasterGreatsword",
-    "rarity": 1,
+    "id": "wastergreatsword",
+    "name": "Waster Greatsword",
+    "rarity": "★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "BeginnersProtector",
-    "rarity": 1,
+    "id": "beginnersprotector",
+    "name": "Beginner's Protector",
+    "rarity": "★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "ApprenticesNotes",
-    "rarity": 1,
+    "id": "apprenticesnotes",
+    "name": "Apprentice's Notes",
+    "rarity": "★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "HuntersBow",
-    "rarity": 1,
+    "id": "huntersbow",
+    "name": "Hunter's Bow",
+    "rarity": "★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "SilverSword",
-    "rarity": 2,
+    "id": "silversword",
+    "name": "Silver Sword",
+    "rarity": "★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "OldMercsPal",
-    "rarity": 2,
+    "id": "oldmercspal",
+    "name": "Old Merc's Pal",
+    "rarity": "★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "IronPoint",
-    "rarity": 2,
+    "id": "ironpoint",
+    "name": "Iron Point",
+    "rarity": "★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "PocketGrimoire",
-    "rarity": 2,
+    "id": "pocketgrimoire",
+    "name": "Pocket Grimoire",
+    "rarity": "★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "SeasonedHuntersBow",
-    "rarity": 2,
+    "id": "seasonedhuntersbow",
+    "name": "Seasoned Hunters Bow",
+    "rarity": "★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "CoolSteel",
-    "rarity": 3,
+    "id": "coolsteel",
+    "name": "Cool Steel",
+    "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "HarbingerofDawn",
-    "rarity": 3,
+    "id": "harbingerofdawn",
+    "name": "Harbingerof Dawn",
+    "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "TravelersHandySword",
-    "rarity": 3,
+    "id": "travelershandysword",
+    "name": "Traveler's Handy Sword",
+    "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "DarkIronSword",
-    "rarity": 3,
+    "id": "darkironsword",
+    "name": "Dark Iron Sword",
+    "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "FilletBlade",
-    "rarity": 3,
+    "id": "filletblade",
+    "name": "Fillet Blade",
+    "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "SkyriderSword",
-    "rarity": 3,
+    "id": "skyridersword",
+    "name": "Skyrider Sword",
+    "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "FerrousShadow",
-    "rarity": 3,
+    "id": "ferrousshadow",
+    "name": "Ferrous Shadow",
+    "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "BloodtaintedGreatsword",
-    "rarity": 3,
+    "id": "bloodtaintedgreatsword",
+    "name": "Bloodtainted Greatsword",
+    "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "WhiteIronGreatsword",
-    "rarity": 3,
+    "id": "whiteirongreatsword",
+    "name": "White Iron Greatsword",
+    "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "DebateClub",
-    "rarity": 3,
+    "id": "debateclub",
+    "name": "Debate Club",
+    "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "SkyriderGreatsword",
-    "rarity": 3,
+    "id": "skyridergreatsword",
+    "name": "Skyrider Greatsword",
+    "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "WhiteTassel",
-    "rarity": 3,
+    "id": "whitetassel",
+    "name": "White Tassel",
+    "rarity": "★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
+    "id": "halberd",
     "name": "Halberd",
-    "rarity": 3,
+    "rarity": "★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "BlackTassel",
-    "rarity": 3,
+    "id": "blacktassel",
+    "name": "Black Tassel",
+    "rarity": "★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "MagicGuide",
-    "rarity": 3,
+    "id": "magicguide",
+    "name": "Magic Guide",
+    "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "ThrillingTalesofDragonSlayers",
-    "rarity": 3,
+    "id": "thrillingtalesofdragonslayers",
+    "name": "Thrilling Talesof Dragon Slayers",
+    "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "OtherworldlyStory",
-    "rarity": 3,
+    "id": "otherworldlystory",
+    "name": "Otherworldly Story",
+    "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "EmeraldOrb",
-    "rarity": 3,
-    "type": "Bow",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "TwinNephrite",
-    "rarity": 3,
+    "id": "emeraldorb",
+    "name": "Emerald Orb",
+    "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "RavenBow",
-    "rarity": 3,
+    "id": "twinnephrite",
+    "name": "Twin Nephrite",
+    "rarity": "★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "fatui"
+    }
+  },
+  {
+    "id": "ravenbow",
+    "name": "Raven Bow",
+    "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "SharpshootersOath",
-    "rarity": 3,
+    "id": "sharpshootersoath",
+    "name": "Sharpshooter's Oath",
+    "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "RecurveBow",
-    "rarity": 3,
+    "id": "recurvebow",
+    "name": "Recurve Bow",
+    "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
+    "id": "slingshot",
     "name": "Slingshot",
-    "rarity": 3,
+    "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
+    "id": "messenger",
     "name": "Messenger",
-    "rarity": 3,
+    "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "FavoniusSword",
-    "rarity": 4,
+    "id": "favoniussword",
+    "name": "Favonius Sword",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "TheFlute",
-    "rarity": 4,
+    "id": "theflute",
+    "name": "The Flute",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "SacrificialSword",
-    "rarity": 4,
+    "id": "sacrificialsword",
+    "name": "Sacrificial Sword",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "RoyalLongsword",
-    "rarity": 4,
+    "id": "royallongsword",
+    "name": "Royal Longsword",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "LionsRoar",
-    "rarity": 4,
+    "id": "lionsroar",
+    "name": "Lion's Roar",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "PrototypeRancour",
-    "rarity": 4,
+    "id": "prototyperancour",
+    "name": "Prototype Rancour",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "IronSting",
-    "rarity": 4,
+    "id": "ironsting",
+    "name": "Iron Sting",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "BlackcliffLongsword",
-    "rarity": 4,
+    "id": "blackclifflongsword",
+    "name": "Blackcliff Longsword",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "TheBlackSword",
-    "rarity": 4,
+    "id": "theblacksword",
+    "name": "The Black Sword",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "SwordofDescension",
-    "rarity": 4,
+    "id": "swordofdescension",
+    "name": "Swordof Descension",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "FesteringDesire",
-    "rarity": 4,
+    "id": "festeringdesire",
+    "name": "Festering Desire",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "TheAlleyFlash",
-    "rarity": 4,
+    "id": "thealleyflash",
+    "name": "The Alley Flash",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "AmenomaKageuchi",
-    "rarity": 4,
+    "id": "amenomakageuchi",
+    "name": "Amenoma Kageuchi",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "distantsea",
+      "enhancement_material_family_id": "ruinsentinel",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "CinnabarSpindle",
-    "rarity": 4,
+    "id": "cinnabarspindle",
+    "name": "Cinnabar Spindle",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "KagotsurubeIsshin",
-    "rarity": 4,
+    "id": "kagotsurubeisshin",
+    "name": "Kagotsurube Isshin",
+    "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "theblackserpents",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "SapwoodBlade",
-    "rarity": 4,
+    "id": "sapwoodblade",
+    "name": "Sapwood Blade",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "talismanoftheforestdew",
+      "enhancement_material_family_id": "ruindrake",
+      "enemy_material_family_id": "theeremites"
+    }
+  },
+  {
+    "id": "xiphosmoonlight",
+    "name": "Xiphos' Moonlight",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "talismanoftheforestdew",
+      "enhancement_material_family_id": "primalconstruct",
+      "enemy_material_family_id": "theeremites"
+    }
+  },
+  {
+    "id": "toukaboushigure",
+    "name": "Toukabou Shigure",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "primalconstruct",
+      "enemy_material_family_id": "nobushi"
+    }
+  },
+  {
+    "id": "wolffang",
+    "name": "Wolf Fang",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "hilichurl"
+    }
+  },
+  {
+    "id": "finaleofthedeep",
+    "name": "Finaleofthe Deep",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "puresacreddewdrop",
+      "enhancement_material_family_id": "taintedhydrophantasm",
+      "enemy_material_family_id": "nobushi"
+    }
+  },
+  {
+    "id": "fleuvecendreferryman",
+    "name": "Fleuve Cendre Ferryman",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "taintedhydrophantasm",
+      "enemy_material_family_id": "fontemeraberrant"
+    }
+  },
+  {
+    "id": "thedockhandsassistant",
+    "name": "The Dockhand's Assistant",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "puresacreddewdrop",
+      "enhancement_material_family_id": "fatuioperative",
+      "enemy_material_family_id": "fontemeraberrant"
+    }
+  },
+  {
+    "id": "swordofnarzissenkreuz",
+    "name": "Swordof Narzissenkreuz",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "fatuioperative",
+      "enemy_material_family_id": "fontemeraberrant"
+    }
+  },
+  {
+    "id": "fluteofezpitzal",
+    "name": "Fluteof Ezpitzal",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "praetoriangolem",
+      "enemy_material_family_id": "natlansaurian"
+    }
+  },
+  {
+    "id": "sturdybone",
+    "name": "Sturdy Bone",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "wayobmanifestation",
+      "enemy_material_family_id": "sauroformtribalwarriors"
+    }
+  },
+  {
+    "id": "moonweaversdawn",
+    "name": "Moonweavers Dawn",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "thefarnorthscions",
+      "enhancement_material_family_id": "radiantbeast",
+      "enemy_material_family_id": "landcruisers"
+    }
+  },
+  {
+    "id": "calamityofeshu",
+    "name": "Calamityof Eshu",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "tenebrousmimesis",
+      "enemy_material_family_id": "sauroformtribalwarriors"
+    }
+  },
+  {
+    "id": "serenityscall",
+    "name": "Serenity's Call",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "artfuldevices",
+      "enhancement_material_family_id": "frostnightscion",
+      "enemy_material_family_id": "fatuioprichniki"
+    }
+  },
+  {
+    "id": "favoniusgreatsword",
+    "name": "Favonius Greatsword",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "XiphosMoonlight",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "ToukabouShigure",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "WolfFang",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "FinaleoftheDeep",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "FleuveCendreFerryman",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "TheDockhandsAssistant",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "SwordofNarzissenkreuz",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "FluteofEzpitzal",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "SturdyBone",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "MoonweaversDawn",
-    "rarity": 4,
-    "type": "Unknown",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "CalamityofEshu",
-    "rarity": 4,
-    "type": "Unknown",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "SerenitysCall",
-    "rarity": 4,
-    "type": "Unknown",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "FavoniusGreatsword",
-    "rarity": 4,
+    "id": "thebell",
+    "name": "The Bell",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "TheBell",
-    "rarity": 4,
+    "id": "sacrificialgreatsword",
+    "name": "Sacrificial Greatsword",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "SacrificialGreatsword",
-    "rarity": 4,
+    "id": "royalgreatsword",
+    "name": "Royal Greatsword",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "RoyalGreatsword",
-    "rarity": 4,
-    "type": "Claymore",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
+    "id": "rainslasher",
     "name": "Rainslasher",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "PrototypeArchaic",
-    "rarity": 4,
+    "id": "prototypearchaic",
+    "name": "Prototype Archaic",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
+    "id": "whiteblind",
     "name": "Whiteblind",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "BlackcliffSlasher",
-    "rarity": 4,
+    "id": "blackcliffslasher",
+    "name": "Blackcliff Slasher",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "SerpentSpine",
-    "rarity": 4,
+    "id": "serpentspine",
+    "name": "Serpent Spine",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "SnowTombedStarsilver",
-    "rarity": 4,
+    "id": "snowtombedstarsilver",
+    "name": "Snow Tombed Starsilver",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "LithicBlade",
-    "rarity": 4,
+    "id": "lithicblade",
+    "name": "Lithic Blade",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "KatsuragikiriNagamasa",
-    "rarity": 4,
+    "id": "katsuragikirinagamasa",
+    "name": "Katsuragikiri Nagamasa",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "ruinsentinel",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "LuxuriousSeaLord",
-    "rarity": 4,
+    "id": "luxurioussealord",
+    "name": "Luxurious Sea Lord",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "slime"
     }
   },
   {
+    "id": "akuoumaru",
     "name": "Akuoumaru",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "distantsea",
+      "enhancement_material_family_id": "riftwolf",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "ForestRegalia",
-    "rarity": 4,
+    "id": "forestregalia",
+    "name": "Forest Regalia",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "talismanoftheforestdew",
+      "enhancement_material_family_id": "ruindrake",
+      "enemy_material_family_id": "theeremites"
     }
   },
   {
-    "name": "MakhairaAquamarine",
-    "rarity": 4,
+    "id": "makhairaaquamarine",
+    "name": "Makhaira Aquamarine",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "scorchingmight",
+      "enhancement_material_family_id": "ruindrake",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "MailedFlower",
-    "rarity": 4,
+    "id": "mailedflower",
+    "name": "Mailed Flower",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "consecratedbeast",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "TalkingStick",
-    "rarity": 4,
+    "id": "talkingstick",
+    "name": "Talking Stick",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "oasisgarden",
+      "enhancement_material_family_id": "consecratedbeast",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "TidalShadow",
-    "rarity": 4,
+    "id": "tidalshadow",
+    "name": "Tidal Shadow",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "breacherprimus",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "PortablePowerSaw",
-    "rarity": 4,
+    "id": "portablepowersaw",
+    "name": "Portable Power Saw",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "breacherprimus",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "UltimateOverlordsMegaMagicSword",
-    "rarity": 4,
-    "type": "Sword",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "EarthShaker",
-    "rarity": 4,
+    "id": "ultimateoverlordsmegamagicsword",
+    "name": "Ultimate Overlord's Mega Magic Sword",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "fatuioperative",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "FruitfulHook",
-    "rarity": 4,
+    "id": "earthshaker",
+    "name": "Earth Shaker",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "avataroflava",
+      "enemy_material_family_id": "sauroformtribalwarriors"
     }
   },
   {
-    "name": "FlameForgedInsight",
-    "rarity": 4,
+    "id": "fruitfulhook",
+    "name": "Fruitful Hook",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "MasterKey",
-    "rarity": 4,
+    "id": "flameforgedinsight",
+    "name": "Flame Forged Insight",
+    "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "furnaceshellmountainweasel",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
-    "name": "DragonsBane",
-    "rarity": 4,
+    "id": "masterkey",
+    "name": "Master Key",
+    "rarity": "★★★★",
+    "type": "Claymore",
+    "materials": {
+      "ascension_material_family_id": "thefarnorthscions",
+      "enhancement_material_family_id": "radiantbeast",
+      "enemy_material_family_id": "landcruisers"
+    }
+  },
+  {
+    "id": "dragonsbane",
+    "name": "Dragon's Bane",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "PrototypeStarglitter",
-    "rarity": 4,
+    "id": "prototypestarglitter",
+    "name": "Prototype Starglitter",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "CrescentPike",
-    "rarity": 4,
+    "id": "crescentpike",
+    "name": "Crescent Pike",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "BlackcliffPole",
-    "rarity": 4,
+    "id": "blackcliffpole",
+    "name": "Blackcliff Pole",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
+    "id": "deathmatch",
     "name": "Deathmatch",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "FavoniusLance",
-    "rarity": 4,
+    "id": "favoniuslance",
+    "name": "Favonius Lance",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "RoyalSpear",
-    "rarity": 4,
+    "id": "royalspear",
+    "name": "Royal Spear",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "DragonspineSpear",
-    "rarity": 4,
+    "id": "dragonspinespear",
+    "name": "Dragonspine Spear",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "LithicSpear",
-    "rarity": 4,
+    "id": "lithicspear",
+    "name": "Lithic Spear",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "KitainCrossSpear",
-    "rarity": 4,
+    "id": "kitaincrossspear",
+    "name": "Kitain Cross Spear",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "ruinsentinel",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "TheCatch",
-    "rarity": 4,
+    "id": "thecatch",
+    "name": "The Catch",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "ruinsentinel",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "WavebreakersFin",
-    "rarity": 4,
+    "id": "wavebreakersfin",
+    "name": "Wavebreaker's Fin",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "riftwolf",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
+    "id": "moonpiercer",
     "name": "Moonpiercer",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "oasisgarden",
+      "enhancement_material_family_id": "ruindrake",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "MissiveWindspear",
-    "rarity": 4,
+    "id": "missivewindspear",
+    "name": "Missive Windspear",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "theblackserpents",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "RightfulReward",
-    "rarity": 4,
+    "id": "rightfulreward",
+    "name": "Rightful Reward",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "breacherprimus",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "BalladoftheFjords",
-    "rarity": 4,
+    "id": "balladofthefjords",
+    "name": "Balladofthe Fjords",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "hilichurlrogue",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "ProspectorsDrill",
-    "rarity": 4,
+    "id": "prospectorsdrill",
+    "name": "Prospector's Drill",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "fatuioperative",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "DialoguesoftheDesertSages",
-    "rarity": 4,
+    "id": "dialoguesofthedesertsages",
+    "name": "Dialoguesofthe Desert Sages",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "talismanoftheforestdew",
+      "enhancement_material_family_id": "xuanwenbeast",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "FootprintoftheRainbow",
-    "rarity": 4,
-    "type": "Bow",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
-    "name": "MountainBracingBolt",
-    "rarity": 4,
+    "id": "footprintoftherainbow",
+    "name": "Footprintofthe Rainbow",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
+      "enemy_material_family_id": "sauroformtribalwarriors"
     }
   },
   {
-    "name": "TamayurateinoOhanashi",
-    "rarity": 4,
+    "id": "mountainbracingbolt",
+    "name": "Mountain Bracing Bolt",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "avataroflava",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "ProspectorsShovel",
-    "rarity": 4,
+    "id": "tamayurateinoohanashi",
+    "name": "Tamayurateino Ohanashi",
+    "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "tenebrousmimesis",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "SacrificersStaff",
-    "rarity": 4,
+    "id": "prospectorsshovel",
+    "name": "Prospector's Shovel",
+    "rarity": "★★★★",
+    "type": "Polearm",
+    "materials": {
+      "ascension_material_family_id": "longnightflints",
+      "enhancement_material_family_id": "wastelandwildhunt",
+      "enemy_material_family_id": "landcruisers"
+    }
+  },
+  {
+    "id": "sacrificersstaff",
+    "name": "Sacrificers Staff",
+    "rarity": "★★★★",
+    "type": "Polearm",
+    "materials": {
+      "ascension_material_family_id": "longnightflints",
+      "enhancement_material_family_id": "wastelandwildhunt",
+      "enemy_material_family_id": "landcruisers"
+    }
+  },
+  {
+    "id": "favoniuscodex",
+    "name": "Favonius Codex",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "FavoniusCodex",
-    "rarity": 4,
+    "id": "thewidsith",
+    "name": "The Widsith",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "TheWidsith",
-    "rarity": 4,
+    "id": "sacrificialfragments",
+    "name": "Sacrificial Fragments",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "SacrificialFragments",
-    "rarity": 4,
+    "id": "royalgrimoire",
+    "name": "Royal Grimoire",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "RoyalGrimoire",
-    "rarity": 4,
+    "id": "solarpearl",
+    "name": "Solar Pearl",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "SolarPearl",
-    "rarity": 4,
+    "id": "prototypeamber",
+    "name": "Prototype Amber",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "PrototypeAmber",
-    "rarity": 4,
+    "id": "mappamare",
+    "name": "Mappa Mare",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "MappaMare",
-    "rarity": 4,
+    "id": "blackcliffagate",
+    "name": "Blackcliff Agate",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "BlackcliffAgate",
-    "rarity": 4,
+    "id": "eyeofperception",
+    "name": "Eyeof Perception",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "EyeofPerception",
-    "rarity": 4,
-    "type": "Catalyst",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
+    "id": "frostbearer",
     "name": "Frostbearer",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "WineandSong",
-    "rarity": 4,
+    "id": "wineandsong",
+    "name": "Wineand Song",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "DodocoTales",
-    "rarity": 4,
+    "id": "dodocotales",
+    "name": "Dodoco Tales",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "HakushinRing",
-    "rarity": 4,
+    "id": "hakushinring",
+    "name": "Hakushin Ring",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "distantsea",
+      "enhancement_material_family_id": "mirrormaiden",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "OathswornEye",
-    "rarity": 4,
+    "id": "oathsworneye",
+    "name": "Oathsworn Eye",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "distantsea",
+      "enhancement_material_family_id": "riftwolf",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "FruitofFulfillment",
-    "rarity": 4,
+    "id": "fruitoffulfillment",
+    "name": "Fruitof Fulfillment",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "oasisgarden",
+      "enhancement_material_family_id": "theblackserpents",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "WanderingEvenstar",
-    "rarity": 4,
+    "id": "wanderingevenstar",
+    "name": "Wandering Evenstar",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "oasisgarden",
+      "enhancement_material_family_id": "stateshiftedfungus",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "SacrificialJade",
-    "rarity": 4,
+    "id": "sacrificialjade",
+    "name": "Sacrificial Jade",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "FlowingPurity",
-    "rarity": 4,
+    "id": "flowingpurity",
+    "name": "Flowing Purity",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "puresacreddewdrop",
+      "enhancement_material_family_id": "breacherprimus",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
-    "name": "BalladoftheBoundlessBlue",
-    "rarity": 4,
+    "id": "balladoftheboundlessblue",
+    "name": "Balladofthe Boundless Blue",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "AshGravenDrinkingHorn",
-    "rarity": 4,
+    "id": "ashgravendrinkinghorn",
+    "name": "Ash Graven Drinking Horn",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "RingofYaxche",
-    "rarity": 4,
+    "id": "ringofyaxche",
+    "name": "Ringof Yaxche",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "wayobmanifestation",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "WaveridingWhirl",
-    "rarity": 4,
+    "id": "waveridingwhirl",
+    "name": "Waveriding Whirl",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "wayobmanifestation",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "EtherlightSpindlelute",
-    "rarity": 4,
+    "id": "etherlightspindlelute",
+    "name": "Etherlight Spindlelute",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "thefarnorthscions",
+      "enhancement_material_family_id": "radiantbeast",
+      "enemy_material_family_id": "fatuioprichniki"
     }
   },
   {
-    "name": "BlackmarrowLantern",
-    "rarity": 4,
+    "id": "blackmarrowlantern",
+    "name": "Blackmarrow Lantern",
+    "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "artfuldevices",
+      "enhancement_material_family_id": "frostnightscion",
+      "enemy_material_family_id": "fatuioprichniki"
     }
   },
   {
-    "name": "DawningFrost",
-    "rarity": 4,
+    "id": "dawningfrost",
+    "name": "Dawning Frost",
+    "rarity": "★★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "artfuldevices",
+      "enhancement_material_family_id": "frostnightscion",
+      "enemy_material_family_id": "fatuioprichniki"
+    }
+  },
+  {
+    "id": "favoniuswarbow",
+    "name": "Favonius Warbow",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "FavoniusWarbow",
-    "rarity": 4,
+    "id": "thestringless",
+    "name": "The Stringless",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "TheStringless",
-    "rarity": 4,
+    "id": "sacrificialbow",
+    "name": "Sacrificial Bow",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "SacrificialBow",
-    "rarity": 4,
+    "id": "royalbow",
+    "name": "Royal Bow",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "RoyalBow",
-    "rarity": 4,
-    "type": "Bow",
-    "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
-    }
-  },
-  {
+    "id": "rust",
     "name": "Rust",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "PrototypeCrescent",
-    "rarity": 4,
+    "id": "prototypecrescent",
+    "name": "Prototype Crescent",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "CompoundBow",
-    "rarity": 4,
+    "id": "compoundbow",
+    "name": "Compound Bow",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "BlackcliffWarbow",
-    "rarity": 4,
+    "id": "blackcliffwarbow",
+    "name": "Blackcliff Warbow",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "TheViridescentHunt",
-    "rarity": 4,
+    "id": "theviridescenthunt",
+    "name": "The Viridescent Hunt",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "AlleyHunter",
-    "rarity": 4,
+    "id": "alleyhunter",
+    "name": "Alley Hunter",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "WindblumeOde",
-    "rarity": 4,
+    "id": "windblumeode",
+    "name": "Windblume Ode",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "MitternachtsWaltz",
-    "rarity": 4,
+    "id": "mitternachtswaltz",
+    "name": "Mitternachts Waltz",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
+    "id": "hamayumi",
     "name": "Hamayumi",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "mirrormaiden",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
+    "id": "predator",
     "name": "Predator",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "mirrormaiden",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "MouunsMoon",
-    "rarity": 4,
+    "id": "mouunsmoon",
+    "name": "Mouuns Moon",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "mirrormaiden",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "FadingTwilight",
-    "rarity": 4,
+    "id": "fadingtwilight",
+    "name": "Fading Twilight",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "KingsSquire",
-    "rarity": 4,
+    "id": "kingssquire",
+    "name": "King's Squire",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "scorchingmight",
+      "enhancement_material_family_id": "stateshiftedfungus",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "EndoftheLine",
-    "rarity": 4,
+    "id": "endoftheline",
+    "name": "Endofthe Line",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "scorchingmight",
+      "enhancement_material_family_id": "stateshiftedfungus",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "IbisPiercer",
-    "rarity": 4,
+    "id": "ibispiercer",
+    "name": "Ibis Piercer",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "talismanoftheforestdew",
+      "enhancement_material_family_id": "hilichurlrogue",
+      "enemy_material_family_id": "theeremites"
     }
   },
   {
-    "name": "ScionoftheBlazingSun",
-    "rarity": 4,
+    "id": "scionoftheblazingsun",
+    "name": "Scionofthe Blazing Sun",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "scorchingmight",
+      "enhancement_material_family_id": "hilichurlrogue",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "SongofStillness",
-    "rarity": 4,
+    "id": "songofstillness",
+    "name": "Songof Stillness",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "taintedhydrophantasm",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "RangeGauge",
-    "rarity": 4,
+    "id": "rangegauge",
+    "name": "Range Gauge",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "taintedhydrophantasm",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
+    "id": "cloudforged",
     "name": "Cloudforged",
-    "rarity": 4,
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "praetoriangolem",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "ChainBreaker",
-    "rarity": 4,
+    "id": "chainbreaker",
+    "name": "Chain Breaker",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "xuanwenbeast",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "FlowerWreathedFeathers",
-    "rarity": 4,
+    "id": "flowerwreathedfeathers",
+    "name": "Flower Wreathed Feathers",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "avataroflava",
+      "enemy_material_family_id": "sauroformtribalwarriors"
     }
   },
   {
-    "name": "SequenceofSolitude",
-    "rarity": 4,
+    "id": "sequenceofsolitude",
+    "name": "Sequenceof Solitude",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "furnaceshellmountainweasel",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "SnareHook",
-    "rarity": 4,
+    "id": "snarehook",
+    "name": "Snare Hook",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "longnightflints",
+      "enhancement_material_family_id": "wastelandwildhunt",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "RainbowSerpentsRainBow",
-    "rarity": 4,
+    "id": "rainbowserpentsrainbow",
+    "name": "Rainbow Serpents Rain Bow",
+    "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "tenebrousmimesis",
+      "enemy_material_family_id": "fatuioprichniki"
     }
   },
   {
-    "name": "AquilaFavonia",
-    "rarity": 5,
+    "id": "aquilafavonia",
+    "name": "Aquila Favonia",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "SkywardBlade",
-    "rarity": 5,
+    "id": "skywardblade",
+    "name": "Skyward Blade",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "SummitShaper",
-    "rarity": 5,
+    "id": "summitshaper",
+    "name": "Summit Shaper",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "PrimordialJadeCutter",
-    "rarity": 5,
+    "id": "primordialjadecutter",
+    "name": "Primordial Jade Cutter",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "FreedomSworn",
-    "rarity": 5,
+    "id": "freedomsworn",
+    "name": "Freedom Sworn",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "MistsplitterReforged",
-    "rarity": 5,
+    "id": "mistsplitterreforged",
+    "name": "Mistsplitter Reforged",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "distantsea",
+      "enhancement_material_family_id": "ruinsentinel",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "HaranGeppakuFutsu",
-    "rarity": 5,
+    "id": "harangeppakufutsu",
+    "name": "Haran Geppaku Futsu",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "theblackserpents",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "KeyofKhajNisut",
-    "rarity": 5,
+    "id": "keyofkhajnisut",
+    "name": "Keyof Khaj Nisut",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "talismanoftheforestdew",
+      "enhancement_material_family_id": "primalconstruct",
+      "enemy_material_family_id": "theeremites"
     }
   },
   {
-    "name": "LightofFoliarIncision",
-    "rarity": 5,
+    "id": "lightoffoliarincision",
+    "name": "Lightof Foliar Incision",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "talismanoftheforestdew",
+      "enhancement_material_family_id": "consecratedbeast",
+      "enemy_material_family_id": "theeremites"
     }
   },
   {
-    "name": "SplendorofTranquilWaters",
-    "rarity": 5,
+    "id": "splendoroftranquilwaters",
+    "name": "Splendorof Tranquil Waters",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "puresacreddewdrop",
+      "enhancement_material_family_id": "taintedhydrophantasm",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
-    "name": "UrakuMisugiri",
-    "rarity": 5,
+    "id": "urakumisugiri",
+    "name": "Uraku Misugiri",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "distantsea",
+      "enhancement_material_family_id": "ruinsentinel",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
+    "id": "absolution",
     "name": "Absolution",
-    "rarity": 5,
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "fatuioperative",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "PeakPatrolSong",
-    "rarity": 5,
+    "id": "peakpatrolsong",
+    "name": "Peak Patrol Song",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
+    "id": "azurelight",
     "name": "Azurelight",
-    "rarity": 5,
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "tenebrousmimesis",
+      "enemy_material_family_id": "sauroformtribalwarriors"
     }
   },
   {
-    "name": "AthameArtis",
-    "rarity": 5,
+    "id": "athameartis",
+    "name": "Athame Artis",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "frostnightscion",
+      "enemy_material_family_id": "landcruisers"
     }
   },
   {
-    "name": "LightbearingMoonshard",
-    "rarity": 5,
+    "id": "lightbearingmoonshard",
+    "name": "Lightbearing Moonshard",
+    "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "wastelandwildhunt",
+      "enemy_material_family_id": "landcruisers"
     }
   },
   {
-    "name": "SkywardPride",
-    "rarity": 5,
+    "id": "skywardpride",
+    "name": "Skyward Pride",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "WolfsGravestone",
-    "rarity": 5,
+    "id": "wolfsgravestone",
+    "name": "Wolf's Gravestone",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "TheUnforged",
-    "rarity": 5,
+    "id": "theunforged",
+    "name": "The Unforged",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "SongofBrokenPines",
-    "rarity": 5,
+    "id": "songofbrokenpines",
+    "name": "Songof Broken Pines",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "decarabian",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "RedhornStonethresher",
-    "rarity": 5,
+    "id": "redhornstonethresher",
+    "name": "Redhorn Stonethresher",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "riftwolf",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "BeaconoftheReedSea",
-    "rarity": 5,
+    "id": "beaconofthereedsea",
+    "name": "Beaconofthe Reed Sea",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "scorchingmight",
+      "enhancement_material_family_id": "consecratedbeast",
+      "enemy_material_family_id": "theeremites"
     }
   },
   {
+    "id": "verdict",
     "name": "Verdict",
-    "rarity": 5,
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "breacherprimus",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "FangoftheMountainKing",
-    "rarity": 5,
+    "id": "fangofthemountainking",
+    "name": "Fangofthe Mountain King",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "avataroflava",
+      "enemy_material_family_id": "sauroformtribalwarriors"
     }
   },
   {
-    "name": "AThousandBlazingSuns",
-    "rarity": 5,
+    "id": "athousandblazingsuns",
+    "name": "A Thousand Blazing Suns",
+    "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "PrimordialJadeWingedSpear",
-    "rarity": 5,
+    "id": "primordialjadewingedspear",
+    "name": "Primordial Jade Winged Spear",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "fatuipyroagent",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "SkywardSpine",
-    "rarity": 5,
+    "id": "skywardspine",
+    "name": "Skyward Spine",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "VortexVanquisher",
-    "rarity": 5,
+    "id": "vortexvanquisher",
+    "name": "Vortex Vanquisher",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "treasurehoarder"
     }
   },
   {
-    "name": "StaffofHoma",
-    "rarity": 5,
+    "id": "staffofhoma",
+    "name": "Staffof Homa",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "EngulfingLightning",
-    "rarity": 5,
+    "id": "engulfinglightning",
+    "name": "Engulfing Lightning",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "ruinsentinel",
+      "enemy_material_family_id": "nobushi"
     }
   },
   {
-    "name": "CalamityQueller",
-    "rarity": 5,
+    "id": "calamityqueller",
+    "name": "Calamity Queller",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "fatuicicinmage",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "StaffoftheScarletSands",
-    "rarity": 5,
+    "id": "staffofthescarletsands",
+    "name": "Staffofthe Scarlet Sands",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "oasisgarden",
+      "enhancement_material_family_id": "ruindrake",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "CrimsonMoonsSemblance",
-    "rarity": 5,
+    "id": "crimsonmoonssemblance",
+    "name": "Crimson Moon's Semblance",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "praetoriangolem",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "LumidouceElegy",
-    "rarity": 5,
+    "id": "lumidouceelegy",
+    "name": "Lumidouce Elegy",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "praetoriangolem",
+      "enemy_material_family_id": "whopperflower"
     }
   },
   {
-    "name": "SymphonistofScents",
-    "rarity": 5,
+    "id": "symphonistofscents",
+    "name": "Symphonistof Scents",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "puresacreddewdrop",
+      "enhancement_material_family_id": "taintedhydrophantasm",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
-    "name": "FracturedHalo",
-    "rarity": 5,
+    "id": "fracturedhalo",
+    "name": "Fractured Halo",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "furnaceshellmountainweasel",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "BloodsoakedRuins",
-    "rarity": 5,
+    "id": "bloodsoakedruins",
+    "name": "Bloodsoaked Ruins",
+    "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "furnaceshellmountainweasel",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "SkywardAtlas",
-    "rarity": 5,
+    "id": "skywardatlas",
+    "name": "Skyward Atlas",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "LostPrayertotheSacredWinds",
-    "rarity": 5,
+    "id": "lostprayertothesacredwinds",
+    "name": "Lost Prayertothe Sacred Winds",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "MemoryofDust",
-    "rarity": 5,
+    "id": "memoryofdust",
+    "name": "Memoryof Dust",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "aerosiderite",
+      "enhancement_material_family_id": "vishap",
+      "enemy_material_family_id": "hilichurl"
     }
   },
   {
-    "name": "EverlastingMoonglow",
-    "rarity": 5,
+    "id": "everlastingmoonglow",
+    "name": "Everlasting Moonglow",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "distantsea",
+      "enhancement_material_family_id": "mirrormaiden",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "KagurasVerity",
-    "rarity": 5,
+    "id": "kagurasverity",
+    "name": "Kagura's Verity",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "riftwolf",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "AThousandFloatingDreams",
-    "rarity": 5,
+    "id": "athousandfloatingdreams",
+    "name": "A Thousand Floating Dreams",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "oasisgarden",
+      "enhancement_material_family_id": "primalconstruct",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "TulaytullahsRemembrance",
-    "rarity": 5,
+    "id": "tulaytullahsremembrance",
+    "name": "Tulaytullah's Remembrance",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "scorchingmight",
+      "enhancement_material_family_id": "stateshiftedfungus",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "JadefallsSplendor",
-    "rarity": 5,
+    "id": "jadefallssplendor",
+    "name": "Jadefall's Splendor",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "hilichurlrogue",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "CashflowSupervision",
-    "rarity": 5,
+    "id": "cashflowsupervision",
+    "name": "Cashflow Supervision",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "gobletofthepristinesea",
+      "enhancement_material_family_id": "fatuioperative",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
-    "name": "TomeoftheEternalFlow",
-    "rarity": 5,
+    "id": "tomeoftheeternalflow",
+    "name": "Tomeofthe Eternal Flow",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "puresacreddewdrop",
+      "enhancement_material_family_id": "breacherprimus",
+      "enemy_material_family_id": "clockworkmeka"
     }
   },
   {
-    "name": "CranesEchoingCall",
-    "rarity": 5,
+    "id": "cranesechoingcall",
+    "name": "Crane's Echoing Call",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mistveiled",
+      "enhancement_material_family_id": "xuanwenbeast",
+      "enemy_material_family_id": "samachurl"
     }
   },
   {
-    "name": "SurfsUp",
-    "rarity": 5,
+    "id": "surfsup",
+    "name": "Surf's Up",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "blazingsacrificialheart",
+      "enhancement_material_family_id": "wayobmanifestation",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "StarcallersWatch",
-    "rarity": 5,
+    "id": "starcallerswatch",
+    "name": "Starcaller's Watch",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "wayobmanifestation",
+      "enemy_material_family_id": "sauroformtribalwarriors"
     }
   },
   {
-    "name": "SunnyMorningSleepIn",
-    "rarity": 5,
+    "id": "sunnymorningsleepin",
+    "name": "Sunny Morning Sleep In",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "avataroflava",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "VividNotions",
-    "rarity": 5,
+    "id": "vividnotions",
+    "name": "Vivid Notions",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "furnaceshellmountainweasel",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "NightweaversLookingGlass",
-    "rarity": 5,
+    "id": "nightweaverslookingglass",
+    "name": "Nightweaver's Looking Glass",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "sacredlord",
+      "enhancement_material_family_id": "furnaceshellmountainweasel",
+      "enemy_material_family_id": "natlansaurian"
     }
   },
   {
-    "name": "ReliquaryofTruth",
-    "rarity": 5,
+    "id": "reliquaryoftruth",
+    "name": "Reliquaryof Truth",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "oasisgarden",
+      "enhancement_material_family_id": "radiantbeast",
+      "enemy_material_family_id": "fungi"
     }
   },
   {
-    "name": "NocturnesCurtainCall",
-    "rarity": 5,
+    "id": "nocturnescurtaincall",
+    "name": "Nocturne's Curtain Call",
+    "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "thefarnorthscions",
+      "enhancement_material_family_id": "fatuioprichniki",
+      "enemy_material_family_id": "fisherofhiddendepths"
     }
   },
   {
-    "name": "SkywardHarp",
-    "rarity": 5,
+    "id": "skywardharp",
+    "name": "Skyward Harp",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "abyssmage",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "AmosBow",
-    "rarity": 5,
+    "id": "amosbow",
+    "name": "Amos' Bow",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "humanoidruinmachine",
+      "enemy_material_family_id": "slime"
     }
   },
   {
-    "name": "ElegyfortheEnd",
-    "rarity": 5,
+    "id": "elegyfortheend",
+    "name": "Elegyforthe End",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "borealwolf",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "fatui"
     }
   },
   {
-    "name": "ThunderingPulse",
-    "rarity": 5,
+    "id": "thunderingpulse",
+    "name": "Thundering Pulse",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "narukami",
+      "enhancement_material_family_id": "mirrormaiden",
+      "enemy_material_family_id": "hilichurlshooter"
     }
   },
   {
-    "name": "PolarStar",
-    "rarity": 5,
+    "id": "polarstar",
+    "name": "Polar Star",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "mask",
+      "enhancement_material_family_id": "riftwolf",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "AquaSimulacra",
-    "rarity": 5,
+    "id": "aquasimulacra",
+    "name": "Aqua Simulacra",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "guyun",
+      "enhancement_material_family_id": "theblackserpents",
+      "enemy_material_family_id": "specters"
     }
   },
   {
-    "name": "HuntersPath",
-    "rarity": 5,
+    "id": "hunterspath",
+    "name": "Hunter's Path",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "scorchingmight",
+      "enhancement_material_family_id": "stateshiftedfungus",
+      "enemy_material_family_id": "theeremites"
     }
   },
   {
-    "name": "TheFirstGreatMagic",
-    "rarity": 5,
+    "id": "thefirstgreatmagic",
+    "name": "The First Great Magic",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "ancientchord",
+      "enhancement_material_family_id": "taintedhydrophantasm",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
-    "name": "SilvershowerHeartstrings",
-    "rarity": 5,
+    "id": "silvershowerheartstrings",
+    "name": "Silvershower Heartstrings",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "puresacreddewdrop",
+      "enhancement_material_family_id": "xuanwenbeast",
+      "enemy_material_family_id": "fontemeraberrant"
     }
   },
   {
-    "name": "AstralVulturesCrimsonPlumage",
-    "rarity": 5,
+    "id": "astralvulturescrimsonplumage",
+    "name": "Astral Vulture's Crimson Plumage",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "nightwind",
+      "enhancement_material_family_id": "tenebrousmimesis",
+      "enemy_material_family_id": "sauroformtribalwarriors"
     }
   },
   {
-    "name": "TheDaybreakChronicles",
-    "rarity": 5,
+    "id": "thedaybreakchronicles",
+    "name": "The Daybreak Chronicles",
+    "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_mat": "",
-      "elite_mat": "",
-      "mob_mat": ""
+      "ascension_material_family_id": "dandeliongladiator",
+      "enhancement_material_family_id": "mitachurl",
+      "enemy_material_family_id": "treasurehoarder"
     }
   }
 ]

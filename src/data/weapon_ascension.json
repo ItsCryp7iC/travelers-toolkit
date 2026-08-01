@@ -1,0 +1,484 @@
+[
+  {
+    "id": "decarabiantiles",
+    "name": "Decarabian Tiles",
+    "region": "Mondstadt",
+    "tiers": {
+      "5_star": {
+        "id": "scatteredpieceofdecarabiansdream",
+        "name": "Scattered Piece of Decarabian's Dream"
+      },
+      "4_star": {
+        "id": "fragmentofdecarabiansepic",
+        "name": "Fragment of Decarabian's Epic"
+      },
+      "3_star": {
+        "id": "debrisofdecarabianscity",
+        "name": "Debris of Decarabian's City"
+      },
+      "2_star": {
+        "id": "tileofdecarabianstower",
+        "name": "Tile of Decarabian's Tower"
+      }
+    }
+  },
+  {
+    "id": "borealwolfteeth",
+    "name": "Boreal Wolf Teeth",
+    "region": "Mondstadt",
+    "tiers": {
+      "5_star": {
+        "id": "borealwolfsnostalgia",
+        "name": "Boreal Wolf's Nostalgia"
+      },
+      "4_star": {
+        "id": "borealwolfsbrokenfang",
+        "name": "Boreal Wolf's Broken Fang"
+      },
+      "3_star": {
+        "id": "borealwolfscrackedtooth",
+        "name": "Boreal Wolf's Cracked Tooth"
+      },
+      "2_star": {
+        "id": "borealwolfsmilktooth",
+        "name": "Boreal Wolf's Milk Tooth"
+      }
+    }
+  },
+  {
+    "id": "dandelionshackles",
+    "name": "Dandelion Shackles",
+    "region": "Mondstadt",
+    "tiers": {
+      "5_star": {
+        "id": "dreamofthedandeliongladiator",
+        "name": "Dream of the Dandelion Gladiator"
+      },
+      "4_star": {
+        "id": "shacklesofthedandeliongladiator",
+        "name": "Shackles of the Dandelion Gladiator"
+      },
+      "3_star": {
+        "id": "chainsofthedandeliongladiator",
+        "name": "Chains of the Dandelion Gladiator"
+      },
+      "2_star": {
+        "id": "fettersofthedandeliongladiator",
+        "name": "Fetters of the Dandelion Gladiator"
+      }
+    }
+  },
+  {
+    "id": "guyunpillar",
+    "name": "Guyun Pillar",
+    "region": "Liyue",
+    "tiers": {
+      "5_star": {
+        "id": "divinebodyfromguyun",
+        "name": "Divine Body from Guyun"
+      },
+      "4_star": {
+        "id": "relicfromguyun",
+        "name": "Relic from Guyun"
+      },
+      "3_star": {
+        "id": "lustrousstonefromguyun",
+        "name": "Lustrous Stone from Guyun"
+      },
+      "2_star": {
+        "id": "luminoussandsfromguyun",
+        "name": "Luminous Sands from Guyun"
+      }
+    }
+  },
+  {
+    "id": "elixir",
+    "name": "Elixir",
+    "region": "Liyue",
+    "tiers": {
+      "5_star": {
+        "id": "mistveiledprimoelixir",
+        "name": "Mist Veiled Primo Elixir"
+      },
+      "4_star": {
+        "id": "mistveiledgoldelixir",
+        "name": "Mist Veiled Gold Elixir"
+      },
+      "3_star": {
+        "id": "mistveiledmercuryelixir",
+        "name": "Mist Veiled Mercury Elixir"
+      },
+      "2_star": {
+        "id": "mistveiledleadelixir",
+        "name": "Mist Veiled Lead Elixir"
+      }
+    }
+  },
+  {
+    "id": "aerosiderite",
+    "name": "Aerosiderite",
+    "tiers": {
+      "5_star": {
+        "id": "chunkofaerosiderite",
+        "name": "Chunk of Aerosiderite"
+      },
+      "4_star": {
+        "id": "bitofaerosiderite",
+        "name": "Bit of Aerosiderite"
+      },
+      "3_star": {
+        "id": "pieceofaerosiderite",
+        "name": "Piece of Aerosiderite"
+      },
+      "2_star": {
+        "id": "grainofaerosiderite",
+        "name": "Grain of Aerosiderite"
+      }
+    }
+  },
+  {
+    "id": "branchesofadistantsea",
+    "name": "Branches of a Distant Sea",
+    "region": "Liyue",
+    "tiers": {
+      "5_star": {
+        "id": "goldenbranchofadistantsea",
+        "name": "Golden Branch of a Distant Sea"
+      },
+      "4_star": {
+        "id": "jadebranchofadistantsea",
+        "name": "Jade Branch of a Distant Sea"
+      },
+      "3_star": {
+        "id": "jeweledbranchofadistantsea",
+        "name": "Jeweled Branch of a Distant Sea"
+      },
+      "2_star": {
+        "id": "coralbranchofadistantsea",
+        "name": "Coral Branch of a Distant Sea"
+      }
+    }
+  },
+  {
+    "id": "narukamismagatama",
+    "name": "Narukami's Magatama",
+    "region": "Inazuma",
+    "tiers": {
+      "5_star": {
+        "id": "narukamisvalor",
+        "name": "Narukami's Valor"
+      },
+      "4_star": {
+        "id": "narukamisaffection",
+        "name": "Narukami's Affection"
+      },
+      "3_star": {
+        "id": "narukamisjoy",
+        "name": "Narukami's Joy"
+      },
+      "2_star": {
+        "id": "narukamiswisdom",
+        "name": "Narukami's Wisdom"
+      }
+    }
+  },
+  {
+    "id": "onimask",
+    "name": "Oni Mask",
+    "region": "Inazuma",
+    "tiers": {
+      "5_star": {
+        "id": "maskofthekijin",
+        "name": "Mask of the Kijin"
+      },
+      "4_star": {
+        "id": "maskoftheonehorned",
+        "name": "Mask of the One-Horned"
+      },
+      "3_star": {
+        "id": "maskofthetigersbite",
+        "name": "Mask of the Tiger's Bite"
+      },
+      "2_star": {
+        "id": "maskofthewickedlieutenant",
+        "name": "Mask of the Wicked Lieutenant"
+      }
+    }
+  },
+  {
+    "id": "talismanoftheforestdew",
+    "name": "Talisman of the Forest Dew",
+    "region": "Sumeru",
+    "tiers": {
+      "5_star": {
+        "id": "goldentalismanoftheforestdew",
+        "name": "Golden Talisman of the Forest Dew"
+      },
+      "4_star": {
+        "id": "silvertalismanoftheforestdew",
+        "name": "Silver Talisman of the Forest Dew"
+      },
+      "3_star": {
+        "id": "irontalismanoftheforestdew",
+        "name": "Iron Talisman of the Forest Dew"
+      },
+      "2_star": {
+        "id": "coppertalismanoftheforestdew",
+        "name": "Copper Talisman of the Forest Dew"
+      }
+    }
+  },
+  {
+    "id": "oasisgarden",
+    "name": "Oasis Garden",
+    "region": "Sumeru",
+    "tiers": {
+      "5_star": {
+        "id": "oasisgardenstruth",
+        "name": "Oasis Garden's Truth"
+      },
+      "4_star": {
+        "id": "oasisgardensmourning",
+        "name": "Oasis Garden's Mourning"
+      },
+      "3_star": {
+        "id": "oasisgardenskindness",
+        "name": "Oasis Garden's Kindness"
+      },
+      "2_star": {
+        "id": "oasisgardensreminiscence",
+        "name": "Oasis Garden's Reminiscence"
+      }
+    }
+  },
+  {
+    "id": "scorchingmights",
+    "name": "Scorching Mights",
+    "region": "Sumeru",
+    "tiers": {
+      "5_star": {
+        "id": "oldendaysofscorchingmight",
+        "name": "Olden Days of Scorching Might"
+      },
+      "4_star": {
+        "id": "dreamofscorchingmight",
+        "name": "Dream of Scorching Might"
+      },
+      "3_star": {
+        "id": "remnantglowofscorchingmight",
+        "name": "Remnant Glow of Scorching Might"
+      },
+      "2_star": {
+        "id": "echoofscorchingmight",
+        "name": "Echo of Scorching Might"
+      }
+    }
+  },
+  {
+    "id": "ancientchords",
+    "name": "Ancient Chords",
+    "region": "Fontaine",
+    "tiers": {
+      "5_star": {
+        "id": "echoofanancientchord",
+        "name": "Echo of an Ancient Chord"
+      },
+      "4_star": {
+        "id": "movementofanancientchord",
+        "name": "Movement of an Ancient Chord"
+      },
+      "3_star": {
+        "id": "chapterofanancientchord",
+        "name": "Chapter of an Ancient Chord"
+      },
+      "2_star": {
+        "id": "fragmentofanancientchord",
+        "name": "Fragment of an Ancient Chord"
+      }
+    }
+  },
+  {
+    "id": "sacreddewdrops",
+    "name": "Sacred Dewdrops",
+    "region": "Fontaine",
+    "tiers": {
+      "5_star": {
+        "id": "essenceofpuresacreddewdrop",
+        "name": "Essence of Pure Sacred Dewdrop"
+      },
+      "4_star": {
+        "id": "springofpuresacreddewdrop",
+        "name": "Spring of Pure Sacred Dewdrop"
+      },
+      "3_star": {
+        "id": "sublimationofpuresacreddewdrop",
+        "name": "Sublimation of Pure Sacred Dewdrop"
+      },
+      "2_star": {
+        "id": "drossofpuresacreddewdrop",
+        "name": "Dross of Pure Sacred Dewdrop"
+      }
+    }
+  },
+  {
+    "id": "gobletofthepristinesea",
+    "name": "Goblet of the Pristine Sea",
+    "region": "Fontaine",
+    "tiers": {
+      "5_star": {
+        "id": "goldengobletofthepristinesea",
+        "name": "Golden Goblet of the Pristine Sea"
+      },
+      "4_star": {
+        "id": "silvergobletofthepristinesea",
+        "name": "Silver Goblet of the Pristine Sea"
+      },
+      "3_star": {
+        "id": "winegobletofthepristinesea",
+        "name": "Wine Goblet of the Pristine Sea"
+      },
+      "2_star": {
+        "id": "brokengobletofthepristinesea",
+        "name": "Broken Goblet of the Pristine Sea"
+      }
+    }
+  },
+  {
+    "id": "blazingsacrificialhearts",
+    "name": "Blazing Sacrificial Hearts",
+    "region": "Natlan",
+    "tiers": {
+      "5_star": {
+        "id": "blazingsacrificialheartssplendor",
+        "name": "Blazing Sacrificial Hearts Splendor"
+      },
+      "4_star": {
+        "id": "blazingsacrificialheartsresolve",
+        "name": "Blazing Sacrificial Hearts Resolve"
+      },
+      "3_star": {
+        "id": "blazingsacrificialheartshesitance",
+        "name": "Blazing Sacrificial Hearts Hesitance"
+      },
+      "2_star": {
+        "id": "blazingsacrificialheartsterror",
+        "name": "Blazing Sacrificial Hearts Terror"
+      }
+    }
+  },
+  {
+    "id": "deliriousmasksofthesacredlord",
+    "name": "Delirious Masks of the Sacred Lord",
+    "region": "Natlan",
+    "tiers": {
+      "5_star": {
+        "id": "deliriousdivinityofthesacredlord",
+        "name": "Delirious Divinity of the Sacred Lord"
+      },
+      "4_star": {
+        "id": "deliriousdemeanorofthesacredlord",
+        "name": "Delirious Demeanor of the Sacred Lord"
+      },
+      "3_star": {
+        "id": "deliriousdesolationofthesacredlord",
+        "name": "Delirious Desolation of the Sacred Lord"
+      },
+      "2_star": {
+        "id": "deliriousdecadenceofthesacredlord",
+        "name": "Delirious Decadence of the Sacred Lord"
+      }
+    }
+  },
+  {
+    "id": "nightwindsmystics",
+    "name": "Night-Wind's Mystics",
+    "region": "Natlan",
+    "tiers": {
+      "5_star": {
+        "id": "nightwindsmysticrevelation",
+        "name": "Night Wind's Mystic Revelation"
+      },
+      "4_star": {
+        "id": "nightwindsmysticaugury",
+        "name": "Night Wind's Mystic Augury"
+      },
+      "3_star": {
+        "id": "nightwindsmysticpremonition",
+        "name": "Night Wind's Mystic Premonition"
+      },
+      "2_star": {
+        "id": "nightwindsmysticconsideration",
+        "name": "Night Wind's Mystic Consideration"
+      }
+    }
+  },
+  {
+    "id": "artfuldevices",
+    "name": "Artful Devices",
+    "region": "Nod-Krai",
+    "tiers": {
+      "5_star": {
+        "id": "artfuldevicewish",
+        "name": "Artful Device Wish"
+      },
+      "4_star": {
+        "id": "artfuldeviceinheritance",
+        "name": "Artful Device Inheritance"
+      },
+      "3_star": {
+        "id": "artfuldevicereplica",
+        "name": "Artful Device Replica"
+      },
+      "2_star": {
+        "id": "artfuldevicefragment",
+        "name": "Artful Device Fragment"
+      }
+    }
+  },
+  {
+    "id": "longnightflints",
+    "name": "Long Night Flints",
+    "region": "Nod-Krai",
+    "tiers": {
+      "5_star": {
+        "id": "blazeoflongnightflint",
+        "name": "Blaze of Long Night Flint"
+      },
+      "4_star": {
+        "id": "flareoflongnightflint",
+        "name": "Flare of Long Night Flint"
+      },
+      "3_star": {
+        "id": "afterglowoflongnightflint",
+        "name": "Afterglow of Long Night Flint"
+      },
+      "2_star": {
+        "id": "emberoflongnightflint",
+        "name": "Ember of Long Night Flint"
+      }
+    }
+  },
+  {
+    "id": "thefarnorthscions",
+    "name": "The Far-North Scions",
+    "region": "Nod-Krai",
+    "tiers": {
+      "5_star": {
+        "id": "aureateradianceofthefarnorthscions",
+        "name": "Aureate Radiance of the Far North Scions"
+      },
+      "4_star": {
+        "id": "oblationofthefarnorthscions",
+        "name": "Oblation of the Far North Scions"
+      },
+      "3_star": {
+        "id": "unyieldingdelusionofthefarnorthscions",
+        "name": "Unyielding Delusion of the Far North Scions"
+      },
+      "2_star": {
+        "id": "sunderedgloryofthefarnorthscions",
+        "name": "Sundered Glory of the Far North Scions"
+      }
+    }
+  }
+]

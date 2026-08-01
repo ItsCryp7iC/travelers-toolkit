@@ -7,8 +7,17 @@
  *
  * Usage:
  *   import { calculateProgressionCost } from './calculator'
- *   const costs = calculateProgressionCost(character, fromLevel, fromAsc, toLevel, toAsc, costsData)
+ *   const costs = calculateProgressionCost(character, fromLevel, fromAsc, toLevel, toAsc)
  */
+
+import costsData from '../data/costs.json';
+
+function extractLevel(lv) {
+    if (lv === null || lv === undefined) return 1;
+    if (typeof lv === 'object') return parseInt(lv.level || lv.current || lv.target || lv.value || 1, 10);
+    if (typeof lv === 'string') return parseInt(lv.replace(/[^0-9]/g, ''), 10) || 1;
+    return parseInt(lv, 10) || 1;
+}
 
 // ─── Ascension Level Caps ──────────────────────────────────────────────────
 // ascension phase → max level allowed at that ascension
@@ -107,98 +116,39 @@ export function buildMobNames(mobBase) {
  *   levelingMora,
  * }
  */
-export function calculateProgressionCost(
-  character,
-  fromLevel,
-  fromAsc,
-  toLevel,
-  toAsc,
-  costsData
-) {
-  const { rarity, materials } = character
-  const phases = rarity >= 5 ? ASCENSION_PHASES_5STAR : ASCENSION_PHASES_4STAR
-
-  // Build a level→cost lookup from costs.json
-  const levelMap = {}
-  for (const entry of costsData.character_levels) {
-    levelMap[entry.level] = entry
-  }
-
-  // ── Leveling cost (mora + hero wits) ──────────────────────────────────────
-  // costs.json values = cumulative cost remaining from that level to 90.
-  // Cost from A→B = remaining[A] - remaining[B]
-  const fromEntry = levelMap[fromLevel]
-  const toEntry   = levelMap[toLevel]
-
-  let levelingMora = 0
-  let heroWits     = 0
-
-  if (fromEntry && toEntry && toLevel > fromLevel) {
-    levelingMora = Math.max(0, fromEntry.mora_required - toEntry.mora_required)
-    heroWits     = Math.max(0, fromEntry.hero_wits - toEntry.hero_wits)
-  }
-
-  // ── Ascension cost ─────────────────────────────────────────────────────────
-  let ascensionMora = 0
-  const gemstones     = {}
-  const worldBoss     = {}
-  const localSpecialty = {}
-  const mob           = {}
-
-  const gemBase  = materials?.gemstone    || 'BrilliantDiamond'
-  const bossName = materials?.world_boss  || null
-  const localName = materials?.local_specialty || 'Unknown'
-  const mobBase  = materials?.mob_material || 'Common'
-  const mobNames = buildMobNames(mobBase)
-
-  // Loop through each ascension phase between fromAsc and toAsc
-  for (let phase = fromAsc; phase < toAsc; phase++) {
-    const p = phases[phase]
-    if (!p) continue
-
-    ascensionMora += p.mora
-
-    // Gemstones
-    const gemName = buildGemName(gemBase, p.gemTier)
-    gemstones[gemName] = (gemstones[gemName] || 0) + p.gemQty
-
-    // World boss (only phases 1+ require boss drops)
-    if (p.boss > 0 && bossName && bossName !== 'nan') {
-      worldBoss[bossName] = (worldBoss[bossName] || 0) + p.boss
+// Universal dynamic subtractor
+function calculateDifference(startObj, targetObj, isDescending = true) {
+  const result = {};
+  if (!startObj || !targetObj) return result;
+  Object.keys(startObj).forEach(key => {
+    if (key !== 'level') {
+      const diff = isDescending 
+        ? (startObj[key] || 0) - (targetObj[key] || 0)
+        : (targetObj[key] || 0) - (startObj[key] || 0);
+      if (diff > 0) result[key] = diff;
     }
+  });
+  return result;
+}
 
-    // Local specialty
-    localSpecialty[localName] = (localSpecialty[localName] || 0) + p.local
-
-    // Mob materials (3 tiers)
-    p.mob.forEach((qty, tier) => {
-      if (qty > 0) {
-        const mName = mobNames[tier]
-        mob[mName] = (mob[mName] || 0) + qty
-      }
-    })
-  }
-
-  const totalMora = levelingMora + ascensionMora
-
-  return {
-    totalMora,
-    levelingMora,
-    ascensionMora,
-    heroWits,
-    gemstones,
-    worldBoss: Object.keys(worldBoss).length > 0 ? worldBoss : null,
-    localSpecialty,
-    mob,
-    // Convenience flags
-    hasAnyCost: totalMora > 0 || heroWits > 0 || Object.keys(gemstones).length > 0,
-  }
+export function calculateProgressionCost(character, fromLv, toLv) {
+  if (!costsData?.character_levels) return {};
+  const sLv = extractLevel(fromLv);
+  const tLv = extractLevel(toLv);
+  const sObj = costsData.character_levels.find(x => x.level === sLv) || costsData.character_levels[0];
+  const tObj = costsData.character_levels.find(x => x.level === tLv) || costsData.character_levels[costsData.character_levels.length - 1];
+  return calculateDifference(sObj, tObj, true);
 }
 
 /**
  * Format a large number with commas and optional suffix (K, M).
  */
-export function formatNumber(n) {
+export function formatNumber(num) {
+  if (num === undefined || num === null || isNaN(Number(num))) {
+    return '0';
+  }
+  
+  const n = Number(num);
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
   if (n >= 10_000)    return n.toLocaleString()
   return n.toString()
@@ -262,99 +212,29 @@ export const TALENT_LEVEL_COSTS = [
  * }
  */
 export function calculateTalentCost(character, fromLv, toLv) {
-  if (toLv <= fromLv) return { talentMora: 0, books: {}, mob: {}, weeklyBoss: null, crown: 0, hasAnyCost: false }
-
-  const bookBase   = character?.materials?.talent_book  || null
-  const weeklyName = character?.materials?.weekly_boss  || null
-  const mobBase    = character?.materials?.mob_material || 'CommonMat'
-  const mobNames   = buildMobNames(mobBase)
-
-  let talentMora = 0
-  let crown      = 0
-  const books    = {}
-  const mob      = {}
-  const weekly   = {}
-
-  for (let lv = fromLv; lv < toLv; lv++) {
-    const phase = TALENT_LEVEL_COSTS[lv - 1] // index 0 = 1→2
-    if (!phase) continue
-
-    talentMora += phase.mora
-
-    // Talent books
-    if (bookBase && bookBase !== 'nan') {
-      const bookKey = buildBookKey(bookBase, phase.bookTier)
-      if (bookKey) books[bookKey] = (books[bookKey] || 0) + phase.bookQty
-    }
-
-    // Mob materials
-    phase.mob.forEach((qty, tier) => {
-      if (qty > 0) {
-        const mName = mobNames[tier]
-        mob[mName] = (mob[mName] || 0) + qty
-      }
-    })
-
-    // Weekly boss
-    if (phase.weekly > 0 && weeklyName && weeklyName !== 'nan') {
-      weekly[weeklyName] = (weekly[weeklyName] || 0) + phase.weekly
-    }
-
-    // Crown
-    crown += phase.crown
-  }
-
-  return {
-    talentMora,
-    books,
-    mob,
-    weeklyBoss: Object.keys(weekly).length > 0 ? weekly : null,
-    crown,
-    hasAnyCost: talentMora > 0 || Object.keys(books).length > 0,
-  }
+  if (!costsData?.talent_levels) return {};
+  const sLv = extractLevel(fromLv);
+  const tLv = extractLevel(toLv);
+  const sObj = costsData.talent_levels.find(x => x.level === sLv) || costsData.talent_levels[0];
+  const tObj = costsData.talent_levels.find(x => x.level === tLv) || costsData.talent_levels[costsData.talent_levels.length - 1];
+  return calculateDifference(sObj, tObj, true);
 }
 
-/**
- * Calculate total talent cost for all 3 skills combined.
- *
- * @param {Object} character
- * @param {Object} talentState  { normalFrom, normalTo, skillFrom, skillTo, burstFrom, burstTo }
- *
- * @returns merged cost object identical in shape to calculateTalentCost()
- */
-export function calculateAllTalentsCost(character, talentState) {
-  const {
-    normalFrom = 1, normalTo = 1,
-    skillFrom  = 1, skillTo  = 1,
-    burstFrom  = 1, burstTo  = 1,
-  } = talentState
-
-  const normal = calculateTalentCost(character, normalFrom, normalTo)
-  const skill  = calculateTalentCost(character, skillFrom,  skillTo)
-  const burst  = calculateTalentCost(character, burstFrom,  burstTo)
-
-  const mergeObj = (a, b) => {
-    const out = { ...a }
-    for (const [k, v] of Object.entries(b)) out[k] = (out[k] || 0) + v
-    return out
-  }
-
-  const allBooks  = mergeObj(mergeObj(normal.books, skill.books), burst.books)
-  const allMob    = mergeObj(mergeObj(normal.mob,   skill.mob),   burst.mob)
-  const allWeekly = mergeObj(
-    normal.weeklyBoss || {},
-    mergeObj(skill.weeklyBoss || {}, burst.weeklyBoss || {})
-  )
-
-  return {
-    talentMora:  normal.talentMora + skill.talentMora + burst.talentMora,
-    books:       allBooks,
-    mob:         allMob,
-    weeklyBoss:  Object.keys(allWeekly).length > 0 ? allWeekly : null,
-    crown:       normal.crown + skill.crown + burst.crown,
-    hasAnyCost:  normal.hasAnyCost || skill.hasAnyCost || burst.hasAnyCost,
-  }
+export function calculateAllTalentsCost(character, talents) {
+  const auto = calculateTalentCost(character, talents?.auto?.current, talents?.auto?.target);
+  const skill = calculateTalentCost(character, talents?.skill?.current, talents?.skill?.target);
+  const burst = calculateTalentCost(character, talents?.burst?.current, talents?.burst?.target);
+  
+  const total = {};
+  [auto, skill, burst].forEach(tObj => {
+    Object.entries(tObj).forEach(([k, v]) => {
+      total[k] = (total[k] || 0) + v;
+    });
+  });
+  return total;
 }
+
+
 
 // ─── Talent Book Domain Schedule ───────────────────────────────────────────
 // Standard Genshin server reset day = Monday 4:00 UTC+8.
@@ -563,104 +443,15 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  *   hasAnyCost: boolean,
  * }
  */
-export function calculateWeaponCost(weapon, fromLevel, fromAsc, toLevel, toAsc) {
-  if (!weapon) return { weaponMora: 0, mysticOre: 0, fineOre: 0, normalOre: 0, ascMats: {}, eliteMob: {}, mob: {}, hasAnyCost: false }
-
-  const rarity = weapon.rarity ?? 3
-  const ascBase    = (weapon.materials?.ascension_mat && weapon.materials.ascension_mat !== '')
-    ? weapon.materials.ascension_mat
-    : `${weapon.name}AscMat`        // fallback synthetic key
-  const eliteBase  = (weapon.materials?.elite_mat && weapon.materials.elite_mat !== '')
-    ? weapon.materials.elite_mat
-    : `WeaponElite`
-  const mobBase    = (weapon.materials?.mob_mat && weapon.materials.mob_mat !== '')
-    ? weapon.materials.mob_mat
-    : `WeaponMob`
-
-  const phases = rarity >= 5 ? WEAPON_ASCENSION_5STAR
-               : rarity >= 4 ? WEAPON_ASCENSION_4STAR
-               : WEAPON_ASCENSION_3STAR
-
-  const levelingMoraTable = rarity >= 5 ? WEAPON_LEVELING_MORA_5STAR
-                          : rarity >= 4 ? WEAPON_LEVELING_MORA_4STAR
-                          : WEAPON_LEVELING_MORA_3STAR
-
-  const oreTable = rarity >= 5 ? WEAPON_ORE_PER_LEVEL_5STAR
-                 : rarity >= 4 ? WEAPON_ORE_PER_LEVEL_4STAR
-                 : WEAPON_ORE_PER_LEVEL_3STAR
-
-  // ── Leveling cost ────────────────────────────────────────────────────────
-  let levelingMora = 0
-  let mysticOre    = 0
-
-  if (toLevel > fromLevel) {
-    for (const [bracketFrom, bracketTo, moraPerLv] of levelingMoraTable) {
-      const overlapFrom = Math.max(fromLevel, bracketFrom)
-      const overlapTo   = Math.min(toLevel,   bracketTo)
-      if (overlapTo > overlapFrom) {
-        levelingMora += (overlapTo - overlapFrom) * moraPerLv
-      }
-    }
-    for (const [bracketFrom, bracketTo, orePerLv] of oreTable) {
-      const overlapFrom = Math.max(fromLevel, bracketFrom)
-      const overlapTo   = Math.min(toLevel,   bracketTo)
-      if (overlapTo > overlapFrom) {
-        mysticOre += (overlapTo - overlapFrom) * orePerLv
-      }
-    }
-  }
-
-  // ── Ascension cost ────────────────────────────────────────────────────────
-  let ascensionMora = 0
-  const ascMats  = {}
-  const eliteMob = {}
-  const mob      = {}
-
-  for (let phase = fromAsc; phase < toAsc; phase++) {
-    const p = phases[phase]
-    if (!p) continue
-
-    ascensionMora += p.mora
-
-    // Ascension materials (4 tiers)
-    p.ascMat.forEach((qty, tier) => {
-      if (qty > 0) {
-        const k = buildWeaponAscMatKey(ascBase, tier)
-        ascMats[k] = (ascMats[k] || 0) + qty
-      }
-    })
-
-    // Elite mob drops (3 tiers)
-    p.elite.forEach((qty, tier) => {
-      if (qty > 0) {
-        const k = buildWeaponEliteKey(eliteBase, tier)
-        eliteMob[k] = (eliteMob[k] || 0) + qty
-      }
-    })
-
-    // Normal mob drops (3 tiers)
-    p.mob.forEach((qty, tier) => {
-      if (qty > 0) {
-        const k = buildMobNames(mobBase)[tier]
-        mob[k] = (mob[k] || 0) + qty
-      }
-    })
-  }
-
-  const weaponMora = levelingMora + ascensionMora
-
-  return {
-    weaponMora,
-    levelingMora,
-    ascensionMora,
-    mysticOre,
-    fineOre: 0,
-    normalOre: 0,
-    ascMats,
-    eliteMob,
-    mob,
-    hasAnyCost: weaponMora > 0 || mysticOre > 0 || Object.keys(ascMats).length > 0
-  }
+export function calculateWeaponCost(weapon, fromLv, toLv) {
+  const rarity = weapon.rarity ? `${weapon.rarity}_star` : "5_star";
+  if (!costsData?.weapon_levels?.[rarity]) return {};
+  const sLv = extractLevel(fromLv);
+  const tLv = extractLevel(toLv);
+  const arr = costsData.weapon_levels[rarity];
+  const sObj = arr.find(x => x.level === sLv) || arr[0];
+  const tObj = arr.find(x => x.level === tLv) || arr[arr.length - 1];
+  return calculateDifference(sObj, tObj, false); // Weapons ascend, so cost goes up
 }
 
 // ─── Weapon Domain Schedule ────────────────────────────────────────────────

@@ -9,7 +9,7 @@ import {
 import GenshinImage from './GenshinImage'
 import { getElementIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
 import {
-  calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost,
+  calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost,
   clampLevel, getLevelRange, ASCENSION_CAPS,
   formatNumber, formatMaterialName, WEAPON_ORE_KEY
 } from '../utils/calculator'
@@ -220,11 +220,20 @@ export default function CharacterModal({ character, onClose }) {
   const [weaponToLevel,   setWeaponToLevel]   = useState(trackedWeapon?.targetLevel    ?? 90)
 
   // Pre-filter valid weapons for this character's weapon type strictly
-  const availableWeapons = useMemo(() => {
-    return weaponsData
-      .filter(w => w.type && w.type.trim().toLowerCase() === weapon_type.trim().toLowerCase())
-      .sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name))
-  }, [weapon_type])
+  const compatibleWeapons = useMemo(() => {
+    return (weaponsData || [])
+      .filter(w => {
+        const wType = (w.type || w.weapon_type || '').toLowerCase().trim();
+        const cType = (character.weapon || character.weapon_type || '').toLowerCase().trim();
+        return wType === cType;
+      })
+      .sort((a, b) => {
+        // Sort by string length of the stars (e.g., '★★★★★' is 5, '★★★★' is 4)
+        const rarityA = (a.rarity || '').length;
+        const rarityB = (b.rarity || '').length;
+        return rarityB - rarityA;
+      });
+  }, [character])
 
   const selectedWeaponData = useMemo(() => {
     return equippedWeaponName ? weaponsData.find(w => w.name === equippedWeaponName) : null
@@ -276,41 +285,35 @@ export default function CharacterModal({ character, onClose }) {
 
   // ── Live calculation ─────────────────────────────────────────────────────
   const ascCosts = useMemo(
-    () => calculateProgressionCost(character, fromLevel, fromAsc, safeToLevel, safeToAsc, costsData),
-    [character, fromLevel, fromAsc, safeToLevel, safeToAsc]
+    () => calculateProgressionCost(character, fromLevel, safeToLevel),
+    [character, fromLevel, safeToLevel]
   )
 
-  const talentCosts = useMemo(
-    () => calculateAllTalentsCost(character, { normalFrom, normalTo, skillFrom, skillTo, burstFrom, burstTo }),
-    [character, normalFrom, normalTo, skillFrom, skillTo, burstFrom, burstTo]
-  )
+  const normalCosts = useMemo(() => calculateTalentCost(character, normalFrom, normalTo), [character, normalFrom, normalTo]);
+  const skillCosts = useMemo(() => calculateTalentCost(character, skillFrom, skillTo), [character, skillFrom, skillTo]);
+  const burstCosts = useMemo(() => calculateTalentCost(character, burstFrom, burstTo), [character, burstFrom, burstTo]);
 
   const weaponCosts = useMemo(
     () => {
-      if (!selectedWeaponData) return { weaponMora: 0, mysticOre: 0, ascMats: {}, eliteMob: {}, mob: {}, hasAnyCost: false }
+      if (!selectedWeaponData) return {};
       return calculateWeaponCost(selectedWeaponData, weaponFromLevel, weaponFromAsc, safeWeaponToLevel, safeWeaponToAsc)
     },
     [selectedWeaponData, weaponFromLevel, weaponFromAsc, safeWeaponToLevel, safeWeaponToAsc]
   )
 
-  const combinedMora = ascCosts.totalMora + talentCosts.talentMora + weaponCosts.weaponMora
-  const hasAnyCost   = ascCosts.hasAnyCost || talentCosts.hasAnyCost || weaponCosts.hasAnyCost
+  const totalCosts = {};
+  const allCostObjects = [ascCosts, normalCosts, skillCosts, burstCosts, weaponCosts];
+  
+  allCostObjects.forEach(costObj => {
+    if (!costObj) return;
+    Object.entries(costObj).forEach(([key, val]) => {
+      if (typeof val === 'number' && val > 0) {
+        totalCosts[key] = (totalCosts[key] || 0) + val;
+      }
+    });
+  });
 
-  // Merge mob mats from ascension, talents, and weapon
-  const allMob = { ...ascCosts.mob }
-  if (talentCosts.mob) {
-    for (const [k, v] of Object.entries(talentCosts.mob)) {
-      allMob[k] = (allMob[k] || 0) + v
-    }
-  }
-  if (weaponCosts.mob) {
-    for (const [k, v] of Object.entries(weaponCosts.mob)) {
-      allMob[k] = (allMob[k] || 0) + v
-    }
-  }
-
-  // Merge elite mobs if weapon uses them (weapons use elite mats, characters don't typically but we handle it safely)
-  const allEliteMob = { ...weaponCosts.eliteMob }
+  const hasAnyCost = Object.values(totalCosts).some(val => val > 0);
 
   // ── Save to Zustand ──────────────────────────────────────────────────────
   const handleSave = () => {
@@ -339,6 +342,8 @@ export default function CharacterModal({ character, onClose }) {
   }, [])
 
   const elColor = elConfig.color
+
+  // Removed modal render trace logs
 
   return createPortal(
     <div
@@ -482,18 +487,11 @@ export default function CharacterModal({ character, onClose }) {
                 }}
               >
                 <option value="">-- No Weapon Equipped --</option>
-                {/* Group by rarity */}
-                {[5, 4, 3, 2, 1].map((r) => {
-                  const items = availableWeapons.filter(w => w.rarity === r)
-                  if (items.length === 0) return null
-                  return (
-                    <optgroup key={r} label={`${'\u2605'.repeat(r)} Weapons`}>
-                      {items.map(w => (
-                        <option key={w.name} value={w.name}>{formatName(w.name)}</option>
-                      ))}
-                    </optgroup>
-                  )
-                })}
+                {compatibleWeapons.map(w => (
+                  <option key={w.name} value={w.name}>
+                    {formatName(w.name)} ({w.rarity})
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -523,45 +521,66 @@ export default function CharacterModal({ character, onClose }) {
             {hasAnyCost ? (
               <>
                 <div className="rounded-xl border border-[var(--border)] overflow-hidden mb-4">
-                  <CostRow icon="🪙" label="Total Mora" value={formatNumber(combinedMora)} accent="#C8A96E" large />
-                  {ascCosts.levelingMora > 0 && (
-                    <CostRow icon="📈" label="└ Char Leveling"   value={formatNumber(ascCosts.levelingMora)}   accent="#A07840" />
-                  )}
-                  {ascCosts.ascensionMora > 0 && (
-                    <CostRow icon="🔮" label="└ Char Ascension"  value={formatNumber(ascCosts.ascensionMora)}  accent="#A07840" />
-                  )}
-                  {talentCosts.talentMora > 0 && (
-                    <CostRow icon="📖" label="└ Talent Mora"     value={formatNumber(talentCosts.talentMora)} accent="#A07840" />
-                  )}
-                  {weaponCosts.weaponMora > 0 && (
-                    <CostRow icon="🗡️" label="└ Weapon Mora"     value={formatNumber(weaponCosts.weaponMora)} accent="#A07840" />
-                  )}
-                  {ascCosts.heroWits > 0 && (
-                    <CostRow icon="📚" label="Hero's Wit"        value={`×${ascCosts.heroWits}`}              accent="#60A5FA" />
-                  )}
-                  {weaponCosts.mysticOre > 0 && (
-                    <CostRow icon="💠" label="Mystic Enh. Ore"   value={`×${weaponCosts.mysticOre}`}          accent="#F472B6" />
-                  )}
-                  {talentCosts.crown > 0 && (
-                    <CostRow icon="👑" label="Crown of Insight"  value={`×${talentCosts.crown}`}              accent="#FBBF24" />
-                  )}
-                </div>
-
-                <MaterialGroup icon="💎" title="Character Ascension Gems"        items={ascCosts.gemstones}   elementColor={elColor} />
-                {ascCosts.worldBoss && (
-                  <MaterialGroup icon="🐉" title="World Boss"     items={ascCosts.worldBoss}   elementColor={elColor} />
-                )}
-                <MaterialGroup icon="🌸" title="Local Specialty"  items={ascCosts.localSpecialty} elementColor={elColor} />
-                <MaterialGroup icon="📖" title="Talent Books"     items={talentCosts.books}    elementColor={elColor} />
-                {talentCosts.weeklyBoss && (
-                  <MaterialGroup icon="👑" title="Weekly Boss"    items={talentCosts.weeklyBoss} elementColor={elColor} />
-                )}
-                <MaterialGroup icon="🔗" title="Weapon Ascension" items={weaponCosts.ascMats}  elementColor="var(--gold)" />
-                <MaterialGroup icon="🛡️" title="Elite Mob Drops"  items={allEliteMob}          elementColor="var(--gold)" />
-                {Object.keys(allMob).length > 0 && (
-                  <MaterialGroup icon="⚔️" title="Mob Drops"     items={allMob}               elementColor={elColor} />
-                )}
-              </>
+                    <CostRow icon="💰" label="Total Mora" value={formatNumber(totalCosts['mora'] || 0)} accent="#C8A96E" large />
+                    {totalCosts['heros_wit'] > 0 && (
+                      <CostRow icon="📚" label="Hero's Wit"        value={`×${totalCosts['heros_wit']}`}              accent="#60A5FA" />
+                    )}
+                    {totalCosts['mystic_ore'] > 0 && (
+                      <CostRow icon="💠" label="Mystic Enh. Ore"   value={`×${totalCosts['mystic_ore']}`}          accent="#F472B6" />
+                    )}
+                    {totalCosts['crown'] > 0 && (
+                      <CostRow icon="👑" label="Crown of Insight"  value={`×${totalCosts['crown']}`}              accent="#FBBF24" />
+                    )}
+                  </div>
+  
+                  <MaterialGroup icon="💎" title="Character Ascension Gems" items={Object.fromEntries(
+                    Object.entries({
+                      "Sliver": totalCosts['gem_silver'],
+                      "Fragment": totalCosts['gem_fragment'],
+                      "Chunk": totalCosts['gem_chunk'],
+                      "Gemstone": totalCosts['gem_gemstone']
+                    }).filter(([_, v]) => v > 0)
+                  )} elementColor={elColor} />
+  
+                  <MaterialGroup icon="🐉" title="World Boss" items={totalCosts['boss_material'] > 0 ? { "Boss Material": totalCosts['boss_material'] } : null} elementColor={elColor} />
+                  
+                  <MaterialGroup icon="🌸" title="Local Specialty" items={totalCosts['local_specialty'] > 0 ? { "Local Specialty": totalCosts['local_specialty'] } : null} elementColor={elColor} />
+                  
+                  <MaterialGroup icon="📖" title="Talent Books" items={Object.fromEntries(
+                    Object.entries({
+                      "2-Star Book": totalCosts['2_star_talent_material'],
+                      "3-Star Book": totalCosts['3_star_talent_material'],
+                      "4-Star Book": totalCosts['4_star_talent_material']
+                    }).filter(([_, v]) => v > 0)
+                  )} elementColor={elColor} />
+  
+                  <MaterialGroup icon="🐺" title="Weekly Boss" items={totalCosts['weekly_boss_material'] > 0 ? { "Weekly Boss Material": totalCosts['weekly_boss_material'] } : null} elementColor={elColor} />
+                  
+                  <MaterialGroup icon="🔗" title="Weapon Ascension" items={Object.fromEntries(
+                    Object.entries({
+                      "2-Star Material": totalCosts['2_star_ascension_material'],
+                      "3-Star Material": totalCosts['3_star_ascension_material'],
+                      "4-Star Material": totalCosts['4_star_ascension_material'],
+                      "5-Star Material": totalCosts['5_star_ascension_material']
+                    }).filter(([_, v]) => v > 0)
+                  )} elementColor="var(--gold)" />
+                  
+                  <MaterialGroup icon="🛡️" title="Weapon Elite Drops" items={Object.fromEntries(
+                    Object.entries({
+                      "2-Star Material": totalCosts['2_star_enhancement_material'],
+                      "3-Star Material": totalCosts['3_star_enhancement_material'],
+                      "4-Star Material": totalCosts['4_star_enhancement_material']
+                    }).filter(([_, v]) => v > 0)
+                  )} elementColor="var(--gold)" />
+                  
+                  <MaterialGroup icon="⚔️" title="Enemy Drops" items={Object.fromEntries(
+                    Object.entries({
+                      "1-Star Material": totalCosts['1_star_enemy_material'],
+                      "2-Star Material": totalCosts['2_star_enemy_material'],
+                      "3-Star Material": totalCosts['3_star_enemy_material']
+                    }).filter(([_, v]) => v > 0)
+                  )} elementColor={elColor} />
+                </>
             ) : (
               <div className="flex flex-col items-center py-8 text-center rounded-xl border border-[var(--border)]">
                 <span className="text-3xl mb-2">✅</span>

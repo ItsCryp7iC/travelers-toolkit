@@ -7,6 +7,7 @@ import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import { ELEMENTS } from '../utils/gameData'
 import { calculateWeaponCost, formatNumber, buildWeaponAscMatKey, buildWeaponEliteKey, buildMobNames, formatMaterialName } from '../utils/calculator'
+import { resolveWeaponMaterials } from '../utils/dataManager'
 import GenshinImage from '../components/GenshinImage'
 import { getWeaponIcon, getCharacterAvatar, getMaterialIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 import MatQuantity from '../components/MatQuantity'
@@ -47,7 +48,7 @@ export default function Weapons() {
       const data = weaponsData.find((w) => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
       const assignedChar = tw.assignedTo ? charactersData.find((c) => c.name === tw.assignedTo) : null
       
-      const costs = calculateWeaponCost(data, tw.level, tw.ascension, tw.targetLevel, tw.targetAscension)
+      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel)
 
       return { ...tw, data, assignedChar, costs }
     })
@@ -235,16 +236,14 @@ export default function Weapons() {
                   </thead>
                   <tbody>
                     {filtered.map((wp, idx) => {
-                      const rColor = RARITY_COLORS[wp.data?.rarity] || '#C8A96E'
+                      try {
+                        const rColor = RARITY_COLORS[wp.data?.rarity] || '#C8A96E'
                       const wpCfg  = WEAPON_TYPES[wp.data?.type] || { emoji: '⚔️' }
                       const assignedChar = wp.assignedChar
                       const elCfg = assignedChar ? (ELEMENTS[assignedChar.element] || ELEMENTS.Unknown) : null
                       const costs = wp.costs
                       
-                      const ascBase = wp.data?.materials?.ascension_mat || 'WeaponAscMat'
-                      const eliteBase = wp.data?.materials?.elite_mat || 'WeaponElite'
-                      const mobBase = wp.data?.materials?.mob_mat || 'WeaponMob'
-                      const mobNames = buildMobNames(mobBase)
+                      const resolvedMats = resolveWeaponMaterials(wp.data)
 
                       return (
                         <tr
@@ -295,26 +294,26 @@ export default function Weapons() {
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)] border-r border-[var(--border)]">{wp.targetLevel}</td>
                           
                           {/* Enhancement Math */}
-                          <td className="px-3 py-2"><MatQuantity val={costs.mysticOre} icon="🔮" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={costs.fineOre} icon="🪨" color="text-[#60A5FA]" nameKey="Fine Enhancement Ore" category="Ores" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={costs.normalOre} icon="🪨" color="text-[#9CA3AF]" nameKey="Enhancement Ore" category="Ores" /></td>
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs.weaponMora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={costs?.mystic_ore} icon="🔮" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={0} icon="🪨" color="text-[#60A5FA]" nameKey="Fine Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={0} icon="🪨" color="text-[#9CA3AF]" nameKey="Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs?.mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
 
                           {/* Ascension Mats */}
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 3)]} nameKey={buildWeaponAscMatKey(ascBase, 3)} icon="✨" color="text-[#FBBF24]" category="Weapon Ascension Material" />
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 2)]} nameKey={buildWeaponAscMatKey(ascBase, 2)} icon="🔮" color="text-[#A78BFA]" category="Weapon Ascension Material" />
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 1)]} nameKey={buildWeaponAscMatKey(ascBase, 1)} icon="💎" color="text-[#60A5FA]" category="Weapon Ascension Material" />
-                          <MatCell qty={costs.ascMats?.[buildWeaponAscMatKey(ascBase, 0)]} nameKey={buildWeaponAscMatKey(ascBase, 0)} icon="🔸" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Weapon Ascension Material" />
+                          <MatCell qty={costs?.['5_star_ascension_material']} nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} icon="✨" color="text-[#FBBF24]" category="Weapon Ascension Material" />
+                          <MatCell qty={costs?.['4_star_ascension_material']} nameKey={resolvedMats?.ascensionFamily?.tiers?.['4_star']?.name} icon="🔮" color="text-[#A78BFA]" category="Weapon Ascension Material" />
+                          <MatCell qty={costs?.['3_star_ascension_material']} nameKey={resolvedMats?.ascensionFamily?.tiers?.['3_star']?.name} icon="💎" color="text-[#60A5FA]" category="Weapon Ascension Material" />
+                          <MatCell qty={costs?.['2_star_ascension_material']} nameKey={resolvedMats?.ascensionFamily?.tiers?.['2_star']?.name} icon="🔸" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Weapon Ascension Material" />
 
                           {/* Elite Mats */}
-                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 2)]} nameKey={buildWeaponEliteKey(eliteBase, 2)} icon="👑" color="text-[#A78BFA]" category="Elite Enhancement Material" />
-                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 1)]} nameKey={buildWeaponEliteKey(eliteBase, 1)} icon="🏵️" color="text-[#60A5FA]" category="Elite Enhancement Material" />
-                          <MatCell qty={costs.eliteMob?.[buildWeaponEliteKey(eliteBase, 0)]} nameKey={buildWeaponEliteKey(eliteBase, 0)} icon="🦴" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Elite Enhancement Material" />
+                          <MatCell qty={costs?.['4_star_enhancement_material']} nameKey={resolvedMats?.eliteFamily?.tiers?.['4_star']?.name} icon="👑" color="text-[#A78BFA]" category="Elite Enhancement Material" />
+                          <MatCell qty={costs?.['3_star_enhancement_material']} nameKey={resolvedMats?.eliteFamily?.tiers?.['3_star']?.name} icon="🏵️" color="text-[#60A5FA]" category="Elite Enhancement Material" />
+                          <MatCell qty={costs?.['2_star_enhancement_material']} nameKey={resolvedMats?.eliteFamily?.tiers?.['2_star']?.name} icon="🦴" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Elite Enhancement Material" />
 
                           {/* Mob Mats */}
-                          <MatCell qty={costs.mob?.[mobNames[2]]} nameKey={mobNames[2]} icon="👻" color="text-[#A78BFA]" category="Common Enhancement Material" />
-                          <MatCell qty={costs.mob?.[mobNames[1]]} nameKey={mobNames[1]} icon="💧" color="text-[#60A5FA]" category="Common Enhancement Material" />
-                          <MatCell qty={costs.mob?.[mobNames[0]]} nameKey={mobNames[0]} icon="🦠" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Common Enhancement Material" />
+                          <MatCell qty={costs?.['3_star_enemy_material']} nameKey={resolvedMats?.commonFamily?.tiers?.['3_star']?.name} icon="👻" color="text-[#A78BFA]" category="Common Enhancement Material" />
+                          <MatCell qty={costs?.['2_star_enemy_material']} nameKey={resolvedMats?.commonFamily?.tiers?.['2_star']?.name} icon="💧" color="text-[#60A5FA]" category="Common Enhancement Material" />
+                          <MatCell qty={costs?.['1_star_enemy_material']} nameKey={resolvedMats?.commonFamily?.tiers?.['1_star']?.name} icon="🦠" color="text-[#9CA3AF]" className="border-r border-[var(--border)]" category="Common Enhancement Material" />
                           
                           {/* Actions */}
                           <td className="px-4 py-2">
@@ -327,7 +326,11 @@ export default function Weapons() {
                           </td>
                         </tr>
                       )
-                    })}
+                    } catch (e) {
+                      console.error('Failed to render weapon row:', wp.id, e)
+                      return null
+                    }
+                  })}
                   </tbody>
                 </table>
               </div>

@@ -1,0 +1,401 @@
+[
+  {
+    "id": "freedom",
+    "name": "Freedom",
+    "region": "Mondstadt",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesoffreedom",
+        "name": "Philosophies of Freedom"
+      },
+      "3_star": {
+        "id": "guidetofreedom",
+        "name": "Guide to Freedom"
+      },
+      "2_star": {
+        "id": "teachingsoffreedom",
+        "name": "Teachings of Freedom"
+      }
+    }
+  },
+  {
+    "id": "resistance",
+    "name": "Resistance",
+    "region": "Mondstadt",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofresistance",
+        "name": "Philosophies of Resistance"
+      },
+      "3_star": {
+        "id": "guidetoresistance",
+        "name": "Guide to Resistance"
+      },
+      "2_star": {
+        "id": "teachingsofresistance",
+        "name": "Teachings of Resistance"
+      }
+    }
+  },
+  {
+    "id": "ballad",
+    "name": "Ballad",
+    "region": "Mondstadt",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofballad",
+        "name": "Philosophies of Ballad"
+      },
+      "3_star": {
+        "id": "guidetoballad",
+        "name": "Guide to Ballad"
+      },
+      "2_star": {
+        "id": "teachingsofballad",
+        "name": "Teachings of Ballad"
+      }
+    }
+  },
+  {
+    "id": "prosperity",
+    "name": "Prosperity",
+    "region": "Liyue",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofprosperity",
+        "name": "Philosophies of Prosperity"
+      },
+      "3_star": {
+        "id": "guidetoprosperity",
+        "name": "Guide to Prosperity"
+      },
+      "2_star": {
+        "id": "teachingsofprosperity",
+        "name": "Teachings of Prosperity"
+      }
+    }
+  },
+  {
+    "id": "diligence",
+    "name": "Diligence",
+    "region": "Liyue",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofdiligence",
+        "name": "Philosophiesof Diligence"
+      },
+      "3_star": {
+        "id": "guidetodiligence",
+        "name": "Guide to Diligence"
+      },
+      "2_star": {
+        "id": "teachingsofdiligence",
+        "name": "Teachings of Diligence"
+      }
+    }
+  },
+  {
+    "id": "gold",
+    "name": "Gold",
+    "region": "Liyue",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofgold",
+        "name": "Philosophies of Gold"
+      },
+      "3_star": {
+        "id": "guidetogold",
+        "name": "Guide to Gold"
+      },
+      "2_star": {
+        "id": "teachingsofgold",
+        "name": "Teachings of Gold"
+      }
+    }
+  },
+  {
+    "id": "transience",
+    "name": "Transience",
+    "region": "Inazuma",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesoftransience",
+        "name": "Philosophies of Transience"
+      },
+      "3_star": {
+        "id": "guidetotransience",
+        "name": "Guide to Transience"
+      },
+      "2_star": {
+        "id": "teachingsoftransience",
+        "name": "Teachings of Transience"
+      }
+    }
+  },
+  {
+    "id": "elegance",
+    "name": "Elegance",
+    "region": "Inazuma",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofelegance",
+        "name": "Philosophies of Elegance"
+      },
+      "3_star": {
+        "id": "guidetoelegance",
+        "name": "Guide to Elegance"
+      },
+      "2_star": {
+        "id": "teachingsofelegance",
+        "name": "Teachings of Elegance"
+      }
+    }
+  },
+  {
+    "id": "light",
+    "name": "Light",
+    "region": "Inazuma",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesoflight",
+        "name": "Philosophies of Light"
+      },
+      "3_star": {
+        "id": "guidetolight",
+        "name": "Guide to Light"
+      },
+      "2_star": {
+        "id": "teachingsoflight",
+        "name": "Teachings of Light"
+      }
+    }
+  },
+  {
+    "id": "admonition",
+    "name": "Admonition",
+    "region": "Sumeru",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofadmonition",
+        "name": "Philosophies of Admonition"
+      },
+      "3_star": {
+        "id": "guidetoadmonition",
+        "name": "Guide to Admonition"
+      },
+      "2_star": {
+        "id": "teachingsofadmonition",
+        "name": "Teachings of Admonition"
+      }
+    }
+  },
+  {
+    "id": "ingenuity",
+    "name": "Ingenuity",
+    "region": "Sumeru",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofingenuity",
+        "name": "Philosophies of Ingenuity"
+      },
+      "3_star": {
+        "id": "guidetoingenuity",
+        "name": "Guide to Ingenuity"
+      },
+      "2_star": {
+        "id": "teachingsofingenuity",
+        "name": "Teachings of Ingenuity"
+      }
+    }
+  },
+  {
+    "id": "praxis",
+    "name": "Praxis",
+    "region": "Sumeru",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofpraxis",
+        "name": "Philosophies of Praxis"
+      },
+      "3_star": {
+        "id": "guidetopraxis",
+        "name": "Guide to Praxis"
+      },
+      "2_star": {
+        "id": "teachingsofpraxis",
+        "name": "Teachings of Praxis"
+      }
+    }
+  },
+  {
+    "id": "equity",
+    "name": "Equity",
+    "region": "Fontaine",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofequity",
+        "name": "Philosophies of Equity"
+      },
+      "3_star": {
+        "id": "guidetoequity",
+        "name": "Guide to Equity"
+      },
+      "2_star": {
+        "id": "teachingsofequity",
+        "name": "Teachings of Equity"
+      }
+    }
+  },
+  {
+    "id": "justice",
+    "name": "Justice",
+    "region": "Fontaine",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofjustice",
+        "name": "Philosophies of Justice"
+      },
+      "3_star": {
+        "id": "guidetojustice",
+        "name": "Guide to Justice"
+      },
+      "2_star": {
+        "id": "teachingsofjustice",
+        "name": "Teachings of Justice"
+      }
+    }
+  },
+  {
+    "id": "order",
+    "name": "Order",
+    "region": "Fontaine",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesoforder",
+        "name": "Philosophies of Order"
+      },
+      "3_star": {
+        "id": "guidetoorder",
+        "name": "Guide to Order"
+      },
+      "2_star": {
+        "id": "teachingsoforder",
+        "name": "Teachings of Order"
+      }
+    }
+  },
+  {
+    "id": "contention",
+    "name": "Contention",
+    "region": "Natlan",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofcontention",
+        "name": "Philosophies of Contention"
+      },
+      "3_star": {
+        "id": "guidetocontention",
+        "name": "Guide to Contention"
+      },
+      "2_star": {
+        "id": "teachingsofcontention",
+        "name": "Teachings of Contention"
+      }
+    }
+  },
+  {
+    "id": "kindling",
+    "name": "Kindling",
+    "region": "Natlan",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofkindling",
+        "name": "Philosophies of Kindling"
+      },
+      "3_star": {
+        "id": "guidetokindling",
+        "name": "Guide to Kindling"
+      },
+      "2_star": {
+        "id": "teachingsofkindling",
+        "name": "Teachings of Kindling"
+      }
+    }
+  },
+  {
+    "id": "conflict",
+    "name": "Conflict",
+    "region": "Natlan",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofconflict",
+        "name": "Philosophies of Conflict"
+      },
+      "3_star": {
+        "id": "guidetoconflict",
+        "name": "Guide to Conflict"
+      },
+      "2_star": {
+        "id": "teachingsofconflict",
+        "name": "Teachings of Conflict"
+      }
+    }
+  },
+  {
+    "id": "moonlight",
+    "name": "Moonlight",
+    "region": "Nod-Krai",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofmoonlight",
+        "name": "Philosophies of Moonlight"
+      },
+      "3_star": {
+        "id": "guidetomoonlight",
+        "name": "Guide to Moonlight"
+      },
+      "2_star": {
+        "id": "teachingsofmoonlight",
+        "name": "Teachings of Moonlight"
+      }
+    }
+  },
+  {
+    "id": "elysium",
+    "name": "Elysium",
+    "region": "Nod-Krai",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofelysium",
+        "name": "Philosophies of Elysium"
+      },
+      "3_star": {
+        "id": "guidetoelysium",
+        "name": "Guide to Elysium"
+      },
+      "2_star": {
+        "id": "teachingsofelysium",
+        "name": "Teachings of Elysium"
+      }
+    }
+  },
+  {
+    "id": "vagrancy",
+    "name": "Vagrancy",
+    "region": "Nod-Krai",
+    "tiers": {
+      "4_star": {
+        "id": "philosophiesofvagrancy",
+        "name": "Philosophies of Vagrancy"
+      },
+      "3_star": {
+        "id": "guidetovagrancy",
+        "name": "Guide to Vagrancy"
+      },
+      "2_star": {
+        "id": "teachingsofvagrancy",
+        "name": "Teachings of Vagrancy"
+      }
+    }
+  }
+]

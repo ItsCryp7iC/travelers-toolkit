@@ -76,11 +76,11 @@ function ToFarmCategory({ icon, title, items, accent, emptyMsg }) {
 }
 
 // ─── Per-Character Breakdown Row ──────────────────────────────────────────
-function BreakdownRow({ entry: { name, entry, costs, talentCosts, weaponCosts, talentState, weaponState } }) {
+function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponState } }) {
   const [open, setOpen] = useState(false)
   const displayName = formatName(name)
 
-  const totalMora = (costs?.totalMora ?? 0) + (talentCosts?.talentMora ?? 0) + (weaponCosts?.weaponMora ?? 0)
+  const totalMora = totalCosts?.mora || 0
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden mb-2">
@@ -98,7 +98,7 @@ function BreakdownRow({ entry: { name, entry, costs, talentCosts, weaponCosts, t
             A{entry.ascension ?? 0} Lv{entry.level ?? 1} → A{entry.targetAscension ?? 6} Lv{entry.targetLevel ?? 90}
             {talentState && (
               <span className="ml-2">
-                · Talents {talentState.normalFrom}/{talentState.skillFrom}/{talentState.burstFrom}→{talentState.normalTo}/{talentState.skillTo}/{talentState.burstTo}
+                • Talents {talentState.normalFrom}/{talentState.skillFrom}/{talentState.burstFrom}→{talentState.normalTo}/{talentState.skillTo}/{talentState.burstTo}
               </span>
             )}
             {weaponState && weaponState.equippedWeapon && (
@@ -118,62 +118,84 @@ function BreakdownRow({ entry: { name, entry, costs, talentCosts, weaponCosts, t
       {open && (
         <div className="px-4 pb-4 border-t border-[var(--border)] pt-3">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {costs && [
-              { label: 'Leveling Mora',  value: formatNumber(costs.levelingMora),  icon: '📈' },
-              { label: 'Ascension Mora', value: formatNumber(costs.ascensionMora), icon: '🔮' },
-              { label: "Hero's Wit",     value: `×${costs.heroWits}`,             icon: '📚' },
-            ].map(({ label, value, icon }) => (
-              <div key={label} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">{icon} {label}</p>
-                <p className="text-sm font-cinzel font-bold text-[var(--text)]">{value}</p>
-              </div>
-            ))}
-            {talentCosts && talentCosts.talentMora > 0 && (
+            {totalCosts?.heros_wit > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">📖 Talent Mora</p>
-                <p className="text-sm font-cinzel font-bold text-[var(--text)]">{formatNumber(talentCosts.talentMora)}</p>
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">📚 Hero's Wit</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.heros_wit}</p>
               </div>
             )}
-            {talentCosts && talentCosts.crown > 0 && (
-              <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">👑 Crowns</p>
-                <p className="text-sm font-cinzel font-bold text-[#FBBF24]">×{talentCosts.crown}</p>
-              </div>
-            )}
-            {costs && Object.entries(costs.gemstones || {}).map(([mat, qty]) => (
-              <div key={mat} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">💎 {formatMaterialName(mat)}</p>
-                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{qty}</p>
-              </div>
-            ))}
-            {talentCosts && Object.entries(talentCosts.books || {}).map(([mat, qty]) => (
-              <div key={mat} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">📖 {formatMaterialName(mat)}</p>
-                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{qty}</p>
-              </div>
-            ))}
-            {weaponCosts && weaponCosts.weaponMora > 0 && (
-              <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🗡️ Weapon Mora</p>
-                <p className="text-sm font-cinzel font-bold text-[var(--text)]">{formatNumber(weaponCosts.weaponMora)}</p>
-              </div>
-            )}
-            {weaponCosts && weaponCosts.mysticOre > 0 && (
+            {totalCosts?.mystic_ore > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-[9px] text-[var(--muted)] mb-0.5">💠 Mystic Ore</p>
-                <p className="text-sm font-cinzel font-bold text-[#F472B6]">×{weaponCosts.mysticOre}</p>
+                <p className="text-sm font-cinzel font-bold text-[#F472B6]">×{totalCosts.mystic_ore}</p>
               </div>
             )}
-            {weaponCosts && Object.entries(weaponCosts.ascMats || {}).map(([mat, qty]) => (
-              <div key={mat} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🔗 {formatMaterialName(mat)}</p>
-                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{qty}</p>
+            {totalCosts?.crown > 0 && (
+              <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">👑 Crowns</p>
+                <p className="text-sm font-cinzel font-bold text-[#FBBF24]">×{totalCosts.crown}</p>
+              </div>
+            )}
+            
+            {/* Gemstones */}
+            {['gem_silver', 'gem_fragment', 'gem_chunk', 'gem_gemstone'].map(key => totalCosts?.[key] > 0 && (
+              <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">💎 {formatName(key.replace('gem_', ''))}</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
-            {weaponCosts && Object.entries(weaponCosts.eliteMob || {}).map(([mat, qty]) => (
-              <div key={mat} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🛡️ {formatMaterialName(mat)}</p>
-                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{qty}</p>
+
+            {/* Boss & Local */}
+            {totalCosts?.boss_material > 0 && (
+              <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">🐉 Boss Material</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.boss_material}</p>
+              </div>
+            )}
+            {totalCosts?.local_specialty > 0 && (
+              <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">🌸 Local Specialty</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.local_specialty}</p>
+              </div>
+            )}
+            
+            {/* Talent Books */}
+            {['2_star_talent_material', '3_star_talent_material', '4_star_talent_material'].map(key => totalCosts?.[key] > 0 && (
+              <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">📖 {key.split('_')[0]}-Star Book</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+              </div>
+            ))}
+            
+            {/* Weekly Boss */}
+            {totalCosts?.weekly_boss_material > 0 && (
+              <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">🐺 Weekly Boss</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.weekly_boss_material}</p>
+              </div>
+            )}
+            
+            {/* Weapon Asc Mats */}
+            {['2_star_ascension_material', '3_star_ascension_material', '4_star_ascension_material', '5_star_ascension_material'].map(key => totalCosts?.[key] > 0 && (
+              <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">🔗 {key.split('_')[0]}-Star Asc. Mat</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+              </div>
+            ))}
+            
+            {/* Elite Drops */}
+            {['2_star_enhancement_material', '3_star_enhancement_material', '4_star_enhancement_material'].map(key => totalCosts?.[key] > 0 && (
+              <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">🛡️ {key.split('_')[0]}-Star Elite Mat</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+              </div>
+            ))}
+            
+            {/* Mob Drops */}
+            {['1_star_enemy_material', '2_star_enemy_material', '3_star_enemy_material'].map(key => totalCosts?.[key] > 0 && (
+              <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">⚔️ {key.split('_')[0]}-Star Mob Drop</p>
+                <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
           </div>

@@ -8,7 +8,7 @@
 import charactersData from '../data/characters.json'
 import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
-import { calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost, WEAPON_ORE_KEY } from './calculator'
+import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost, WEAPON_ORE_KEY } from './calculator'
 
 // Build a fast character lookup
 const CHAR_MAP = Object.fromEntries(charactersData.map((c) => [c.name, c]))
@@ -33,20 +33,8 @@ function merge(acc, src) {
  * @param {Object} roster  — Zustand roster slice { [charName]: entry }
  */
 export function aggregateRosterCosts(roster) {
-  const totalGemstones    = {}
-  const totalWorldBoss    = {}
-  const totalLocal        = {}
-  const totalMob          = {}
-  const totalTalentBooks  = {}
-  const totalWeeklyBoss   = {}
-  const totalWeaponAsc    = {}
-  const totalEliteMob     = {}
-  
-  let   totalMora         = 0
-  let   totalHeroWits     = 0
-  let   totalCrowns       = 0
-  let   totalMysticOre    = 0
-  const breakdown         = []
+  const grandTotalCosts = {}
+  const breakdown = []
 
   for (const [charName, entry] of Object.entries(roster)) {
     const fromLevel = entry.level           ?? 1
@@ -54,10 +42,8 @@ export function aggregateRosterCosts(roster) {
     const toLevel   = entry.targetLevel     ?? 90
     const toAsc     = entry.targetAscension ?? 6
 
-    // Check if there is any meaningful ascension/level goal
     const ascNoop = fromAsc === toAsc && fromLevel >= toLevel
 
-    // Read talent goals
     const talentState = {
       normalFrom: entry.talents?.normal         ?? 1,
       normalTo:   entry.targetTalents?.normal   ?? 1,
@@ -71,7 +57,6 @@ export function aggregateRosterCosts(roster) {
       talentState.skillTo  <= talentState.skillFrom  &&
       talentState.burstTo  <= talentState.burstFrom
 
-    // Read weapon goals
     const weaponState = {
       equippedWeapon: entry.equippedWeapon,
       weaponFromLv:   entry.weaponLevel ?? 1,
@@ -89,139 +74,79 @@ export function aggregateRosterCosts(roster) {
     const character = CHAR_MAP[charName]
     if (!character) continue
 
-    // ── Ascension / leveling costs ──────────────────────────────────────────
-    let costs = null
+    let ascCosts = null
     if (!ascNoop) {
-      costs = calculateProgressionCost(character, fromLevel, fromAsc, toLevel, toAsc, costsData)
-      if (costs.hasAnyCost) {
-        totalMora     += costs.totalMora
-        totalHeroWits += costs.heroWits
-        merge(totalGemstones, costs.gemstones)
-        merge(totalWorldBoss, costs.worldBoss)
-        merge(totalLocal,     costs.localSpecialty)
-        merge(totalMob,       costs.mob)
-      } else {
-        costs = null
-      }
+      ascCosts = calculateProgressionCost(character, fromLevel, toLevel)
     }
 
-    // ── Talent costs ─────────────────────────────────────────────────────────
-    let talentCosts = null
+    let normalCosts = null, skillCosts = null, burstCosts = null
     if (!talentNoop) {
-      talentCosts = calculateAllTalentsCost(character, talentState)
-      if (talentCosts.hasAnyCost) {
-        totalMora    += talentCosts.talentMora
-        totalCrowns  += talentCosts.crown
-        merge(totalTalentBooks, talentCosts.books)
-        merge(totalWeeklyBoss,  talentCosts.weeklyBoss)
-        merge(totalMob,         talentCosts.mob)
-      } else {
-        talentCosts = null
-      }
+      normalCosts = calculateTalentCost(character, talentState.normalFrom, talentState.normalTo)
+      skillCosts = calculateTalentCost(character, talentState.skillFrom, talentState.skillTo)
+      burstCosts = calculateTalentCost(character, talentState.burstFrom, talentState.burstTo)
     }
 
-    // ── Weapon costs ─────────────────────────────────────────────────────────
     let weaponCosts = null
     if (!weaponNoop && weaponState.equippedWeapon) {
       const wData = WEAPON_MAP[weaponState.equippedWeapon]
-      weaponCosts = calculateWeaponCost(wData, weaponState.weaponFromLv, weaponState.weaponFromAsc, weaponState.weaponToLv, weaponState.weaponToAsc)
-      if (weaponCosts && weaponCosts.hasAnyCost) {
-        totalMora      += weaponCosts.weaponMora
-        totalMysticOre += weaponCosts.mysticOre
-        merge(totalWeaponAsc, weaponCosts.ascMats)
-        merge(totalEliteMob,  weaponCosts.eliteMob)
-        merge(totalMob,       weaponCosts.mob)
-      } else {
-        weaponCosts = null
-      }
+      weaponCosts = calculateWeaponCost(wData, weaponState.weaponFromLv, weaponState.weaponToLv)
     }
 
-    if (!costs && !talentCosts && !weaponCosts) continue
+    const totalCosts = {}
+    const allCostObjects = [ascCosts, normalCosts, skillCosts, burstCosts, weaponCosts]
+    
+    allCostObjects.forEach(costObj => {
+      if (!costObj) return
+      Object.entries(costObj).forEach(([key, val]) => {
+        if (typeof val === 'number' && val > 0) {
+          totalCosts[key] = (totalCosts[key] || 0) + val
+          grandTotalCosts[key] = (grandTotalCosts[key] || 0) + val
+        }
+      })
+    })
 
-    breakdown.push({ name: charName, character, entry, costs, talentCosts, weaponCosts, talentState, weaponState })
+    if (Object.values(totalCosts).some(val => val > 0)) {
+      breakdown.push({ name: charName, character, entry, totalCosts, talentState, weaponState })
+    }
   }
 
   return {
-    totalMora,
-    totalHeroWits,
-    totalCrowns,
-    totalMysticOre,
-    gemstones:      totalGemstones,
-    worldBoss:      totalWorldBoss,
-    localSpecialty: totalLocal,
-    mob:            totalMob,
-    talentBooks:    totalTalentBooks,
-    weeklyBoss:     totalWeeklyBoss,
-    weaponAscMats:  totalWeaponAsc,
-    eliteMob:       totalEliteMob,
+    totalCosts: grandTotalCosts,
     breakdown,
-    trackedCount:   breakdown.length,
+    trackedCount: breakdown.length,
   }
 }
 
-/**
- * Subtract current inventory from the grand total to get what still needs
- * to be farmed. Only includes items where required > owned.
- */
 export function computeToFarm(totals, inventory) {
   const inv = inventory || {}
+  const totalCosts = totals.totalCosts || {}
 
-  function delta(materialMap) {
-    if (!materialMap || Object.keys(materialMap).length === 0) return []
-    return Object.entries(materialMap)
-      .map(([name, required]) => {
-        const owned  = inv[name] || 0
-        const toFarm = Math.max(0, required - owned)
-        return { name, required, owned, toFarm }
-      })
-      .filter((item) => item.toFarm > 0)
-      .sort((a, b) => b.toFarm - a.toFarm)
-  }
+  const allItems = Object.entries(totalCosts)
+    .map(([name, required]) => {
+      const owned = inv[name] || 0
+      const toFarm = Math.max(0, required - owned)
+      return { name, required, owned, toFarm }
+    })
+    .filter(item => item.toFarm > 0)
+    .sort((a, b) => b.toFarm - a.toFarm)
 
-  const gemsDelta    = delta(totals.gemstones)
-  const bossDelta    = delta(totals.worldBoss)
-  const localDelta   = delta(totals.localSpecialty)
-  const mobDelta     = delta(totals.mob)
-  const booksDelta   = delta(totals.talentBooks)
-  const weeklyDelta  = delta(totals.weeklyBoss)
-  const wAscDelta    = delta(totals.weaponAscMats)
-  const eliteDelta   = delta(totals.eliteMob)
-
-  const moraOwned  = inv['Mora']    || 0
-  const witsOwned  = inv['HeroWit'] || 0
-  const crownOwned = inv['Crown']   || 0
-  const oreOwned   = inv[WEAPON_ORE_KEY] || 0
-  
-  const moraFarm   = Math.max(0, (totals.totalMora     || 0) - moraOwned)
-  const witsFarm   = Math.max(0, (totals.totalHeroWits || 0) - witsOwned)
-  const crownFarm  = Math.max(0, (totals.totalCrowns   || 0) - crownOwned)
-  const oreFarm    = Math.max(0, (totals.totalMysticOre || 0) - oreOwned)
-
-  const moraLine  = moraFarm  > 0 ? { required: totals.totalMora,     owned: moraOwned,  toFarm: moraFarm, name: 'Mora'  } : null
-  const witsLine  = witsFarm  > 0 ? { required: totals.totalHeroWits, owned: witsOwned,  toFarm: witsFarm, name: 'HeroWit'  } : null
-  const crownLine = crownFarm > 0 ? { required: totals.totalCrowns,   owned: crownOwned, toFarm: crownFarm, name: 'Crown' } : null
-  const oreLine   = oreFarm   > 0 ? { required: totals.totalMysticOre, owned: oreOwned,  toFarm: oreFarm, name: WEAPON_ORE_KEY } : null
-
-  const totalItems =
-    (moraLine  ? 1 : 0) + (witsLine ? 1 : 0) + (crownLine ? 1 : 0) + (oreLine ? 1 : 0) +
-    gemsDelta.length + bossDelta.length + localDelta.length + mobDelta.length +
-    booksDelta.length + weeklyDelta.length + wAscDelta.length + eliteDelta.length
+  const filterKeys = (keys) => allItems.filter(item => keys.includes(item.name))
 
   return {
-    mora:           moraLine,
-    heroWits:       witsLine,
-    crown:          crownLine,
-    mysticOre:      oreLine,
-    gemstones:      gemsDelta,
-    worldBoss:      bossDelta,
-    localSpecialty: localDelta,
-    mob:            mobDelta,
-    talentBooks:    booksDelta,
-    weeklyBoss:     weeklyDelta,
-    weaponAscMats:  wAscDelta,
-    eliteMob:       eliteDelta,
-    totalItems,
-    allDone:        totalItems === 0,
+    mora: allItems.find(i => i.name === 'mora'),
+    heroWits: allItems.find(i => i.name === 'heros_wit'),
+    crown: allItems.find(i => i.name === 'crown'),
+    mysticOre: allItems.find(i => i.name === 'mystic_ore'),
+    gemstones: filterKeys(['gem_silver', 'gem_fragment', 'gem_chunk', 'gem_gemstone']),
+    worldBoss: filterKeys(['boss_material']),
+    localSpecialty: filterKeys(['local_specialty']),
+    mob: filterKeys(['1_star_enemy_material', '2_star_enemy_material', '3_star_enemy_material']),
+    talentBooks: filterKeys(['2_star_talent_material', '3_star_talent_material', '4_star_talent_material']),
+    weeklyBoss: filterKeys(['weekly_boss_material']),
+    weaponAscMats: filterKeys(['2_star_ascension_material', '3_star_ascension_material', '4_star_ascension_material', '5_star_ascension_material']),
+    eliteMob: filterKeys(['2_star_enhancement_material', '3_star_enhancement_material', '4_star_enhancement_material']),
+    totalItems: allItems.length,
+    allDone: allItems.length === 0,
   }
 }
 

@@ -1,0 +1,576 @@
+[
+  {
+    "id": "hurricaneseed",
+    "name": "Hurricane Seed",
+    "type": "normal_boss",
+    "boss_name": "Anemo Hypostasis",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "lightningprism",
+    "name": "Lightning Prism",
+    "type": "normal_boss",
+    "boss_name": "Electro Hypostasis",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "hoarfrostcore",
+    "name": "Hoarfrost Core",
+    "type": "normal_boss",
+    "boss_name": "Cryo Regisvine",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "crystallinebloom",
+    "name": "Crystalline Bloom",
+    "type": "normal_boss",
+    "boss_name": "Cryo Hypostasis",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "basaltpillar",
+    "name": "Basalt Pillar",
+    "type": "normal_boss",
+    "boss_name": "Geo Hypostasis",
+    "region": "Liyue"
+  },
+  {
+    "id": "everflameseed",
+    "name": "Everflame Seed",
+    "type": "normal_boss",
+    "boss_name": "Pyro Regisvine",
+    "region": "Liyue"
+  },
+  {
+    "id": "cleansingheart",
+    "name": "Cleansing Heart",
+    "type": "normal_boss",
+    "boss_name": "Oceanid",
+    "region": "Liyue"
+  },
+  {
+    "id": "juvenilejade",
+    "name": "Juvenile Jade",
+    "type": "normal_boss",
+    "boss_name": "Primo Geovishap",
+    "region": "Liyue"
+  },
+  {
+    "id": "runicfang",
+    "name": "Runic Fang",
+    "type": "normal_boss",
+    "boss_name": "Ruin Serpent",
+    "region": "Liyue"
+  },
+  {
+    "id": "cloudseamscale",
+    "name": "Cloudseam Scale",
+    "type": "normal_boss",
+    "boss_name": "Solitary Suanni",
+    "region": "Liyue"
+  },
+  {
+    "id": "marionettecore",
+    "name": "Marionette Core",
+    "type": "normal_boss",
+    "boss_name": "Maguu Kenki",
+    "region": "Inazuma"
+  },
+  {
+    "id": "perpetualheart",
+    "name": "Perpetual Heart",
+    "type": "normal_boss",
+    "boss_name": "Perpetual Mechanical Array",
+    "region": "Inazuma"
+  },
+  {
+    "id": "smolderingpearl",
+    "name": "Smoldering Pearl",
+    "type": "normal_boss",
+    "boss_name": "Pyro Hypostasis",
+    "region": "Inazuma"
+  },
+  {
+    "id": "dewofrepudiation",
+    "name": "Dew of Repudiation",
+    "type": "normal_boss",
+    "boss_name": "Hydro Hypostasis",
+    "region": "Inazuma"
+  },
+  {
+    "id": "stormbeads",
+    "name": "Storm Beads",
+    "type": "normal_boss",
+    "boss_name": "Thunder Manifestation",
+    "region": "Inazuma"
+  },
+  {
+    "id": "riftbornregalia",
+    "name": "Riftborn Regalia",
+    "type": "normal_boss",
+    "boss_name": "Golden Wolflord",
+    "region": "Inazuma"
+  },
+  {
+    "id": "dragonheirsfalsefin",
+    "name": "Dragonheirs False Fin",
+    "type": "normal_boss",
+    "boss_name": "Coral Defenders",
+    "region": "Inazuma"
+  },
+  {
+    "id": "majestichookedbeak",
+    "name": "Majestic Hooked Beak",
+    "type": "normal_boss",
+    "boss_name": "Jadeplume Terrorshroom",
+    "region": "Sumeru"
+  },
+  {
+    "id": "thunderclapfruitcore",
+    "name": "Thunderclap Fruitcore",
+    "type": "normal_boss",
+    "boss_name": "Electro Regisvine",
+    "region": "Sumeru"
+  },
+  {
+    "id": "perpetualcaliber",
+    "name": "Perpetual Caliber",
+    "type": "normal_boss",
+    "boss_name": "Aeonblight Drake",
+    "region": "Sumeru"
+  },
+  {
+    "id": "lightguidingtetrahedron",
+    "name": "Light Guiding Tetrahedron",
+    "type": "normal_boss",
+    "boss_name": "Algorithm of Semi-Intransient Matrix of Overseer Network",
+    "region": "Sumeru"
+  },
+  {
+    "id": "quelledcreeper",
+    "name": "Quelled Creeper",
+    "type": "normal_boss",
+    "boss_name": "Dendro Hypostasis",
+    "region": "Sumeru"
+  },
+  {
+    "id": "pseudostamens",
+    "name": "Pseudo Stamens",
+    "type": "normal_boss",
+    "boss_name": "Setekh Wenut",
+    "region": "Sumeru"
+  },
+  {
+    "id": "evergloomring",
+    "name": "Evergloom Ring",
+    "type": "normal_boss",
+    "boss_name": "Iniquitous Baptist",
+    "region": "Sumeru"
+  },
+  {
+    "id": "artificedspareclockworkcomponentcoppelia",
+    "name": "Artificed Spare Clockwork Component — Coppelia",
+    "type": "normal_boss",
+    "boss_name": "Icewind Suite",
+    "region": "Fontaine"
+  },
+  {
+    "id": "artificedspareclockworkcomponentcoppelius",
+    "name": "Artificed Spare Clockwork Component — Coppelius",
+    "type": "normal_boss",
+    "boss_name": "Icewind Suite",
+    "region": "Fontaine"
+  },
+  {
+    "id": "emperorsresolution",
+    "name": "Emperor's Resolution",
+    "type": "normal_boss",
+    "boss_name": "Emperor of Fire and Iron",
+    "region": "Fontaine"
+  },
+  {
+    "id": "fontemerunihorn",
+    "name": "Fontemer Unihorn",
+    "type": "normal_boss",
+    "boss_name": "Millennial Pearl Seahorse",
+    "region": "Fontaine"
+  },
+  {
+    "id": "tourbillondevice",
+    "name": "Tourbillon Device",
+    "type": "normal_boss",
+    "boss_name": "Prototype Cal. Breguet",
+    "region": "Fontaine"
+  },
+  {
+    "id": "waterthatfailedtotranscend",
+    "name": "Water That Failed To Transcend",
+    "type": "normal_boss",
+    "boss_name": "Hydro Tulpa",
+    "region": "Fontaine"
+  },
+  {
+    "id": "fragmentofagoldenmelody",
+    "name": "Fragment of a Golden Melody",
+    "type": "normal_boss",
+    "boss_name": "Statue of Marble and Brass",
+    "region": "Fontaine"
+  },
+  {
+    "id": "markofthebindingblessing",
+    "name": "Mark of the Binding Blessing",
+    "type": "normal_boss",
+    "boss_name": "Holawaqa Ngoubou",
+    "region": "Natlan"
+  },
+  {
+    "id": "overripeflamegranate",
+    "name": "Overripe Flamegranate",
+    "type": "normal_boss",
+    "boss_name": "Kongamato",
+    "region": "Natlan"
+  },
+  {
+    "id": "goldinscribedsecretsourcecore",
+    "name": "Gold Inscribed Secret Source Core",
+    "type": "normal_boss",
+    "boss_name": "Secret Source Automaton: Configuration Device",
+    "region": "Natlan"
+  },
+  {
+    "id": "ensnaringgaze",
+    "name": "Ensnaring Gaze",
+    "type": "normal_boss",
+    "boss_name": "Tenebrous Papilla",
+    "region": "Natlan"
+  },
+  {
+    "id": "talismanoftheenigmaticland",
+    "name": "Talisman of the Enigmatic Land",
+    "type": "normal_boss",
+    "boss_name": "Wayward Hermetic Spiritspeaker",
+    "region": "Natlan"
+  },
+  {
+    "id": "sparklessstatuecore",
+    "name": "Sparkless Statue Core",
+    "type": "normal_boss",
+    "boss_name": "Lava Dragon Statue",
+    "region": "Natlan"
+  },
+  {
+    "id": "secretsourceairflowaccumulator",
+    "name": "Secret Source Airflow Accumulator",
+    "type": "normal_boss",
+    "boss_name": "Secret Source Automaton: Overseer Device",
+    "region": "Natlan"
+  },
+  {
+    "id": "precisionkuuvahkistampingdie",
+    "name": "Precision Kuuvahki Stamping Die",
+    "type": "normal_boss",
+    "boss_name": "Knuckle Duckle",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "lightbearingscalefeather",
+    "name": "Lightbearing Scale Feather",
+    "type": "normal_boss",
+    "boss_name": "Radiant Moonfly",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "radiantantler",
+    "name": "Radiant Antler",
+    "type": "normal_boss",
+    "boss_name": "Frostnight Herra",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "cyclicmilitarykuuvahkicore",
+    "name": "Cyclic Military Kuuvahki Core",
+    "type": "normal_boss",
+    "boss_name": "Super-Heavy Landrover: Mechanized Fortress",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "remnantofthedreadwing",
+    "name": "Remnantofthe Dreadwing",
+    "type": "normal_boss",
+    "boss_name": "Lord of the Hidden Depths: Whisperer of Nightmares",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "dvalinsplume",
+    "name": "Dvalin's Plume",
+    "type": "weekly_boss",
+    "boss_name": "Stormterror Dvalin",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "dvalinsclaw",
+    "name": "Dvalin's Claw",
+    "type": "weekly_boss",
+    "boss_name": "Stormterror Dvalin",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "dvalinssigh",
+    "name": "Dvalin's Sigh",
+    "type": "weekly_boss",
+    "boss_name": "Stormterror Dvalin",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "tailofboreas",
+    "name": "Tail of Boreas",
+    "type": "weekly_boss",
+    "boss_name": "Andrius",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ringofboreas",
+    "name": "Ring of Boreas",
+    "type": "weekly_boss",
+    "boss_name": "Andrius",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "spiritlocketofboreas",
+    "name": "Spirit Locket of Boreas",
+    "type": "weekly_boss",
+    "boss_name": "Andrius",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "tuskofmonoceroscaeli",
+    "name": "Tusk of Monoceros Caeli",
+    "type": "weekly_boss",
+    "boss_name": "Childe",
+    "region": "Liyue"
+  },
+  {
+    "id": "shardofafoullegacy",
+    "name": "Shard of a Foul Legacy",
+    "type": "weekly_boss",
+    "boss_name": "Childe",
+    "region": "Liyue"
+  },
+  {
+    "id": "shadowofthewarrior",
+    "name": "Shadow of the Warrior",
+    "type": "weekly_boss",
+    "boss_name": "Childe",
+    "region": "Liyue"
+  },
+  {
+    "id": "dragonlordscrown",
+    "name": "Dragon Lord's Crown",
+    "type": "weekly_boss",
+    "boss_name": "Azhdaha",
+    "region": "Liyue"
+  },
+  {
+    "id": "bloodjadebranch",
+    "name": "Bloodjade Branch",
+    "type": "weekly_boss",
+    "boss_name": "Azhdaha",
+    "region": "Liyue"
+  },
+  {
+    "id": "gildedscale",
+    "name": "Gilded Scale",
+    "type": "weekly_boss",
+    "boss_name": "Azhdaha",
+    "region": "Liyue"
+  },
+  {
+    "id": "moltenmoment",
+    "name": "Molten Moment",
+    "type": "weekly_boss",
+    "boss_name": "La Signora",
+    "region": "Inazuma"
+  },
+  {
+    "id": "hellfirebutterfly",
+    "name": "Hellfire Butterfly",
+    "type": "weekly_boss",
+    "boss_name": "La Signora",
+    "region": "Inazuma"
+  },
+  {
+    "id": "ashenheart",
+    "name": "Ashen Heart",
+    "type": "weekly_boss",
+    "boss_name": "La Signora",
+    "region": "Inazuma"
+  },
+  {
+    "id": "mudraofthemaleficgeneral",
+    "name": "Mudra of the Malefic General",
+    "type": "weekly_boss",
+    "boss_name": "Magatsu Mitake Narukami no Mikoto",
+    "region": "Inazuma"
+  },
+  {
+    "id": "tearsofthecalamitousgod",
+    "name": "Tears of the Calamitous God",
+    "type": "weekly_boss",
+    "boss_name": "Magatsu Mitake Narukami no Mikoto",
+    "region": "Inazuma"
+  },
+  {
+    "id": "themeaningofaeons",
+    "name": "The Meaning of Aeons",
+    "type": "weekly_boss",
+    "boss_name": "Magatsu Mitake Narukami no Mikoto",
+    "region": "Inazuma"
+  },
+  {
+    "id": "puppetstrings",
+    "name": "Puppet Strings",
+    "type": "weekly_boss",
+    "boss_name": "Everlasting Lord of Arcane Wisdom",
+    "region": "Sumeru"
+  },
+  {
+    "id": "mirrorofmushin",
+    "name": "Mirror of Mushin",
+    "type": "weekly_boss",
+    "boss_name": "Everlasting Lord of Arcane Wisdom",
+    "region": "Sumeru"
+  },
+  {
+    "id": "dakasbell",
+    "name": "Daka's Bell",
+    "type": "weekly_boss",
+    "boss_name": "Everlasting Lord of Arcane Wisdom",
+    "region": "Sumeru"
+  },
+  {
+    "id": "worldspanfern",
+    "name": "Worldspan Fern",
+    "type": "weekly_boss",
+    "boss_name": "Evolved From an Apocalyptic Millennium",
+    "region": "Sumeru"
+  },
+  {
+    "id": "primordialgreenbloom",
+    "name": "Primordial Greenbloom",
+    "type": "weekly_boss",
+    "boss_name": "Evolved From an Apocalyptic Millennium",
+    "region": "Sumeru"
+  },
+  {
+    "id": "everamber",
+    "name": "Everamber",
+    "type": "weekly_boss",
+    "boss_name": "Evolved From an Apocalyptic Millennium",
+    "region": "Sumeru"
+  },
+  {
+    "id": "lightlesssilkstring",
+    "name": "Lightless Silk String",
+    "type": "weekly_boss",
+    "boss_name": "All-Devouring Narwhal",
+    "region": "Fontaine"
+  },
+  {
+    "id": "lightlesseyeofthemaelstrom",
+    "name": "Lightless Eye of the Maelstrom",
+    "type": "weekly_boss",
+    "boss_name": "All-Devouring Narwhal",
+    "region": "Fontaine"
+  },
+  {
+    "id": "lightlessmass",
+    "name": "Lightless Mass",
+    "type": "weekly_boss",
+    "boss_name": "All-Devouring Narwhal",
+    "region": "Fontaine"
+  },
+  {
+    "id": "fadingcandle",
+    "name": "Fading Candle",
+    "type": "weekly_boss",
+    "boss_name": "The Knave",
+    "region": "Fontaine"
+  },
+  {
+    "id": "silkenfeather",
+    "name": "Silken Feather",
+    "type": "weekly_boss",
+    "boss_name": "The Knave",
+    "region": "Fontaine"
+  },
+  {
+    "id": "denialandjudgment",
+    "name": "Denialand Judgment",
+    "type": "weekly_boss",
+    "boss_name": "The Knave",
+    "region": "Fontaine"
+  },
+  {
+    "id": "erodedhorn",
+    "name": "Eroded Horn",
+    "type": "weekly_boss",
+    "boss_name": "Lord of Eroded Primal Fire",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "erodedsunfire",
+    "name": "Eroded Sunfire",
+    "type": "weekly_boss",
+    "boss_name": "Lord of Eroded Primal Fire",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "erodedscalefeather",
+    "name": "Eroded Scale Feather",
+    "type": "weekly_boss",
+    "boss_name": "Lord of Eroded Primal Fire",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ascendedsampleknight",
+    "name": "Ascended Sample Knight",
+    "type": "weekly_boss",
+    "boss_name": "The Game Before the Gate",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ascendedsamplerook",
+    "name": "Ascended Sample Rook",
+    "type": "weekly_boss",
+    "boss_name": "The Game Before the Gate",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ascendedsamplequeen",
+    "name": "Ascended Sample Queen",
+    "type": "weekly_boss",
+    "boss_name": "The Game Before the Gate",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "maskofthevirtuousdoctor",
+    "name": "Mask of the Virtuous Doctor",
+    "type": "weekly_boss",
+    "boss_name": "Heretic of the False Moon",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "madmansrestraint",
+    "name": "Madman's Restraint",
+    "type": "weekly_boss",
+    "boss_name": "Heretic of the False Moon",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "elixiroftheheretic",
+    "name": "Elixir of the Heretic",
+    "type": "weekly_boss",
+    "boss_name": "Heretic of the False Moon",
+    "region": "Nod-Krai"
+  }
+]
