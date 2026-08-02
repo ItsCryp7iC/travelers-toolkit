@@ -9,7 +9,7 @@ import { getElementIcon, getWeaponTypeIcon, getCharacterAvatar } from '../utils/
 
 const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
 const ALL_WEAPONS  = ['All', ...Object.keys(WEAPON_TYPES)]
-const ALL_RARITIES = ['All', '5★', '4★']
+const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★']
 
 // Summary stats
 function StatCard({ icon, label, value, accent }) {
@@ -41,7 +41,7 @@ export default function Dashboard() {
   const [elementFilter, setElementFilter] = useState('All')
   const [weaponFilter,  setWeaponFilter]  = useState('All')
   const [rarityFilter,  setRarityFilter]  = useState('All')
-  const [sortBy,        setSortBy]        = useState('name') // 'name' | 'rarity' | 'element'
+  const [sortBy,        setSortBy]        = useState('Release') // 'Release' | 'Name' | 'Rarity' | 'Element'
 
   // Filtered + sorted characters
   const filtered = useMemo(() => {
@@ -56,15 +56,33 @@ export default function Dashboard() {
     }
     if (elementFilter !== 'All') list = list.filter((c) => c.element === elementFilter)
     if (weaponFilter  !== 'All') list = list.filter((c) => c.weapon_type === weaponFilter)
-    if (rarityFilter  !== 'All') {
-      const r = rarityFilter === '5★' ? 5 : 4
-      list = list.filter((c) => c.rarity === r)
+    if (rarityFilter !== 'All') {
+      const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
+      list = list.filter((c) => {
+        const cRarity = typeof c.rarity === 'string' ? (c.rarity.match(/★/g)?.length || parseInt(c.rarity) || 0) : (c.rarity || 0)
+        return cRarity === rFilterNum
+      })
     }
 
     list.sort((a, b) => {
-      if (sortBy === 'rarity') return b.rarity - a.rarity
-      if (sortBy === 'element') return (a.element || '').localeCompare(b.element || '')
-      return a.name.localeCompare(b.name)
+      if (sortBy === 'Release') {
+        const orderA = a.release_order ?? 999;
+        const orderB = b.release_order ?? 999;
+        return orderA - orderB;
+      }
+      if (sortBy === 'Rarity') {
+        const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
+        const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0);
+        return rarityB - rarityA;
+      }
+      if (sortBy === 'Element') return (a.element || '').localeCompare(b.element || '')
+      if (sortBy === 'Weapon') {
+        const wA = a.weapon || a.weapon_type || '';
+        const wB = b.weapon || b.weapon_type || '';
+        return wA.localeCompare(wB);
+      }
+      if (sortBy === 'Name') return a.name.localeCompare(b.name)
+      return 0;
     })
 
     return list
@@ -125,17 +143,19 @@ export default function Dashboard() {
 
           {/* Sort dropdown */}
           <div className="relative">
-            <select
-              id="sort-select"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors"
-              aria-label="Sort characters"
-            >
-              <option value="name">Sort: Name</option>
-              <option value="rarity">Sort: Rarity</option>
-              <option value="element">Sort: Element</option>
-            </select>
+              <select
+                id="sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors"
+                aria-label="Sort characters"
+              >
+                <option value="Release">by Release</option>
+                <option value="Name">by Name</option>
+                <option value="Rarity">by Rarity</option>
+                <option value="Element">by Element</option>
+                <option value="Weapon">by Weapon</option>
+              </select>
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
           </div>
 
@@ -204,15 +224,15 @@ export default function Dashboard() {
             </p>
             <div className="flex gap-2" role="group" aria-label="Filter by rarity">
               {ALL_RARITIES.map((r) => (
-                <button
-                  key={r}
-                  id={`filter-rarity-${r.replace('★', 'star').toLowerCase()}`}
-                  onClick={() => setRarityFilter(r)}
-                  className={`filter-pill ${rarityFilter === r ? 'active' : ''}`}
-                  aria-pressed={rarityFilter === r}
-                >
-                  {r === '5★' ? '⭐' : r === '4★' ? '💜' : '🌐'} {r}
-                </button>
+                  <button
+                    key={r}
+                    id={`filter-rarity-${r.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`}
+                    onClick={() => setRarityFilter(r)}
+                    className={`filter-pill ${rarityFilter === r ? 'active' : ''}`}
+                    aria-pressed={rarityFilter === r}
+                  >
+                    {r}
+                  </button>
               ))}
             </div>
           </div>

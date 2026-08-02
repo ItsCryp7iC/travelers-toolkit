@@ -15,7 +15,7 @@ import MatQuantity from '../components/MatQuantity'
 
 const ALL_ELEMENTS = ['All', 'Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo']
 const ALL_WEAPONS  = ['All', 'Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
-const ALL_RARITIES = ['All', '5★', '4★']
+const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★']
 
 export default function Characters() {
   const roster         = useStore((s) => s.roster)
@@ -25,7 +25,8 @@ export default function Characters() {
   const [search,        setSearch]        = useState('')
   const [elementFilter, setElementFilter] = useState('All')
   const [weaponFilter,  setWeaponFilter]  = useState('All')
-  const [sortConfig,    setSortConfig]    = useState({ key: 'sl_no', direction: 'asc' })
+  const [rarityFilter,  setRarityFilter]  = useState('All')
+  const [sortOrder,     setSortOrder]     = useState('Release')
   const [viewMode,      setViewMode]      = useState('table') // 'table' | 'card'
 
   const [addModalOpen,  setAddModalOpen]  = useState(false)
@@ -89,37 +90,35 @@ export default function Characters() {
     }
     if (elementFilter !== 'All') list = list.filter((c) => c.element === elementFilter)
     if (weaponFilter  !== 'All') list = list.filter((c) => c.weapon_type === weaponFilter)
+    if (rarityFilter !== 'All') {
+      const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
+      list = list.filter((c) => {
+        const cRarity = typeof c.rarity === 'string' ? (c.rarity.match(/★/g)?.length || parseInt(c.rarity) || 0) : (c.rarity || 0)
+        return cRarity === rFilterNum
+      })
+    }
     
-    list.sort((a, b) => {
-      let valA, valB
-      switch (sortConfig.key) {
-        case 'sl_no': valA = a.sl_no; valB = b.sl_no; break
-        case 'name': valA = a.name; valB = b.name; break
-        case 'element': valA = a.element; valB = b.element; break
-        case 'rarity': valA = a.rarity; valB = b.rarity; break
-        case 'level': valA = a.entry.level ?? 1; valB = b.entry.level ?? 1; break
-        default: valA = a.sl_no; valB = b.sl_no;
+    return [...list].sort((a, b) => {
+      if (sortOrder === 'Release') {
+        const orderA = a.release_order ?? 999;
+        const orderB = b.release_order ?? 999;
+        return orderA - orderB;
       }
-      
-      if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1
-      if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1
-      return 0
-    })
-    
-    return list
-  }, [rostered, search, elementFilter, weaponFilter, sortConfig])
-
-  const handleSort = (key) => {
-    setSortConfig(prev => ({
-      key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc'
-    }))
-  }
-
-  const SortIcon = ({ columnKey }) => {
-    if (sortConfig.key !== columnKey) return null
-    return <span className="ml-1 text-[var(--gold)]">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
-  }
+      if (sortOrder === 'Name') return a.name.localeCompare(b.name);
+      if (sortOrder === 'Rarity') {
+        const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
+        const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0);
+        return rarityB - rarityA; // Descending: 5-star to 4-star
+      }
+      if (sortOrder === 'Element') return (a.element || '').localeCompare(b.element || '');
+      if (sortOrder === 'Weapon') {
+        const wA = a.weapon || a.weapon_type || '';
+        const wB = b.weapon || b.weapon_type || '';
+        return wA.localeCompare(wB);
+      }
+      return 0;
+    });
+  }, [rostered, search, elementFilter, weaponFilter, rarityFilter, sortOrder])
 
   return (
     <div className="animate-fade-in">
@@ -171,16 +170,43 @@ export default function Characters() {
       ) : (
         <>
           {/* ── Filters ── */}
-          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 mb-5 space-y-3">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative flex-1 min-w-[180px]">
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 mb-6">
+            {/* Search row */}
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <div className="relative flex-1 min-w-[200px]">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm pointer-events-none">🔍</span>
-                <input type="search" placeholder="Search roster…" className="search-input w-full" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input type="search" placeholder="Search roster…" className="search-input w-full" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search roster" />
               </div>
-              <span className="text-[var(--muted)] text-xs">{filtered.length} / {rostered.length}</span>
+              
+              {/* Sort dropdown */}
+              <div className="relative">
+                <select
+                  id="sort-select"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors"
+                  aria-label="Sort characters"
+                >
+                  <option value="Release">by Release</option>
+                  <option value="Name">by Name</option>
+                  <option value="Rarity">by Rarity</option>
+                  <option value="Element">by Element</option>
+                  <option value="Weapon">by Weapon</option>
+                </select>
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
+              </div>
+              
+              <span className="text-[var(--muted)] text-xs whitespace-nowrap">{filtered.length} / {rostered.length} shown</span>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-center gap-2">
+
+            <div className="genshin-divider mb-4" />
+
+            {/* Element filters */}
+            <div className="mb-3">
+              <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+                Element
+              </p>
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by element">
                 {ALL_ELEMENTS.map((el) => {
                   const cfg = ELEMENTS[el]
                   return (
@@ -193,18 +219,40 @@ export default function Characters() {
                   )
                 })}
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                {ALL_WEAPONS.map((wp) => {
-                  const cfg = WEAPON_TYPES[wp]
-                  return (
-                    <button key={wp} onClick={() => setWeaponFilter(wp)} className={`filter-pill ${weaponFilter === wp ? 'active' : ''}`}>
-                      {wp !== 'All' ? (
-                        <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
-                      ) : <span className="mr-2">⚔️</span>}
-                      {wp}
+            </div>
+
+            {/* Weapon + Rarity filters */}
+            <div className="flex flex-wrap gap-6">
+              <div>
+                <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+                  Weapon
+                </p>
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by weapon type">
+                  {ALL_WEAPONS.map((wp) => {
+                    const cfg = WEAPON_TYPES[wp]
+                    return (
+                      <button key={wp} onClick={() => setWeaponFilter(wp)} className={`filter-pill ${weaponFilter === wp ? 'active' : ''}`}>
+                        {wp !== 'All' ? (
+                          <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
+                        ) : <span className="mr-2">⚔️</span>}
+                        {wp}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+                  Rarity
+                </p>
+                <div className="flex gap-2" role="group" aria-label="Filter by rarity">
+                  {ALL_RARITIES.map((r) => (
+                    <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill ${rarityFilter === r ? 'active' : ''}`}>
+                      {r}
                     </button>
-                  )
-                })}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -227,14 +275,14 @@ export default function Characters() {
                     {/* Sub Headers */}
                     <tr className="border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
                       {/* Identity (Sticky) */}
-                      <th className="text-center px-4 py-2 font-semibold cursor-pointer hover:text-[var(--text)] sticky left-0 z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]" onClick={() => handleSort('sl_no')}>Sl<SortIcon columnKey="sl_no"/></th>
-                      <th className="text-left px-4 py-2 font-semibold cursor-pointer hover:text-[var(--text)] sticky left-[48px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]" onClick={() => handleSort('name')}>Character<SortIcon columnKey="name"/></th>
-                      <th className="text-center px-4 py-2 font-semibold cursor-pointer hover:text-[var(--text)] sticky left-[248px] z-20 bg-[var(--surface)] w-[82px] min-w-[82px] max-w-[82px]" onClick={() => handleSort('element')}>Element<SortIcon columnKey="element"/></th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-0 z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">Sl</th>
+                      <th className="text-left px-4 py-2 font-semibold sticky left-[48px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]">Character</th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-[248px] z-20 bg-[var(--surface)] w-[82px] min-w-[82px] max-w-[82px]">Element</th>
                       <th className="text-center px-4 py-2 font-semibold sticky left-[330px] z-20 bg-[var(--surface)] w-[80px] min-w-[80px] max-w-[80px]">Weapon</th>
                       <th className="text-left px-4 py-2 font-semibold sticky left-[410px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Equipped</th>
                       
                       {/* Current State */}
-                      <th className="text-center px-3 py-2 font-semibold cursor-pointer hover:text-[var(--text)]" onClick={() => handleSort('level')}>Lv<SortIcon columnKey="level"/></th>
+                      <th className="text-center px-3 py-2 font-semibold">Lv</th>
                       <th className="text-center px-3 py-2 font-semibold">NA</th>
                       <th className="text-center px-3 py-2 font-semibold">Skill</th>
                       <th className="text-center px-3 py-2 font-semibold border-r border-[var(--border)]">Burst</th>

@@ -12,7 +12,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "brilliantdiamond"
-    }
+    },
+    "release_order": 0.01
   },
   {
     "id": "travelergeo",
@@ -27,7 +28,8 @@
       "enemy_material_family_id": "hilichurlshooter",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "brilliantdiamond"
-    }
+    },
+    "release_order": 0.02
   },
   {
     "id": "travelerelectro",
@@ -42,7 +44,8 @@
       "enemy_material_family_id": "nobushi",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "brilliantdiamond"
-    }
+    },
+    "release_order": 0.03
   },
   {
     "id": "travelerdendro",
@@ -57,7 +60,8 @@
       "enemy_material_family_id": "fungus",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "brilliantdiamond"
-    }
+    },
+    "release_order": 0.04
   },
   {
     "id": "travelerhydro",
@@ -72,7 +76,8 @@
       "enemy_material_family_id": "fontemeraberrant",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "brilliantdiamond"
-    }
+    },
+    "release_order": 0.05
   },
   {
     "id": "travelerpyro",
@@ -87,7 +92,8 @@
       "enemy_material_family_id": "natlansaurian",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "brilliantdiamond"
-    }
+    },
+    "release_order": 0.06
   },
   {
     "id": "amber",
@@ -102,7 +108,8 @@
       "enemy_material_family_id": "hilichurlshooter",
       "local_specialty_id": "smalllampgrass",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 1
   },
   {
     "id": "kaeya",
@@ -117,7 +124,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "callalily",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 2
   },
   {
     "id": "lisa",
@@ -132,7 +140,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "valberry",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 3
   },
   {
     "id": "barbara",
@@ -147,7 +156,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "philanemomushroom",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 4
   },
   {
     "id": "razor",
@@ -162,7 +172,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "wolfhook",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 5
   },
   {
     "id": "xiangling",
@@ -177,7 +188,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "jueyunchili",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 6
   },
   {
     "id": "beidou",
@@ -192,7 +204,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "noctilucousjade",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 7
   },
   {
     "id": "xingqiu",
@@ -207,7 +220,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "silkflower",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 8
   },
   {
     "id": "ningguang",
@@ -222,7 +236,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "glazelily",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 9
   },
   {
     "id": "fischl",
@@ -237,7 +252,8 @@
       "enemy_material_family_id": "hilichurlshooter",
       "local_specialty_id": "smalllampgrass",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 10
   },
   {
     "id": "bennett",
@@ -252,7 +268,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 11
   },
   {
     "id": "noelle",
@@ -267,7 +284,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "valberry",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 12
   },
   {
     "id": "chongyun",
@@ -282,7 +300,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "corlapis",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 13
   },
   {
     "id": "sucrose",
@@ -297,7 +316,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "windwheelaster",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 14
   },
   {
     "id": "jean",
@@ -312,7 +332,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "dandelionseed",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 15
   },
   {
     "id": "diluc",
@@ -327,7 +348,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "smalllampgrass",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 16
   },
   {
     "id": "qiqi",
@@ -342,7 +364,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "violetgrass",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 17
   },
   {
     "id": "mona",
@@ -357,7 +380,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "philanemomushroom",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 18
   },
   {
     "id": "keqing",
@@ -372,7 +396,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "corlapis",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 19
   },
   {
     "id": "venti",
@@ -387,7 +412,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "cecilia",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 20
   },
   {
     "id": "klee",
@@ -402,7 +428,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "philanemomushroom",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 21
   },
   {
     "id": "diona",
@@ -417,7 +444,8 @@
       "enemy_material_family_id": "hilichurlshooter",
       "local_specialty_id": "callalily",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 22
   },
   {
     "id": "tartaglia",
@@ -432,7 +460,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "starconch",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 23
   },
   {
     "id": "xinyan",
@@ -447,7 +476,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "violetgrass",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 24
   },
   {
     "id": "zhongli",
@@ -462,7 +492,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "corlapis",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 25
   },
   {
     "id": "albedo",
@@ -477,7 +508,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "cecilia",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 26
   },
   {
     "id": "ganyu",
@@ -492,7 +524,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "qingxin",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 27
   },
   {
     "id": "xiao",
@@ -507,7 +540,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "qingxin",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 28
   },
   {
     "id": "hutao",
@@ -522,7 +556,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "silkflower",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 29
   },
   {
     "id": "rosaria",
@@ -537,7 +572,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "valberry",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 30
   },
   {
     "id": "yanfei",
@@ -552,7 +588,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "noctilucousjade",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 31
   },
   {
     "id": "eula",
@@ -567,7 +604,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "dandelionseed",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 32
   },
   {
     "id": "kaedeharakazuha",
@@ -582,7 +620,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "seaganoderma",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 33
   },
   {
     "id": "kamisatoayaka",
@@ -597,7 +636,8 @@
       "enemy_material_family_id": "nobushi",
       "local_specialty_id": "sakurabloom",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 34
   },
   {
     "id": "sayu",
@@ -612,7 +652,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "crystalmarrow",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 35
   },
   {
     "id": "yoimiya",
@@ -627,7 +668,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "nakuweed",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 36
   },
   {
     "id": "aloy",
@@ -642,7 +684,8 @@
       "enemy_material_family_id": "specters",
       "local_specialty_id": "crystalmarrow",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 37
   },
   {
     "id": "kujousara",
@@ -657,7 +700,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "dendrobium",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 38
   },
   {
     "id": "raidenshogun",
@@ -672,7 +716,8 @@
       "enemy_material_family_id": "nobushi",
       "local_specialty_id": "amakumofruit",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 39
   },
   {
     "id": "sangonomiyakokomi",
@@ -687,7 +732,8 @@
       "enemy_material_family_id": "specters",
       "local_specialty_id": "sangopearl",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 40
   },
   {
     "id": "thoma",
@@ -702,7 +748,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "fluorescentfungus",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 41
   },
   {
     "id": "gorou",
@@ -717,7 +764,8 @@
       "enemy_material_family_id": "specters",
       "local_specialty_id": "sangopearl",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 42
   },
   {
     "id": "aratakiitto",
@@ -732,7 +780,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "onikabuto",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 43
   },
   {
     "id": "yunjin",
@@ -747,7 +796,8 @@
       "enemy_material_family_id": "hilichurl",
       "local_specialty_id": "glazelily",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 44
   },
   {
     "id": "shenhe",
@@ -762,7 +812,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "qingxin",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 45
   },
   {
     "id": "yaemiko",
@@ -777,7 +828,8 @@
       "enemy_material_family_id": "nobushi",
       "local_specialty_id": "seaganoderma",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 46
   },
   {
     "id": "kamisatoayato",
@@ -792,7 +844,8 @@
       "enemy_material_family_id": "nobushi",
       "local_specialty_id": "sakurabloom",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 47
   },
   {
     "id": "yelan",
@@ -807,7 +860,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "starconch",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 48
   },
   {
     "id": "kukishinobu",
@@ -822,7 +876,8 @@
       "enemy_material_family_id": "specters",
       "local_specialty_id": "nakuweed",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 49
   },
   {
     "id": "shikanoinheizou",
@@ -837,7 +892,8 @@
       "enemy_material_family_id": "treasurehoarder",
       "local_specialty_id": "onikabuto",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 50
   },
   {
     "id": "collei",
@@ -852,7 +908,8 @@
       "enemy_material_family_id": "hilichurlshooter",
       "local_specialty_id": "rukkhashavamushrooms",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 51
   },
   {
     "id": "tighnari",
@@ -867,7 +924,8 @@
       "enemy_material_family_id": "fungus",
       "local_specialty_id": "nilotpalalotus",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 52
   },
   {
     "id": "dori",
@@ -882,7 +940,8 @@
       "enemy_material_family_id": "theeremites",
       "local_specialty_id": "kalpalatalotus",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 53
   },
   {
     "id": "candace",
@@ -897,7 +956,8 @@
       "enemy_material_family_id": "theeremites",
       "local_specialty_id": "hennaberry",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 54
   },
   {
     "id": "cyno",
@@ -912,7 +972,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "scarab",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 55
   },
   {
     "id": "nilou",
@@ -927,7 +988,8 @@
       "enemy_material_family_id": "fungus",
       "local_specialty_id": "padisarah",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 56
   },
   {
     "id": "nahida",
@@ -942,7 +1004,8 @@
       "enemy_material_family_id": "fungus",
       "local_specialty_id": "kalpalatalotus",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 57
   },
   {
     "id": "layla",
@@ -957,7 +1020,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "nilotpalalotus",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 58
   },
   {
     "id": "faruzan",
@@ -972,7 +1036,8 @@
       "enemy_material_family_id": "theeremites",
       "local_specialty_id": "hennaberry",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 59
   },
   {
     "id": "wanderer",
@@ -987,7 +1052,8 @@
       "enemy_material_family_id": "nobushi",
       "local_specialty_id": "rukkhashavamushrooms",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 60
   },
   {
     "id": "yaoyao",
@@ -1002,7 +1068,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "jueyunchili",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 61
   },
   {
     "id": "alhaitham",
@@ -1017,7 +1084,8 @@
       "enemy_material_family_id": "theeremites",
       "local_specialty_id": "sandgreasepupa",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 62
   },
   {
     "id": "dehya",
@@ -1032,7 +1100,8 @@
       "enemy_material_family_id": "theeremites",
       "local_specialty_id": "sandgreasepupa",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 63
   },
   {
     "id": "mika",
@@ -1047,7 +1116,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "wolfhook",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 64
   },
   {
     "id": "kaveh",
@@ -1062,7 +1132,8 @@
       "enemy_material_family_id": "fungus",
       "local_specialty_id": "mourningflower",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 65
   },
   {
     "id": "baizhu",
@@ -1077,7 +1148,8 @@
       "enemy_material_family_id": "fungus",
       "local_specialty_id": "violetgrass",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 66
   },
   {
     "id": "kirara",
@@ -1092,7 +1164,8 @@
       "enemy_material_family_id": "specters",
       "local_specialty_id": "amakumofruit",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 67
   },
   {
     "id": "lynette",
@@ -1107,7 +1180,8 @@
       "enemy_material_family_id": "clockworkmeka",
       "local_specialty_id": "lumidoucebell",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 68
   },
   {
     "id": "lyney",
@@ -1122,7 +1196,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "rainbowrose",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 69
   },
   {
     "id": "freminet",
@@ -1137,7 +1212,8 @@
       "enemy_material_family_id": "fontemeraberrant",
       "local_specialty_id": "romaritimeflower",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 70
   },
   {
     "id": "neuvillette",
@@ -1152,7 +1228,8 @@
       "enemy_material_family_id": "fontemeraberrant",
       "local_specialty_id": "lumitoile",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 71
   },
   {
     "id": "wriothesley",
@@ -1167,7 +1244,8 @@
       "enemy_material_family_id": "clockworkmeka",
       "local_specialty_id": "subdetectionunit",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 72
   },
   {
     "id": "charlotte",
@@ -1182,7 +1260,8 @@
       "enemy_material_family_id": "clockworkmeka",
       "local_specialty_id": "berylconch",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 73
   },
   {
     "id": "furina",
@@ -1197,7 +1276,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "lakelightlily",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 74
   },
   {
     "id": "navia",
@@ -1212,7 +1292,8 @@
       "enemy_material_family_id": "fontemeraberrant",
       "local_specialty_id": "springofthefirstdewdrop",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 75
   },
   {
     "id": "chevreuse",
@@ -1227,7 +1308,8 @@
       "enemy_material_family_id": "clockworkmeka",
       "local_specialty_id": "lumidoucebell",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 76
   },
   {
     "id": "gaming",
@@ -1242,7 +1324,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "starconch",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 77
   },
   {
     "id": "xianyun",
@@ -1257,7 +1340,8 @@
       "enemy_material_family_id": "samachurl",
       "local_specialty_id": "clearwaterjade",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 78
   },
   {
     "id": "chiori",
@@ -1272,7 +1356,8 @@
       "enemy_material_family_id": "specters",
       "local_specialty_id": "hennaberry",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 79
   },
   {
     "id": "arlecchino",
@@ -1287,7 +1372,8 @@
       "enemy_material_family_id": "fatuiskirmisher",
       "local_specialty_id": "rainbowrose",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 80
   },
   {
     "id": "sethos",
@@ -1302,7 +1388,8 @@
       "enemy_material_family_id": "theeremites",
       "local_specialty_id": "trishiraite",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 81
   },
   {
     "id": "clorinde",
@@ -1317,7 +1404,8 @@
       "enemy_material_family_id": "fontemeraberrant",
       "local_specialty_id": "lumitoile",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 82
   },
   {
     "id": "sigewinne",
@@ -1332,7 +1420,8 @@
       "enemy_material_family_id": "fontemeraberrant",
       "local_specialty_id": "romaritimeflower",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 83
   },
   {
     "id": "emilie",
@@ -1347,7 +1436,8 @@
       "enemy_material_family_id": "clockworkmeka",
       "local_specialty_id": "lakelightlily",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 84
   },
   {
     "id": "kachina",
@@ -1362,7 +1452,8 @@
       "enemy_material_family_id": "natlansaurian",
       "local_specialty_id": "quenepaberry",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 85
   },
   {
     "id": "mualani",
@@ -1377,7 +1468,8 @@
       "enemy_material_family_id": "natlansaurian",
       "local_specialty_id": "sprayfeathergill",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 86
   },
   {
     "id": "kinich",
@@ -1392,7 +1484,8 @@
       "enemy_material_family_id": "sauroformtribalwarriors",
       "local_specialty_id": "saurianclawsucculent",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 87
   },
   {
     "id": "xilonen",
@@ -1407,7 +1500,8 @@
       "enemy_material_family_id": "natlansaurian",
       "local_specialty_id": "brilliantchrysanthemum",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 88
   },
   {
     "id": "ororon",
@@ -1422,7 +1516,8 @@
       "enemy_material_family_id": "sauroformtribalwarriors",
       "local_specialty_id": "glowinghornshroom",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 89
   },
   {
     "id": "chasca",
@@ -1437,7 +1532,8 @@
       "enemy_material_family_id": "sauroformtribalwarriors",
       "local_specialty_id": "witheringpurpurbloom",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 90
   },
   {
     "id": "citlali",
@@ -1452,7 +1548,8 @@
       "enemy_material_family_id": "sauroformtribalwarriors",
       "local_specialty_id": "quenepaberry",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 91
   },
   {
     "id": "mavuika",
@@ -1467,7 +1564,8 @@
       "enemy_material_family_id": "natlansaurian",
       "local_specialty_id": "witheringpurpurbloom",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 92
   },
   {
     "id": "lanyan",
@@ -1482,7 +1580,8 @@
       "enemy_material_family_id": "whopperflower",
       "local_specialty_id": "clearwaterjade",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 93
   },
   {
     "id": "yumemizukimizuki",
@@ -1497,7 +1596,8 @@
       "enemy_material_family_id": "nobushi",
       "local_specialty_id": "seaganoderma",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 94
   },
   {
     "id": "iansan",
@@ -1512,7 +1612,8 @@
       "enemy_material_family_id": "sauroformtribalwarriors",
       "local_specialty_id": "dracolite",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 95
   },
   {
     "id": "varesa",
@@ -1527,7 +1628,8 @@
       "enemy_material_family_id": "natlansaurian",
       "local_specialty_id": "skysplitgembloom",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 96
   },
   {
     "id": "ifa",
@@ -1542,7 +1644,8 @@
       "enemy_material_family_id": "natlansaurian",
       "local_specialty_id": "saurianclawsucculent",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 97
   },
   {
     "id": "escoffier",
@@ -1557,7 +1660,8 @@
       "enemy_material_family_id": "clockworkmeka",
       "local_specialty_id": "berylconch",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 98
   },
   {
     "id": "dahlia",
@@ -1572,7 +1676,8 @@
       "enemy_material_family_id": "hilichurlshooter",
       "local_specialty_id": "callalily",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 99
   },
   {
     "id": "skirk",
@@ -1587,7 +1692,8 @@
       "enemy_material_family_id": "clockworkmeka",
       "local_specialty_id": "skysplitgembloom",
       "gem_family_id": "shivadajade"
-    }
+    },
+    "release_order": 100
   },
   {
     "id": "ineffa",
@@ -1602,7 +1708,8 @@
       "enemy_material_family_id": "sauroformtribalwarriors",
       "local_specialty_id": "glowinghornshroom",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 101
   },
   {
     "id": "aino",
@@ -1617,7 +1724,8 @@
       "enemy_material_family_id": "landcruisers",
       "local_specialty_id": "portablebearing",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 102
   },
   {
     "id": "lauma",
@@ -1632,7 +1740,8 @@
       "enemy_material_family_id": "fatuioprichniki",
       "local_specialty_id": "moonfallsilver",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 103
   },
   {
     "id": "flins",
@@ -1647,7 +1756,8 @@
       "enemy_material_family_id": "landcruisers",
       "local_specialty_id": "frostlampflower",
       "gem_family_id": "vajradaamethyst"
-    }
+    },
+    "release_order": 104
   },
   {
     "id": "nefer",
@@ -1662,7 +1772,8 @@
       "enemy_material_family_id": "fatuioprichniki",
       "local_specialty_id": "moonfallsilver",
       "gem_family_id": "nagadusemerald"
-    }
+    },
+    "release_order": 105
   },
   {
     "id": "jahoda",
@@ -1677,7 +1788,8 @@
       "enemy_material_family_id": "landcruisers",
       "local_specialty_id": "portablebearing",
       "gem_family_id": "vayudaturquoise"
-    }
+    },
+    "release_order": 106
   },
   {
     "id": "durin",
@@ -1692,7 +1804,8 @@
       "enemy_material_family_id": "fatuioprichniki",
       "local_specialty_id": "frostlampflower",
       "gem_family_id": "agnidusagate"
-    }
+    },
+    "release_order": 107
   },
   {
     "id": "columbina",
@@ -1707,7 +1820,8 @@
       "enemy_material_family_id": "slime",
       "local_specialty_id": "wintericelea",
       "gem_family_id": "varunadalazurite"
-    }
+    },
+    "release_order": 108
   },
   {
     "id": "illuga",
@@ -1722,7 +1836,8 @@
       "enemy_material_family_id": "landcruisers",
       "local_specialty_id": "pineamber",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 109
   },
   {
     "id": "zibai",
@@ -1737,6 +1852,7 @@
       "enemy_material_family_id": "fatuioprichniki",
       "local_specialty_id": "glazelily",
       "gem_family_id": "prithivatopaz"
-    }
+    },
+    "release_order": 110
   }
 ]

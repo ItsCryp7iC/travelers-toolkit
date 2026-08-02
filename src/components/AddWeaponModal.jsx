@@ -66,7 +66,7 @@ function LevelSlider({ value, onChange, ascension, label, elementColor }) {
 }
 
 const ALL_TYPES     = ['All', ...Object.keys(WEAPON_TYPES)]
-const ALL_RARITIES  = ['All', '5', '4', '3', '2', '1']
+const ALL_RARITIES  = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★', '⚪ 1★']
 const LEVEL_MAX     = 90
 const ASC_MAX       = 6
 
@@ -109,8 +109,18 @@ export default function AddWeaponModal({ onClose }) {
       list = list.filter((w) => w?.name?.toLowerCase().includes(q))
     }
     if (typeFilter !== 'All') list = list.filter((w) => w.type === typeFilter)
-    if (rarityFilter !== 'All') list = list.filter((w) => w.rarity === parseInt(rarityFilter))
-    return list.sort((a, b) => (b.rarity || 0) - (a.rarity || 0) || (a.name || '').localeCompare(b.name || ''))
+    if (rarityFilter !== 'All') {
+      const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
+      list = list.filter((w) => {
+        const wRarity = typeof w.rarity === 'string' ? (w.rarity.match(/★/g)?.length || parseInt(w.rarity) || 0) : (w.rarity || 0)
+        return wRarity === rFilterNum
+      })
+    }
+    return list.sort((a, b) => {
+        const aRarity = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0)
+        const bRarity = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0)
+        return bRarity - aRarity || (a.name || '').localeCompare(b.name || '')
+    })
   }, [search, typeFilter, rarityFilter])
 
   // Roster characters of compatible weapon type for the selected weapon
@@ -188,7 +198,7 @@ export default function AddWeaponModal({ onClose }) {
               <div className="flex flex-wrap gap-2">
                 {ALL_RARITIES.map((r) => (
                   <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill text-[11px] py-1 ${rarityFilter === r ? 'active' : ''}`}>
-                    {r === 'All' ? '🌐 All' : `${'★'.repeat(parseInt(r))} ${r}★`}
+                    {r}
                   </button>
                 ))}
               </div>

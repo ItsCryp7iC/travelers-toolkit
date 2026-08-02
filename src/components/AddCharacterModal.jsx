@@ -19,7 +19,11 @@ export default function AddCharacterModal({ onClose, onSelect }) {
       list = list.filter((c) => c.name.toLowerCase().includes(q) || c.element?.toLowerCase().includes(q))
     }
     if (elementFilter !== 'All') list = list.filter((c) => c.element === elementFilter)
-    return list.sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name))
+    return list.sort((a, b) => {
+      const aRarity = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0)
+      const bRarity = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0)
+      return bRarity - aRarity || a.name.localeCompare(b.name)
+    })
   }, [roster, search, elementFilter])
 
   const allElements = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
