@@ -88,6 +88,24 @@ export default function Weapons() {
         return rarityB - rarityA;
       }
       if (sortOrder === 'Type') return (a.data?.type || '').localeCompare(b.data?.type || '');
+      if (sortOrder === 'Character') {
+        const charA_Name = a.assignedTo;
+        const charB_Name = b.assignedTo;
+
+        if (!charA_Name && !charB_Name) return (a.data?.release_order ?? 999) - (b.data?.release_order ?? 999);
+        if (!charA_Name) return 1;
+        if (!charB_Name) return -1;
+
+        const charA = charactersData.find(c => c.name === charA_Name) || {};
+        const charB = charactersData.find(c => c.name === charB_Name) || {};
+        
+        const orderA = charA.release_order ?? 999;
+        const orderB = charB.release_order ?? 999;
+        
+        if (orderA !== orderB) return orderA - orderB;
+        
+        return (a.data?.release_order ?? 999) - (b.data?.release_order ?? 999);
+      }
       return 0;
     })
   }, [enriched, search, typeFilter, rarityFilter, sortOrder])
@@ -163,6 +181,7 @@ export default function Weapons() {
                   <option value="Name">by Name</option>
                   <option value="Rarity">by Rarity</option>
                   <option value="Type">by Type</option>
+                  <option value="Character">by Character</option>
                 </select>
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
               </div>
