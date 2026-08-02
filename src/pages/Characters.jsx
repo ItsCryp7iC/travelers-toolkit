@@ -392,7 +392,7 @@ export default function Characters() {
           {viewMode === 'card' && (
             <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))' }}>
               {filtered.map((char) => (
-                <CharacterCard key={char.name} character={char} />
+                <CharacterCard key={char.name} character={char} onClick={() => setEditingChar(char)} />
               ))}
             </div>
           )}
@@ -400,7 +400,7 @@ export default function Characters() {
       )}
 
       {/* ── Modals ── */}
-      {addModalOpen && <AddCharacterModal onClose={() => setAddModalOpen(false)} />}
+      {addModalOpen && <AddCharacterModal onClose={() => setAddModalOpen(false)} onSelect={(char) => { setAddModalOpen(false); setEditingChar(char); }} />}
       {editingChar && <CharacterModal character={editingChar} onClose={() => setEditingChar(null)} />}
     </div>
   )

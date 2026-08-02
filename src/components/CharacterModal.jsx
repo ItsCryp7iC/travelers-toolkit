@@ -202,9 +202,9 @@ export default function CharacterModal({ character, onClose }) {
   const [normalFrom, setNormalFrom] = useState(rosterEntry?.talents?.normal         ?? 1)
   const [skillFrom,  setSkillFrom]  = useState(rosterEntry?.talents?.skill          ?? 1)
   const [burstFrom,  setBurstFrom]  = useState(rosterEntry?.talents?.burst          ?? 1)
-  const [normalTo,   setNormalTo]   = useState(rosterEntry?.targetTalents?.normal   ?? 1)
-  const [skillTo,    setSkillTo]    = useState(rosterEntry?.targetTalents?.skill    ?? 1)
-  const [burstTo,    setBurstTo]    = useState(rosterEntry?.targetTalents?.burst    ?? 1)
+  const [normalTo,   setNormalTo]   = useState(rosterEntry?.targetTalents?.normal   ?? 10)
+  const [skillTo,    setSkillTo]    = useState(rosterEntry?.targetTalents?.skill    ?? 10)
+  const [burstTo,    setBurstTo]    = useState(rosterEntry?.targetTalents?.burst    ?? 10)
 
   // ── Weapon state — local draft mirrors equippedWeaponId until Save ──────────
   const [localWeaponId, setLocalWeaponId] = useState(rosterEntry?.equippedWeaponId ?? null)
@@ -249,9 +249,9 @@ export default function CharacterModal({ character, onClose }) {
       setNormalFrom(rosterEntry.talents?.normal ?? 1)
       setSkillFrom(rosterEntry.talents?.skill ?? 1)
       setBurstFrom(rosterEntry.talents?.burst ?? 1)
-      setNormalTo(rosterEntry.targetTalents?.normal ?? 1)
-      setSkillTo(rosterEntry.targetTalents?.skill ?? 1)
-      setBurstTo(rosterEntry.targetTalents?.burst ?? 1)
+      setNormalTo(rosterEntry.targetTalents?.normal ?? 10)
+      setSkillTo(rosterEntry.targetTalents?.skill ?? 10)
+      setBurstTo(rosterEntry.targetTalents?.burst ?? 10)
     }
   }, [name]) // eslint-disable-line react-hooks/exhaustive-deps
 

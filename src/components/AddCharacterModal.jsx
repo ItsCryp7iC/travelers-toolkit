@@ -2,8 +2,10 @@ import React, { useState, useMemo, useEffect, useRef } from 'react'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getRarityClass, getStars } from '../utils/gameData'
+import GenshinImage from './GenshinImage'
+import { getCharacterAvatar } from '../utils/assetHelper'
 
-export default function AddCharacterModal({ onClose }) {
+export default function AddCharacterModal({ onClose, onSelect }) {
   const roster = useStore((s) => s.roster)
   const addCharacter = useStore((s) => s.addCharacter)
   const modalRef = useRef(null)
@@ -35,7 +37,11 @@ export default function AddCharacterModal({ onClose }) {
 
   const handleAdd = (char) => {
     addCharacter(char.name)
-    onClose()
+    if (onSelect) {
+      onSelect(char)
+    } else {
+      onClose()
+    }
   }
 
   return (
@@ -102,12 +108,19 @@ export default function AddCharacterModal({ onClose }) {
                     className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] hover:bg-[var(--elevated)] transition-all text-center cursor-pointer"
                   >
                     <div
-                      className="w-14 h-14 rounded-xl flex items-center justify-center relative shadow-md"
+                      className="w-14 h-14 rounded-xl flex items-center justify-center relative shadow-md overflow-hidden"
                       style={{ background: elCfg.avatarGradient }}
                     >
-                      <span className="font-cinzel text-xl" style={{ color: elCfg.color, textShadow: `0 0 12px ${elCfg.color}` }}>
-                        {getInitials(char.name)}
-                      </span>
+                      <GenshinImage 
+                        src={getCharacterAvatar(char.name)}
+                        alt={char.name}
+                        className="w-full h-full object-cover absolute inset-0 z-10"
+                        fallback={
+                          <span className="relative z-10 font-cinzel text-xl" style={{ color: elCfg.color, textShadow: `0 0 12px ${elCfg.color}` }}>
+                            {getInitials(char.name)}
+                          </span>
+                        }
+                      />
                     </div>
                     <div className="min-w-0 w-full">
                       <p className="font-cinzel text-[11px] font-semibold text-[var(--text)] truncate">{formatName(char.name)}</p>

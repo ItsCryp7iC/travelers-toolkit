@@ -39,7 +39,7 @@ const useStore = create(
                 targetLevel: 90,
                 targetAscension: 6,
                 talents:       { normal: 1, skill: 1, burst: 1 },
-                targetTalents: { normal: 1, skill: 1, burst: 1 },
+                targetTalents: { normal: 10, skill: 10, burst: 10 },
                 equippedWeaponId: null, // references trackedWeapons[].id
                 tracked: true,
               },
@@ -77,6 +77,7 @@ const useStore = create(
         const id = crypto.randomUUID()
         const newWeapon = {
           id,
+          weapon_id: weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
           weaponName,
           level: 1,
           ascension: 0,

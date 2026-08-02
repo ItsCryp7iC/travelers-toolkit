@@ -3,6 +3,67 @@ import weaponsData from '../data/weapons.json'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass } from '../utils/gameData'
+import GenshinImage from './GenshinImage'
+import { getWeaponIcon } from '../utils/assetHelper'
+import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
+
+function AscensionSelector({ value, onChange, label, elementColor }) {
+  return (
+    <div>
+      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+        {label}
+      </p>
+      <div className="flex gap-1.5 flex-wrap" role="group" aria-label={label}>
+        {[0, 1, 2, 3, 4, 5, 6].map((a) => (
+          <button
+            key={a}
+            onClick={() => onChange(a)}
+            title={`A${a} → Max Lv${ASCENSION_CAPS[a]}`}
+            className="w-8 h-8 rounded-lg text-xs font-bold transition-all duration-150 border"
+            style={
+              value === a
+                ? { background: `${elementColor}25`, borderColor: elementColor, color: elementColor, boxShadow: `0 0 12px ${elementColor}40` }
+                : { background: 'var(--elevated)', borderColor: 'var(--border)', color: 'var(--muted)' }
+            }
+          >
+            {a}
+          </button>
+        ))}
+      </div>
+      <p className="text-[10px] text-[var(--muted)] mt-1">
+        Max Level: <span style={{ color: elementColor }}>Lv{ASCENSION_CAPS[value]}</span>
+      </p>
+    </div>
+  )
+}
+
+function LevelSlider({ value, onChange, ascension, label, elementColor }) {
+  const { min, max } = getLevelRange(ascension)
+  return (
+    <div>
+      <div className="flex justify-between items-end mb-2">
+        <label className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">
+          {label}
+        </label>
+        <div className="flex items-baseline gap-1">
+          <span className="text-xl font-bold font-cinzel leading-none" style={{ color: elementColor }}>
+            {value}
+          </span>
+          <span className="text-[10px] text-[var(--muted)]">/ {max}</span>
+        </div>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        value={value}
+        onChange={(e) => onChange(parseInt(e.target.value, 10))}
+        className="genshin-slider w-full"
+        style={{ '--slider-color': elementColor }}
+      />
+    </div>
+  )
+}
 
 const ALL_TYPES     = ['All', ...Object.keys(WEAPON_TYPES)]
 const ALL_RARITIES  = ['All', '5', '4', '3', '2', '1']
@@ -143,8 +204,13 @@ export default function AddWeaponModal({ onClose }) {
                       onClick={() => handleSelectWeapon(wp)}
                       className="flex items-center gap-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] hover:bg-[var(--elevated)] transition-all text-left group"
                     >
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xl shadow" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
-                        {wpCfg.emoji}
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xl shadow relative overflow-hidden" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
+                        <GenshinImage 
+                          src={getWeaponIcon(wp.name)} 
+                          alt={wp.name} 
+                          className="w-full h-full object-cover absolute inset-0 z-10" 
+                          fallback={<span className="relative z-10 font-cinzel">{wpCfg.emoji}</span>} 
+                        />
                       </div>
                       <div className="min-w-0">
                         <p className="font-cinzel text-[11px] font-semibold text-[var(--text)] truncate">{formatName(wp.name)}</p>
@@ -165,8 +231,13 @@ export default function AddWeaponModal({ onClose }) {
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Selected weapon summary */}
               <div className="flex items-center gap-4 p-4 rounded-xl border" style={{ background: `${rarityColor}10`, borderColor: `${rarityColor}30` }}>
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0 shadow" style={{ background: `${rarityColor}20`, border: `1px solid ${rarityColor}40` }}>
-                  {WEAPON_TYPES[selectedWeapon.type]?.emoji || '⚔️'}
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0 shadow relative overflow-hidden" style={{ background: `${rarityColor}20`, border: `1px solid ${rarityColor}40` }}>
+                  <GenshinImage 
+                    src={getWeaponIcon(selectedWeapon.name)} 
+                    alt={selectedWeapon.name} 
+                    className="w-full h-full object-cover absolute inset-0 z-10" 
+                    fallback={<span className="relative z-10 font-cinzel">{WEAPON_TYPES[selectedWeapon.type]?.emoji || '⚔️'}</span>} 
+                  />
                 </div>
                 <div>
                   <p className="font-cinzel font-bold text-base text-[var(--text)]">{formatName(selectedWeapon.name)}</p>
@@ -177,23 +248,20 @@ export default function AddWeaponModal({ onClose }) {
 
               {/* Level sliders */}
               <div className="space-y-4">
-                <h3 className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-semibold">Progression</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[11px] font-semibold text-[var(--muted)] mb-1 block">Current Level: <span className="text-[var(--gold)]">{level}</span></label>
-                    <input type="range" min={1} max={90} value={level} onChange={(e) => setLevel(+e.target.value)} className="genshin-slider w-full" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+                  <div className="modal-state-panel">
+                    <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
+                    <AscensionSelector value={ascension} onChange={(a) => { setAscension(a); setLevel(clampLevel(level, a)) }} label="Ascension" elementColor="#9CA3AF" />
+                    <div className="mt-4">
+                      <LevelSlider value={level} onChange={setLevel} ascension={ascension} label="Level" elementColor="#9CA3AF" />
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-[11px] font-semibold text-[var(--muted)] mb-1 block">Target Level: <span className="text-[var(--gold)]">{targetLevel}</span></label>
-                    <input type="range" min={1} max={90} value={targetLevel} onChange={(e) => setTargetLevel(+e.target.value)} className="genshin-slider w-full" />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-semibold text-[var(--muted)] mb-1 block">Current Ascension: <span className="text-[var(--gold)]">{ascension}</span></label>
-                    <input type="range" min={0} max={6} value={ascension} onChange={(e) => setAscension(+e.target.value)} className="genshin-slider w-full" />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-semibold text-[var(--muted)] mb-1 block">Target Ascension: <span className="text-[var(--gold)]">{targetAscension}</span></label>
-                    <input type="range" min={0} max={6} value={targetAscension} onChange={(e) => setTargetAscension(+e.target.value)} className="genshin-slider w-full" />
+                  <div className="modal-state-panel">
+                    <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Weapon Target</p>
+                    <AscensionSelector value={targetAscension} onChange={(a) => { setTargetAscension(a); setTargetLevel(clampLevel(targetLevel, a)) }} label="Ascension" elementColor="var(--gold)" />
+                    <div className="mt-4">
+                      <LevelSlider value={targetLevel} onChange={setTargetLevel} ascension={targetAscension} label="Level" elementColor="var(--gold)" />
+                    </div>
                   </div>
                 </div>
               </div>

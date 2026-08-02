@@ -45,7 +45,7 @@ export default function Weapons() {
   const enriched = useMemo(() => {
     // First, map over tracked weapons and calculate costs
     const mapped = trackedWeapons.map((tw) => {
-      const data = weaponsData.find((w) => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
+      const data = weaponsData.find((w) => w.id === tw.weapon_id) || weaponsData.find((w) => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
       const assignedChar = tw.assignedTo ? charactersData.find((c) => c.name === tw.assignedTo) : null
       
       const costs = calculateWeaponCost(data, tw.level, tw.targetLevel)
@@ -241,7 +241,7 @@ export default function Weapons() {
                       const wpCfg  = WEAPON_TYPES[wp.data?.type] || { emoji: '⚔️' }
                       const assignedChar = wp.assignedChar
                       const elCfg = assignedChar ? (ELEMENTS[assignedChar.element] || ELEMENTS.Unknown) : null
-                      const costs = wp.costs
+                      const costs = calculateWeaponCost(wp.data, wp.level, wp.targetLevel)
                       
                       const resolvedMats = resolveWeaponMaterials(wp.data)
 

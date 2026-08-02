@@ -444,7 +444,11 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  * }
  */
 export function calculateWeaponCost(weapon, fromLv, toLv) {
-  const rarity = weapon.rarity ? `${weapon.rarity}_star` : "5_star";
+  let rarityNum = 5;
+  if (weapon?.rarity) {
+    rarityNum = typeof weapon.rarity === 'string' ? (weapon.rarity.match(/★/g) || []).length || parseInt(weapon.rarity) || 5 : weapon.rarity;
+  }
+  const rarity = `${rarityNum}_star`;
   if (!costsData?.weapon_levels?.[rarity]) return {};
   const sLv = extractLevel(fromLv);
   const tLv = extractLevel(toLv);
