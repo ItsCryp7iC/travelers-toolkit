@@ -83,19 +83,6 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
           </div>
         )}
 
-        {/* ── Level indicator (if in roster) ── */}
-        {!hideRoster && inRoster && rosterEntry && (
-          <div
-            className="absolute bottom-[88px] left-2 z-10 px-1.5 py-0.5 rounded text-[9px] font-bold font-cinzel"
-            style={{
-              background: `${elConfig.color}22`,
-              border: `1px solid ${elConfig.color}50`,
-              color: elConfig.color,
-            }}
-          >
-            Lv{rosterEntry.level}
-          </div>
-        )}
 
         {/* ── Avatar / Element Gradient ── */}
         <div
