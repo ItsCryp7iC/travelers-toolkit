@@ -46,8 +46,20 @@ function AscensionSelector({ value, onChange, label, elementColor }) {
 }
 
 // ─── Level Slider ─────────────────────────────────────────────────────────
-function LevelSlider({ value, onChange, ascension, label, elementColor }) {
-  const { min, max } = getLevelRange(ascension)
+function LevelSlider({ value, onChange, ascension, label, elementColor, isCharacter = false }) {
+  const range = getLevelRange(ascension)
+  const min = range.min
+  const max = isCharacter ? range.max : Math.min(range.max, 90)
+
+  const handleChange = (val) => {
+    let num = Number(val)
+    if (isCharacter && ascension === 6 && num > 90) {
+      if (num < 98) num = 95
+      else num = 100
+    }
+    onChange(num)
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -57,7 +69,7 @@ function LevelSlider({ value, onChange, ascension, label, elementColor }) {
       <div className="relative py-1">
         <input
           type="range" min={min} max={max} value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
+          onChange={(e) => handleChange(e.target.value)}
           className="level-slider w-full"
           style={{ '--slider-color': elementColor }}
           aria-label={`${label} level`}
@@ -407,14 +419,14 @@ export default function CharacterModal({ character, onClose }) {
                 <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Current State</p>
                 <AscensionSelector value={fromAsc} onChange={handleFromAscChange} label="Ascension" elementColor={elColor} />
                 <div className="mt-4">
-                  <LevelSlider value={fromLevel} onChange={setFromLevel} ascension={fromAsc} label="Level" elementColor={elColor} />
+                  <LevelSlider value={fromLevel} onChange={setFromLevel} ascension={fromAsc} label="Level" elementColor={elColor} isCharacter={true} />
                 </div>
               </div>
               <div className="modal-state-panel">
                 <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Target State</p>
                 <AscensionSelector value={safeToAsc} onChange={handleToAscChange} label="Ascension" elementColor={elColor} />
                 <div className="mt-4">
-                  <LevelSlider value={safeToLevel} onChange={setToLevel} ascension={safeToAsc} label="Level" elementColor={elColor} />
+                  <LevelSlider value={safeToLevel} onChange={setToLevel} ascension={safeToAsc} label="Level" elementColor={elColor} isCharacter={true} />
                 </div>
               </div>
             </div>
@@ -533,6 +545,8 @@ export default function CharacterModal({ character, onClose }) {
                     )}
                   </div>
   
+                  <MaterialGroup icon="⭐" title="Awakening" items={totalCosts['masterless_stella_fortuna'] > 0 ? { "Masterless Stella Fortuna": totalCosts['masterless_stella_fortuna'] } : null} elementColor={elColor} />
+
                   <MaterialGroup icon="💎" title="Character Ascension Gems" items={Object.fromEntries(
                     Object.entries({
                       "Sliver": totalCosts['gem_silver'],

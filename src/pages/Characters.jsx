@@ -279,7 +279,7 @@ export default function Characters() {
                       <th colSpan="5" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">Current State</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--gold)] border-r border-[var(--border)]">Target State</th>
-                      <th colSpan="8" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Ascension Requirements</th>
+                      <th colSpan="9" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Ascension Requirements</th>
                       <th colSpan="7" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Talent Requirements</th>
                       <th className="px-4 py-2 border-b border-[var(--border)]"></th>
                     </tr>
@@ -312,6 +312,7 @@ export default function Characters() {
                       <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="3★ Common Enhancement Material">Enh 3★</th>
                       <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="2★ Common Enhancement Material">Enh 2★</th>
                       <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="1★ Common Enhancement Material">Enh 1★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#FBBF24]" title="Masterless Stella Fortuna">Stella</th>
                       <th className="text-right px-3 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]">Asc. Mora</th>
 
                       {/* Talent Math */}
@@ -440,6 +441,7 @@ export default function Characters() {
                           <td className="px-3 py-2"><MatQuantity val={asc?.['3_star_enemy_material']} icon="💧" color="text-[#A78BFA]" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={asc?.['2_star_enemy_material']} icon="💧" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={asc?.['1_star_enemy_material']} icon="💧" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={asc?.masterless_stella_fortuna} icon="⭐" color="text-[#FBBF24]" nameKey="Masterless Stella Fortuna" category="others" /></td>
                           <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={asc?.mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
 
                           {/* Talent Math */}

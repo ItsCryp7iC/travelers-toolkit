@@ -21,7 +21,7 @@ function extractLevel(lv) {
 
 // ─── Ascension Level Caps ──────────────────────────────────────────────────
 // ascension phase → max level allowed at that ascension
-export const ASCENSION_CAPS = [20, 40, 50, 60, 70, 80, 90]
+export const ASCENSION_CAPS = [20, 40, 50, 60, 70, 80, 100]
 
 // ─── Min level per ascension phase ────────────────────────────────────────
 export const ASCENSION_MIN = [1, 20, 40, 50, 60, 70, 80]
@@ -135,9 +135,24 @@ export function calculateProgressionCost(character, fromLv, toLv) {
   if (!costsData?.character_levels) return {};
   const sLv = extractLevel(fromLv);
   const tLv = extractLevel(toLv);
-  const sObj = costsData.character_levels.find(x => x.level === sLv) || costsData.character_levels[0];
-  const tObj = costsData.character_levels.find(x => x.level === tLv) || costsData.character_levels[costsData.character_levels.length - 1];
-  return calculateDifference(sObj, tObj, true);
+  
+  const lookupSLv = Math.min(sLv, 90);
+  const lookupTLv = Math.min(tLv, 90);
+  
+  const sObj = costsData.character_levels.find(x => x.level === lookupSLv) || costsData.character_levels[0];
+  const tObj = costsData.character_levels.find(x => x.level === lookupTLv) || costsData.character_levels[costsData.character_levels.length - 1];
+  
+  const result = calculateDifference(sObj, tObj, true);
+  
+  let stellaFortuna = 0;
+  if (sLv < 95 && tLv >= 95) stellaFortuna += 1;
+  if (sLv < 100 && tLv === 100) stellaFortuna += 2;
+  
+  if (stellaFortuna > 0) {
+    result['masterless_stella_fortuna'] = stellaFortuna;
+  }
+  
+  return result;
 }
 
 /**

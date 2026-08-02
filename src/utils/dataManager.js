@@ -168,6 +168,7 @@ export const getPrimaryInventoryList = () => {
   addMat('AdventurerExp', 'Experience', null, 'Adventurer Exp', 'EXP Book ★★', '#4ADE80')
   addMat('WandererAdvice', 'Experience', null, "Wanderer's Advice", 'EXP Book ★', '#9CA3AF')
   addMat('Crown', 'Experience', null, 'Crown of Insight', 'Talent Level-Up', '#FBBF24')
+  addMat('masterless_stella_fortuna', 'Experience', null, 'Masterless Stella Fortuna', 'Awakening', '#FBBF24')
   addMat('MysticEnhancementOre', 'Experience', null, 'Mystic Enhancement Ore', 'Weapon EXP ★★★', '#60A5FA')
   addMat('FineEnhancementOre', 'Experience', null, 'Fine Enhancement Ore', 'Weapon EXP ★★', '#4ADE80')
   addMat('EnhancementOre', 'Experience', null, 'Enhancement Ore', 'Weapon EXP ★', '#9CA3AF')

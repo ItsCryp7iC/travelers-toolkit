@@ -71,5 +71,8 @@ export function getMaterialIcon(materialName, category) {
   if (materialName === 'Crown of Insight' || fileName === 'CrownofInsight') {
     folder = 'others'
   }
+  if (materialName === 'Masterless Stella Fortuna' || fileName === 'MasterlessStellaFortuna' || materialName === 'masterless_stella_fortuna') {
+    folder = 'others'
+  }
   return `${BASE_URL}/${folder}/${fileName}.png`
 }

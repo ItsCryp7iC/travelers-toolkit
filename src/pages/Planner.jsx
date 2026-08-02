@@ -136,6 +136,12 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
                 <p className="text-sm font-cinzel font-bold text-[#FBBF24]">×{totalCosts.crown}</p>
               </div>
             )}
+            {totalCosts?.masterless_stella_fortuna > 0 && (
+              <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
+                <p className="text-[9px] text-[var(--muted)] mb-0.5">⭐ Stella Fortuna</p>
+                <p className="text-sm font-cinzel font-bold text-[#FBBF24]">×{totalCosts.masterless_stella_fortuna}</p>
+              </div>
+            )}
             
             {/* Gemstones */}
             {['gem_silver', 'gem_fragment', 'gem_chunk', 'gem_gemstone'].map(key => totalCosts?.[key] > 0 && (
@@ -326,7 +332,7 @@ export default function Planner() {
       {view === 'toFarm' && (
         <div className="animate-fade-in">
           {/* Currency & EXP */}
-          {(toFarm.mora || toFarm.heroWits || toFarm.crown || toFarm.mysticOre) && (
+          {(toFarm.mora || toFarm.heroWits || toFarm.crown || toFarm.mysticOre || toFarm.stellaFortuna) && (
             <div className="mb-6">
               <h3 className="planner-section-title mb-3">🪙 Currency & EXP</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -334,6 +340,7 @@ export default function Planner() {
                 {toFarm.heroWits && <ToFarmCard item={{ name: 'HeroWit', ...toFarm.heroWits }} accent="#60A5FA" icon="📚" />}
                 {toFarm.mysticOre && <ToFarmCard item={{ name: 'Mystic Enh. Ore', ...toFarm.mysticOre }} accent="#F472B6" icon="💠" />}
                 {toFarm.crown && <ToFarmCard item={{ name: 'Crown',   ...toFarm.crown }} accent="#FBBF24" icon="👑" />}
+                {toFarm.stellaFortuna && <ToFarmCard item={{ name: 'Masterless Stella Fortuna', ...toFarm.stellaFortuna }} accent="#FBBF24" icon="⭐" />}
               </div>
             </div>
           )}
