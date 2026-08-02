@@ -15,6 +15,17 @@ import MatQuantity from '../components/MatQuantity'
 const ALL_TYPES    = ['All', ...Object.keys(WEAPON_TYPES)]
 const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★', '⚪ 1★']
 
+const isAscended = (level, ascension) => {
+  if (level === 20 && ascension >= 1) return true;
+  if (level === 40 && ascension >= 2) return true;
+  if (level === 50 && ascension >= 3) return true;
+  if (level === 60 && ascension >= 4) return true;
+  if (level === 70 && ascension >= 5) return true;
+  if (level === 80 && ascension >= 6) return true;
+  if (level === 90 && ascension >= 6) return true;
+  return false;
+}
+
 const MatCell = ({ qty, color = 'text-[var(--text)]', nameKey, category, className = '' }) => {
   if (!qty) return <td className={`px-3 py-2 text-center ${className}`}><span className="text-[var(--muted)] opacity-50">-</span></td>
   const fallbackStr = nameKey ? nameKey.substring(0, 2).toUpperCase() : '??'
@@ -331,8 +342,32 @@ export default function Weapons() {
                           </td>
                           
                           {/* State */}
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--text)]">{wp.level}</td>
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)] border-r border-[var(--border)]">{wp.targetLevel}</td>
+                          <td className="px-3 py-2">
+                              <div className="flex items-center justify-center gap-1">
+                                <span className="font-mono text-[11px] text-[var(--text)]">{wp.level ?? 1}</span>
+                                {isAscended(wp.level ?? 1, wp.ascension ?? 0) && (wp.level ?? 1) < 90 && (
+                                  <img 
+                                    src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                    alt="Ascended" 
+                                    className="w-3 h-3 opacity-80 object-contain"
+                                    title="Ascended"
+                                  />
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-3 py-2 border-r border-[var(--border)]">
+                              <div className="flex items-center justify-center gap-1">
+                                <span className="font-mono text-[11px] text-[var(--gold)]">{wp.targetLevel ?? 90}</span>
+                                {isAscended(wp.targetLevel ?? 90, wp.targetAscension ?? 6) && (wp.targetLevel ?? 90) < 90 && (
+                                  <img 
+                                    src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                    alt="Ascended" 
+                                    className="w-3 h-3 opacity-80 object-contain"
+                                    title="Ascended"
+                                  />
+                                )}
+                              </div>
+                            </td>
                           
                           {/* Enhancement Math */}
                           <td className="px-3 py-2"><MatQuantity val={costs?.mystic_ore} icon="🔮" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>

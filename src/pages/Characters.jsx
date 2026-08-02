@@ -17,6 +17,17 @@ const ALL_ELEMENTS = ['All', 'Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro
 const ALL_WEAPONS  = ['All', 'Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
 const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★']
 
+const isAscended = (level, ascension) => {
+  if (level === 20 && ascension >= 1) return true;
+  if (level === 40 && ascension >= 2) return true;
+  if (level === 50 && ascension >= 3) return true;
+  if (level === 60 && ascension >= 4) return true;
+  if (level === 70 && ascension >= 5) return true;
+  if (level === 80 && ascension >= 6) return true;
+  if (level === 90 && ascension >= 6) return true;
+  return false;
+}
+
 export default function Characters() {
   const roster         = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
@@ -386,13 +397,37 @@ export default function Characters() {
                           </td>
                           
                           {/* Current State */}
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--text)]">{entry?.level ?? 1}</td>
+                          <td className="px-3 py-2">
+                            <div className="flex items-center justify-center gap-1">
+                              <span className="font-mono text-[11px] text-[var(--text)]">{entry?.level ?? 1}</span>
+                              {isAscended(entry?.level ?? 1, entry?.ascension ?? 0) && (entry?.level ?? 1) < 90 && (
+                                <img 
+                                  src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                  alt="Ascended" 
+                                  className="w-3 h-3 opacity-80 object-contain"
+                                  title="Ascended"
+                                />
+                              )}
+                            </div>
+                          </td>
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--muted)]">{entry?.talents?.normal ?? 1}</td>
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--muted)]">{entry?.talents?.skill ?? 1}</td>
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--muted)] border-r border-[var(--border)]">{entry?.talents?.burst ?? 1}</td>
                           
                           {/* Target State */}
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)]">{entry?.targetLevel ?? 90}</td>
+                          <td className="px-3 py-2">
+                            <div className="flex items-center justify-center gap-1">
+                              <span className="font-mono text-[11px] text-[var(--gold)]">{entry?.targetLevel ?? 90}</span>
+                              {isAscended(entry?.targetLevel ?? 90, entry?.targetAscension ?? 6) && (entry?.targetLevel ?? 90) < 90 && (
+                                <img 
+                                  src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                  alt="Ascended" 
+                                  className="w-3 h-3 opacity-80 object-contain"
+                                  title="Ascended"
+                                />
+                              )}
+                            </div>
+                          </td>
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)]">{entry?.targetTalents?.normal ?? 1}</td>
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)]">{entry?.targetTalents?.skill ?? 1}</td>
                           <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)] border-r border-[var(--border)]">{entry?.targetTalents?.burst ?? 1}</td>
