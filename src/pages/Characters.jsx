@@ -179,30 +179,33 @@ export default function Characters() {
               </div>
               <span className="text-[var(--muted)] text-xs">{filtered.length} / {rostered.length}</span>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {ALL_ELEMENTS.map((el) => {
-                const cfg = ELEMENTS[el]
-                return (
-                  <button key={el} onClick={() => setElementFilter(el)} className={`filter-pill ${elementFilter === el ? 'active' : ''}`}>
-                    {el !== 'All' ? (
-                      <GenshinImage src={getElementIcon(el)} alt={el} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
-                    ) : <span className="mr-2">🌐</span>}
-                    {el}
-                  </button>
-                )
-              })}
-              <div className="w-px h-6 bg-[var(--border)] mx-1" />
-              {ALL_WEAPONS.map((wp) => {
-                const cfg = WEAPON_TYPES[wp]
-                return (
-                  <button key={wp} onClick={() => setWeaponFilter(wp)} className={`filter-pill ${weaponFilter === wp ? 'active' : ''}`}>
-                    {wp !== 'All' ? (
-                      <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
-                    ) : <span className="mr-2">⚔️</span>}
-                    {wp}
-                  </button>
-                )
-              })}
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                {ALL_ELEMENTS.map((el) => {
+                  const cfg = ELEMENTS[el]
+                  return (
+                    <button key={el} onClick={() => setElementFilter(el)} className={`filter-pill ${elementFilter === el ? 'active' : ''}`}>
+                      {el !== 'All' ? (
+                        <GenshinImage src={getElementIcon(el)} alt={el} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
+                      ) : <span className="mr-2">⚪</span>}
+                      {el}
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {ALL_WEAPONS.map((wp) => {
+                  const cfg = WEAPON_TYPES[wp]
+                  return (
+                    <button key={wp} onClick={() => setWeaponFilter(wp)} className={`filter-pill ${weaponFilter === wp ? 'active' : ''}`}>
+                      {wp !== 'All' ? (
+                        <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{cfg?.emoji}</span>} />
+                      ) : <span className="mr-2">⚔️</span>}
+                      {wp}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </div>
 
@@ -317,12 +320,12 @@ export default function Characters() {
                           </td>
                           <td className="px-4 py-2 sticky left-[410px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">
                             {eqWeapon ? (
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-3">
                                 <GenshinImage 
                                   src={getWeaponIcon(eqWeapon.tracked.weaponName)} 
                                   alt={eqWeapon.tracked.weaponName} 
-                                  className="w-4 h-4 object-contain shrink-0" 
-                                  fallback={<span className="text-sm shrink-0">{WEAPON_TYPES[eqWeapon.data?.type]?.emoji || '⚔️'}</span>} 
+                                  className="w-8 h-8 object-contain shrink-0" 
+                                  fallback={<span className="text-xl shrink-0">{WEAPON_TYPES[eqWeapon.data?.type]?.emoji || '⚔️'}</span>} 
                                 />
                                 <div className="truncate min-w-0">
                                   <p className="text-[11px] font-semibold text-[var(--text)] truncate">{formatName(eqWeapon.tracked.weaponName)}</p>
