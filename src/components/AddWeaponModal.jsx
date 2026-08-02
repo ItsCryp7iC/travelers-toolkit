@@ -70,26 +70,27 @@ const ALL_RARITIES  = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★'
 const LEVEL_MAX     = 90
 const ASC_MAX       = 6
 
-export default function AddWeaponModal({ onClose }) {
+export default function AddWeaponModal({ onClose, existingWeapon = null }) {
   const roster         = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
+  const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
 
   const modalRef = useRef(null)
 
   // Step 1 state
-  const [step, setStep]                   = useState(1) // 1=Select, 2=Configure
-  const [selectedWeapon, setSelectedWeapon] = useState(null)
+  const [step, setStep]                   = useState(existingWeapon ? 2 : 1) // 1=Select, 2=Configure
+  const [selectedWeapon, setSelectedWeapon] = useState(existingWeapon ? existingWeapon.data : null)
   const [search, setSearch]               = useState('')
   const [typeFilter, setTypeFilter]       = useState('All')
   const [rarityFilter, setRarityFilter]   = useState('All')
 
   // Step 2 state
-  const [level,          setLevel]          = useState(1)
-  const [ascension,      setAscension]      = useState(0)
-  const [targetLevel,    setTargetLevel]    = useState(90)
-  const [targetAscension, setTargetAscension] = useState(6)
-  const [assignedTo,     setAssignedTo]     = useState('')
+  const [level,          setLevel]          = useState(existingWeapon ? existingWeapon.level : 1)
+  const [ascension,      setAscension]      = useState(existingWeapon ? existingWeapon.ascension : 0)
+  const [targetLevel,    setTargetLevel]    = useState(existingWeapon ? existingWeapon.targetLevel : 90)
+  const [targetAscension, setTargetAscension] = useState(existingWeapon ? (existingWeapon.targetAscension ?? 6) : 6)
+  const [assignedTo,     setAssignedTo]     = useState(existingWeapon ? (existingWeapon.assignedTo || '') : '')
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -142,16 +143,34 @@ export default function AddWeaponModal({ onClose }) {
     const charEntry = assignedTo ? roster[assignedTo] : null
     const charAlreadyHasWeapon = charEntry?.equippedWeaponId
 
-    if (assignedTo && charAlreadyHasWeapon) {
-      const existingWeapon = trackedWeapons.find((w) => w.id === charAlreadyHasWeapon)
-      const existingName = existingWeapon ? formatName(existingWeapon.weaponName) : 'a weapon'
+    if (assignedTo && charAlreadyHasWeapon && existingWeapon?.id !== charAlreadyHasWeapon) {
+      const existingEquip = trackedWeapons.find((w) => w.id === charAlreadyHasWeapon)
+      const existingName = existingEquip ? formatName(existingEquip.weaponName) : 'a weapon'
       const confirmed = window.confirm(
         `${formatName(assignedTo)} already has "${existingName}" equipped. Replace it with "${formatName(selectedWeapon.name)}"?`
       )
       if (!confirmed) return
     }
 
-    addTrackedWeapon(selectedWeapon.name, assignedTo || null)
+    if (existingWeapon) {
+      updateTrackedWeapon(existingWeapon.id, {
+        level,
+        ascension,
+        targetLevel,
+        targetAscension,
+        assignedTo: assignedTo || null
+      })
+    } else {
+      const newId = addTrackedWeapon(selectedWeapon.name, assignedTo || null)
+      if (newId) {
+        updateTrackedWeapon(newId, {
+          level,
+          ascension,
+          targetLevel,
+          targetAscension
+        })
+      }
+    }
     onClose()
   }
 

@@ -51,6 +51,7 @@ export default function Weapons() {
   const [sortOrder,    setSortOrder]    = useState('Release')
   const [viewMode,     setViewMode]     = useState('table') // 'table' | 'card'
   const [addModalOpen, setAddModalOpen] = useState(false)
+  const [editingWeapon, setEditingWeapon] = useState(null)
 
   // Enrich tracked weapons with their static metadata and costs
   const enriched = useMemo(() => {
@@ -300,7 +301,8 @@ export default function Weapons() {
                       return (
                         <tr
                           key={wp.id}
-                          className={`border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--elevated)] transition-colors ${idx % 2 === 0 ? 'bg-[var(--bg)]' : 'bg-[var(--surface)]'}`}
+                          className={`border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--elevated)] cursor-pointer transition-colors ${idx % 2 === 0 ? 'bg-[var(--bg)]' : 'bg-[var(--surface)]'}`}
+                          onClick={() => setEditingWeapon(wp)}
                         >
                           {/* Identity Group (Sticky) */}
                           <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-0 z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{wp.sl_no}</td>
@@ -417,15 +419,16 @@ export default function Weapons() {
           {viewMode === 'card' && (
             <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))' }}>
               {filtered.map((wp) => (
-                <WeaponCard key={wp.id} weapon={wp.data} />
+                <WeaponCard key={wp.id} weapon={wp.data} onClick={() => setEditingWeapon(wp)} />
               ))}
             </div>
           )}
         </>
       )}
 
-      {/* ── Modal ── */}
+      {/* ── Modals ── */}
       {addModalOpen && <AddWeaponModal onClose={() => setAddModalOpen(false)} />}
+      {editingWeapon && <AddWeaponModal existingWeapon={editingWeapon} onClose={() => setEditingWeapon(null)} />}
     </div>
   )
 }
