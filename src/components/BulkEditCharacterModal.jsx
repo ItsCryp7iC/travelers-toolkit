@@ -54,7 +54,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
 
   if (!isOpen) return null
 
-  const handleSave = () => {
+  const handleApply = () => {
     try {
       const patch = {}
       
@@ -85,10 +85,12 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
       }
       
       if (Object.keys(patch).length === 0) {
+        console.warn("No overrides selected. Closing modal.");
         onClose()
         return
       }
 
+      console.log("Dispatching bulk update for:", selectedIds, "with patch:", patch);
       if (onSave) {
         onSave(patch)
       } else {
@@ -96,7 +98,8 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
         onClose()
       }
     } catch (error) {
-      console.error('Failed to apply bulk updates:', error)
+      console.error("Bulk Edit Apply Failed:", error);
+      alert("An error occurred while applying overrides. Check console.");
     }
   }
 
@@ -228,7 +231,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
         <div className="px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3 shrink-0 bg-[var(--surface)]">
           <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
           <button
-            onClick={handleSave}
+            onClick={handleApply}
             className="px-6 py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-lg shadow-[var(--gold)]/20"
           >
             Apply Overrides

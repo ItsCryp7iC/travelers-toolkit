@@ -109,15 +109,15 @@ const useStore = create(
           }
         }),
 
-      bulkUpdateCharacters: (namesArray, patch) =>
+      bulkUpdateCharacters: (identifiers, patch) =>
         set((state) => {
           const newRoster = { ...state.roster }
           let hasChanges = false
-          namesArray.forEach((name) => {
+          identifiers.forEach((name) => {
             if (newRoster[name]) {
               const updatedEntry = { ...newRoster[name], ...patch }
               
-              // Recalculate costs
+              // Recalculate costs per user request
               const charData = charactersData.find(c => c.name === name)
               if (charData) {
                 const ascCosts = calculateProgressionCost(charData, updatedEntry.level || 1, updatedEntry.targetLevel || 90)
@@ -126,7 +126,7 @@ const useStore = create(
                   skill: { current: updatedEntry.talents?.skill || 1, target: updatedEntry.targetTalents?.skill || 10 },
                   burst: { current: updatedEntry.talents?.burst || 1, target: updatedEntry.targetTalents?.burst || 10 }
                 })
-                updatedEntry.calculatedCosts = { ascCosts, talentCosts }
+                updatedEntry.costs = { ascCosts, talentCosts }
               }
               
               newRoster[name] = updatedEntry

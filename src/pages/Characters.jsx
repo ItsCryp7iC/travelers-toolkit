@@ -33,6 +33,7 @@ export default function Characters() {
   const roster         = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const removeCharacter = useStore((s) => s.removeCharacter)
+  const bulkUpdateCharacters = useStore((s) => s.bulkUpdateCharacters)
 
   const [search,        setSearch]        = useState('')
   const [elementFilter, setElementFilter] = useState('All')
