@@ -74,5 +74,14 @@ export function getMaterialIcon(materialName, category) {
   if (materialName === 'Masterless Stella Fortuna' || fileName === 'MasterlessStellaFortuna' || materialName === 'masterless_stella_fortuna') {
     folder = 'others'
   }
+  
+  const experienceItems = [
+    "Hero's Wit", "Adventurer's Experience", "Wanderer's Advice",
+    "Mystic Enhancement Ore", "Fine Enhancement Ore", "Enhancement Ore"
+  ];
+  if (experienceItems.includes(materialName)) {
+    folder = 'experience';
+  }
+
   return `${BASE_URL}/${folder}/${fileName}.png`
 }
