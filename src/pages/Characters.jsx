@@ -468,16 +468,41 @@ export default function Characters() {
                           <td className="px-3 py-2"><MatQuantity val={tal?.['3_star_enemy_material']} icon="⚔️" color="text-[#A78BFA]" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={tal?.['2_star_enemy_material']} icon="⚔️" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={tal?.['1_star_enemy_material']} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={tal?.mora_na} icon="💰" color="text-[#C8A96E]" align="right" nameKey="NA Mora" category="Currency" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={tal?.mora_skill} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Skill Mora" category="Currency" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={tal?.mora_burst} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Burst Mora" category="Currency" /></td>
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={tal?.mora} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Talent Mora" category="Currency" /></td>
+                          <td className="px-3 py-2">
+                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
+                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora_na)}</span>
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            </div>
+                          </td>
+                          <td className="px-3 py-2">
+                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
+                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora_skill)}</span>
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            </div>
+                          </td>
+                          <td className="px-3 py-2">
+                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
+                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora_burst)}</span>
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            </div>
+                          </td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]">
+                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
+                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora)}</span>
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            </div>
+                          </td>
                           
                           {/* Grand Totals */}
                           <td className="px-3 py-2"><MatQuantity val={grandEnh3} icon="⚔️" color="text-[#A78BFA]" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={grandEnh2} icon="⚔️" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={grandEnh1} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={grandMora} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Total Mora" category="Currency" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]">
+                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
+                              <span className="text-[11px] font-mono font-bold">{formatNumber(grandMora)}</span>
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            </div>
+                          </td>
                           
                           {/* Actions */}
                           <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>
