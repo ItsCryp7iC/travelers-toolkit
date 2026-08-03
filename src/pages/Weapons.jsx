@@ -41,9 +41,10 @@ const MatCell = ({ qty, color = 'text-[var(--text)]', nameKey, category, classNa
 }
 
 export default function Weapons() {
-  const trackedWeapons   = useStore((s) => s.trackedWeapons)
-  const roster           = useStore((s) => s.roster)
+  const trackedWeapons      = useStore((s) => s.trackedWeapons)
+  const roster              = useStore((s) => s.roster)
   const removeTrackedWeapon = useStore((s) => s.removeTrackedWeapon)
+  const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
 
   const [search,       setSearch]       = useState('')
   const [typeFilter,   setTypeFilter]   = useState('All')
@@ -60,7 +61,7 @@ export default function Weapons() {
       const data = weaponsData.find((w) => w.id === tw.weapon_id) || weaponsData.find((w) => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
       const assignedChar = tw.assignedTo ? charactersData.find((c) => c.name === tw.assignedTo) : null
       
-      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension)
+      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus)
 
       return { ...tw, data, assignedChar, costs }
     })
@@ -244,6 +245,10 @@ export default function Weapons() {
                     <tr className="bg-[var(--elevated)] border-b border-[var(--border)]">
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
                       <th colSpan="2" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">State</th>
+                      <th rowSpan="2" className="px-4 py-2 text-center border-r border-[var(--border)] align-middle leading-tight bg-[var(--surface)]">
+                        <span className="text-[10px] uppercase tracking-widest text-yellow-500 font-bold">EVENT BONUS</span><br/>
+                        <span className="text-[8px] uppercase tracking-wider text-[var(--muted)]">1.5x EXP</span>
+                      </th>
                       <th colSpan="5" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Enhancement</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Weapon Ascension Material</th>
                       <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Elite Enhancement Material</th>
@@ -295,7 +300,7 @@ export default function Weapons() {
                         const wpCfg  = WEAPON_TYPES[wp.data?.type] || { emoji: '⚔️' }
                         const assignedChar = wp.assignedChar
                         const elCfg = assignedChar ? (ELEMENTS[assignedChar.element] || ELEMENTS.Unknown) : null
-                        const costs = calculateWeaponCost(wp.data, wp.level, wp.targetLevel, wp.ascension, wp.targetAscension)
+                        const costs = calculateWeaponCost(wp.data, wp.level, wp.targetLevel, wp.ascension, wp.targetAscension, wp.hasEventBonus)
                         
                         const resolvedMats = resolveWeaponMaterials(wp.data)
 
@@ -372,8 +377,21 @@ export default function Weapons() {
                               </div>
                             </td>
                           
+                          {/* Event Bonus */}
+                          <td className="px-4 py-2 text-center border-r border-[var(--border)]">
+                            <input 
+                              type="checkbox" 
+                              checked={wp.hasEventBonus || false}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                updateTrackedWeapon(wp.id, { hasEventBonus: !wp.hasEventBonus })
+                              }}
+                              className="w-4 h-4 text-yellow-500 bg-gray-800 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2 cursor-pointer"
+                            />
+                          </td>
+
                           {/* Enhancement Math */}
-                          <td className="px-3 py-2"><MatQuantity val={costs?.mystic_ore} icon="💎" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2 text-center"><MatQuantity val={costs?.mystic_ore} icon="💎" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>
                           
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-1.5">

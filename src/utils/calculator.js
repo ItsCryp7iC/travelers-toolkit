@@ -464,7 +464,7 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  *   hasAnyCost: boolean,
  * }
  */
-export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc) {
+export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEventBonus = false) {
   let rarityNum = 5;
   if (weapon?.rarity) {
     rarityNum = typeof weapon.rarity === 'string' ? (weapon.rarity.match(/★/g) || []).length || parseInt(weapon.rarity) || 5 : weapon.rarity;
@@ -479,7 +479,11 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc) {
   const result = calculateDifference(sObj, tObj, false); // Weapons ascend, so cost goes up
 
   // Calculate precise ore distribution
-  const totalExpNeeded = result.total_exp || 0;
+  let totalExpNeeded = result.total_exp || 0;
+  if (hasEventBonus) {
+    totalExpNeeded = Math.ceil(totalExpNeeded / 1.5);
+  }
+  
   if (totalExpNeeded > 0) {
     const mysticOre = Math.floor(totalExpNeeded / 10000);
     const fineOre = Math.floor((totalExpNeeded % 10000) / 2000);
@@ -490,9 +494,14 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc) {
     result.fine_ore = fineOre;
     result.normal_ore = normalOre;
     result.wasted_exp = totalProvidedExp - totalExpNeeded;
+  } else {
+    result.mystic_ore = 0;
+    result.fine_ore = 0;
+    result.normal_ore = 0;
+    result.wasted_exp = 0;
   }
 
-  const enhancementMora = result.mora || 0;
+  const enhancementMora = Math.ceil(totalExpNeeded / 10);
   let ascensionMora = 0;
   
   if (fromAsc !== undefined && toAsc !== undefined && toAsc > fromAsc) {
