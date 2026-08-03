@@ -476,7 +476,23 @@ export function calculateWeaponCost(weapon, fromLv, toLv) {
   const arr = costsData.weapon_levels[rarity];
   const sObj = arr.find(x => x.level === sLv) || arr[0];
   const tObj = arr.find(x => x.level === tLv) || arr[arr.length - 1];
-  return calculateDifference(sObj, tObj, false); // Weapons ascend, so cost goes up
+  const result = calculateDifference(sObj, tObj, false); // Weapons ascend, so cost goes up
+
+  // Calculate precise ore distribution
+  const totalExpNeeded = result.total_exp || 0;
+  if (totalExpNeeded > 0) {
+    const mysticOre = Math.floor(totalExpNeeded / 10000);
+    const fineOre = Math.floor((totalExpNeeded % 10000) / 2000);
+    const normalOre = Math.ceil((totalExpNeeded % 2000) / 400);
+    const totalProvidedExp = (mysticOre * 10000) + (fineOre * 2000) + (normalOre * 400);
+    
+    result.mystic_ore = mysticOre;
+    result.fine_ore = fineOre;
+    result.normal_ore = normalOre;
+    result.wasted_exp = totalProvidedExp - totalExpNeeded;
+  }
+
+  return result;
 }
 
 // ─── Weapon Domain Schedule ────────────────────────────────────────────────

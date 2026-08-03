@@ -244,7 +244,7 @@ export default function Weapons() {
                     <tr className="bg-[var(--elevated)] border-b border-[var(--border)]">
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
                       <th colSpan="2" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">State</th>
-                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Enhancement</th>
+                      <th colSpan="5" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Enhancement</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Weapon Ascension Material</th>
                       <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Elite Enhancement Material</th>
                       <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Common Enhancement Material</th>
@@ -266,6 +266,7 @@ export default function Weapons() {
                       <th className="text-center px-3 py-2 font-semibold text-[#F472B6]" title="Mystic Enhancement Ore">Mystic Ore</th>
                       <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="Fine Enhancement Ore">Fine Ore</th>
                       <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="Enhancement Ore">Normal Ore</th>
+                      <th className="text-center px-3 py-2 font-semibold text-orange-400" title="Wasted EXP">Wasted EXP</th>
                       <th className="text-right px-3 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]">Mora</th>
 
                       {/* Ascension Mats */}
@@ -372,9 +373,42 @@ export default function Weapons() {
                             </td>
                           
                           {/* Enhancement Math */}
-                          <td className="px-3 py-2"><MatQuantity val={costs?.mystic_ore} icon="🔮" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={0} icon="🪨" color="text-[#60A5FA]" nameKey="Fine Enhancement Ore" category="Ores" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={0} icon="🪨" color="text-[#9CA3AF]" nameKey="Enhancement Ore" category="Ores" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={costs?.mystic_ore} icon="💎" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Ores" /></td>
+                          
+                          <td className="px-3 py-2">
+                            <div className="flex items-center justify-center gap-1.5">
+                              {costs?.fine_ore > 0 ? (
+                                <>
+                                  <img src={getMaterialIcon('Fine Enhancement Ore')} alt="Fine Ore" className="w-8 h-8 object-contain shrink-0" />
+                                  <span className="text-[11px] font-mono font-bold text-[#60A5FA]">{costs.fine_ore}</span>
+                                </>
+                              ) : (
+                                <span className="text-[var(--muted)] opacity-50">-</span>
+                              )}
+                            </div>
+                          </td>
+                          
+                          <td className="px-3 py-2">
+                            <div className="flex items-center justify-center gap-1.5">
+                              {costs?.normal_ore > 0 ? (
+                                <>
+                                  <img src={getMaterialIcon('Enhancement Ore')} alt="Normal Ore" className="w-8 h-8 object-contain shrink-0" />
+                                  <span className="text-[11px] font-mono font-bold text-[#9CA3AF]">{costs.normal_ore}</span>
+                                </>
+                              ) : (
+                                <span className="text-[var(--muted)] opacity-50">-</span>
+                              )}
+                            </div>
+                          </td>
+
+                          <td className="px-3 py-2 text-center">
+                            {costs?.wasted_exp > 0 ? (
+                              <span className="text-orange-400 font-mono text-xs">+{costs.wasted_exp}</span>
+                            ) : (
+                              <span className="text-[var(--muted)] opacity-50">-</span>
+                            )}
+                          </td>
+
                           <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs?.mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
 
                           {/* Ascension Mats */}
