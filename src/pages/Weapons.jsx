@@ -378,15 +378,18 @@ export default function Weapons() {
                             </td>
                           
                           {/* Event Bonus */}
-                          <td className="px-4 py-2 text-center border-r border-[var(--border)]">
+                          <td 
+                            className="px-4 py-2 text-center border-r border-[var(--border)] cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateTrackedWeapon(wp.id, { hasEventBonus: !wp.hasEventBonus });
+                            }}
+                          >
                             <input 
                               type="checkbox" 
                               checked={wp.hasEventBonus || false}
-                              onChange={(e) => {
-                                e.stopPropagation();
-                                updateTrackedWeapon(wp.id, { hasEventBonus: !wp.hasEventBonus })
-                              }}
-                              className="w-4 h-4 text-yellow-500 bg-gray-800 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2 cursor-pointer"
+                              readOnly
+                              className="w-4 h-4 text-yellow-500 bg-gray-800 border-gray-600 rounded focus:ring-yellow-500 focus:ring-2 pointer-events-none"
                             />
                           </td>
 
