@@ -16,7 +16,7 @@ import {
 } from '../utils/calculator'
 
 // ─── Ascension Phase Selector ──────────────────────────────────────────────
-function AscensionSelector({ value, onChange, label, elementColor, isCharacter = false }) {
+export function AscensionSelector({ value, onChange, label, elementColor, isCharacter = false }) {
   const getPhaseMax = (a) => (a === 6 && !isCharacter) ? 90 : ASCENSION_CAPS[a];
 
   return (
@@ -49,7 +49,7 @@ function AscensionSelector({ value, onChange, label, elementColor, isCharacter =
 }
 
 // ─── Level Slider ─────────────────────────────────────────────────────────
-function LevelSlider({ value, onChange, ascension, label, elementColor, isCharacter = false }) {
+export function LevelSlider({ value, onChange, ascension, label, elementColor, isCharacter = false }) {
   const range = getLevelRange(ascension)
   const min = range.min
   const max = isCharacter ? range.max : Math.min(range.max, 90)
@@ -86,7 +86,7 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, isCharac
 }
 
 // ─── Talent Level Stepper ─────────────────────────────────────────────────
-function TalentStepper({ value, onChange, min = 1, max = 10, elementColor, id }) {
+export function TalentStepper({ value, onChange, min = 1, max = 10, elementColor, id }) {
   const step = (d) => onChange(Math.min(max, Math.max(min, value + d)))
   return (
     <div className="flex items-center gap-1.5">
@@ -116,7 +116,7 @@ function TalentStepper({ value, onChange, min = 1, max = 10, elementColor, id })
 }
 
 // ─── Talent Row ────────────────────────────────────────────────────────────
-function TalentRow({ icon, label, fromVal, toVal, onFromChange, onToChange, elementColor, charName, skill }) {
+export function TalentRow({ icon, label, fromVal, toVal, onFromChange, onToChange, elementColor, charName, skill }) {
   const safeToVal = Math.max(toVal, fromVal)
   return (
     <div className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0">

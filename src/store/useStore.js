@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import charactersData from '../data/characters.json'
+import { calculateProgressionCost, calculateAllTalentsCost } from '../utils/calculator'
 
 /**
  * Zustand global store for Traveler's Toolkit.
@@ -42,6 +44,7 @@ const useStore = create(
                 targetTalents: { normal: 10, skill: 10, burst: 10 },
                 equippedWeaponId: null, // references trackedWeapons[].id
                 tracked: true,
+                calculatedCosts: null
               },
             },
           }
@@ -63,6 +66,7 @@ const useStore = create(
                 targetTalents: { normal: 10, skill: 10, burst: 10 },
                 equippedWeaponId: null,
                 tracked: true,
+                calculatedCosts: null
               }
               hasChanges = true
             }
@@ -85,12 +89,25 @@ const useStore = create(
         }),
 
       updateCharacter: (name, patch) =>
-        set((state) => ({
-          roster: {
-            ...state.roster,
-            [name]: { ...state.roster[name], ...patch },
-          },
-        })),
+        set((state) => {
+          const charEntry = { ...state.roster[name], ...patch }
+          const charData = charactersData.find(c => c.name === name)
+          if (charData) {
+            const ascCosts = calculateProgressionCost(charData, charEntry.level || 1, charEntry.targetLevel || 90)
+            const talentCosts = calculateAllTalentsCost(charData, {
+              auto: { current: charEntry.talents?.normal || 1, target: charEntry.targetTalents?.normal || 10 },
+              skill: { current: charEntry.talents?.skill || 1, target: charEntry.targetTalents?.skill || 10 },
+              burst: { current: charEntry.talents?.burst || 1, target: charEntry.targetTalents?.burst || 10 }
+            })
+            charEntry.calculatedCosts = { ascCosts, talentCosts }
+          }
+          return {
+            roster: {
+              ...state.roster,
+              [name]: charEntry,
+            },
+          }
+        }),
 
       bulkUpdateCharacters: (namesArray, patch) =>
         set((state) => {
@@ -98,7 +115,21 @@ const useStore = create(
           let hasChanges = false
           namesArray.forEach((name) => {
             if (newRoster[name]) {
-              newRoster[name] = { ...newRoster[name], ...patch }
+              const updatedEntry = { ...newRoster[name], ...patch }
+              
+              // Recalculate costs
+              const charData = charactersData.find(c => c.name === name)
+              if (charData) {
+                const ascCosts = calculateProgressionCost(charData, updatedEntry.level || 1, updatedEntry.targetLevel || 90)
+                const talentCosts = calculateAllTalentsCost(charData, {
+                  auto: { current: updatedEntry.talents?.normal || 1, target: updatedEntry.targetTalents?.normal || 10 },
+                  skill: { current: updatedEntry.talents?.skill || 1, target: updatedEntry.targetTalents?.skill || 10 },
+                  burst: { current: updatedEntry.talents?.burst || 1, target: updatedEntry.targetTalents?.burst || 10 }
+                })
+                updatedEntry.calculatedCosts = { ascCosts, talentCosts }
+              }
+              
+              newRoster[name] = updatedEntry
               hasChanges = true
             }
           })
