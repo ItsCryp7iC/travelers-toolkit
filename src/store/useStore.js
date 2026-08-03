@@ -92,6 +92,20 @@ const useStore = create(
           },
         })),
 
+      bulkUpdateCharacters: (namesArray, patch) =>
+        set((state) => {
+          const newRoster = { ...state.roster }
+          let hasChanges = false
+          namesArray.forEach((name) => {
+            if (newRoster[name]) {
+              newRoster[name] = { ...newRoster[name], ...patch }
+              hasChanges = true
+            }
+          })
+          if (!hasChanges) return state
+          return { roster: newRoster }
+        }),
+
       isInRoster: (name) => Boolean(get().roster[name]),
 
       // ─── TRACKED WEAPONS (ARMORY) ──────────────────────────────────────

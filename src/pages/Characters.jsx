@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import CharacterCard from '../components/CharacterCard'
 import CharacterModal from '../components/CharacterModal'
 import AddCharacterModal from '../components/AddCharacterModal'
+import BulkEditCharacterModal from '../components/BulkEditCharacterModal'
 import charactersData from '../data/characters.json'
 import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
@@ -41,7 +42,9 @@ export default function Characters() {
   const [viewMode,      setViewMode]      = useState('table') // 'table' | 'card'
 
   const [addModalOpen,  setAddModalOpen]  = useState(false)
+  const [bulkModalOpen, setBulkModalOpen] = useState(false)
   const [editingChar,   setEditingChar]   = useState(null)
+  const [selectedNames, setSelectedNames] = useState([])
 
   // Build full character objects for rostered characters, calculate their maths
   const rostered = useMemo(() => {
@@ -133,6 +136,17 @@ export default function Characters() {
 
   return (
     <div className="animate-fade-in">
+      <BulkEditCharacterModal 
+        isOpen={bulkModalOpen}
+        onClose={() => setBulkModalOpen(false)}
+        selectedIds={selectedNames}
+        onSave={(patch) => {
+          bulkUpdateCharacters(selectedNames, patch);
+          setBulkModalOpen(false);
+          setSelectedNames([]);
+        }}
+      />
+
       {/* ── Page Header ── */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
@@ -160,6 +174,14 @@ export default function Characters() {
               ⊞ Cards
             </button>
           </div>
+          {selectedNames.length > 0 && (
+            <button
+              onClick={() => setBulkModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[var(--bg)] transition-colors shadow-md"
+            >
+              Bulk Edit ({selectedNames.length})
+            </button>
+          )}
           <button
             id="add-character-btn"
             onClick={() => setAddModalOpen(true)}
@@ -276,7 +298,7 @@ export default function Characters() {
                   <thead>
                     {/* Top Header Grouping */}
                     <tr className="bg-[var(--elevated)] border-b border-[var(--border)]">
-                      <th colSpan="5" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
+                      <th colSpan="6" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">Current State</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--gold)] border-r border-[var(--border)]">Target State</th>
                       <th colSpan="9" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Ascension Requirements</th>
@@ -287,11 +309,25 @@ export default function Characters() {
                     {/* Sub Headers */}
                     <tr className="border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
                       {/* Identity (Sticky) */}
-                      <th className="text-center px-4 py-2 font-semibold sticky left-0 z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">Sl</th>
-                      <th className="text-left px-4 py-2 font-semibold sticky left-[48px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]">Character</th>
-                      <th className="text-center px-4 py-2 font-semibold sticky left-[248px] z-20 bg-[var(--surface)] w-[82px] min-w-[82px] max-w-[82px]">Element</th>
-                      <th className="text-center px-4 py-2 font-semibold sticky left-[330px] z-20 bg-[var(--surface)] w-[80px] min-w-[80px] max-w-[80px]">Weapon</th>
-                      <th className="text-left px-4 py-2 font-semibold sticky left-[410px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Equipped</th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-0 z-20 bg-[var(--surface)] w-[40px] min-w-[40px] max-w-[40px]">
+                        <input 
+                          type="checkbox" 
+                          className="accent-[var(--gold)] cursor-pointer w-4 h-4"
+                          checked={filtered.length > 0 && selectedNames.length === filtered.length}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedNames(filtered.map(c => c.name))
+                            } else {
+                              setSelectedNames([])
+                            }
+                          }}
+                        />
+                      </th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-[40px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">Sl</th>
+                      <th className="text-left px-4 py-2 font-semibold sticky left-[88px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]">Character</th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-[288px] z-20 bg-[var(--surface)] w-[82px] min-w-[82px] max-w-[82px]">Element</th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-[370px] z-20 bg-[var(--surface)] w-[80px] min-w-[80px] max-w-[80px]">Weapon</th>
+                      <th className="text-left px-4 py-2 font-semibold sticky left-[450px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Equipped</th>
                       
                       {/* Current State */}
                       <th className="text-center px-3 py-2 font-semibold">Lv</th>
@@ -364,12 +400,33 @@ export default function Characters() {
                       return (
                         <tr
                           key={char.name}
-                          className={`border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--elevated)] transition-colors cursor-pointer ${idx % 2 === 0 ? 'bg-[var(--bg)]' : 'bg-[var(--surface)]'}`}
-                          onClick={() => setEditingChar(char)}
+                          className={`border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--elevated)] transition-colors ${idx % 2 === 0 ? 'bg-[var(--bg)]' : 'bg-[var(--surface)]'}`}
                         >
                           {/* Identity Group (Sticky) */}
-                          <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-0 z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{char.sl_no}</td>
-                          <td className="px-4 py-2 sticky left-[48px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px]">
+                          <td className="px-4 py-2 text-center sticky left-0 z-10 bg-inherit w-[40px] min-w-[40px] max-w-[40px]">
+                            <input 
+                              type="checkbox"
+                              className="accent-[var(--gold)] cursor-pointer w-4 h-4"
+                              checked={selectedNames.includes(char.name)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedNames(prev => [...prev, char.name])
+                                } else {
+                                  setSelectedNames(prev => prev.filter(n => n !== char.name))
+                                }
+                              }}
+                            />
+                          </td>
+                          <td 
+                            className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-[40px] z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px] cursor-pointer"
+                            onClick={() => setEditingChar(char)}
+                          >
+                            {char.sl_no}
+                          </td>
+                          <td 
+                            className="px-4 py-2 sticky left-[88px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px] cursor-pointer"
+                            onClick={() => setEditingChar(char)}
+                          >
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow relative overflow-hidden" style={{ background: elCfg.avatarGradient }}>
                                 <GenshinImage 
@@ -385,15 +442,24 @@ export default function Characters() {
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-2 text-center sticky left-[248px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px]">
+                          <td 
+                            className="px-4 py-2 text-center sticky left-[288px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px] cursor-pointer"
+                            onClick={() => setEditingChar(char)}
+                          >
                             <span className="inline-flex items-center justify-center w-10 h-10 rounded-full border overflow-hidden" style={{ background: elCfg.colorDim, borderColor: elCfg.color + '50', color: elCfg.color }} title={char.element}>
                               <GenshinImage src={getElementIcon(char.element)} alt={char.element} className="w-8 h-8 object-contain shrink-0" fallback={elCfg.emoji} />
                             </span>
                           </td>
-                          <td className="px-4 py-2 text-center sticky left-[330px] z-10 bg-inherit w-[80px] min-w-[80px] max-w-[80px]">
-                            <GenshinImage src={getWeaponTypeIcon(char.weapon_type)} alt={char.weapon_type} className="w-8 h-8 object-contain inline-block shrink-0" fallback={<span>{wpCfg?.emoji}</span>} />
+                          <td 
+                            className="px-4 py-2 text-center sticky left-[370px] z-10 bg-inherit w-[80px] min-w-[80px] max-w-[80px] cursor-pointer"
+                            onClick={() => setEditingChar(char)}
+                          >
+                            <GenshinImage src={getWeaponTypeIcon(char.weapon_type || char.weapon)} alt={char.weapon_type || char.weapon} className="w-8 h-8 object-contain inline-block shrink-0" fallback={<span>{wpCfg?.emoji}</span>} />
                           </td>
-                          <td className="px-4 py-2 sticky left-[410px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">
+                          <td 
+                            className="px-4 py-2 sticky left-[450px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)] cursor-pointer"
+                            onClick={() => setEditingChar(char)}
+                          >
                             {eqWeapon ? (
                               <div className="flex items-center gap-3">
                                 <GenshinImage 
