@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import charactersData from '../data/characters.json'
-import { calculateProgressionCost, calculateAllTalentsCost } from '../utils/calculator'
+import weaponsData from '../data/weapons.json'
+import { calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost } from '../utils/calculator'
 
 /**
  * Zustand global store for Traveler's Toolkit.
@@ -200,6 +201,32 @@ const useStore = create(
             w.id === id ? { ...w, ...patch } : w
           ),
         })),
+
+      bulkUpdateWeapons: (identifiers, patch) =>
+        set((state) => {
+          const updatedArmory = state.trackedWeapons.map(weapon => {
+            if (identifiers.includes(weapon.id) || identifiers.includes(weapon.weaponName)) {
+              const updatedWeapon = { ...weapon, ...patch };
+              
+              const wData = weaponsData.find(w => w.name === updatedWeapon.weaponName);
+              if (wData) {
+                const newCosts = calculateWeaponCost(
+                  wData, 
+                  updatedWeapon.level || 1, 
+                  updatedWeapon.targetLevel || 90, 
+                  updatedWeapon.ascension || 0, 
+                  updatedWeapon.targetAscension || 6, 
+                  updatedWeapon.hasEventBonus, 
+                  Object.values(state.roster)
+                );
+                return { ...updatedWeapon, costs: newCosts };
+              }
+              return updatedWeapon;
+            }
+            return weapon;
+          });
+          return { trackedWeapons: updatedArmory };
+        }),
 
       assignWeaponToCharacter: (weaponId, charName) =>
         set((state) => {

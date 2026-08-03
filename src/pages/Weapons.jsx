@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
+import BulkEditWeaponModal from '../components/BulkEditWeaponModal'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
@@ -45,6 +46,7 @@ export default function Weapons() {
   const roster              = useStore((s) => s.roster)
   const removeTrackedWeapon = useStore((s) => s.removeTrackedWeapon)
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
+  const bulkUpdateWeapons   = useStore((s) => s.bulkUpdateWeapons)
 
   const [search,       setSearch]       = useState('')
   const [typeFilter,   setTypeFilter]   = useState('All')
@@ -52,7 +54,9 @@ export default function Weapons() {
   const [sortOrder,    setSortOrder]    = useState('Release')
   const [viewMode,     setViewMode]     = useState('table') // 'table' | 'card'
   const [addModalOpen, setAddModalOpen] = useState(false)
+  const [bulkModalOpen, setBulkModalOpen] = useState(false)
   const [editingWeapon, setEditingWeapon] = useState(null)
+  const [selectedIds, setSelectedIds] = useState([])
 
   // Enrich tracked weapons with their static metadata and costs
   const enriched = useMemo(() => {
@@ -125,7 +129,17 @@ export default function Weapons() {
 
   return (
     <div className="animate-fade-in">
-      {/* ── Page Header ── */}
+      <BulkEditWeaponModal 
+        isOpen={bulkModalOpen}
+        onClose={() => setBulkModalOpen(false)}
+        selectedIds={selectedIds}
+        onSave={(patch) => {
+          bulkUpdateWeapons(selectedIds, patch);
+          setBulkModalOpen(false);
+          setSelectedIds([]);
+        }}
+      />
+      {/* 🔮 Page Header 🔮 */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
@@ -149,9 +163,17 @@ export default function Weapons() {
               onClick={() => setViewMode('card')}
               className={`px-3 py-1.5 text-xs font-semibold transition-colors ${viewMode === 'card' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
             >
-              ⊞ Cards
+              📋 Cards
             </button>
           </div>
+          {selectedIds.length > 0 && (
+            <button
+              onClick={() => setBulkModalOpen(true)}
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md animate-fade-in"
+            >
+              Bulk Edit ({selectedIds.length})
+            </button>
+          )}
           <button
             id="add-weapon-btn"
             onClick={() => setAddModalOpen(true)}
@@ -240,10 +262,10 @@ export default function Weapons() {
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-md">
               <div className="overflow-x-auto custom-scrollbar">
                 <table className="w-full text-sm border-collapse whitespace-nowrap min-w-max">
-                  <thead>
+                  <thead className="sticky top-0 z-40 bg-[var(--elevated)] shadow-md">
                     {/* Top Header Grouping */}
                     <tr className="bg-[var(--elevated)] border-b border-[var(--border)]">
-                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
+                      <th colSpan="5" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
                       <th colSpan="2" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">State</th>
                       <th rowSpan="2" className="px-4 py-2 text-center border-r border-[var(--border)] align-middle leading-tight bg-[var(--surface)]">
                         <span className="text-[10px] uppercase tracking-widest text-yellow-500 font-bold">EVENT BONUS</span><br/>
@@ -258,10 +280,24 @@ export default function Weapons() {
                     {/* Sub Headers */}
                     <tr className="border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
                       {/* Identity (Sticky) */}
-                      <th className="text-center px-4 py-2 font-semibold sticky left-0 z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">Sl</th>
-                      <th className="text-left px-4 py-2 font-semibold sticky left-[48px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]">Weapon</th>
-                      <th className="text-center px-4 py-2 font-semibold sticky left-[248px] z-20 bg-[var(--surface)] w-[82px] min-w-[82px] max-w-[82px]">Type</th>
-                      <th className="text-left px-4 py-2 font-semibold sticky left-[330px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Assigned Character</th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-0 z-20 bg-[var(--surface)] w-[40px] min-w-[40px] max-w-[40px]">
+                        <input 
+                          type="checkbox" 
+                          className="accent-[var(--gold)] cursor-pointer w-4 h-4"
+                          checked={filtered.length > 0 && selectedIds.length === filtered.length}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds(filtered.map(w => w.id))
+                            } else {
+                              setSelectedIds([])
+                            }
+                          }}
+                        />
+                      </th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-[40px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">Sl</th>
+                      <th className="text-left px-4 py-2 font-semibold sticky left-[88px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]">Weapon</th>
+                      <th className="text-center px-4 py-2 font-semibold sticky left-[288px] z-20 bg-[var(--surface)] w-[82px] min-w-[82px] max-w-[82px]">Type</th>
+                      <th className="text-left px-4 py-2 font-semibold sticky left-[370px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Assigned Character</th>
                       
                       {/* State */}
                       <th className="text-center px-3 py-2 font-semibold">Lv</th>
@@ -310,28 +346,43 @@ export default function Weapons() {
                           className={`border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--elevated)] cursor-pointer transition-colors ${idx % 2 === 0 ? 'bg-[var(--bg)]' : 'bg-[var(--surface)]'}`}
                           onClick={() => setEditingWeapon(wp)}
                         >
-                          {/* Identity Group (Sticky) */}
-                          <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-0 z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{wp.sl_no}</td>
-                          <td className="px-4 py-2 sticky left-[48px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px]">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xl shrink-0 shadow relative overflow-hidden" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
-                                <GenshinImage 
-                                  src={getWeaponIcon(wp.weaponName)} 
-                                  alt={wp.weaponName} 
-                                  className="w-full h-full object-cover absolute inset-0 z-10" 
-                                  fallback={<span className="font-cinzel text-sm relative z-10" style={{ color: rColor }}>{wpCfg.emoji}</span>} 
-                                />
+                            {/* Identity Group (Sticky) */}
+                            <td className="px-4 py-2 text-center sticky left-0 z-10 bg-inherit w-[40px] min-w-[40px] max-w-[40px]">
+                              <input 
+                                type="checkbox"
+                                className="accent-[var(--gold)] cursor-pointer w-4 h-4"
+                                checked={selectedIds.includes(wp.id)}
+                                onChange={(e) => {
+                                  e.stopPropagation();
+                                  if (e.target.checked) {
+                                    setSelectedIds(prev => [...prev, wp.id])
+                                  } else {
+                                    setSelectedIds(prev => prev.filter(id => id !== wp.id))
+                                  }
+                                }}
+                              />
+                            </td>
+                            <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-[40px] z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{wp.sl_no}</td>
+                            <td className="px-4 py-2 sticky left-[88px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px]">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xl shrink-0 shadow relative overflow-hidden" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
+                                  <GenshinImage 
+                                    src={getWeaponIcon(wp.weaponName)} 
+                                    alt={wp.weaponName} 
+                                    className="w-full h-full object-cover absolute inset-0 z-10" 
+                                    fallback={<span className="font-cinzel text-sm relative z-10" style={{ color: rColor }}>{wpCfg?.emoji}</span>} 
+                                  />
+                                </div>
+                                <div className="truncate">
+                                  <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.weaponName)}</p>
+                                  <p className={`text-[10px] ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity || 1)}</p>
+                                </div>
                               </div>
-                              <div className="truncate">
-                                <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.weaponName)}</p>
-                                <p className={`text-[10px] ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity || 1)}</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-4 py-2 text-center sticky left-[248px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px]" title={wp.data?.type}>
-                            <GenshinImage src={getWeaponTypeIcon(wp.data?.type)} alt={wp.data?.type} className="w-8 h-8 object-contain inline-block shrink-0" fallback={<span>{wpCfg?.emoji}</span>} />
-                          </td>
-                          <td className="px-4 py-2 sticky left-[330px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">
+                            </td>
+                            <td className="px-4 py-2 text-center sticky left-[288px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px]" title={wp.data?.type}>
+                              <GenshinImage src={getWeaponTypeIcon(wp.data?.type)} alt={wp.data?.type} className="w-8 h-8 object-contain inline-block shrink-0" fallback={<span>{wpCfg?.emoji}</span>} />
+                            </td>
+                            <td className="px-4 py-2 sticky left-[370px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">
                             {assignedChar && elCfg ? (
                               <div className="flex items-center gap-2">
                                 <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow relative overflow-hidden" style={{ background: elCfg.avatarGradient }}>
