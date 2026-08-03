@@ -7,7 +7,8 @@ import {
   ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass,
 } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
-import { getElementIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
+import CustomSelect from './CustomSelect'
+import { getElementIcon, getCharacterAvatar, getWeaponTypeIcon, getWeaponIcon } from '../utils/assetHelper'
 import {
   calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost,
   clampLevel, getLevelRange, ASCENSION_CAPS,
@@ -481,11 +482,10 @@ export default function CharacterModal({ character, onClose }) {
           <section className="mb-6">
             <h3 className="modal-section-title">🗡️ Equipped Weapon</h3>
             <div className="mb-4">
-            <select
-                className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] rounded-xl px-4 py-3 outline-none focus:border-[var(--gold)] transition-colors"
+              <CustomSelect
+                placeholder="-- No Weapon Equipped --"
                 value={equippedWeaponName || ''}
-                onChange={(e) => {
-                  const newName = e.target.value || null
+                onChange={(newName) => {
                   if (!newName) {
                     // User cleared the weapon
                     if (localWeaponId) unassignWeapon(localWeaponId)
@@ -497,14 +497,16 @@ export default function CharacterModal({ character, onClose }) {
                     setLocalWeaponId(newId)
                   }
                 }}
-              >
-                <option value="">-- No Weapon Equipped --</option>
-                {compatibleWeapons.map(w => (
-                  <option key={w.name} value={w.name}>
-                    {formatName(w.name)} ({w.rarity})
-                  </option>
-                ))}
-              </select>
+                options={[
+                  { id: '', name: '— No Weapon Equipped —', icon: null, rarity: 0 },
+                  ...compatibleWeapons.map(w => ({
+                    id: w.name,
+                    name: formatName(w.name),
+                    icon: getWeaponIcon(w.name),
+                    rarity: w.rarity
+                  }))
+                ]}
+              />
             </div>
 
             {equippedWeaponName && (

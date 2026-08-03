@@ -4,7 +4,8 @@ import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
-import { getWeaponIcon } from '../utils/assetHelper'
+import CustomSelect from './CustomSelect'
+import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
 import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
 
 function AscensionSelector({ value, onChange, label, elementColor }) {
@@ -301,22 +302,26 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
                 {compatibleChars.length === 0 ? (
                   <p className="text-sm text-[var(--muted)] italic">No rostered characters use {selectedWeapon.type}s.</p>
                 ) : (
-                  <select
+                  <CustomSelect
+                    placeholder="— Unassigned (Standalone) —"
                     value={assignedTo}
-                    onChange={(e) => setAssignedTo(e.target.value)}
-                    className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] text-sm rounded-xl px-4 py-2.5 outline-none focus:border-[var(--gold)] transition-colors"
-                  >
-                    <option value="">— Unassigned (Standalone) —</option>
-                    {compatibleChars.map((c) => {
-                      const entry = roster[c.name]
-                      const hasWeapon = entry?.equippedWeaponId
-                      return (
-                        <option key={c.name} value={c.name}>
-                          {formatName(c.name)}{hasWeapon ? ' ⚠️ (has weapon)' : ''}
-                        </option>
-                      )
-                    })}
-                  </select>
+                    onChange={(newVal) => setAssignedTo(newVal)}
+                    options={[
+                      { id: '', name: '— Unassigned (Standalone) —', icon: null, rarity: 0 },
+                      ...compatibleChars.map((c) => {
+                        const entry = roster[c.name]
+                        const hasWeapon = entry?.equippedWeaponId
+                        const charData = charactersData.find(cd => cd.name === c.name)
+                        return {
+                          id: c.name,
+                          name: formatName(c.name),
+                          subtitle: hasWeapon ? '⚠️ (has weapon)' : '',
+                          icon: getCharacterAvatar(c.name),
+                          rarity: charData ? charData.rarity : 0
+                        }
+                      })
+                    ]}
+                  />
                 )}
               </div>
             </div>
