@@ -60,34 +60,44 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
             return (
               <div 
                 key={option.id} 
-                className={`flex items-center gap-3 p-2 hover:bg-white/10 cursor-pointer transition-colors border-b border-gray-800 last:border-0 ${value === option.id ? 'bg-white/5' : ''}`}
+                className={`flex items-center justify-between p-2 hover:bg-white/10 cursor-pointer transition-colors border-b border-gray-800 last:border-0 ${value === option.id ? 'bg-white/5' : ''}`}
                 onClick={() => {
                   onChange(option.id);
                   setIsOpen(false);
                 }}
               >
-                {/* Icon & Rarity Column */}
-                {option.icon ? (
-                  <div className="flex flex-col items-center w-10">
-                    <img src={option.icon} alt={option.name} className="w-8 h-8 object-contain rounded" />
-                    {/* Render stars */}
-                    {stars > 0 && (
-                      <div className="text-[8px] text-yellow-400 tracking-tighter mt-1 leading-none text-center w-full">
-                        {'★'.repeat(stars)}
-                      </div>
-                    )}
+                {/* Left Side */}
+                <div className="flex items-center gap-3 flex-1">
+                  {/* Icon & Rarity Column */}
+                  {option.icon ? (
+                    <div className="flex flex-col items-center w-10">
+                      <img src={option.icon} alt={option.name} className="w-8 h-8 object-contain rounded" />
+                      {/* Render stars */}
+                      {stars > 0 && (
+                        <div className="text-[8px] text-yellow-400 tracking-tighter mt-1 leading-none text-center w-full">
+                          {'★'.repeat(stars)}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-10 flex justify-center items-center">
+                      <div className="w-8 h-8 bg-black/20 rounded border border-gray-700"></div>
+                    </div>
+                  )}
+                  
+                  {/* Name & Extra Info */}
+                  <div className="flex flex-col justify-center">
+                    <span className="text-sm text-gray-200">{option.name}</span>
+                    {option.subtitle && <span className="text-xs text-gray-500">{option.subtitle}</span>}
                   </div>
-                ) : (
-                  <div className="w-10 flex justify-center items-center">
-                    <div className="w-8 h-8 bg-black/20 rounded border border-gray-700"></div>
+                </div>
+
+                {/* Right Side: Secondary Icon */}
+                {option.secondaryIcon && (
+                  <div className="flex-shrink-0 ml-3">
+                    <img src={option.secondaryIcon} alt="Secondary" className="w-8 h-8 object-contain rounded opacity-80" />
                   </div>
                 )}
-                
-                {/* Name & Extra Info */}
-                <div className="flex flex-col justify-center">
-                  <span className="text-sm text-gray-200">{option.name}</span>
-                  {option.subtitle && <span className="text-xs text-gray-500">{option.subtitle}</span>}
-                </div>
               </div>
             );
           })}

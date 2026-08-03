@@ -318,7 +318,8 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
                           name: formatName(c.name),
                           subtitle: equippedWeaponName ? `⚠️ (has ${formatName(equippedWeaponName)})` : '',
                           icon: getCharacterAvatar(c.name),
-                          rarity: charData ? charData.rarity : 0
+                          rarity: charData ? charData.rarity : 0,
+                          secondaryIcon: equippedWeaponName ? getWeaponIcon(equippedWeaponName) : null
                         }
                       })
                     ]}
