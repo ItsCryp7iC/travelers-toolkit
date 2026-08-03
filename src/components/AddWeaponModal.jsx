@@ -311,11 +311,12 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
                       ...compatibleChars.map((c) => {
                         const entry = roster[c.name]
                         const hasWeapon = entry?.equippedWeaponId
+                        const equippedWeaponName = hasWeapon ? trackedWeapons.find(w => w.id === hasWeapon)?.weaponName : null
                         const charData = charactersData.find(cd => cd.name === c.name)
                         return {
                           id: c.name,
                           name: formatName(c.name),
-                          subtitle: hasWeapon ? '⚠️ (has weapon)' : '',
+                          subtitle: equippedWeaponName ? `⚠️ (has ${formatName(equippedWeaponName)})` : '',
                           icon: getCharacterAvatar(c.name),
                           rarity: charData ? charData.rarity : 0
                         }

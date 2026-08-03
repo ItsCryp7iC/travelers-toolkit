@@ -188,49 +188,49 @@ function MaterialGroup({ icon, title, items, elementColor }) {
 export default function CharacterModal({ character, onClose }) {
   const { name, rarity, element, weapon_type, materials } = character
 
-  const rosterEntry        = useStore((s) => s.roster[name])
-  const addCharacter        = useStore((s) => s.addCharacter)
-  const updateCharacter     = useStore((s) => s.updateCharacter)
-  const removeCharacter     = useStore((s) => s.removeCharacter)
-  const trackedWeapons      = useStore((s) => s.trackedWeapons)
-  const addTrackedWeapon    = useStore((s) => s.addTrackedWeapon)
+  const rosterEntry = useStore((s) => s.roster[name])
+  const addCharacter = useStore((s) => s.addCharacter)
+  const updateCharacter = useStore((s) => s.updateCharacter)
+  const removeCharacter = useStore((s) => s.removeCharacter)
+  const trackedWeapons = useStore((s) => s.trackedWeapons)
+  const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
-  const unassignWeapon      = useStore((s) => s.unassignWeapon)
+  const unassignWeapon = useStore((s) => s.unassignWeapon)
   const inRoster = Boolean(rosterEntry)
 
-  const elConfig    = ELEMENTS[element] || ELEMENTS.Unknown
-  const wpConfig    = WEAPON_TYPES[weapon_type]
+  const elConfig = ELEMENTS[element] || ELEMENTS.Unknown
+  const wpConfig = WEAPON_TYPES[weapon_type]
   const displayName = formatName(name)
-  const initials    = getInitials(name)
-  const stars       = getStars(rarity)
+  const initials = getInitials(name)
+  const stars = getStars(rarity)
   const rarityClass = getRarityClass(rarity)
 
   // ── Progression state ────────────────────────────────────────────────────
-  const [fromAsc,   setFromAsc]   = useState(rosterEntry?.ascension        ?? 0)
-  const [fromLevel, setFromLevel] = useState(rosterEntry?.level            ?? 1)
-  const [toAsc,     setToAsc]     = useState(rosterEntry?.targetAscension  ?? 6)
-  const [toLevel,   setToLevel]   = useState(rosterEntry?.targetLevel      ?? 90)
+  const [fromAsc, setFromAsc] = useState(rosterEntry?.ascension ?? 0)
+  const [fromLevel, setFromLevel] = useState(rosterEntry?.level ?? 1)
+  const [toAsc, setToAsc] = useState(rosterEntry?.targetAscension ?? 6)
+  const [toLevel, setToLevel] = useState(rosterEntry?.targetLevel ?? 90)
 
   // ── Talent state ─────────────────────────────────────────────────────────
-  const [normalFrom, setNormalFrom] = useState(rosterEntry?.talents?.normal         ?? 1)
-  const [skillFrom,  setSkillFrom]  = useState(rosterEntry?.talents?.skill          ?? 1)
-  const [burstFrom,  setBurstFrom]  = useState(rosterEntry?.talents?.burst          ?? 1)
-  const [normalTo,   setNormalTo]   = useState(rosterEntry?.targetTalents?.normal   ?? 10)
-  const [skillTo,    setSkillTo]    = useState(rosterEntry?.targetTalents?.skill    ?? 10)
-  const [burstTo,    setBurstTo]    = useState(rosterEntry?.targetTalents?.burst    ?? 10)
+  const [normalFrom, setNormalFrom] = useState(rosterEntry?.talents?.normal ?? 1)
+  const [skillFrom, setSkillFrom] = useState(rosterEntry?.talents?.skill ?? 1)
+  const [burstFrom, setBurstFrom] = useState(rosterEntry?.talents?.burst ?? 1)
+  const [normalTo, setNormalTo] = useState(rosterEntry?.targetTalents?.normal ?? 10)
+  const [skillTo, setSkillTo] = useState(rosterEntry?.targetTalents?.skill ?? 10)
+  const [burstTo, setBurstTo] = useState(rosterEntry?.targetTalents?.burst ?? 10)
 
   // ── Weapon state — local draft mirrors equippedWeaponId until Save ──────────
   const [localWeaponId, setLocalWeaponId] = useState(rosterEntry?.equippedWeaponId ?? null)
 
   // Derive display data from localWeaponId against the live trackedWeapons list
-  const trackedWeapon      = localWeaponId ? trackedWeapons.find((w) => w.id === localWeaponId) : null
+  const trackedWeapon = localWeaponId ? trackedWeapons.find((w) => w.id === localWeaponId) : null
   const equippedWeaponName = trackedWeapon?.weaponName ?? null
 
   // Local slider state — mirrors the tracked weapon's progression
-  const [weaponFromAsc,   setWeaponFromAsc]   = useState(trackedWeapon?.ascension      ?? 0)
-  const [weaponFromLevel, setWeaponFromLevel] = useState(trackedWeapon?.level          ?? 1)
-  const [weaponToAsc,     setWeaponToAsc]     = useState(trackedWeapon?.targetAscension ?? 6)
-  const [weaponToLevel,   setWeaponToLevel]   = useState(trackedWeapon?.targetLevel    ?? 90)
+  const [weaponFromAsc, setWeaponFromAsc] = useState(trackedWeapon?.ascension ?? 0)
+  const [weaponFromLevel, setWeaponFromLevel] = useState(trackedWeapon?.level ?? 1)
+  const [weaponToAsc, setWeaponToAsc] = useState(trackedWeapon?.targetAscension ?? 6)
+  const [weaponToLevel, setWeaponToLevel] = useState(trackedWeapon?.targetLevel ?? 90)
 
   // Pre-filter valid weapons for this character's weapon type strictly
   const compatibleWeapons = useMemo(() => {
@@ -285,15 +285,15 @@ export default function CharacterModal({ character, onClose }) {
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   const handleFromAscChange = useCallback((a) => { setFromAsc(a); setFromLevel((lv) => clampLevel(lv, a)) }, [])
-  const handleToAscChange   = useCallback((a) => { setToAsc(a);   setToLevel((lv) => clampLevel(lv, a)) }, [])
+  const handleToAscChange = useCallback((a) => { setToAsc(a); setToLevel((lv) => clampLevel(lv, a)) }, [])
 
-  const safeToAsc   = Math.max(toAsc, fromAsc)
+  const safeToAsc = Math.max(toAsc, fromAsc)
   const safeToLevel = safeToAsc === fromAsc ? Math.max(toLevel, fromLevel) : toLevel
 
   const handleWeaponFromAscChange = useCallback((a) => { setWeaponFromAsc(a); setWeaponFromLevel((lv) => clampLevel(lv, a)) }, [])
-  const handleWeaponToAscChange   = useCallback((a) => { setWeaponToAsc(a);   setWeaponToLevel((lv) => clampLevel(lv, a)) }, [])
+  const handleWeaponToAscChange = useCallback((a) => { setWeaponToAsc(a); setWeaponToLevel((lv) => clampLevel(lv, a)) }, [])
 
-  const safeWeaponToAsc   = Math.max(weaponToAsc, weaponFromAsc)
+  const safeWeaponToAsc = Math.max(weaponToAsc, weaponFromAsc)
   const safeWeaponToLevel = safeWeaponToAsc === weaponFromAsc ? Math.max(weaponToLevel, weaponFromLevel) : weaponToLevel
 
   // ── Live calculation ─────────────────────────────────────────────────────
@@ -316,7 +316,7 @@ export default function CharacterModal({ character, onClose }) {
 
   const totalCosts = {};
   const allCostObjects = [ascCosts, normalCosts, skillCosts, burstCosts, weaponCosts];
-  
+
   allCostObjects.forEach(costObj => {
     if (!costObj) return;
     Object.entries(costObj).forEach(([key, val]) => {
@@ -332,12 +332,12 @@ export default function CharacterModal({ character, onClose }) {
   const handleSave = () => {
     if (!inRoster) addCharacter(name)
     updateCharacter(name, {
-      level:            fromLevel,
-      ascension:        fromAsc,
-      targetLevel:      safeToLevel,
-      targetAscension:  safeToAsc,
-      talents:          { normal: normalFrom, skill: skillFrom, burst: burstFrom },
-      targetTalents:    { normal: normalTo,   skill: skillTo,   burst: burstTo   },
+      level: fromLevel,
+      ascension: fromAsc,
+      targetLevel: safeToLevel,
+      targetAscension: safeToAsc,
+      talents: { normal: normalFrom, skill: skillFrom, burst: burstFrom },
+      targetTalents: { normal: normalTo, skill: skillTo, burst: burstTo },
       equippedWeaponId: localWeaponId, // write the draft ID to persist the link
     })
     onClose()
@@ -373,11 +373,11 @@ export default function CharacterModal({ character, onClose }) {
           <div className="relative flex items-center gap-5 p-6 pb-5">
             <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-cinzel font-bold text-3xl flex-shrink-0 border-2 relative overflow-hidden"
               style={{ background: `${elColor}22`, borderColor: `${elColor}60`, color: elColor, textShadow: `0 0 20px ${elColor}` }}>
-              <GenshinImage 
-                src={getCharacterAvatar(name)} 
-                alt={name} 
-                className="w-full h-full object-cover absolute inset-0 z-10" 
-                fallback={<span className="relative z-10">{initials}</span>} 
+              <GenshinImage
+                src={getCharacterAvatar(name)}
+                alt={name}
+                className="w-full h-full object-cover absolute inset-0 z-10"
+                fallback={<span className="relative z-10">{initials}</span>}
               />
             </div>
             <div className="flex-1 min-w-0">
@@ -436,11 +436,11 @@ export default function CharacterModal({ character, onClose }) {
               style={{ background: `${elColor}10`, border: `1px solid ${elColor}30` }}>
               {/* Character Avatar */}
               <div className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 shadow-lg relative overflow-hidden" style={{ background: elConfig.avatarGradient }}>
-                <GenshinImage 
-                  src={getCharacterAvatar(name)} 
-                  alt={name} 
-                  className="w-full h-full object-cover absolute inset-0 z-10" 
-                  fallback={<span className="font-cinzel text-xl relative z-10" style={{ color: elConfig.color }}>{name.substring(0, 1).toUpperCase()}</span>} 
+                <GenshinImage
+                  src={getCharacterAvatar(name)}
+                  alt={name}
+                  className="w-full h-full object-cover absolute inset-0 z-10"
+                  fallback={<span className="font-cinzel text-xl relative z-10" style={{ color: elConfig.color }}>{name.substring(0, 1).toUpperCase()}</span>}
                 />
               </div>
               <span className="font-cinzel font-bold text-sm" style={{ color: elColor }}>A{fromAsc} Lv{fromLevel}</span>
@@ -535,68 +535,68 @@ export default function CharacterModal({ character, onClose }) {
             {hasAnyCost ? (
               <>
                 <div className="rounded-xl border border-[var(--border)] overflow-hidden mb-4">
-                    <CostRow icon="💰" label="Total Mora" value={formatNumber(totalCosts['mora'] || 0)} accent="#C8A96E" large />
-                    {totalCosts['heros_wit'] > 0 && (
-                      <CostRow icon="📚" label="Hero's Wit"        value={`×${totalCosts['heros_wit']}`}              accent="#60A5FA" />
-                    )}
-                    {totalCosts['mystic_ore'] > 0 && (
-                      <CostRow icon="💠" label="Mystic Enh. Ore"   value={`×${totalCosts['mystic_ore']}`}          accent="#F472B6" />
-                    )}
-                    {totalCosts['crown'] > 0 && (
-                      <CostRow icon="👑" label="Crown of Insight"  value={`×${totalCosts['crown']}`}              accent="#FBBF24" />
-                    )}
-                  </div>
-  
-                  <MaterialGroup icon="⭐" title="Awakening" items={totalCosts['masterless_stella_fortuna'] > 0 ? { "Masterless Stella Fortuna": totalCosts['masterless_stella_fortuna'] } : null} elementColor={elColor} />
+                  <CostRow icon="💰" label="Total Mora" value={formatNumber(totalCosts['mora'] || 0)} accent="#C8A96E" large />
+                  {totalCosts['heros_wit'] > 0 && (
+                    <CostRow icon="📚" label="Hero's Wit" value={`×${totalCosts['heros_wit']}`} accent="#60A5FA" />
+                  )}
+                  {totalCosts['mystic_ore'] > 0 && (
+                    <CostRow icon="💠" label="Mystic Enh. Ore" value={`×${totalCosts['mystic_ore']}`} accent="#F472B6" />
+                  )}
+                  {totalCosts['crown'] > 0 && (
+                    <CostRow icon="👑" label="Crown of Insight" value={`×${totalCosts['crown']}`} accent="#FBBF24" />
+                  )}
+                </div>
 
-                  <MaterialGroup icon="💎" title="Character Ascension Gems" items={Object.fromEntries(
-                    Object.entries({
-                      "Sliver": totalCosts['gem_silver'],
-                      "Fragment": totalCosts['gem_fragment'],
-                      "Chunk": totalCosts['gem_chunk'],
-                      "Gemstone": totalCosts['gem_gemstone']
-                    }).filter(([_, v]) => v > 0)
-                  )} elementColor={elColor} />
-  
-                  <MaterialGroup icon="🐉" title="World Boss" items={totalCosts['boss_material'] > 0 ? { "Boss Material": totalCosts['boss_material'] } : null} elementColor={elColor} />
-                  
-                  <MaterialGroup icon="🌸" title="Local Specialty" items={totalCosts['local_specialty'] > 0 ? { "Local Specialty": totalCosts['local_specialty'] } : null} elementColor={elColor} />
-                  
-                  <MaterialGroup icon="📖" title="Talent Books" items={Object.fromEntries(
-                    Object.entries({
-                      "2-Star Book": totalCosts['2_star_talent_material'],
-                      "3-Star Book": totalCosts['3_star_talent_material'],
-                      "4-Star Book": totalCosts['4_star_talent_material']
-                    }).filter(([_, v]) => v > 0)
-                  )} elementColor={elColor} />
-  
-                  <MaterialGroup icon="🐺" title="Weekly Boss" items={totalCosts['weekly_boss_material'] > 0 ? { "Weekly Boss Material": totalCosts['weekly_boss_material'] } : null} elementColor={elColor} />
-                  
-                  <MaterialGroup icon="🔗" title="Weapon Ascension" items={Object.fromEntries(
-                    Object.entries({
-                      "2-Star Material": totalCosts['2_star_ascension_material'],
-                      "3-Star Material": totalCosts['3_star_ascension_material'],
-                      "4-Star Material": totalCosts['4_star_ascension_material'],
-                      "5-Star Material": totalCosts['5_star_ascension_material']
-                    }).filter(([_, v]) => v > 0)
-                  )} elementColor="var(--gold)" />
-                  
-                  <MaterialGroup icon="🛡️" title="Weapon Elite Drops" items={Object.fromEntries(
-                    Object.entries({
-                      "2-Star Material": totalCosts['2_star_enhancement_material'],
-                      "3-Star Material": totalCosts['3_star_enhancement_material'],
-                      "4-Star Material": totalCosts['4_star_enhancement_material']
-                    }).filter(([_, v]) => v > 0)
-                  )} elementColor="var(--gold)" />
-                  
-                  <MaterialGroup icon="⚔️" title="Enemy Drops" items={Object.fromEntries(
-                    Object.entries({
-                      "1-Star Material": totalCosts['1_star_enemy_material'],
-                      "2-Star Material": totalCosts['2_star_enemy_material'],
-                      "3-Star Material": totalCosts['3_star_enemy_material']
-                    }).filter(([_, v]) => v > 0)
-                  )} elementColor={elColor} />
-                </>
+                <MaterialGroup icon="⭐" title="Awakening" items={totalCosts['masterless_stella_fortuna'] > 0 ? { "Masterless Stella Fortuna": totalCosts['masterless_stella_fortuna'] } : null} elementColor={elColor} />
+
+                <MaterialGroup icon="💎" title="Character Ascension Gems" items={Object.fromEntries(
+                  Object.entries({
+                    "Sliver": totalCosts['gem_silver'],
+                    "Fragment": totalCosts['gem_fragment'],
+                    "Chunk": totalCosts['gem_chunk'],
+                    "Gemstone": totalCosts['gem_gemstone']
+                  }).filter(([_, v]) => v > 0)
+                )} elementColor={elColor} />
+
+                <MaterialGroup icon="🐉" title="World Boss" items={totalCosts['boss_material'] > 0 ? { "Boss Material": totalCosts['boss_material'] } : null} elementColor={elColor} />
+
+                <MaterialGroup icon="🌸" title="Local Specialty" items={totalCosts['local_specialty'] > 0 ? { "Local Specialty": totalCosts['local_specialty'] } : null} elementColor={elColor} />
+
+                <MaterialGroup icon="📖" title="Talent Books" items={Object.fromEntries(
+                  Object.entries({
+                    "2-Star Book": totalCosts['2_star_talent_material'],
+                    "3-Star Book": totalCosts['3_star_talent_material'],
+                    "4-Star Book": totalCosts['4_star_talent_material']
+                  }).filter(([_, v]) => v > 0)
+                )} elementColor={elColor} />
+
+                <MaterialGroup icon="🐺" title="Weekly Boss" items={totalCosts['weekly_boss_material'] > 0 ? { "Weekly Boss Material": totalCosts['weekly_boss_material'] } : null} elementColor={elColor} />
+
+                <MaterialGroup icon="🔗" title="Weapon Ascension" items={Object.fromEntries(
+                  Object.entries({
+                    "2-Star Material": totalCosts['2_star_ascension_material'],
+                    "3-Star Material": totalCosts['3_star_ascension_material'],
+                    "4-Star Material": totalCosts['4_star_ascension_material'],
+                    "5-Star Material": totalCosts['5_star_ascension_material']
+                  }).filter(([_, v]) => v > 0)
+                )} elementColor="var(--gold)" />
+
+                <MaterialGroup icon="🛡️" title="Weapon Elite Drops" items={Object.fromEntries(
+                  Object.entries({
+                    "2-Star Material": totalCosts['2_star_enhancement_material'],
+                    "3-Star Material": totalCosts['3_star_enhancement_material'],
+                    "4-Star Material": totalCosts['4_star_enhancement_material']
+                  }).filter(([_, v]) => v > 0)
+                )} elementColor="var(--gold)" />
+
+                <MaterialGroup icon="⚔️" title="Enemy Drops" items={Object.fromEntries(
+                  Object.entries({
+                    "1-Star Material": totalCosts['1_star_enemy_material'],
+                    "2-Star Material": totalCosts['2_star_enemy_material'],
+                    "3-Star Material": totalCosts['3_star_enemy_material']
+                  }).filter(([_, v]) => v > 0)
+                )} elementColor={elColor} />
+              </>
             ) : (
               <div className="flex flex-col items-center py-8 text-center rounded-xl border border-[var(--border)]">
                 <span className="text-3xl mb-2">✅</span>
@@ -611,12 +611,12 @@ export default function CharacterModal({ character, onClose }) {
               <h3 className="modal-section-title">📖 Material Sources</h3>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: 'Character Ascension Gem', value: materials.gemstone,        icon: '💎' },
-                  { label: 'Local Specialty',         value: materials.local_specialty, icon: '🌸' },
-                  { label: 'Normal Boss Material',    value: materials.world_boss,      icon: '🐉' },
-                  { label: 'Weekly Boss Material',    value: materials.weekly_boss,     icon: '🐺' },
-                  { label: 'Talent Material',         value: materials.talent_book,     icon: '📚' },
-                  { label: 'Common Enhancement Material', value: materials.mob_material,    icon: '⚔️' },
+                  { label: 'Character Ascension Gem', value: materials.gemstone, icon: '💎' },
+                  { label: 'Local Specialty', value: materials.local_specialty, icon: '🌸' },
+                  { label: 'Normal Boss Material', value: materials.world_boss, icon: '🐉' },
+                  { label: 'Weekly Boss Material', value: materials.weekly_boss, icon: '🐺' },
+                  { label: 'Talent Material', value: materials.talent_book, icon: '📚' },
+                  { label: 'Common Enhancement Material', value: materials.mob_material, icon: '⚔️' },
                 ].filter(({ value }) => value && value !== 'nan').map(({ label, value, icon }) => (
                   <div key={label} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2">
                     <p className="text-[9px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-0.5">{icon} {label}</p>
@@ -634,7 +634,7 @@ export default function CharacterModal({ character, onClose }) {
               className="flex-1 py-3 rounded-xl font-cinzel font-bold text-sm transition-all duration-200"
               style={{ background: `linear-gradient(135deg, ${elColor}, ${elColor}99)`, color: '#0D0F1A', boxShadow: `0 4px 20px ${elColor}40` }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 6px 28px ${elColor}60`; e.currentTarget.style.transform = 'translateY(-1px)' }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `0 4px 20px ${elColor}40`;  e.currentTarget.style.transform = '' }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `0 4px 20px ${elColor}40`; e.currentTarget.style.transform = '' }}
             >
               {inRoster ? '💾 Save Progress' : '➕ Add & Save to Roster'}
             </button>
