@@ -280,7 +280,8 @@ export default function Characters() {
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">Current State</th>
                       <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--gold)] border-r border-[var(--border)]">Target State</th>
                       <th colSpan="9" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Ascension Requirements</th>
-                      <th colSpan="7" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Talent Requirements</th>
+                      <th colSpan="12" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Talent Requirements</th>
+                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-green-400 border-r border-[var(--border)]">Grand Totals</th>
                       <th className="px-4 py-2 border-b border-[var(--border)]"></th>
                     </tr>
                     {/* Sub Headers */}
@@ -321,8 +322,19 @@ export default function Characters() {
                       <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="2★ Talent Material">Tal 2★</th>
                       <th className="text-center px-3 py-2 font-semibold" title="Weekly Boss Material">Wk.Boss</th>
                       <th className="text-center px-3 py-2 font-semibold text-[#FBBF24]" title="Crown of Insight">Crown</th>
-                      <th className="text-center px-3 py-2 font-semibold" title="Common Enhancement Material (All Tiers)">Enh Mats</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="3★ Common Enhancement Material">Enh 3★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="2★ Common Enhancement Material">Enh 2★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="1★ Common Enhancement Material">Enh 1★</th>
+                      <th className="text-right px-3 py-2 font-semibold text-[#C8A96E]" title="Normal Attack Mora">NA Mora</th>
+                      <th className="text-right px-3 py-2 font-semibold text-[#C8A96E]" title="Elemental Skill Mora">Skill Mora</th>
+                      <th className="text-right px-3 py-2 font-semibold text-[#C8A96E]" title="Elemental Burst Mora">Burst Mora</th>
                       <th className="text-right px-3 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]">Talent Mora</th>
+                      
+                      {/* Grand Totals */}
+                      <th className="text-center px-3 py-2 font-semibold text-[#A78BFA]" title="Total 3★ Common Enhancement Material">Enh 3★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#60A5FA]" title="Total 2★ Common Enhancement Material">Enh 2★</th>
+                      <th className="text-center px-3 py-2 font-semibold text-[#9CA3AF]" title="Total 1★ Common Enhancement Material">Enh 1★</th>
+                      <th className="text-right px-3 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]">Total Mora</th>
                       
                       <th className="px-4 py-2"></th>
                     </tr>
@@ -342,9 +354,12 @@ export default function Characters() {
 
                       // Aggregate Stones
                       const totalStones = (asc.gem_silver || 0) + (asc.gem_fragment || 0) + (asc.gem_chunk || 0) + (asc.gem_gemstone || 0)
-                      
-                      // Talent Mob Mats (All Tiers combined for simplicity)
-                      const talMobTotal = (tal['3_star_enemy_material'] || 0) + (tal['2_star_enemy_material'] || 0) + (tal['1_star_enemy_material'] || 0)
+
+                      // Grand Totals Calculations
+                      const grandEnh3 = (asc['3_star_enemy_material'] || 0) + (tal['3_star_enemy_material'] || 0)
+                      const grandEnh2 = (asc['2_star_enemy_material'] || 0) + (tal['2_star_enemy_material'] || 0)
+                      const grandEnh1 = (asc['1_star_enemy_material'] || 0) + (tal['1_star_enemy_material'] || 0)
+                      const grandMora = (asc.mora || 0) + (tal.mora || 0)
 
                       return (
                         <tr
@@ -450,9 +465,19 @@ export default function Characters() {
                           <td className="px-3 py-2"><MatQuantity val={tal?.['2_star_talent_material']} icon="📜" color="text-[#9CA3AF]" nameKey={resolvedMats?.talent?.tiers?.['2_star']?.name} category="Talent Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={tal?.weekly_boss_material} icon="🐉" nameKey={resolvedMats?.weeklyBoss?.name || ''} category="Weekly Boss Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={tal?.crown} icon="👑" color="text-[#FBBF24]" nameKey="Crown of Insight" category="Experience" /></td>
-                          <td className="px-3 py-2"><MatQuantity val={talMobTotal} icon="💧" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={tal?.mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
-
+                          <td className="px-3 py-2"><MatQuantity val={tal?.['3_star_enemy_material']} icon="⚔️" color="text-[#A78BFA]" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.['2_star_enemy_material']} icon="⚔️" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.['1_star_enemy_material']} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.mora_na} icon="💰" color="text-[#C8A96E]" align="right" nameKey="NA Mora" category="Currency" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.mora_skill} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Skill Mora" category="Currency" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={tal?.mora_burst} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Burst Mora" category="Currency" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={tal?.mora} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Talent Mora" category="Currency" /></td>
+                          
+                          {/* Grand Totals */}
+                          <td className="px-3 py-2"><MatQuantity val={grandEnh3} icon="⚔️" color="text-[#A78BFA]" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={grandEnh2} icon="⚔️" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2"><MatQuantity val={grandEnh1} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={grandMora} icon="💰" color="text-[#C8A96E]" align="right" nameKey="Total Mora" category="Currency" /></td>
                           
                           {/* Actions */}
                           <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>

@@ -246,6 +246,12 @@ export function calculateAllTalentsCost(character, talents) {
       total[k] = (total[k] || 0) + v;
     });
   });
+  
+  // Track individual mora for table breakdown
+  total.mora_na = auto.mora || 0;
+  total.mora_skill = skill.mora || 0;
+  total.mora_burst = burst.mora || 0;
+  
   return total;
 }
 
