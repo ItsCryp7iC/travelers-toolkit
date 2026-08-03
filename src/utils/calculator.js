@@ -464,7 +464,7 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  *   hasAnyCost: boolean,
  * }
  */
-export function calculateWeaponCost(weapon, fromLv, toLv) {
+export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc) {
   let rarityNum = 5;
   if (weapon?.rarity) {
     rarityNum = typeof weapon.rarity === 'string' ? (weapon.rarity.match(/★/g) || []).length || parseInt(weapon.rarity) || 5 : weapon.rarity;
@@ -491,6 +491,23 @@ export function calculateWeaponCost(weapon, fromLv, toLv) {
     result.normal_ore = normalOre;
     result.wasted_exp = totalProvidedExp - totalExpNeeded;
   }
+
+  const enhancementMora = result.mora || 0;
+  let ascensionMora = 0;
+  
+  if (fromAsc !== undefined && toAsc !== undefined && toAsc > fromAsc) {
+    let ascArray = WEAPON_ASCENSION_5STAR;
+    if (rarityNum === 4) ascArray = WEAPON_ASCENSION_4STAR;
+    if (rarityNum <= 3) ascArray = WEAPON_ASCENSION_3STAR;
+    
+    for (let i = fromAsc; i < toAsc; i++) {
+      if (ascArray[i]) {
+        ascensionMora += ascArray[i].mora || 0;
+      }
+    }
+  }
+
+  result.total_mora = enhancementMora + ascensionMora;
 
   return result;
 }

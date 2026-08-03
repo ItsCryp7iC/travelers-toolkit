@@ -60,7 +60,7 @@ export default function Weapons() {
       const data = weaponsData.find((w) => w.id === tw.weapon_id) || weaponsData.find((w) => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
       const assignedChar = tw.assignedTo ? charactersData.find((c) => c.name === tw.assignedTo) : null
       
-      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel)
+      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension)
 
       return { ...tw, data, assignedChar, costs }
     })
@@ -292,12 +292,12 @@ export default function Weapons() {
                     {filtered.map((wp, idx) => {
                       try {
                         const rColor = RARITY_COLORS[wp.data?.rarity] || '#C8A96E'
-                      const wpCfg  = WEAPON_TYPES[wp.data?.type] || { emoji: '⚔️' }
-                      const assignedChar = wp.assignedChar
-                      const elCfg = assignedChar ? (ELEMENTS[assignedChar.element] || ELEMENTS.Unknown) : null
-                      const costs = calculateWeaponCost(wp.data, wp.level, wp.targetLevel)
-                      
-                      const resolvedMats = resolveWeaponMaterials(wp.data)
+                        const wpCfg  = WEAPON_TYPES[wp.data?.type] || { emoji: '⚔️' }
+                        const assignedChar = wp.assignedChar
+                        const elCfg = assignedChar ? (ELEMENTS[assignedChar.element] || ELEMENTS.Unknown) : null
+                        const costs = calculateWeaponCost(wp.data, wp.level, wp.targetLevel, wp.ascension, wp.targetAscension)
+                        
+                        const resolvedMats = resolveWeaponMaterials(wp.data)
 
                       return (
                         <tr
@@ -409,7 +409,7 @@ export default function Weapons() {
                             )}
                           </td>
 
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs?.mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs?.total_mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
 
                           {/* Ascension Mats */}
                           <MatCell qty={costs?.['5_star_ascension_material']} nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} icon="✨" color="text-[#FBBF24]" category="Weapon Ascension Material" />
