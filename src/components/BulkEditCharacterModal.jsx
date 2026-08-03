@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useStore from '../store/useStore'
+import { ASCENSION_CAPS } from '../utils/calculator'
 import { LevelSlider, AscensionSelector, TalentRow } from './CharacterModal'
 
 export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, onSave }) {
@@ -27,6 +28,24 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
 
   // Use a generic gold color for the bulk edit modal since it applies to many elements
   const elColor = "var(--gold)"
+
+  // Auto-clamp Current Level when Current Ascension changes
+  useEffect(() => {
+    const minLevel = fromAsc === 0 ? 1 : ASCENSION_CAPS[fromAsc - 1];
+    const maxLevel = fromAsc === 6 ? 100 : ASCENSION_CAPS[fromAsc];
+
+    if (fromLevel < minLevel) setFromLevel(minLevel);
+    else if (fromLevel > maxLevel) setFromLevel(maxLevel);
+  }, [fromAsc]);
+
+  // Auto-clamp Target Level when Target Ascension changes
+  useEffect(() => {
+    const minLevel = toAsc === 0 ? 1 : ASCENSION_CAPS[toAsc - 1];
+    const maxLevel = toAsc === 6 ? 100 : ASCENSION_CAPS[toAsc];
+
+    if (toLevel < minLevel) setToLevel(minLevel);
+    else if (toLevel > maxLevel) setToLevel(maxLevel);
+  }, [toAsc]);
 
   useEffect(() => {
     if (isOpen) {

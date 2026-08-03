@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { ASCENSION_CAPS } from '../utils/calculator'
 import { LevelSlider, AscensionSelector } from './CharacterModal'
 
 export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSave }) {
@@ -15,6 +16,24 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
   // Use a generic purple/gold color
   const elColor = "#9CA3AF"
   const targetColor = "var(--gold)"
+
+  // Auto-clamp Current Level when Current Ascension changes
+  useEffect(() => {
+    const minLevel = fromAsc === 0 ? 1 : ASCENSION_CAPS[fromAsc - 1];
+    const maxLevel = ASCENSION_CAPS[fromAsc];
+
+    if (fromLevel < minLevel) setFromLevel(minLevel);
+    else if (fromLevel > maxLevel) setFromLevel(maxLevel);
+  }, [fromAsc]);
+
+  // Auto-clamp Target Level when Target Ascension changes
+  useEffect(() => {
+    const minLevel = toAsc === 0 ? 1 : ASCENSION_CAPS[toAsc - 1];
+    const maxLevel = ASCENSION_CAPS[toAsc];
+
+    if (toLevel < minLevel) setToLevel(minLevel);
+    else if (toLevel > maxLevel) setToLevel(maxLevel);
+  }, [toAsc]);
 
   useEffect(() => {
     if (isOpen) {
