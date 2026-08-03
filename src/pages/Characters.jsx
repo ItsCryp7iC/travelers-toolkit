@@ -469,27 +469,27 @@ export default function Characters() {
                           <td className="px-3 py-2"><MatQuantity val={tal?.['2_star_enemy_material']} icon="⚔️" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={tal?.['1_star_enemy_material']} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2">
-                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
-                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora_na)}</span>
-                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
+                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora_na)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2">
-                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
-                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora_skill)}</span>
-                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
+                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora_skill)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2">
-                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
-                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora_burst)}</span>
-                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
+                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora_burst)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2 border-r border-[var(--border)]">
-                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
-                              <span className="text-[11px] font-mono">{formatNumber(tal?.mora)}</span>
-                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
+                            <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
+                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora)}</span>
                             </div>
                           </td>
                           
@@ -498,9 +498,9 @@ export default function Characters() {
                           <td className="px-3 py-2"><MatQuantity val={grandEnh2} icon="⚔️" color="text-[#60A5FA]" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2"><MatQuantity val={grandEnh1} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" /></td>
                           <td className="px-3 py-2 border-r border-[var(--border)]">
-                            <div className="flex items-center justify-center gap-1.5 text-[#C8A96E]">
+                            <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
+                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
                               <span className="text-[11px] font-mono font-bold">{formatNumber(grandMora)}</span>
-                              <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-4 h-4 object-contain" />
                             </div>
                           </td>
                           
