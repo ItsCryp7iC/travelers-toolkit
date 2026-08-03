@@ -61,7 +61,7 @@ export default function Weapons() {
       const data = weaponsData.find((w) => w.id === tw.weapon_id) || weaponsData.find((w) => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
       const assignedChar = tw.assignedTo ? charactersData.find((c) => c.name === tw.assignedTo) : null
       
-      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus)
+      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus, roster)
 
       return { ...tw, data, assignedChar, costs }
     })
@@ -300,7 +300,7 @@ export default function Weapons() {
                         const wpCfg  = WEAPON_TYPES[wp.data?.type] || { emoji: '⚔️' }
                         const assignedChar = wp.assignedChar
                         const elCfg = assignedChar ? (ELEMENTS[assignedChar.element] || ELEMENTS.Unknown) : null
-                        const costs = calculateWeaponCost(wp.data, wp.level, wp.targetLevel, wp.ascension, wp.targetAscension, wp.hasEventBonus)
+                        const costs = calculateWeaponCost(wp.data, wp.level, wp.targetLevel, wp.ascension, wp.targetAscension, wp.hasEventBonus, roster)
                         
                         const resolvedMats = resolveWeaponMaterials(wp.data)
 
@@ -430,7 +430,23 @@ export default function Weapons() {
                             )}
                           </td>
 
-                          <td className="px-3 py-2 border-r border-[var(--border)]"><MatQuantity val={costs?.total_mora} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" /></td>
+                          <td className="px-3 py-2 border-r border-[var(--border)]">
+                            <div className="flex items-center justify-end gap-1.5 relative group">
+                              <span className="text-[11px] font-mono font-bold text-[#C8A96E]">{formatNumber(costs?.total_mora)}</span>
+                              <img src={getMaterialIcon('Mora', 'Currency')} alt="Mora" className="w-4 h-4 object-contain" />
+
+                              {/* Discount Indicator */}
+                              {costs?.has_ascension_discount && (
+                                <>
+                                  <span className="text-[10px] text-green-400 font-bold ml-1 cursor-help">✨</span>
+                                  {/* Tooltip on hover */}
+                                  <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block w-max bg-[var(--elevated)] border border-green-700/50 text-green-400 text-xs px-2 py-1 rounded shadow-lg z-10">
+                                    50% Ascension Mora reduction active via {costs.discount_source}'s passive!
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </td>
 
                           {/* Ascension Mats */}
                           <MatCell qty={costs?.['5_star_ascension_material']} nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} icon="✨" color="text-[#FBBF24]" category="Weapon Ascension Material" />

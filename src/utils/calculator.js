@@ -464,7 +464,7 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  *   hasAnyCost: boolean,
  * }
  */
-export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEventBonus = false) {
+export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEventBonus = false, charactersRoster = []) {
   let rarityNum = 5;
   if (weapon?.rarity) {
     rarityNum = typeof weapon.rarity === 'string' ? (weapon.rarity.match(/★/g) || []).length || parseInt(weapon.rarity) || 5 : weapon.rarity;
@@ -515,6 +515,25 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
       }
     }
   }
+
+  const hasRaiden = Object.keys(charactersRoster).includes('Raiden Shogun');
+  const hasWanderer = Object.keys(charactersRoster).includes('Wanderer');
+
+  let ascensionMultiplier = 1;
+  let discountSource = null;
+
+  if (hasRaiden && (weapon?.type === 'Sword' || weapon?.type === 'Polearm')) {
+      ascensionMultiplier = 0.5;
+      discountSource = 'Raiden Shogun';
+  } else if (hasWanderer && (weapon?.type === 'Bow' || weapon?.type === 'Catalyst')) {
+      ascensionMultiplier = 0.5;
+      discountSource = 'Wanderer';
+  }
+
+  result.has_ascension_discount = !!discountSource;
+  result.discount_source = discountSource;
+  
+  ascensionMora = Math.ceil(ascensionMora * ascensionMultiplier);
 
   result.total_mora = enhancementMora + ascensionMora;
 

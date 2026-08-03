@@ -191,6 +191,7 @@ export default function CharacterModal({ character, onClose }) {
   const { name, rarity, element, weapon_type, materials } = character
 
   const rosterEntry = useStore((s) => s.roster[name])
+  const fullRoster = useStore((s) => s.roster)
   const addCharacter = useStore((s) => s.addCharacter)
   const updateCharacter = useStore((s) => s.updateCharacter)
   const removeCharacter = useStore((s) => s.removeCharacter)
@@ -311,9 +312,9 @@ export default function CharacterModal({ character, onClose }) {
   const weaponCosts = useMemo(
     () => {
       if (!selectedWeaponData) return {};
-      return calculateWeaponCost(selectedWeaponData, weaponFromLevel, weaponFromAsc, safeWeaponToLevel, safeWeaponToAsc)
+      return calculateWeaponCost(selectedWeaponData, weaponFromLevel, safeWeaponToLevel, weaponFromAsc, safeWeaponToAsc, false, fullRoster)
     },
-    [selectedWeaponData, weaponFromLevel, weaponFromAsc, safeWeaponToLevel, safeWeaponToAsc]
+    [selectedWeaponData, weaponFromLevel, safeWeaponToLevel, weaponFromAsc, safeWeaponToAsc, fullRoster]
   )
 
   const totalCosts = {};
@@ -531,7 +532,15 @@ export default function CharacterModal({ character, onClose }) {
             )}
           </section>
 
-          {/* ── Required Resources ─────────────────────── */}
+          {/* ✨ Required Resources ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨ */}
+          {weaponCosts?.has_ascension_discount && (
+            <div className="mb-4 bg-green-900/20 border border-green-700/50 rounded-lg p-3 flex items-center justify-center gap-2">
+              <span className="text-xl">✨</span>
+              <p className="text-green-400 text-sm font-semibold">
+                50% Ascension Mora reduction active via {weaponCosts.discount_source}'s passive!
+              </p>
+            </div>
+          )}
           <section className="mb-6">
             <h3 className="modal-section-title">💰 Required Resources</h3>
             {hasAnyCost ? (
