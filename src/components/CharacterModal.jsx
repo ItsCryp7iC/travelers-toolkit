@@ -16,7 +16,9 @@ import {
 } from '../utils/calculator'
 
 // ─── Ascension Phase Selector ──────────────────────────────────────────────
-function AscensionSelector({ value, onChange, label, elementColor }) {
+function AscensionSelector({ value, onChange, label, elementColor, isCharacter = false }) {
+  const getPhaseMax = (a) => (a === 6 && !isCharacter) ? 90 : ASCENSION_CAPS[a];
+
   return (
     <div>
       <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
@@ -27,7 +29,7 @@ function AscensionSelector({ value, onChange, label, elementColor }) {
           <button
             key={a}
             onClick={() => onChange(a)}
-            title={`A${a} — Max Lv${ASCENSION_CAPS[a]}`}
+            title={`A${a} — Max Lv${getPhaseMax(a)}`}
             className="w-8 h-8 rounded-lg text-xs font-bold transition-all duration-150 border"
             style={
               value === a
@@ -40,7 +42,7 @@ function AscensionSelector({ value, onChange, label, elementColor }) {
         ))}
       </div>
       <p className="text-[10px] text-[var(--muted)] mt-1">
-        Max Level: <span style={{ color: elementColor }}>Lv{ASCENSION_CAPS[value]}</span>
+        Max Level: <span style={{ color: elementColor }}>Lv{getPhaseMax(value)}</span>
       </p>
     </div>
   )
@@ -418,14 +420,14 @@ export default function CharacterModal({ character, onClose }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="modal-state-panel">
                 <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Current State</p>
-                <AscensionSelector value={fromAsc} onChange={handleFromAscChange} label="Ascension" elementColor={elColor} />
+                <AscensionSelector value={fromAsc} onChange={handleFromAscChange} label="Ascension" elementColor={elColor} isCharacter={true} />
                 <div className="mt-4">
                   <LevelSlider value={fromLevel} onChange={setFromLevel} ascension={fromAsc} label="Level" elementColor={elColor} isCharacter={true} />
                 </div>
               </div>
               <div className="modal-state-panel">
                 <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Target State</p>
-                <AscensionSelector value={safeToAsc} onChange={handleToAscChange} label="Ascension" elementColor={elColor} />
+                <AscensionSelector value={safeToAsc} onChange={handleToAscChange} label="Ascension" elementColor={elColor} isCharacter={true} />
                 <div className="mt-4">
                   <LevelSlider value={safeToLevel} onChange={setToLevel} ascension={safeToAsc} label="Level" elementColor={elColor} isCharacter={true} />
                 </div>
@@ -513,16 +515,16 @@ export default function CharacterModal({ character, onClose }) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                 <div className="modal-state-panel">
                   <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
-                  <AscensionSelector value={weaponFromAsc} onChange={(a) => { setWeaponFromAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { ascension: a }) }} label="Ascension" elementColor="#9CA3AF" />
+                  <AscensionSelector value={weaponFromAsc} onChange={(a) => { setWeaponFromAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { ascension: a }) }} label="Ascension" elementColor="#9CA3AF" isCharacter={false} />
                   <div className="mt-4">
-                    <LevelSlider value={weaponFromLevel} onChange={(lv) => { setWeaponFromLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { level: lv }) }} ascension={weaponFromAsc} label="Level" elementColor="#9CA3AF" />
+                    <LevelSlider value={weaponFromLevel} onChange={(lv) => { setWeaponFromLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { level: lv }) }} ascension={weaponFromAsc} label="Level" elementColor="#9CA3AF" isCharacter={false} />
                   </div>
                 </div>
                 <div className="modal-state-panel">
                   <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Weapon Target</p>
-                  <AscensionSelector value={safeWeaponToAsc} onChange={(a) => { setWeaponToAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetAscension: a }) }} label="Ascension" elementColor="var(--gold)" />
+                  <AscensionSelector value={safeWeaponToAsc} onChange={(a) => { setWeaponToAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetAscension: a }) }} label="Ascension" elementColor="var(--gold)" isCharacter={false} />
                   <div className="mt-4">
-                    <LevelSlider value={safeWeaponToLevel} onChange={(lv) => { setWeaponToLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetLevel: lv }) }} ascension={safeWeaponToAsc} label="Level" elementColor="var(--gold)" />
+                    <LevelSlider value={safeWeaponToLevel} onChange={(lv) => { setWeaponToLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetLevel: lv }) }} ascension={safeWeaponToAsc} label="Level" elementColor="var(--gold)" isCharacter={false} />
                   </div>
                 </div>
               </div>

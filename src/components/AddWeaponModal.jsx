@@ -9,6 +9,8 @@ import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
 import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
 
 function AscensionSelector({ value, onChange, label, elementColor }) {
+  const getPhaseMax = (a) => a === 6 ? 90 : ASCENSION_CAPS[a];
+  
   return (
     <div>
       <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
@@ -19,7 +21,7 @@ function AscensionSelector({ value, onChange, label, elementColor }) {
           <button
             key={a}
             onClick={() => onChange(a)}
-            title={`A${a} → Max Lv${ASCENSION_CAPS[a]}`}
+            title={`A${a} — Max Lv${getPhaseMax(a)}`}
             className="w-8 h-8 rounded-lg text-xs font-bold transition-all duration-150 border"
             style={
               value === a
@@ -32,14 +34,16 @@ function AscensionSelector({ value, onChange, label, elementColor }) {
         ))}
       </div>
       <p className="text-[10px] text-[var(--muted)] mt-1">
-        Max Level: <span style={{ color: elementColor }}>Lv{ASCENSION_CAPS[value]}</span>
+        Max Level: <span style={{ color: elementColor }}>Lv{getPhaseMax(value)}</span>
       </p>
     </div>
   )
 }
 
 function LevelSlider({ value, onChange, ascension, label, elementColor }) {
-  const { min, max } = getLevelRange(ascension)
+  const range = getLevelRange(ascension)
+  const min = range.min
+  const max = Math.min(range.max, 90)
   return (
     <div>
       <div className="flex justify-between items-end mb-2">
