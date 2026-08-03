@@ -431,21 +431,28 @@ export default function Weapons() {
                           </td>
 
                           <td className="px-3 py-2 border-r border-[var(--border)]">
-                            <div className="flex items-center justify-end gap-1 relative group">
-                              <span className="text-[11px] font-mono font-bold text-[#C8A96E]">{formatNumber(costs?.total_mora)}</span>
-
-                              {/* Discount Indicator */}
-                              {costs?.has_ascension_discount && (
-                                <>
-                                  <span className="text-[10px] text-green-400 font-bold cursor-help">✨</span>
-                                  {/* Tooltip on hover */}
-                                  <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block w-max bg-[var(--elevated)] border border-green-700/50 text-green-400 text-xs px-2 py-1 rounded shadow-lg z-10">
-                                    50% Ascension Mora reduction active via {costs.discount_source}'s passive!
-                                  </div>
-                                </>
-                              )}
-
-                              <img src={getMaterialIcon('Mora', 'Currency')} alt="Mora" className="w-4 h-4 object-contain ml-1" />
+                            <div className="flex items-center justify-center">
+                              {/* 1. Sparkle Container */}
+                              <div className="w-4 flex-shrink-0 text-left relative group">
+                                {costs?.has_ascension_discount && (
+                                  <>
+                                    <span className="text-[10px] text-green-400 font-bold cursor-help">✨</span>
+                                    <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block w-max bg-[var(--elevated)] border border-green-700/50 text-green-400 text-xs px-2 py-1 rounded shadow-lg z-10">
+                                      50% Ascension Mora reduction active via {costs.discount_source}'s passive!
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                              
+                              {/* 2. Number Container */}
+                              <div className="w-16 text-right pr-1">
+                                <span className="text-[11px] font-mono font-bold text-[#C8A96E]">{formatNumber(costs?.total_mora)}</span>
+                              </div>
+                              
+                              {/* 3. Mora Icon */}
+                              <div className="flex-shrink-0">
+                                <img src={getMaterialIcon('Mora', 'Currency')} alt="Mora" className="w-4 h-4 object-contain" />
+                              </div>
                             </div>
                           </td>
 
