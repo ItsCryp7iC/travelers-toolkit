@@ -47,6 +47,31 @@ const useStore = create(
           }
         }),
 
+      batchAddCharacters: (namesArray) =>
+        set((state) => {
+          let hasChanges = false
+          const newRoster = { ...state.roster }
+          
+          namesArray.forEach((name) => {
+            if (!newRoster[name]) {
+              newRoster[name] = {
+                level: 1,
+                ascension: 0,
+                targetLevel: 90,
+                targetAscension: 6,
+                talents:       { normal: 1, skill: 1, burst: 1 },
+                targetTalents: { normal: 10, skill: 10, burst: 10 },
+                equippedWeaponId: null,
+                tracked: true,
+              }
+              hasChanges = true
+            }
+          })
+          
+          if (!hasChanges) return state
+          return { roster: newRoster }
+        }),
+
       removeCharacter: (name) =>
         set((state) => {
           const next = { ...state.roster }

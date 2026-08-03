@@ -36,6 +36,20 @@ function StatCard({ icon, label, value, accent }) {
 
 export default function Dashboard() {
   const roster = useStore((s) => s.roster)
+  const batchAddCharacters = useStore((s) => s.batchAddCharacters)
+
+  const handleAddAllCharacters = () => {
+    const missing = charactersData.filter((c) => !roster[c.name])
+    if (missing.length === 0) {
+      alert("All available characters are already in your roster!")
+      return
+    }
+    
+    if (!window.confirm(`Are you sure you want to add all ${missing.length} missing characters to your roster?`)) return
+    
+    batchAddCharacters(missing.map((c) => c.name))
+    alert(`Successfully added ${missing.length} missing characters!`)
+  }
 
   const [search,        setSearch]        = useState('')
   const [elementFilter, setElementFilter] = useState('All')
@@ -97,16 +111,26 @@ export default function Dashboard() {
   return (
     <div className="animate-fade-in">
       {/* ── Page Header ────────────────────────────── */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-1">
-          <span className="text-2xl">🏔️</span>
-          <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">
-            Dashboard
-          </h1>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <span className="text-2xl">🌍</span>
+            <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">
+              Dashboard
+            </h1>
+          </div>
+          <p className="text-[var(--muted)] text-sm ml-11">
+            Browse all characters and manage your roster
+          </p>
         </div>
-        <p className="text-[var(--muted)] text-sm ml-11">
-          Browse all characters and manage your roster
-        </p>
+        
+        <button 
+          onClick={handleAddAllCharacters}
+          className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+        >
+          <span className="text-lg">✦</span>
+          Add All Available Characters
+        </button>
       </div>
 
       {/* ── Resin Tracker ────────────────────────────── */}
