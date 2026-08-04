@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from 'react'
 import useStore from '../store/useStore'
 import { getPrimaryInventoryList } from '../utils/dataManager'
+import { getRarityBg } from '../utils/gameData'
+import { getMaterialIcon } from '../utils/assetHelper'
+import GenshinImage from '../components/GenshinImage'
 
 // ─── Element / Gemstone Color Map ──────────────────────────────────────────
 const GEM_COLORS = {
@@ -15,7 +18,7 @@ const GEM_COLORS = {
 }
 
 // ─── Stepper Card ─────────────────────────────────────────────────────────
-function MaterialCard({ matKey, label, accent, sublabel, small }) {
+function MaterialCard({ matKey, label, accent, sublabel, small, iconCategory, rarity }) {
   const qty          = useStore((s) => s.inventory[matKey] || 0)
   const setInventory = useStore((s) => s.setInventory)
 
@@ -27,6 +30,8 @@ function MaterialCard({ matKey, label, accent, sublabel, small }) {
   const step = (delta) => setInventory(matKey, Math.max(0, qty + delta))
 
   const accentColor = accent || '#C8A96E'
+  const rarityBgClass = getRarityBg(rarity || 0)
+  const iconUrl = getMaterialIcon(label, iconCategory)
 
   return (
     <div
@@ -34,23 +39,32 @@ function MaterialCard({ matKey, label, accent, sublabel, small }) {
       style={{ '--mat-accent': accentColor }}
       id={`inv-${matKey.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
     >
-      {/* Top color bar */}
-      <div
-        className="material-card-bar"
-        style={{ background: accentColor }}
-      />
+      {/* Icon + Label Header */}
+      <div className="flex items-center gap-2.5 px-3 pt-3 pb-1">
+        {/* Icon thumbnail with dynamic rarity gradient */}
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md relative overflow-hidden ${rarityBgClass}`}>
+          <GenshinImage
+            src={iconUrl}
+            alt={label}
+            className="w-8 h-8 object-contain relative z-10 drop-shadow-sm"
+            fallback={
+              <span className="text-lg opacity-60">📦</span>
+            }
+          />
+        </div>
 
-      {/* Label */}
-      <div className="px-3 pt-3 pb-1 flex-1">
-        <p
-          className={`font-medium text-[var(--text)] leading-tight ${small ? 'text-[10px]' : 'text-[11px]'}`}
-          title={label}
-        >
-          {label}
-        </p>
-        {sublabel && (
-          <p className="text-[9px] text-[var(--muted)] mt-0.5 leading-tight">{sublabel}</p>
-        )}
+        {/* Label & sublabel */}
+        <div className="flex-1 min-w-0">
+          <p
+            className={`font-medium text-[var(--text)] leading-tight truncate ${small ? 'text-[10px]' : 'text-[11px]'}`}
+            title={label}
+          >
+            {label}
+          </p>
+          {sublabel && (
+            <p className="text-[9px] text-[var(--muted)] mt-0.5 leading-tight truncate">{sublabel}</p>
+          )}
+        </div>
       </div>
 
       {/* Qty display */}
@@ -243,6 +257,8 @@ export default function Inventory() {
             sublabel={mat.sublabel}
             accent={mat.accent}
             small={activeTab !== 'Currency & Experience'}
+            iconCategory={mat.iconCategory}
+            rarity={mat.rarity}
           />
         ))}
         {filteredMats.length === 0 && (

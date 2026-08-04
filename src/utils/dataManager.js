@@ -157,30 +157,30 @@ export function resolveWeaponMaterials(weaponState) {
 export const getPrimaryInventoryList = () => {
   const mats = new Map()
 
-  const addMat = (key, cat, subCat, label, sublabel, accent) => {
+  const addMat = (key, cat, subCat, label, sublabel, accent, iconCategory, rarity) => {
     if (!key || key === 'nan' || mats.has(key)) return
-    mats.set(key, { matKey: key, category: cat, subCategory: subCat, label, sublabel, accent })
+    mats.set(key, { matKey: key, category: cat, subCategory: subCat, label, sublabel, accent, iconCategory: iconCategory || null, rarity: rarity || 0 })
   }
 
   // 1. Currency & Experience (Universal Hardcoded)
-  addMat('Mora', 'Currency', null, 'Mora', 'Currency', '#FAB632')
-  addMat('HeroWit', 'Experience', null, "Hero's Wit", 'EXP Book ★★★★', '#60A5FA')
-  addMat('AdventurerExp', 'Experience', null, 'Adventurer Exp', 'EXP Book ★★', '#4ADE80')
-  addMat('WandererAdvice', 'Experience', null, "Wanderer's Advice", 'EXP Book ★', '#9CA3AF')
-  addMat('Crown', 'Experience', null, 'Crown of Insight', 'Talent Level-Up', '#FBBF24')
-  addMat('masterless_stella_fortuna', 'Experience', null, 'Masterless Stella Fortuna', 'Awakening', '#FBBF24')
-  addMat('MysticEnhancementOre', 'Experience', null, 'Mystic Enhancement Ore', 'Weapon EXP ★★★', '#60A5FA')
-  addMat('FineEnhancementOre', 'Experience', null, 'Fine Enhancement Ore', 'Weapon EXP ★★', '#4ADE80')
-  addMat('EnhancementOre', 'Experience', null, 'Enhancement Ore', 'Weapon EXP ★', '#9CA3AF')
-  addMat('DreamSolvent', 'Experience', null, 'Dream Solvent', 'Consumable', '#C8A96E')
-  addMat('FragileResin', 'Experience', null, 'Fragile Resin', 'Consumable', '#60A5FA')
+  addMat('Mora', 'Currency', null, 'Mora', 'Currency', '#FAB632', 'Currency', 5)
+  addMat('HeroWit', 'Experience', null, "Hero's Wit", 'EXP Book ★★★★', '#60A5FA', 'Experience', 4)
+  addMat('AdventurerExp', 'Experience', null, 'Adventurer Exp', 'EXP Book ★★', '#4ADE80', 'Experience', 2)
+  addMat('WandererAdvice', 'Experience', null, "Wanderer's Advice", 'EXP Book ★', '#9CA3AF', 'Experience', 1)
+  addMat('Crown', 'Experience', null, 'Crown of Insight', 'Talent Level-Up', '#FBBF24', 'Experience', 5)
+  addMat('masterless_stella_fortuna', 'Experience', null, 'Masterless Stella Fortuna', 'Awakening', '#FBBF24', 'Experience', 5)
+  addMat('MysticEnhancementOre', 'Experience', null, 'Mystic Enhancement Ore', 'Weapon EXP ★★★', '#60A5FA', 'Experience', 3)
+  addMat('FineEnhancementOre', 'Experience', null, 'Fine Enhancement Ore', 'Weapon EXP ★★', '#4ADE80', 'Experience', 2)
+  addMat('EnhancementOre', 'Experience', null, 'Enhancement Ore', 'Weapon EXP ★', '#9CA3AF', 'Experience', 1)
+  addMat('DreamSolvent', 'Experience', null, 'Dream Solvent', 'Consumable', '#C8A96E', 'Experience', 4)
+  addMat('FragileResin', 'Experience', null, 'Fragile Resin', 'Consumable', '#60A5FA', 'Experience', 4)
 
   // 2. Boss Materials
   bossMaterials.forEach(b => {
     if (b.type === 'normal_boss') {
-      addMat(b.id, 'Boss Drops', 'Normal Boss', b.name, 'Normal Boss', '#EF6D22')
+      addMat(b.id, 'Boss Drops', 'Normal Boss', b.name, 'Normal Boss', '#EF6D22', 'Normal Boss Material', 4)
     } else if (b.type === 'weekly_boss') {
-      addMat(b.id, 'Boss Drops', 'Weekly Boss', b.name, 'Weekly Boss', '#A855F7')
+      addMat(b.id, 'Boss Drops', 'Weekly Boss', b.name, 'Weekly Boss', '#A855F7', 'Weekly Boss Material', 5)
     }
   })
 
@@ -188,46 +188,50 @@ export const getPrimaryInventoryList = () => {
   enemyMaterials.forEach(e => {
     const subCat = e.type === 'elite_enemy' ? 'Elite Enhancement Material' : 'Common Enhancement Material'
     const colorCycle = e.type === 'elite_enemy' ? ['#9CA3AF', '#60A5FA', '#A78BFA', '#F59E0B'] : ['#9CA3AF', '#60A5FA', '#A78BFA']
+    const rarityCycle = e.type === 'elite_enemy' ? [2, 3, 4, 5] : [1, 2, 3]
     const tiers = extractTiers(e.tiers)
     tiers.forEach((t, i) => {
-      addMat(t.id, 'Enemy Drops', subCat, t.name, ['Common', 'Uncommon', 'Rare', 'Epic'][i], colorCycle[i] || '#C8A96E')
+      addMat(t.id, 'Enemy Drops', subCat, t.name, ['Common', 'Uncommon', 'Rare', 'Epic'][i], colorCycle[i] || '#C8A96E', subCat, rarityCycle[i] || 1)
     })
   })
 
   // 4. Local Specialties
   localSpecialty.forEach(l => {
-    addMat(l.id, 'Local Specialty', null, l.name, 'Local Specialty', '#22C55E')
+    addMat(l.id, 'Local Specialty', null, l.name, 'Local Specialty', '#22C55E', 'Local Specialty', 1)
   })
 
   // 5. Talent Materials
   talentMaterials.forEach(t => {
     const tiers = extractTiers(t.tiers)
+    const talentRarities = [2, 3, 4]
     tiers.forEach((tier, i) => {
-      addMat(tier.id, 'Talent Materials', null, tier.name, TIER_STARS_BOOK[i] || 'Book', '#60A5FA')
+      addMat(tier.id, 'Talent Materials', null, tier.name, TIER_STARS_BOOK[i] || 'Book', '#60A5FA', 'Talent Material', talentRarities[i] || 2)
     })
   })
 
   // 6. Weapon Ascension Materials
   weaponAscension.forEach(w => {
     const tiers = extractTiers(w.tiers)
+    const weaponAscRarities = [2, 3, 4, 5]
     tiers.forEach((tier, i) => {
-      addMat(tier.id, 'Weapon Ascension Material', null, tier.name, TIER_STARS_WEAPON[i] || 'Ascension', '#F59E0B')
+      addMat(tier.id, 'Weapon Ascension Material', null, tier.name, TIER_STARS_WEAPON[i] || 'Ascension', '#F59E0B', 'Weapon Ascension Material', weaponAscRarities[i] || 2)
     })
   })
 
   // 7. Character Ascension Gems
+  const gemRarities = [2, 3, 4, 5]
   Object.keys(GEM_INFO).forEach(gemKey => {
     const gem = GEM_INFO[gemKey]
     if (gemKey === 'brilliantdiamond') {
-      addMat('brilliantdiamond_sliver', 'Character Ascension Gem', null, 'Brilliant Diamond Sliver', TIER_STARS_GEM[0], gem.color)
-      addMat('brilliantdiamond_fragment', 'Character Ascension Gem', null, 'Brilliant Diamond Fragment', TIER_STARS_GEM[1], gem.color)
-      addMat('brilliantdiamond_chunk', 'Character Ascension Gem', null, 'Brilliant Diamond Chunk', TIER_STARS_GEM[2], gem.color)
-      addMat('brilliantdiamond_gemstone', 'Character Ascension Gem', null, 'Brilliant Diamond Gemstone', TIER_STARS_GEM[3], gem.color)
+      addMat('brilliantdiamond_sliver', 'Character Ascension Gem', null, 'Brilliant Diamond Sliver', TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0])
+      addMat('brilliantdiamond_fragment', 'Character Ascension Gem', null, 'Brilliant Diamond Fragment', TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1])
+      addMat('brilliantdiamond_chunk', 'Character Ascension Gem', null, 'Brilliant Diamond Chunk', TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2])
+      addMat('brilliantdiamond_gemstone', 'Character Ascension Gem', null, 'Brilliant Diamond Gemstone', TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3])
     } else {
-      addMat(`${gemKey}_sliver`, 'Character Ascension Gem', null, `${gem.baseName} Sliver`, TIER_STARS_GEM[0], gem.color)
-      addMat(`${gemKey}_fragment`, 'Character Ascension Gem', null, `${gem.baseName} Fragment`, TIER_STARS_GEM[1], gem.color)
-      addMat(`${gemKey}_chunk`, 'Character Ascension Gem', null, `${gem.baseName} Chunk`, TIER_STARS_GEM[2], gem.color)
-      addMat(`${gemKey}_gemstone`, 'Character Ascension Gem', null, `${gem.baseName} Gemstone`, TIER_STARS_GEM[3], gem.color)
+      addMat(`${gemKey}_sliver`, 'Character Ascension Gem', null, `${gem.baseName} Sliver`, TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0])
+      addMat(`${gemKey}_fragment`, 'Character Ascension Gem', null, `${gem.baseName} Fragment`, TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1])
+      addMat(`${gemKey}_chunk`, 'Character Ascension Gem', null, `${gem.baseName} Chunk`, TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2])
+      addMat(`${gemKey}_gemstone`, 'Character Ascension Gem', null, `${gem.baseName} Gemstone`, TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3])
     }
   })
 
