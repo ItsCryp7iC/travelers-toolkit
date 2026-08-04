@@ -1,5 +1,5 @@
 import React from 'react'
-import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS, getRarityBgClass } from '../utils/gameData'
+import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS, getRarityBg } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
 import { getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 
@@ -25,7 +25,7 @@ export default function WeaponCard({ weapon, onClick }) {
     >
       {/* 🌟 Avatar / Rarity Gradient 🌟 */}
       <div
-        className={`char-card-avatar rounded-t-[14px] relative ${getRarityBgClass(rarity)}`}
+        className={`char-card-avatar rounded-t-[14px] relative ${getRarityBg(rarity)}`}
         style={{ 
           borderBottom: `2px solid ${rarityColor}`
         }}

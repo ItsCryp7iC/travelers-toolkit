@@ -132,14 +132,27 @@ export const RARITY_COLORS = {
 /**
  * Get rarity background gradient CSS class
  */
-export function getRarityBgClass(rarity) {
-  const r = typeof rarity === 'string' ? (rarity.match(/⭐/g)?.length || parseInt(rarity) || 3) : (rarity || 3);
-  switch (r) {
-    case 5: return 'bg-gradient-to-br from-orange-300 to-orange-600';
-    case 4: return 'bg-gradient-to-br from-purple-400 to-purple-700';
-    case 3: return 'bg-gradient-to-br from-blue-300 to-blue-600';
-    case 2: return 'bg-gradient-to-br from-green-300 to-green-600';
-    case 1: return 'bg-gradient-to-br from-gray-400 to-gray-600';
-    default: return 'bg-gradient-to-br from-gray-400 to-gray-600';
+export function getRarityBg(rarity) {
+  let r = 1; // Default to 1
+  
+  if (typeof rarity === 'string') {
+    if (rarity.includes('★')) {
+      // Count the number of '★' characters
+      r = (rarity.match(/★/g) || []).length;
+    } else {
+      // Fallback in case it's passed as "5"
+      r = parseInt(rarity, 10);
+    }
+  } else if (typeof rarity === 'number') {
+    r = rarity;
+  }
+  
+  switch(r) {
+    case 5: return 'bg-gradient-to-b from-[#e1b453] to-[#926027]';
+    case 4: return 'bg-gradient-to-b from-[#9775b4] to-[#615183]';
+    case 3: return 'bg-gradient-to-b from-[#5c98ba] to-[#436484]';
+    case 2: return 'bg-gradient-to-b from-[#6ba175] to-[#476f50]';
+    case 1: return 'bg-gradient-to-b from-[#949c9e] to-[#60676a]';
+    default: return 'bg-gray-800'; // Safe fallback
   }
 }
