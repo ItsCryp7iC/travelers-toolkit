@@ -280,19 +280,25 @@ export default function Weapons() {
                     {/* Sub Headers */}
                     <tr className="border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
                       {/* Identity (Sticky) */}
-                      <th className="text-center px-4 py-2 font-semibold sticky left-0 z-20 bg-[var(--surface)] w-[40px] min-w-[40px] max-w-[40px]">
-                        <input 
-                          type="checkbox" 
-                          className="accent-[var(--gold)] cursor-pointer w-4 h-4"
-                          checked={filtered.length > 0 && selectedIds.length === filtered.length}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIds(filtered.map(w => w.id))
-                            } else {
-                              setSelectedIds([])
-                            }
-                          }}
-                        />
+                      <th 
+                        className="w-16 px-4 py-2 cursor-pointer sticky left-0 z-20 bg-[var(--surface)] border-r border-gray-700/50"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (filtered.length > 0 && selectedIds.length === filtered.length) {
+                            setSelectedIds([])
+                          } else {
+                            setSelectedIds(filtered.map(w => w.id))
+                          }
+                        }}
+                      >
+                        <div className="w-full h-full flex items-center justify-center pointer-events-none">
+                          <input 
+                            type="checkbox" 
+                            checked={filtered.length > 0 && selectedIds.length === filtered.length}
+                            readOnly
+                            className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-blue-500 focus:ring-0 focus:ring-offset-0"
+                          />
+                        </div>
                       </th>
                       <th className="text-center px-4 py-2 font-semibold sticky left-[40px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">Sl</th>
                       <th className="text-left px-4 py-2 font-semibold sticky left-[88px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]">Weapon</th>
@@ -347,20 +353,25 @@ export default function Weapons() {
                           onClick={() => setEditingWeapon(wp)}
                         >
                             {/* Identity Group (Sticky) */}
-                            <td className="px-4 py-2 text-center sticky left-0 z-10 bg-inherit w-[40px] min-w-[40px] max-w-[40px]" onClick={(e) => e.stopPropagation()}>
-                              <input 
-                                type="checkbox"
-                                className="accent-[var(--gold)] cursor-pointer w-4 h-4"
-                                checked={selectedIds.includes(wp.id)}
-                                onChange={(e) => {
-                                  e.stopPropagation();
-                                  if (e.target.checked) {
-                                    setSelectedIds(prev => [...prev, wp.id])
-                                  } else {
-                                    setSelectedIds(prev => prev.filter(id => id !== wp.id))
-                                  }
-                                }}
-                              />
+                            <td 
+                              className="w-16 px-4 py-2 cursor-pointer sticky left-0 z-20 bg-inherit border-r border-gray-700/50"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (selectedIds.includes(wp.id)) {
+                                  setSelectedIds(prev => prev.filter(id => id !== wp.id))
+                                } else {
+                                  setSelectedIds(prev => [...prev, wp.id])
+                                }
+                              }}
+                            >
+                              <div className="w-full h-full flex items-center justify-center pointer-events-none">
+                                <input 
+                                  type="checkbox" 
+                                  checked={selectedIds.includes(wp.id)}
+                                  readOnly
+                                  className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-blue-500 focus:ring-0 focus:ring-offset-0"
+                                />
+                              </div>
                             </td>
                             <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-[40px] z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{wp.sl_no}</td>
                             <td className="px-4 py-2 sticky left-[88px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px]">
