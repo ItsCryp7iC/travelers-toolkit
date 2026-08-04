@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
-import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass } from '../utils/gameData'
+import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
 import CustomSelect from './CustomSelect'
 import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
@@ -238,11 +238,11 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
                       onClick={() => handleSelectWeapon(wp)}
                       className="flex items-center gap-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] hover:bg-[var(--elevated)] transition-all text-left group"
                     >
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xl shadow relative overflow-hidden" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xl shadow relative overflow-hidden ${getRarityBg(wp.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
                         <GenshinImage 
                           src={getWeaponIcon(wp.name)} 
                           alt={wp.name} 
-                          className="w-full h-full object-cover absolute inset-0 z-10" 
+                          className="w-full h-full object-contain absolute inset-0 z-10 p-1" 
                           fallback={<span className="relative z-10 font-cinzel">{wpCfg.emoji}</span>} 
                         />
                       </div>
@@ -265,11 +265,11 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Selected weapon summary */}
               <div className="flex items-center gap-4 p-4 rounded-xl border" style={{ background: `${rarityColor}10`, borderColor: `${rarityColor}30` }}>
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0 shadow relative overflow-hidden" style={{ background: `${rarityColor}20`, border: `1px solid ${rarityColor}40` }}>
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0 shadow relative overflow-hidden ${getRarityBg(selectedWeapon.rarity)}`} style={{ border: `1px solid ${rarityColor}40` }}>
                   <GenshinImage 
                     src={getWeaponIcon(selectedWeapon.name)} 
                     alt={selectedWeapon.name} 
-                    className="w-full h-full object-cover absolute inset-0 z-10" 
+                    className="w-full h-full object-contain absolute inset-0 z-10 p-2" 
                     fallback={<span className="relative z-10 font-cinzel">{WEAPON_TYPES[selectedWeapon.type]?.emoji || '⚔️'}</span>} 
                   />
                 </div>

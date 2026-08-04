@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS } from '../utils/gameData'
+import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS, getRarityBg } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
 import { getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 import { formatMaterialName } from '../utils/calculator'
@@ -66,15 +66,15 @@ export default function WeaponInfoModal({ weapon, onClose }) {
           </button>
 
           <div className="relative z-10 flex gap-5 items-center">
-            <div className="w-20 h-20 rounded-xl bg-black/20 flex items-center justify-center border-2 shadow-lg relative overflow-hidden"
-                 style={{ borderColor: rarityColor, color: rarityColor, textShadow: `0 0 16px ${rarityColor}` }}>
-              <GenshinImage 
-                src={getWeaponIcon(name)} 
-                alt={name} 
-                className="w-full h-full object-cover absolute inset-0 z-10" 
-                fallback={<span className="font-cinzel text-4xl relative z-10">{wpConfig.emoji}</span>} 
-              />
-            </div>
+              <div className={`w-20 h-20 rounded-xl flex items-center justify-center border-2 shadow-lg relative overflow-hidden ${getRarityBg(rarity)}`}
+                   style={{ borderColor: rarityColor, color: rarityColor, textShadow: `0 0 16px ${rarityColor}` }}>
+                <GenshinImage 
+                  src={getWeaponIcon(name)} 
+                  alt={name} 
+                  className="w-full h-full object-contain absolute inset-0 z-10 p-2" 
+                  fallback={<span className="font-cinzel text-4xl relative z-10">{wpConfig.emoji}</span>} 
+                />
+              </div>
             <div>
               <h2 className="font-cinzel font-bold text-2xl text-[var(--text)] drop-shadow-md mb-1">{displayName}</h2>
               <div className="flex gap-2 items-center flex-wrap">
