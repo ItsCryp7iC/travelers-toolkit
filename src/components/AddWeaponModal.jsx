@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
@@ -182,10 +183,9 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
 
   const rarityColor = selectedWeapon ? RARITY_COLORS[selectedWeapon.rarity] || '#C8A96E' : '#C8A96E'
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
-      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+      className="modal-overlay"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
@@ -367,6 +367,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
