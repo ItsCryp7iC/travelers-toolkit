@@ -347,7 +347,7 @@ export default function Weapons() {
                           onClick={() => setEditingWeapon(wp)}
                         >
                             {/* Identity Group (Sticky) */}
-                            <td className="px-4 py-2 text-center sticky left-0 z-10 bg-inherit w-[40px] min-w-[40px] max-w-[40px]">
+                            <td className="px-4 py-2 text-center sticky left-0 z-10 bg-inherit w-[40px] min-w-[40px] max-w-[40px]" onClick={(e) => e.stopPropagation()}>
                               <input 
                                 type="checkbox"
                                 className="accent-[var(--gold)] cursor-pointer w-4 h-4"
