@@ -2,10 +2,10 @@ import React, { useState, useMemo, useEffect, useRef } from 'react'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
-import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg } from '../utils/gameData'
+import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg, getWeaponTheme } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
 import CustomSelect from './CustomSelect'
-import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
+import { getWeaponIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
 import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
 
 function AscensionSelector({ value, onChange, label, elementColor }) {
@@ -44,6 +44,7 @@ function LevelSlider({ value, onChange, ascension, label, elementColor }) {
   const range = getLevelRange(ascension)
   const min = range.min
   const max = Math.min(range.max, 90)
+  const pct = max > min ? ((value - min) / (max - min)) * 100 : 0
   return (
     <div>
       <div className="flex justify-between items-end mb-2">
@@ -63,8 +64,8 @@ function LevelSlider({ value, onChange, ascension, label, elementColor }) {
         max={max}
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
-        className="genshin-slider w-full"
-        style={{ '--slider-color': elementColor }}
+        className="level-slider w-full"
+        style={{ '--slider-color': elementColor, '--pct': `${pct}%` }}
       />
     </div>
   )
@@ -192,17 +193,50 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
         className="w-full max-w-2xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0">
-          <div className="flex items-center gap-3">
-            {step === 2 && (
-              <button onClick={() => setStep(1)} className="text-xs text-[var(--muted)] hover:text-[var(--text)] transition-colors">← Back</button>
-            )}
-            <h2 className="font-cinzel font-bold text-lg text-[var(--text)]">
-              {step === 1 ? 'Select a Weapon' : `Configure: ${formatName(selectedWeapon?.name || '')}`}
-            </h2>
+        {step === 1 ? (
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0">
+            <div className="flex items-center gap-3">
+              <h2 className="font-cinzel font-bold text-lg text-[var(--text)]">Select a Weapon</h2>
+            </div>
+            <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors">✕</button>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors">✕</button>
-        </div>
+        ) : (
+          (() => {
+            const theme = getWeaponTheme(selectedWeapon.rarity);
+            return (
+              <div className={`relative p-6 rounded-t-2xl border-b border-gray-700/50 ${theme.header} shrink-0`}>
+                <div className="absolute top-4 right-4 flex gap-2">
+                  <button onClick={() => setStep(1)} className="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white/70 flex items-center justify-center transition-colors">←</button>
+                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white/70 flex items-center justify-center transition-colors">✕</button>
+                </div>
+                <div className="flex gap-4 items-center">
+                  <div className={`w-20 h-20 rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden ${getRarityBg(selectedWeapon.rarity)}`}>
+                    <GenshinImage src={getWeaponIcon(selectedWeapon.name)} alt={selectedWeapon.name} className="w-16 h-16 object-contain absolute inset-0 z-10 m-auto" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white mb-2 font-cinzel">{formatName(selectedWeapon.name)}</h2>
+                    <div className="flex gap-2 text-sm flex-wrap">
+                      <span className="px-3 py-1 bg-black/30 rounded-full text-gray-200 text-sm flex items-center gap-1.5 shadow-inner backdrop-blur-sm">
+                        <img 
+                          src={getWeaponTypeIcon(selectedWeapon.type)} 
+                          alt={selectedWeapon.type} 
+                          className="w-4 h-4 object-contain opacity-75" 
+                        />
+                        {selectedWeapon.type}
+                      </span>
+                      <span className="px-3 py-1 bg-black/30 rounded-full text-yellow-400 text-sm tracking-widest shadow-inner flex items-center justify-center">
+                        {getStars(selectedWeapon.rarity) || '★'}
+                      </span>
+                      {existingWeapon && (
+                        <span className="px-3 py-1 bg-green-900/50 rounded-full text-green-300 backdrop-blur-sm shadow-sm font-bold">✓ In Armory</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()
+        )}
 
         {/* ── STEP 1: Select Weapon ── */}
         {step === 1 && (
@@ -263,41 +297,29 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
         {step === 2 && selectedWeapon && (
           <>
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {/* Selected weapon summary */}
-              <div className="flex items-center gap-4 p-4 rounded-xl border" style={{ background: `${rarityColor}10`, borderColor: `${rarityColor}30` }}>
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0 shadow relative overflow-hidden ${getRarityBg(selectedWeapon.rarity)}`} style={{ border: `1px solid ${rarityColor}40` }}>
-                  <GenshinImage 
-                    src={getWeaponIcon(selectedWeapon.name)} 
-                    alt={selectedWeapon.name} 
-                    className="w-full h-full object-contain absolute inset-0 z-10 p-2" 
-                    fallback={<span className="relative z-10 font-cinzel">{WEAPON_TYPES[selectedWeapon.type]?.emoji || '⚔️'}</span>} 
-                  />
-                </div>
-                <div>
-                  <p className="font-cinzel font-bold text-base text-[var(--text)]">{formatName(selectedWeapon.name)}</p>
-                  <p className={`text-xs ${getRarityClass(selectedWeapon.rarity)}`}>{getStars(selectedWeapon.rarity)}</p>
-                  <p className="text-xs text-[var(--muted)]">{selectedWeapon.type}</p>
-                </div>
-              </div>
-
               {/* Level sliders */}
               <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
-                  <div className="modal-state-panel">
-                    <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
-                    <AscensionSelector value={ascension} onChange={(a) => { setAscension(a); setLevel(clampLevel(level, a)) }} label="Ascension" elementColor="#9CA3AF" />
-                    <div className="mt-4">
-                      <LevelSlider value={level} onChange={setLevel} ascension={ascension} label="Level" elementColor="#9CA3AF" />
+                {(() => {
+                  const theme = getWeaponTheme(selectedWeapon.rarity);
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+                      <div className="modal-state-panel">
+                        <p className={`text-[10px] font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
+                        <AscensionSelector value={ascension} onChange={(a) => { setAscension(a); setLevel(clampLevel(level, a)) }} label="Ascension" elementColor={theme.elementColor} />
+                        <div className="mt-4">
+                          <LevelSlider value={level} onChange={setLevel} ascension={ascension} label="Level" elementColor={theme.elementColor} />
+                        </div>
+                      </div>
+                      <div className="modal-state-panel">
+                        <p className={`text-[10px] font-bold tracking-widest uppercase mb-4 ${theme.text}`}>🎯 Weapon Target</p>
+                        <AscensionSelector value={targetAscension} onChange={(a) => { setTargetAscension(a); setTargetLevel(clampLevel(targetLevel, a)) }} label="Ascension" elementColor={theme.elementColor} />
+                        <div className="mt-4">
+                          <LevelSlider value={targetLevel} onChange={setTargetLevel} ascension={targetAscension} label="Level" elementColor={theme.elementColor} />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="modal-state-panel">
-                    <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Weapon Target</p>
-                    <AscensionSelector value={targetAscension} onChange={(a) => { setTargetAscension(a); setTargetLevel(clampLevel(targetLevel, a)) }} label="Ascension" elementColor="var(--gold)" />
-                    <div className="mt-4">
-                      <LevelSlider value={targetLevel} onChange={setTargetLevel} ascension={targetAscension} label="Level" elementColor="var(--gold)" />
-                    </div>
-                  </div>
-                </div>
+                  );
+                })()}
               </div>
 
               {/* Assign to character */}

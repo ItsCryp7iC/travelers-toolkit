@@ -63,6 +63,8 @@ export function LevelSlider({ value, onChange, ascension, label, elementColor, i
     onChange(num)
   }
 
+  const pct = max > min ? ((value - min) / (max - min)) * 100 : 0
+
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -74,7 +76,7 @@ export function LevelSlider({ value, onChange, ascension, label, elementColor, i
           type="range" min={min} max={max} value={value}
           onChange={(e) => handleChange(e.target.value)}
           className="level-slider w-full"
-          style={{ '--slider-color': elementColor }}
+          style={{ '--slider-color': elementColor, '--pct': `${pct}%` }}
           aria-label={`${label} level`}
         />
         <div className="flex justify-between text-[10px] text-[var(--muted)] mt-1">

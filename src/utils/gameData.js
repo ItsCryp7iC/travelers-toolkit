@@ -111,7 +111,17 @@ export function getInitials(name) {
  * Render star string for a given rarity
  */
 export function getStars(rarity) {
-  return '★'.repeat(rarity)
+  let r = 3;
+  if (typeof rarity === 'string') {
+    if (rarity.includes('★')) {
+      r = (rarity.match(/★/g) || []).length;
+    } else {
+      r = parseInt(rarity, 10) || 3;
+    }
+  } else if (typeof rarity === 'number') {
+    r = rarity;
+  }
+  return '★'.repeat(r)
 }
 
 /**
@@ -156,3 +166,28 @@ export function getRarityBg(rarity) {
     default: return 'bg-gray-800'; // Safe fallback
   }
 }
+
+/**
+ * Get dynamic theme colors for weapon modal based on rarity
+ */
+export const getWeaponTheme = (rarity) => {
+  let r = 3;
+  if (typeof rarity === 'string') {
+    if (rarity.includes('★')) {
+      r = (rarity.match(/★/g) || []).length;
+    } else {
+      r = parseInt(rarity, 10) || 3;
+    }
+  } else if (typeof rarity === 'number') {
+    r = rarity;
+  }
+  
+  switch (r) {
+    case 5: return { header: 'bg-gradient-to-r from-yellow-700 to-yellow-900', text: 'text-yellow-400', slider: 'bg-yellow-400', ring: 'focus:ring-yellow-400', elementColor: '#facc15' };
+    case 4: return { header: 'bg-gradient-to-r from-purple-700 to-purple-900', text: 'text-purple-400', slider: 'bg-purple-400', ring: 'focus:ring-purple-400', elementColor: '#c084fc' };
+    case 3: return { header: 'bg-gradient-to-r from-blue-700 to-blue-900', text: 'text-blue-400', slider: 'bg-blue-400', ring: 'focus:ring-blue-400', elementColor: '#60a5fa' };
+    case 2: return { header: 'bg-gradient-to-r from-green-700 to-green-900', text: 'text-green-400', slider: 'bg-green-400', ring: 'focus:ring-green-400', elementColor: '#4ade80' };
+    case 1: return { header: 'bg-gradient-to-r from-gray-600 to-gray-800', text: 'text-gray-400', slider: 'bg-gray-400', ring: 'focus:ring-gray-400', elementColor: '#9ca3af' };
+    default: return { header: 'bg-gray-800', text: 'text-gray-400', slider: 'bg-gray-400', ring: 'focus:ring-gray-400', elementColor: '#9ca3af' };
+  }
+};
