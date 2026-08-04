@@ -5,7 +5,7 @@ import BulkEditWeaponModal from '../components/BulkEditWeaponModal'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
-import { WEAPON_TYPES, RARITY_COLORS, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
+import { WEAPON_TYPES, RARITY_COLORS, formatName, getInitials, getStars, getRarityClass, getRarityBgClass } from '../utils/gameData'
 import { ELEMENTS } from '../utils/gameData'
 import { calculateWeaponCost, formatNumber, buildWeaponAscMatKey, buildWeaponEliteKey, buildMobNames, formatMaterialName } from '../utils/calculator'
 import { resolveWeaponMaterials } from '../utils/dataManager'
@@ -365,12 +365,12 @@ export default function Weapons() {
                             <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-[40px] z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{wp.sl_no}</td>
                             <td className="px-4 py-2 sticky left-[88px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px]">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xl shrink-0 shadow relative overflow-hidden" style={{ background: `${rColor}20`, border: `1px solid ${rColor}40` }}>
+                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 shadow relative overflow-hidden ${getRarityBgClass(wp.data?.rarity)}`}>
                                   <GenshinImage 
                                     src={getWeaponIcon(wp.weaponName)} 
                                     alt={wp.weaponName} 
-                                    className="w-full h-full object-cover absolute inset-0 z-10" 
-                                    fallback={<span className="font-cinzel text-sm relative z-10" style={{ color: rColor }}>{wpCfg?.emoji}</span>} 
+                                    className="w-8 h-8 object-contain absolute inset-0 m-auto z-10" 
+                                    fallback={<span className="font-cinzel text-sm relative z-10 text-white">{wpCfg?.emoji}</span>} 
                                   />
                                 </div>
                                 <div className="truncate">

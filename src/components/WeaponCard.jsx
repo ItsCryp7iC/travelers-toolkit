@@ -1,5 +1,5 @@
 import React from 'react'
-import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS } from '../utils/gameData'
+import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS, getRarityBgClass } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
 import { getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 
@@ -23,17 +23,16 @@ export default function WeaponCard({ weapon, onClick }) {
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick && onClick(weapon) }}
     >
-      {/* ── Avatar / Rarity Gradient ── */}
+      {/* 🌟 Avatar / Rarity Gradient 🌟 */}
       <div
-        className="char-card-avatar"
+        className={`char-card-avatar rounded-t-[14px] relative ${getRarityBgClass(rarity)}`}
         style={{ 
-          background: `linear-gradient(135deg, ${rarityColor}40 0%, ${rarityColor}10 100%)`,
           borderBottom: `2px solid ${rarityColor}`
         }}
       >
         {/* Decorative shimmer */}
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-20 rounded-t-[14px]"
           style={{
             background: `radial-gradient(circle at 50% 30%, ${rarityColor}, transparent 70%)`,
           }}
@@ -43,7 +42,7 @@ export default function WeaponCard({ weapon, onClick }) {
         <GenshinImage 
           src={getWeaponIcon(name)}
           alt={displayName}
-          className="w-full h-full object-cover absolute inset-0 z-10 rounded-t-[14px]"
+          className="w-full h-full object-contain absolute inset-0 z-10 rounded-t-[14px] p-2"
           fallback={
             <span
               className="relative z-10 select-none font-cinzel text-4xl"

@@ -128,3 +128,18 @@ export const RARITY_COLORS = {
   2: '#4ADE80', // Green
   1: '#9CA3AF'  // Gray
 }
+
+/**
+ * Get rarity background gradient CSS class
+ */
+export function getRarityBgClass(rarity) {
+  const r = typeof rarity === 'string' ? (rarity.match(/⭐/g)?.length || parseInt(rarity) || 3) : (rarity || 3);
+  switch (r) {
+    case 5: return 'bg-gradient-to-br from-orange-300 to-orange-600';
+    case 4: return 'bg-gradient-to-br from-purple-400 to-purple-700';
+    case 3: return 'bg-gradient-to-br from-blue-300 to-blue-600';
+    case 2: return 'bg-gradient-to-br from-green-300 to-green-600';
+    case 1: return 'bg-gradient-to-br from-gray-400 to-gray-600';
+    default: return 'bg-gradient-to-br from-gray-400 to-gray-600';
+  }
+}
