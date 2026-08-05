@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import CharacterCard from '../components/CharacterCard'
+import WeaponCard from '../components/WeaponCard'
+import weaponsData from '../data/weapons.json'
 import ResinTracker from '../components/ResinTracker'
 import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
@@ -37,6 +39,9 @@ function StatCard({ icon, label, value, accent }) {
 export default function Dashboard() {
   const roster = useStore((s) => s.roster)
   const batchAddCharacters = useStore((s) => s.batchAddCharacters)
+  const trackedWeapons = useStore((s) => s.trackedWeapons) || []
+
+  const [activeTab, setActiveTab] = useState('characters');
 
   const handleAddAllCharacters = () => {
     const missing = charactersData.filter((c) => !roster[c.name])
@@ -120,7 +125,7 @@ export default function Dashboard() {
             </h1>
           </div>
           <p className="text-[var(--muted)] text-sm ml-11">
-            Browse all characters and manage your roster
+            {activeTab === 'characters' ? 'Browse all characters and manage your roster' : 'Browse and track your weapons'}
           </p>
         </div>
         
@@ -157,7 +162,7 @@ export default function Dashboard() {
             <input
               id="character-search"
               type="search"
-              placeholder="Search characters or elements…"
+              placeholder={activeTab === 'characters' ? "Search characters or elements…" : "Search weapons…"}
               className="search-input w-full"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -185,7 +190,7 @@ export default function Dashboard() {
 
           {/* Result count */}
           <span className="text-[var(--muted)] text-xs whitespace-nowrap">
-            {filtered.length} / {charactersData.length} shown
+            {filtered.length} / {activeTab === 'characters' ? charactersData.length : weaponsData.length} shown
           </span>
         </div>
 
@@ -266,24 +271,26 @@ export default function Dashboard() {
       {/* ── Character Grid ──────────────────────────── */}
       {filtered.length > 0 ? (
         <div
-          id="character-grid"
+          id="dashboard-grid"
           className="grid gap-4"
           style={{
             gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))',
           }}
         >
-          {filtered.map((char) => (
-            <CharacterCard key={char.name} character={char} />
+          {filtered.map((item) => (
+            activeTab === 'characters' 
+              ? <CharacterCard key={item.name} character={item} />
+              : <WeaponCard key={item.id} weapon={item} />
           ))}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <span className="text-5xl mb-4">🔍</span>
           <h3 className="font-cinzel font-semibold text-[var(--text)] text-lg mb-2">
-            No characters found
+            No {activeTab} found
           </h3>
           <p className="text-[var(--muted)] text-sm max-w-xs">
-            Try adjusting the filters or search query to see more characters.
+            Try adjusting the filters or search query to see more {activeTab}.
           </p>
           <button
             id="clear-filters-btn"
