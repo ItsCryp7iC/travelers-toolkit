@@ -9,6 +9,7 @@ import charactersData from '../data/characters.json'
 import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
 import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost, WEAPON_ORE_KEY } from './calculator'
+import { resolveSpecificItem } from './resolver'
 
 // Build a fast character lookup
 const CHAR_MAP = Object.fromEntries(charactersData.map((c) => [c.name, c]))
@@ -34,6 +35,8 @@ function merge(acc, src) {
  */
 export function aggregateRosterCosts(roster) {
   const grandTotalCosts = {}
+  const grandTotalCategories = {}
+  const grandTotalRarities = {}
   const breakdown = []
 
   for (const [charName, entry] of Object.entries(roster)) {
@@ -87,23 +90,33 @@ export function aggregateRosterCosts(roster) {
     }
 
     let weaponCosts = null
+    let wData = null
     if (!weaponNoop && weaponState.equippedWeapon) {
-      const wData = WEAPON_MAP[weaponState.equippedWeapon]
+      wData = WEAPON_MAP[weaponState.equippedWeapon]
       weaponCosts = calculateWeaponCost(wData, weaponState.weaponFromLv, weaponState.weaponToLv)
     }
 
     const totalCosts = {}
-    const allCostObjects = [ascCosts, normalCosts, skillCosts, burstCosts, weaponCosts]
     
-    allCostObjects.forEach(costObj => {
+    const processCosts = (costObj, isWeapon = false) => {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
         if (typeof val === 'number' && val > 0) {
-          totalCosts[key] = (totalCosts[key] || 0) + val
-          grandTotalCosts[key] = (grandTotalCosts[key] || 0) + val
+          const resolved = resolveSpecificItem(key, isWeapon ? null : character, isWeapon ? wData : null);
+          const finalId = resolved.id;
+          totalCosts[finalId] = (totalCosts[finalId] || 0) + val
+          grandTotalCosts[finalId] = (grandTotalCosts[finalId] || 0) + val
+          grandTotalCategories[finalId] = resolved.category;
+          grandTotalRarities[finalId] = resolved.rarity;
         }
       })
-    })
+    }
+
+    processCosts(ascCosts, false)
+    processCosts(normalCosts, false)
+    processCosts(skillCosts, false)
+    processCosts(burstCosts, false)
+    processCosts(weaponCosts, true)
 
     if (Object.values(totalCosts).some(val => val > 0)) {
       breakdown.push({ name: charName, character, entry, totalCosts, talentState, weaponState })
@@ -112,6 +125,8 @@ export function aggregateRosterCosts(roster) {
 
   return {
     totalCosts: grandTotalCosts,
+    categories: grandTotalCategories,
+    rarities: grandTotalRarities,
     breakdown,
     trackedCount: breakdown.length,
   }
@@ -120,32 +135,44 @@ export function aggregateRosterCosts(roster) {
 export function computeToFarm(totals, inventory) {
   const inv = inventory || {}
   const totalCosts = totals.totalCosts || {}
+  const categories = totals.categories || {}
+  const rarities = totals.rarities || {}
 
   const allItems = Object.entries(totalCosts)
     .map(([name, required]) => {
       const owned = inv[name] || 0
       const toFarm = Math.max(0, required - owned)
-      return { name, required, owned, toFarm }
+      return { 
+        name, 
+        required, 
+        owned, 
+        toFarm, 
+        category: categories[name] || 'unknown',
+        rarity: rarities[name] || 3
+      }
     })
     .filter(item => item.toFarm > 0)
-    .sort((a, b) => b.toFarm - a.toFarm)
+    .sort((a, b) => {
+      if (b.rarity !== a.rarity) return b.rarity - a.rarity;
+      return a.name.localeCompare(b.name);
+    })
 
-  const filterKeys = (keys) => allItems.filter(item => keys.includes(item.name))
+  const filterCategory = (cat) => allItems.filter(item => item.category === cat)
 
   return {
     mora: allItems.find(i => i.name === 'mora'),
     heroWits: allItems.find(i => i.name === 'heros_wit'),
-    crown: allItems.find(i => i.name === 'crown'),
-    mysticOre: allItems.find(i => i.name === 'mystic_ore'),
+    crown: allItems.find(i => i.name === 'crown_of_insight'),
+    mysticOre: allItems.find(i => i.name === 'mystic_enhancement_ore'),
     stellaFortuna: allItems.find(i => i.name === 'masterless_stella_fortuna'),
-    gemstones: filterKeys(['gem_sliver', 'gem_fragment', 'gem_chunk', 'gem_gemstone']),
-    worldBoss: filterKeys(['boss_material']),
-    localSpecialty: filterKeys(['local_specialty']),
-    mob: filterKeys(['1_star_enemy_material', '2_star_enemy_material', '3_star_enemy_material']),
-    talentBooks: filterKeys(['2_star_talent_material', '3_star_talent_material', '4_star_talent_material']),
-    weeklyBoss: filterKeys(['weekly_boss_material']),
-    weaponAscMats: filterKeys(['2_star_ascension_material', '3_star_ascension_material', '4_star_ascension_material', '5_star_ascension_material']),
-    eliteMob: filterKeys(['2_star_enhancement_material', '3_star_enhancement_material', '4_star_enhancement_material']),
+    gemstones: filterCategory('gemstones'),
+    worldBoss: filterCategory('worldBoss'),
+    localSpecialty: filterCategory('localSpecialty'),
+    mob: filterCategory('mob'),
+    talentBooks: filterCategory('talentBooks'),
+    weeklyBoss: filterCategory('weeklyBoss'),
+    weaponAscMats: filterCategory('weaponAscMats'),
+    eliteMob: filterCategory('eliteMob'),
     totalItems: allItems.length,
     allDone: allItems.length === 0,
   }

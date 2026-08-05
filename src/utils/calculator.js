@@ -170,9 +170,20 @@ export function formatNumber(num) {
 }
 
 /**
- * Get human-readable display name for a material key (CamelCase → "Camel Case").
+ * Get human-readable display name for a material key.
+ * Converts snake_case to "Title Case".
  */
+export function formatItemName(rawKey) {
+  if (!rawKey) return '';
+  return rawKey
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+// Keep the old one just in case it's used elsewhere
 export function formatMaterialName(key) {
+  if (!key) return '';
   return key
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')

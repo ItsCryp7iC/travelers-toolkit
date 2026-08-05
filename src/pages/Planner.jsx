@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { aggregateRosterCosts, computeToFarm } from '../utils/aggregator'
-import { formatNumber, formatMaterialName } from '../utils/calculator'
+import { formatNumber, formatItemName } from '../utils/calculator'
 import { formatName } from '../utils/gameData'
 import FarmableToday from '../components/FarmableToday'
 
@@ -23,24 +23,58 @@ function ProgressBar({ owned, required, accent }) {
   )
 }
 
-// ─── To-Farm Item Card ────────────────────────────────────────────────────
-function ToFarmCard({ item, accent, icon }) {
+const RARITY_COLORS = {
+  5: 'rgba(219, 177, 98, 0.2)', // Gold
+  4: 'rgba(175, 140, 209, 0.2)', // Purple
+  3: 'rgba(92, 172, 238, 0.2)', // Blue
+  2: 'rgba(141, 198, 126, 0.2)', // Green
+  1: 'rgba(164, 170, 181, 0.2)', // Gray
+}
+
+const RARITY_BORDERS = {
+  5: 'var(--rarity-5)',
+  4: 'var(--rarity-4)',
+  3: 'var(--rarity-3)',
+  2: 'var(--rarity-2)',
+  1: 'var(--rarity-1)',
+}
+
+// ─── Tailored Item Card ────────────────────────────────────────────────────
+export function ItemCard({ item, accent }) {
+  const rarityBg = RARITY_COLORS[item.rarity || 3] || RARITY_COLORS[3];
+  
   return (
-    <div className="to-farm-card" style={{ '--farm-accent': accent || '#C8A96E' }}>
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-sm flex-shrink-0">{icon || '📦'}</span>
-          <span className="text-xs font-medium text-[var(--text)] truncate">{formatMaterialName(item.name)}</span>
+    <div className="flex items-center gap-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors relative overflow-hidden group">
+      
+      {/* Background Glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity" style={{ background: rarityBg }} />
+      
+      {/* Thumbnail */}
+      <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center relative overflow-hidden" style={{ background: rarityBg }}>
+        <img 
+          src={`/assets/items/${item.name}.png`} 
+          alt={formatItemName(item.name)}
+          className="w-10 h-10 object-contain z-10 drop-shadow-md"
+          onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+        />
+        {/* Fallback icon if image fails to load */}
+        <span className="text-xl absolute hidden">📦</span>
+      </div>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between items-start mb-0.5">
+          <span className="text-xs font-semibold text-[var(--text)] truncate mr-2">{formatItemName(item.name)}</span>
+          <span className="font-cinzel font-bold text-xs" style={{ color: accent || 'var(--gold)' }}>
+            ×{item.toFarm}
+          </span>
         </div>
-        <span className="font-cinzel font-bold text-sm flex-shrink-0" style={{ color: accent || 'var(--gold)' }}>
-          ×{item.toFarm}
-        </span>
+        <div className="flex justify-between text-[9px] text-[var(--muted)] mb-1">
+          <span>Have: <b style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{item.owned}</b></span>
+          <span>Need: <b className="text-[var(--text)]">{item.required}</b></span>
+        </div>
+        <ProgressBar owned={item.owned} required={item.required} accent={accent} />
       </div>
-      <div className="flex justify-between text-[9px] text-[var(--muted)] mb-1">
-        <span>Have: <b style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{item.owned}</b></span>
-        <span>Need: <b className="text-[var(--text)]">{item.required}</b></span>
-      </div>
-      <ProgressBar owned={item.owned} required={item.required} accent={accent} />
     </div>
   )
 }
@@ -66,9 +100,9 @@ function ToFarmCategory({ icon, title, items, accent, emptyMsg }) {
           {items.length} items
         </span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {items.map((item) => (
-          <ToFarmCard key={item.name} item={item} accent={accent} icon={icon} />
+          <ItemCard key={item.name} item={item} accent={accent} />
         ))}
       </div>
     </div>
@@ -355,11 +389,11 @@ export default function Planner() {
             <div className="mb-6">
               <h3 className="planner-section-title mb-3">🪙 Currency & EXP</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {toFarm.mora  && <ToFarmCard item={{ name: 'Mora',    ...toFarm.mora  }} accent="#FAB632" icon="🪙" />}
-                {toFarm.heroWits && <ToFarmCard item={{ name: 'HeroWit', ...toFarm.heroWits }} accent="#60A5FA" icon="📚" />}
-                {toFarm.mysticOre && <ToFarmCard item={{ name: 'Mystic Enh. Ore', ...toFarm.mysticOre }} accent="#F472B6" icon="💠" />}
-                {toFarm.crown && <ToFarmCard item={{ name: 'Crown',   ...toFarm.crown }} accent="#FBBF24" icon="👑" />}
-                {toFarm.stellaFortuna && <ToFarmCard item={{ name: 'Masterless Stella Fortuna', ...toFarm.stellaFortuna }} accent="#FBBF24" icon="⭐" />}
+                {toFarm.mora  && <ItemCard item={toFarm.mora} accent="#FAB632" />}
+                {toFarm.heroWits && <ItemCard item={toFarm.heroWits} accent="#60A5FA" />}
+                {toFarm.mysticOre && <ItemCard item={toFarm.mysticOre} accent="#F472B6" />}
+                {toFarm.crown && <ItemCard item={toFarm.crown} accent="#FBBF24" />}
+                {toFarm.stellaFortuna && <ItemCard item={toFarm.stellaFortuna} accent="#FBBF24" />}
               </div>
             </div>
           )}
