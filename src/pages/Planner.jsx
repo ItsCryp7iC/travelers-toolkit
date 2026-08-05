@@ -144,7 +144,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             )}
             
             {/* Gemstones */}
-            {['gem_silver', 'gem_fragment', 'gem_chunk', 'gem_gemstone'].map(key => totalCosts?.[key] > 0 && (
+            {['gem_sliver', 'gem_fragment', 'gem_chunk', 'gem_gemstone'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-[9px] text-[var(--muted)] mb-0.5">💎 {formatName(key.replace('gem_', ''))}</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>

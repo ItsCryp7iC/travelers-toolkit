@@ -138,7 +138,7 @@ export function computeToFarm(totals, inventory) {
     crown: allItems.find(i => i.name === 'crown'),
     mysticOre: allItems.find(i => i.name === 'mystic_ore'),
     stellaFortuna: allItems.find(i => i.name === 'masterless_stella_fortuna'),
-    gemstones: filterKeys(['gem_silver', 'gem_fragment', 'gem_chunk', 'gem_gemstone']),
+    gemstones: filterKeys(['gem_sliver', 'gem_fragment', 'gem_chunk', 'gem_gemstone']),
     worldBoss: filterKeys(['boss_material']),
     localSpecialty: filterKeys(['local_specialty']),
     mob: filterKeys(['1_star_enemy_material', '2_star_enemy_material', '3_star_enemy_material']),

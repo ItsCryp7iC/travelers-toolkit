@@ -396,7 +396,7 @@ export default function Characters() {
                       const resolvedMats = resolveCharacterMaterials(char)
 
                       // Aggregate Stones
-                      const totalStones = (asc.gem_silver || 0) + (asc.gem_fragment || 0) + (asc.gem_chunk || 0) + (asc.gem_gemstone || 0)
+                      const totalStones = (asc.gem_sliver || 0) + (asc.gem_fragment || 0) + (asc.gem_chunk || 0) + (asc.gem_gemstone || 0)
 
                       // Grand Totals Calculations
                       const grandEnh3 = (asc['3_star_enemy_material'] || 0) + (tal['3_star_enemy_material'] || 0)

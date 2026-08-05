@@ -564,7 +564,7 @@ export default function CharacterModal({ character, onClose }) {
 
                 <MaterialGroup icon="💎" title="Character Ascension Gems" items={Object.fromEntries(
                   Object.entries({
-                    "Sliver": totalCosts['gem_silver'],
+                    "Sliver": totalCosts['gem_sliver'],
                     "Fragment": totalCosts['gem_fragment'],
                     "Chunk": totalCosts['gem_chunk'],
                     "Gemstone": totalCosts['gem_gemstone']
