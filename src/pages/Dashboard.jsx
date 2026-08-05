@@ -64,54 +64,80 @@ export default function Dashboard() {
 
   // Filtered + sorted characters
   const filtered = useMemo(() => {
-    let list = [...charactersData]
+    if (activeTab === 'characters') {
+      let list = [...charactersData]
 
-    if (search.trim()) {
-      const q = search.toLowerCase()
-      list = list.filter((c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.element?.toLowerCase().includes(q)
-      )
-    }
-    if (elementFilter !== 'All') list = list.filter((c) => c.element === elementFilter)
-    if (weaponFilter  !== 'All') list = list.filter((c) => c.weapon_type === weaponFilter)
-    if (rarityFilter !== 'All') {
-      const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
-      list = list.filter((c) => {
-        const cRarity = typeof c.rarity === 'string' ? (c.rarity.match(/★/g)?.length || parseInt(c.rarity) || 0) : (c.rarity || 0)
-        return cRarity === rFilterNum
+      if (search.trim()) {
+        const q = search.toLowerCase()
+        list = list.filter((c) =>
+          c.name.toLowerCase().includes(q) ||
+          c.element?.toLowerCase().includes(q)
+        )
+      }
+      if (elementFilter !== 'All') list = list.filter((c) => c.element === elementFilter)
+      if (weaponFilter  !== 'All') list = list.filter((c) => c.weapon_type === weaponFilter)
+      if (rarityFilter !== 'All') {
+        const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
+        list = list.filter((c) => {
+          const cRarity = typeof c.rarity === 'string' ? (c.rarity.match(/★/g)?.length || parseInt(c.rarity) || 0) : (c.rarity || 0)
+          return cRarity === rFilterNum
+        })
+      }
+
+      list.sort((a, b) => {
+        if (sortBy === 'Release') {
+          const orderA = a.release_order ?? 999;
+          const orderB = b.release_order ?? 999;
+          return orderA - orderB;
+        }
+        if (sortBy === 'Rarity') {
+          const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
+          const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0);
+          return rarityB - rarityA;
+        }
+        if (sortBy === 'Element') return (a.element || '').localeCompare(b.element || '')
+        if (sortBy === 'Weapon') {
+          const wA = a.weapon || a.weapon_type || '';
+          const wB = b.weapon || b.weapon_type || '';
+          return wA.localeCompare(wB);
+        }
+        if (sortBy === 'Name') return a.name.localeCompare(b.name)
+        return 0;
       })
+
+      return list
+    } else {
+      let list = [...weaponsData]
+      if (search.trim()) {
+        const q = search.toLowerCase()
+        list = list.filter((w) => w.name.toLowerCase().includes(q))
+      }
+      if (weaponFilter !== 'All') list = list.filter((w) => w.type === weaponFilter)
+      if (rarityFilter !== 'All') {
+        const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
+        list = list.filter((w) => (w.rarity || 0) === rFilterNum)
+      }
+      list.sort((a, b) => {
+        if (sortBy === 'Rarity' || sortBy === 'Release') {
+          return (b.rarity || 0) - (a.rarity || 0)
+        }
+        if (sortBy === 'Weapon') {
+          return (a.type || '').localeCompare(b.type || '')
+        }
+        if (sortBy === 'Name') return a.name.localeCompare(b.name)
+        return 0;
+      })
+      return list
     }
-
-    list.sort((a, b) => {
-      if (sortBy === 'Release') {
-        const orderA = a.release_order ?? 999;
-        const orderB = b.release_order ?? 999;
-        return orderA - orderB;
-      }
-      if (sortBy === 'Rarity') {
-        const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
-        const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0);
-        return rarityB - rarityA;
-      }
-      if (sortBy === 'Element') return (a.element || '').localeCompare(b.element || '')
-      if (sortBy === 'Weapon') {
-        const wA = a.weapon || a.weapon_type || '';
-        const wB = b.weapon || b.weapon_type || '';
-        return wA.localeCompare(wB);
-      }
-      if (sortBy === 'Name') return a.name.localeCompare(b.name)
-      return 0;
-    })
-
-    return list
-  }, [search, elementFilter, weaponFilter, rarityFilter, sortBy])
+  }, [activeTab, search, elementFilter, weaponFilter, rarityFilter, sortBy])
 
   // Stats
-  const total5Star  = charactersData.filter((c) => c.rarity === 5).length
-  const total4Star  = charactersData.filter((c) => c.rarity === 4).length
+  const total5StarChars = charactersData.filter((c) => c.rarity === 5).length
+  const total4StarChars = charactersData.filter((c) => c.rarity === 4).length
   const rosterCount = Object.keys(roster).length
-  const elementCount = [...new Set(charactersData.map((c) => c.element).filter(Boolean))].length
+  const total5StarWeapons = weaponsData.filter((w) => w.rarity === 5).length
+  const total4StarWeapons = weaponsData.filter((w) => w.rarity === 4).length
+  const trackedWeaponsCount = trackedWeapons.length
 
   return (
     <div className="animate-fade-in">
@@ -129,27 +155,64 @@ export default function Dashboard() {
           </p>
         </div>
         
-        <button 
-          onClick={handleAddAllCharacters}
-          className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
-        >
-          <span className="text-lg">✦</span>
-          Add All Available Characters
-        </button>
+        {activeTab === 'characters' && (
+          <button 
+            onClick={handleAddAllCharacters}
+            className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+          >
+            <span className="text-lg">✦</span>
+            Add All Available Characters
+          </button>
+        )}
       </div>
 
       {/* ── Resin Tracker ────────────────────────────── */}
-      <div className="mb-8">
+      <div className="mb-6">
         <ResinTracker />
       </div>
 
-      {/* ── Stats Strip ────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard icon="👥" label="Total Characters" value={charactersData.length} />
-        <StatCard icon="⭐" label="5★ Characters"   value={total5Star}  accent="#FFD700" />
-        <StatCard icon="💜" label="4★ Characters"   value={total4Star}  accent="#B07FE8" />
-        <StatCard icon="📋" label="In My Roster"    value={rosterCount} accent="#4EC9B0" />
+      {/* ── Tab Toggle ──────────────────────────────── */}
+      <div className="flex justify-center mb-8">
+        <div className="bg-[var(--elevated)] border border-[var(--border)] p-1 rounded-full inline-flex">
+          <button
+            onClick={() => setActiveTab('characters')}
+            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+              activeTab === 'characters' 
+                ? 'bg-[var(--gold)] text-gray-900 shadow-md' 
+                : 'text-[var(--muted)] hover:text-white'
+            }`}
+          >
+            Characters
+          </button>
+          <button
+            onClick={() => setActiveTab('weapons')}
+            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+              activeTab === 'weapons' 
+                ? 'bg-[var(--gold)] text-gray-900 shadow-md' 
+                : 'text-[var(--muted)] hover:text-white'
+            }`}
+          >
+            Weapons
+          </button>
+        </div>
       </div>
+
+      {/* ── Stats Strip ────────────────────────────── */}
+      {activeTab === 'characters' ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
+          <StatCard icon="👥" label="Total Characters" value={charactersData.length} />
+          <StatCard icon="⭐" label="5★ Characters"   value={total5StarChars}  accent="#FFD700" />
+          <StatCard icon="💜" label="4★ Characters"   value={total4StarChars}  accent="#B07FE8" />
+          <StatCard icon="📋" label="In My Roster"    value={rosterCount} accent="#4EC9B0" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
+          <StatCard icon="🗡️" label="Total Weapons" value={weaponsData.length} />
+          <StatCard icon="⭐" label="5★ Weapons"   value={total5StarWeapons}  accent="#FFD700" />
+          <StatCard icon="💜" label="4★ Weapons"   value={total4StarWeapons}  accent="#B07FE8" />
+          <StatCard icon="📋" label="Tracked Weapons" value={trackedWeaponsCount} accent="#4EC9B0" />
+        </div>
+      )}
 
       {/* ── Filter & Search Bar ─────────────────────── */}
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 mb-6">
@@ -197,31 +260,33 @@ export default function Dashboard() {
         <div className="genshin-divider mb-4" />
 
         {/* Element filters */}
-        <div className="mb-3">
-          <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
-            Element
-          </p>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by element">
-            {ALL_ELEMENTS.map((el) => {
-              const config = ELEMENTS[el]
-              return (
-                <button
-                  key={el}
-                  id={`filter-element-${el.toLowerCase()}`}
-                  onClick={() => setElementFilter(el)}
-                  data-element={el}
-                  className={`filter-pill ${elementFilter === el ? 'active' : ''}`}
-                  aria-pressed={elementFilter === el}
-                >
-                  {el !== 'All' ? (
-                    <GenshinImage src={getElementIcon(el)} alt={el} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{config?.emoji}</span>} />
-                  ) : <span className="mr-2">🌐</span>}
-                  <span>{el}</span>
-                </button>
-              )
-            })}
+        {activeTab === 'characters' && (
+          <div className="mb-3">
+            <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+              Element
+            </p>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by element">
+              {ALL_ELEMENTS.map((el) => {
+                const config = ELEMENTS[el]
+                return (
+                  <button
+                    key={el}
+                    id={`filter-element-${el.toLowerCase()}`}
+                    onClick={() => setElementFilter(el)}
+                    data-element={el}
+                    className={`filter-pill ${elementFilter === el ? 'active' : ''}`}
+                    aria-pressed={elementFilter === el}
+                  >
+                    {el !== 'All' ? (
+                      <GenshinImage src={getElementIcon(el)} alt={el} className="w-5 h-5 object-contain inline-block mr-2" fallback={<span>{config?.emoji}</span>} />
+                    ) : <span className="mr-2">🌐</span>}
+                    <span>{el}</span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Weapon + Rarity filters */}
         <div className="flex flex-wrap gap-6">
@@ -251,8 +316,8 @@ export default function Dashboard() {
             <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
               Rarity
             </p>
-            <div className="flex gap-2" role="group" aria-label="Filter by rarity">
-              {ALL_RARITIES.map((r) => (
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by rarity">
+              {[...ALL_RARITIES, ...(activeTab === 'weapons' ? ['🔵 3★', '🟢 2★', '⚪ 1★'] : [])].map((r) => (
                   <button
                     key={r}
                     id={`filter-rarity-${r.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`}
