@@ -17,14 +17,26 @@ const GEM_COLORS = {
   BrilliantDiamond: { color: '#E8E3D5', label: 'All',     emoji: '💎' },
 }
 
-// ─── Stepper Card ─────────────────────────────────────────────────────────
-function MaterialCard({ matKey, label, accent, sublabel, small, iconCategory, rarity }) {
+const getCardOuterBg = (rarity) => {
+  const r = parseInt(rarity, 10);
+  switch (r) {
+    case 5: return "bg-gradient-to-b from-yellow-700/20 to-gray-900/80 border-yellow-700/30";
+    case 4: return "bg-gradient-to-b from-purple-700/20 to-gray-900/80 border-purple-700/30";
+    case 3: return "bg-gradient-to-b from-blue-700/20 to-gray-900/80 border-blue-700/30";
+    case 2: return "bg-gradient-to-b from-green-700/20 to-gray-900/80 border-green-700/30";
+    case 1: return "bg-gradient-to-b from-gray-600/20 to-gray-900/80 border-gray-600/30";
+    default: return "bg-gradient-to-b from-gray-800/40 to-gray-900/90 border-gray-700/50";
+  }
+};
+
+// ─── Stepper Card — Portrait Layout ───────────────────────────────────────
+function MaterialCard({ matKey, label, accent, sublabel, iconCategory, rarity }) {
   const qty          = useStore((s) => s.inventory[matKey] || 0)
   const setInventory = useStore((s) => s.setInventory)
 
   const handleChange = (v) => {
     const n = parseInt(v, 10)
-    if (!isNaN(n)) setInventory(matKey, n)
+    if (!isNaN(n) && n >= 0) setInventory(matKey, n)
   }
 
   const step = (delta) => setInventory(matKey, Math.max(0, qty + delta))
@@ -35,66 +47,64 @@ function MaterialCard({ matKey, label, accent, sublabel, small, iconCategory, ra
 
   return (
     <div
-      className="material-card group"
+      className={`flex flex-col items-center justify-between p-4 rounded-2xl border w-full h-full group backdrop-blur-sm ${getCardOuterBg(rarity)}`}
       style={{ '--mat-accent': accentColor }}
       id={`inv-${matKey.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
     >
-      {/* Icon + Label Header */}
-      <div className="flex items-center gap-2.5 px-3 pt-3 pb-1">
-        {/* Icon thumbnail with dynamic rarity gradient */}
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md relative overflow-hidden ${rarityBgClass}`}>
-          <GenshinImage
-            src={iconUrl}
-            alt={label}
-            className="w-8 h-8 object-contain relative z-10 drop-shadow-sm"
-            fallback={
-              <span className="text-lg opacity-60">📦</span>
-            }
-          />
-        </div>
-
-        {/* Label & sublabel */}
-        <div className="flex-1 min-w-0">
-          <p
-            className={`font-medium text-[var(--text)] leading-tight truncate ${small ? 'text-[10px]' : 'text-[11px]'}`}
-            title={label}
-          >
-            {label}
-          </p>
-          {sublabel && (
-            <p className="text-[9px] text-[var(--muted)] mt-0.5 leading-tight truncate">{sublabel}</p>
-          )}
-        </div>
+      {/* ── Top Metadata ── */}
+      <div className="text-center mb-4 w-full">
+        <h3
+          className="font-semibold text-lg text-white truncate w-full px-2"
+          title={label}
+        >
+          {label}
+        </h3>
+        {sublabel && (
+          <span className="text-xs text-gray-400 font-medium block mt-0.5">{sublabel}</span>
+        )}
       </div>
 
-      {/* Qty display */}
-      <div
-        className="mx-3 mb-1 text-center font-cinzel font-bold text-xl leading-none"
-        style={{ color: qty > 0 ? accentColor : 'var(--muted)' }}
-      >
-        {qty}
-      </div>
-
-      {/* Stepper */}
-      <div className="flex items-center gap-1 px-3 pb-3">
-        <button
-          onClick={() => step(-1)}
-          className="stepper-btn"
-          aria-label={`Decrease ${label}`}
-        >−</button>
-        <input
-          type="number"
-          min={0}
-          value={qty}
-          onChange={(e) => handleChange(e.target.value)}
-          className="stepper-input"
-          aria-label={`${label} quantity`}
+      {/* ── Rarity Portrait Box ── */}
+      <div className={`w-28 h-28 sm:w-32 sm:h-32 mx-auto rounded-2xl flex items-center justify-center shadow-inner ring-1 ring-white/10 mb-4 flex-shrink-0 ${rarityBgClass}`}>
+        <GenshinImage
+          src={iconUrl}
+          alt={label}
+          className="w-3/4 h-3/4 object-contain drop-shadow-xl relative z-10"
+          fallback={
+            <span className="text-4xl opacity-50">📦</span>
+          }
         />
-        <button
-          onClick={() => step(1)}
-          className="stepper-btn"
-          aria-label={`Increase ${label}`}
-        >+</button>
+      </div>
+
+      {/* ── Count Display ── */}
+      <span
+        className="text-3xl font-bold text-white mb-3"
+      >
+        {qty || 0}
+      </span>
+
+      {/* ── Pill Stepper ── */}
+      <div className="w-full px-2">
+        <div className="flex items-center gap-1 bg-gray-950/80 border border-gray-600/50 rounded-full p-1.5 shadow-sm w-full">
+          <button
+            onClick={() => step(-1)}
+            className="flex-1 text-center font-bold text-gray-400 hover:text-white hover:bg-gray-800 rounded-full py-0.5 transition-colors"
+            aria-label={`Decrease ${label}`}
+          >−</button>
+          <input
+            type="number"
+            min={0}
+            value={qty}
+            onChange={(e) => handleChange(e.target.value)}
+            className="w-12 sm:w-16 text-center bg-transparent text-white font-semibold outline-none focus:ring-1 focus:ring-[var(--mat-accent)] rounded"
+            aria-label={`${label} quantity`}
+          />
+          <button
+            onClick={() => step(1)}
+            className="flex-1 text-center font-bold text-gray-400 hover:text-white hover:bg-gray-800 rounded-full py-0.5 transition-colors"
+            aria-label={`Increase ${label}`}
+          >+</button>
+        </div>
       </div>
     </div>
   )
@@ -248,7 +258,7 @@ export default function Inventory() {
       )}
 
       {/* ── Content Grid ── */}
-      <div className="animate-fade-in grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+      <div className="animate-fade-in grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-6">
         {filteredMats.map((mat) => (
           <MaterialCard
             key={mat.matKey}
@@ -256,7 +266,6 @@ export default function Inventory() {
             label={mat.label}
             sublabel={mat.sublabel}
             accent={mat.accent}
-            small={activeTab !== 'Currency & Experience'}
             iconCategory={mat.iconCategory}
             rarity={mat.rarity}
           />

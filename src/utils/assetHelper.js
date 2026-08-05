@@ -16,10 +16,10 @@ export function formatAssetString(name) {
  */
 export const toPascalCase = (str) => {
   if (!str) return '';
-  
+
   // 1. Insert a space between lowercase and uppercase letters (kamisatoAyato -> kamisato Ayato)
   const spacedStr = str.replace(/([a-z])([A-Z])/g, '$1 $2');
-  
+
   // 2. Replace special characters (like underscores, hyphens, parentheses, apostrophes) with spaces
   return spacedStr
     .replace(/['’]/g, '') // CRITICAL: Strip apostrophes entirely (e.g., Hero's -> Heros)
@@ -60,13 +60,15 @@ const CATEGORY_MAP = {
   'Ores': 'experience',
 }
 
-/**
- * Resolves the URL for a given material by its category.
- * If category is not provided, defaults to 'misc'.
- */
 export function getMaterialIcon(materialName, category) {
   if (!materialName) return ''
-  const fileName = materialName.replace(/[^a-zA-Z0-9]/g, '');
+  let fileName = materialName.replace(/[^a-zA-Z0-9]/g, '');
+  
+  // Explicit filename mappings for CDN assets that differ from in-game label
+  if (materialName === 'Adventurer Exp') {
+    fileName = 'AdventurersExperience';
+  }
+
   let folder = CATEGORY_MAP[category] || 'misc'
   if (materialName === 'Crown of Insight' || fileName === 'CrownofInsight') {
     folder = 'others'
@@ -74,9 +76,15 @@ export function getMaterialIcon(materialName, category) {
   if (materialName === 'Masterless Stella Fortuna' || fileName === 'MasterlessStellaFortuna' || materialName === 'masterless_stella_fortuna') {
     folder = 'others'
   }
-  
+  if (materialName === 'Dream Solvent' || fileName === 'DreamSolvent') {
+    folder = 'others' // CDN puts Dream Solvent in 'others'
+  }
+  if (materialName === 'Fragile Resin' || fileName === 'FragileResin') {
+    folder = 'others'
+  }
+
   const experienceItems = [
-    "Hero's Wit", "Adventurer's Experience", "Wanderer's Advice",
+    "Hero's Wit", "Adventurer's Experience", "Adventurer Exp", "Wanderer's Advice",
     "Mystic Enhancement Ore", "Fine Enhancement Ore", "Enhancement Ore"
   ];
   if (experienceItems.includes(materialName)) {

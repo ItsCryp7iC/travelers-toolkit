@@ -8,14 +8,14 @@ import weaponAscension from '../data/weapon_ascension.json'
 
 // ─── Element / Gemstone Info ──────────────────────────────────────────────
 export const GEM_INFO = {
-  agnidusagate:     { color: '#F97316', label: 'Pyro',    emoji: '🔥', baseName: 'Agnidus Agate' },
-  nagadusemerald:   { color: '#4ADE80', label: 'Dendro',  emoji: '🌿', baseName: 'Nagadus Emerald' },
-  prithivatopaz:    { color: '#FAB632', label: 'Geo',     emoji: '⛰️', baseName: 'Prithiva Topaz' },
-  shivadajade:      { color: '#BAE6FD', label: 'Cryo',    emoji: '❄️', baseName: 'Shivada Jade' },
-  vajradaamethyst:  { color: '#A855F7', label: 'Electro', emoji: '⚡', baseName: 'Vajrada Amethyst' },
-  varunadalazurite: { color: '#60A5FA', label: 'Hydro',   emoji: '💧', baseName: 'Varunada Lazurite' },
-  vayudaturquoise:  { color: '#4EC9B0', label: 'Anemo',   emoji: '🌪️', baseName: 'Vayuda Turquoise' },
-  brilliantdiamond: { color: '#E8E3D5', label: 'All',     emoji: '💎', baseName: 'Brilliant Diamond' },
+  agnidusagate: { color: '#F97316', label: 'Pyro', emoji: '🔥', baseName: 'Agnidus Agate' },
+  nagadusemerald: { color: '#4ADE80', label: 'Dendro', emoji: '🌿', baseName: 'Nagadus Emerald' },
+  prithivatopaz: { color: '#FAB632', label: 'Geo', emoji: '⛰️', baseName: 'Prithiva Topaz' },
+  shivadajade: { color: '#BAE6FD', label: 'Cryo', emoji: '❄️', baseName: 'Shivada Jade' },
+  vajradaamethyst: { color: '#A855F7', label: 'Electro', emoji: '⚡', baseName: 'Vajrada Amethyst' },
+  varunadalazurite: { color: '#60A5FA', label: 'Hydro', emoji: '💧', baseName: 'Varunada Lazurite' },
+  vayudaturquoise: { color: '#4EC9B0', label: 'Anemo', emoji: '🌪️', baseName: 'Vayuda Turquoise' },
+  brilliantdiamond: { color: '#E8E3D5', label: 'All', emoji: '💎', baseName: 'Brilliant Diamond' },
 }
 
 const TIER_STARS_GEM = ['Sliver ★', 'Fragment ★★', 'Chunk ★★★', 'Gemstone ★★★★']
@@ -114,12 +114,12 @@ export const resolveCharacterMaterials = (char) => {
 
 export function resolveWeaponMaterials(weaponState) {
   const SAFE_FALLBACK = { name: 'Unknown', id: 'unknown', tiers: {} };
-  
+
   // Extract identifier
-  const identifier = typeof weaponState === 'string' 
-    ? weaponState 
+  const identifier = typeof weaponState === 'string'
+    ? weaponState
     : (weaponState.weapon_id || weaponState.weaponId || weaponState.weaponKey || weaponState.weapon || weaponState.name || weaponState.id);
-    
+
   if (!identifier) return { ascensionFamily: SAFE_FALLBACK, eliteFamily: SAFE_FALLBACK, commonFamily: SAFE_FALLBACK };
 
   // Sanitize identifier to match database schema (e.g., "WolfsGravestone" -> "wolfsgravestone")
