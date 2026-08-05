@@ -11,7 +11,11 @@ import { getElementIcon, getWeaponTypeIcon, getCharacterAvatar } from '../utils/
 
 const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
 const ALL_WEAPONS  = ['All', ...Object.keys(WEAPON_TYPES)]
-const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★']
+const RARITY_FILTERS = [
+  { label: 'All', value: 'All' },
+  { label: '🟡 5★', value: 5 },
+  { label: '🟣 4★', value: 4 }
+]
 
 // Summary stats
 function StatCard({ icon, label, value, accent }) {
@@ -76,13 +80,10 @@ export default function Dashboard() {
       }
       if (elementFilter !== 'All') list = list.filter((c) => c.element === elementFilter)
       if (weaponFilter  !== 'All') list = list.filter((c) => c.weapon_type === weaponFilter)
-      if (rarityFilter !== 'All') {
-        const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
         list = list.filter((c) => {
-          const cRarity = typeof c.rarity === 'string' ? (c.rarity.match(/★/g)?.length || parseInt(c.rarity) || 0) : (c.rarity || 0)
-          return cRarity === rFilterNum
+          const matchesRarity = rarityFilter === 'All' || Number(c.rarity?.length || c.rarity || 0) === Number(rarityFilter);
+          return matchesRarity;
         })
-      }
 
       list.sort((a, b) => {
         if (sortBy === 'Release') {
@@ -113,10 +114,10 @@ export default function Dashboard() {
         list = list.filter((w) => w.name.toLowerCase().includes(q))
       }
       if (weaponFilter !== 'All') list = list.filter((w) => w.type === weaponFilter)
-      if (rarityFilter !== 'All') {
-        const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
-        list = list.filter((w) => (w.rarity || 0) === rFilterNum)
-      }
+        list = list.filter((w) => {
+          const matchesRarity = rarityFilter === 'All' || Number(w.rarity?.length || w.rarity || 0) === Number(rarityFilter);
+          return matchesRarity;
+        })
       list.sort((a, b) => {
         if (sortBy === 'Rarity' || sortBy === 'Release') {
           return (b.rarity || 0) - (a.rarity || 0)
@@ -132,11 +133,11 @@ export default function Dashboard() {
   }, [activeTab, search, elementFilter, weaponFilter, rarityFilter, sortBy])
 
   // Stats
-  const total5StarChars = charactersData.filter((c) => c.rarity === 5).length
-  const total4StarChars = charactersData.filter((c) => c.rarity === 4).length
+  const total5StarChars = charactersData.filter((c) => Number(c.rarity?.length || c.rarity || 0) === 5).length
+  const total4StarChars = charactersData.filter((c) => Number(c.rarity?.length || c.rarity || 0) === 4).length
   const rosterCount = Object.keys(roster).length
-  const total5StarWeapons = weaponsData.filter((w) => w.rarity === 5).length
-  const total4StarWeapons = weaponsData.filter((w) => w.rarity === 4).length
+  const total5StarWeapons = weaponsData.filter((w) => Number(w.rarity?.length || w.rarity || 0) === 5).length
+  const total4StarWeapons = weaponsData.filter((w) => Number(w.rarity?.length || w.rarity || 0) === 4).length
   const trackedWeaponsCount = trackedWeapons.length
 
   return (
@@ -317,15 +318,19 @@ export default function Dashboard() {
               Rarity
             </p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by rarity">
-              {[...ALL_RARITIES, ...(activeTab === 'weapons' ? ['🔵 3★', '🟢 2★', '⚪ 1★'] : [])].map((r) => (
+              {[...RARITY_FILTERS, ...(activeTab === 'weapons' ? [
+                { label: '🔵 3★', value: 3 },
+                { label: '🟢 2★', value: 2 },
+                { label: '⚪ 1★', value: 1 }
+              ] : [])].map((r) => (
                   <button
-                    key={r}
-                    id={`filter-rarity-${r.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`}
-                    onClick={() => setRarityFilter(r)}
-                    className={`filter-pill ${rarityFilter === r ? 'active' : ''}`}
-                    aria-pressed={rarityFilter === r}
+                    key={r.value}
+                    id={`filter-rarity-${String(r.value).replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`}
+                    onClick={() => setRarityFilter(r.value)}
+                    className={`filter-pill ${rarityFilter === r.value ? 'active' : ''}`}
+                    aria-pressed={rarityFilter === r.value}
                   >
-                    {r}
+                    {r.label}
                   </button>
               ))}
             </div>
