@@ -78,9 +78,10 @@ function MaterialCard({ matKey, label, accent, sublabel, iconCategory, rarity })
 
       {/* ── Count Display ── */}
       <span
-        className="text-3xl font-bold text-white mb-3"
+        className="text-3xl font-bold mb-3"
+        style={{ color: accentColor }}
       >
-        {qty || 0}
+        {(qty || 0).toLocaleString()}
       </span>
 
       {/* ── Pill Stepper ── */}
