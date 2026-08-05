@@ -213,23 +213,23 @@ content = content.replace(oldResin, newResin);
 // 9. Update Stats Strip
 const oldStatsStrip = `<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <StatCard icon="👥" label="Total Characters" value={charactersData.length} />
-        <StatCard icon="⭐" label="5★ Characters"   value={total5Star}  accent="#FFD700" />
-        <StatCard icon="💜" label="4★ Characters"   value={total4Star}  accent="#B07FE8" />
+        <StatCard icon="🟡" label="5★ Characters"   value={total5Star}  accent="#FFD700" />
+        <StatCard icon="🟣" label="4★ Characters"   value={total4Star}  accent="#B07FE8" />
         <StatCard icon="📋" label="In My Roster"    value={rosterCount} accent="#4EC9B0" />
       </div>`;
 
 const newStatsStrip = `{activeTab === 'characters' ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
           <StatCard icon="👥" label="Total Characters" value={charactersData.length} />
-          <StatCard icon="⭐" label="5★ Characters"   value={total5StarChars}  accent="#FFD700" />
-          <StatCard icon="💜" label="4★ Characters"   value={total4StarChars}  accent="#B07FE8" />
+          <StatCard icon="🟡" label="5★ Characters"   value={total5StarChars}  accent="#FFD700" />
+          <StatCard icon="🟣" label="4★ Characters"   value={total4StarChars}  accent="#B07FE8" />
           <StatCard icon="📋" label="In My Roster"    value={rosterCount} accent="#4EC9B0" />
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
           <StatCard icon="🗡️" label="Total Weapons" value={weaponsData.length} />
-          <StatCard icon="⭐" label="5★ Weapons"   value={total5StarWeapons}  accent="#FFD700" />
-          <StatCard icon="💜" label="4★ Weapons"   value={total4StarWeapons}  accent="#B07FE8" />
+          <StatCard icon="🟡" label="5★ Weapons"   value={total5StarWeapons}  accent="#FFD700" />
+          <StatCard icon="🟣" label="4★ Weapons"   value={total4StarWeapons}  accent="#B07FE8" />
           <StatCard icon="📋" label="Tracked Weapons" value={trackedWeaponsCount} accent="#4EC9B0" />
         </div>
       )}`;
