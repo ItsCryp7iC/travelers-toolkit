@@ -11,7 +11,7 @@ import GenshinImage from '../components/GenshinImage'
 import { getElementIcon, getWeaponTypeIcon, getCharacterAvatar } from '../utils/assetHelper'
 
 const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
-const ALL_WEAPONS  = ['All', ...Object.keys(WEAPON_TYPES)]
+const ALL_WEAPONS = ['All', ...Object.keys(WEAPON_TYPES)]
 const RARITY_FILTERS = [
   { label: 'All', value: 'All' },
   { label: '🟡 5★', value: 5 },
@@ -55,18 +55,18 @@ export default function Dashboard() {
       alert("All available characters are already in your roster!")
       return
     }
-    
+
     if (!window.confirm(`Are you sure you want to add all ${missing.length} missing characters to your roster?`)) return
-    
+
     batchAddCharacters(missing.map((c) => c.name))
     alert(`Successfully added ${missing.length} missing characters!`)
   }
 
-  const [search,        setSearch]        = useState('')
+  const [search, setSearch] = useState('')
   const [elementFilter, setElementFilter] = useState('All')
-  const [weaponFilter,  setWeaponFilter]  = useState('All')
-  const [rarityFilter,  setRarityFilter]  = useState('All')
-  const [sortBy,        setSortBy]        = useState('Release') // 'Release' | 'Name' | 'Rarity' | 'Element'
+  const [weaponFilter, setWeaponFilter] = useState('All')
+  const [rarityFilter, setRarityFilter] = useState('All')
+  const [sortBy, setSortBy] = useState('Release') // 'Release' | 'Name' | 'Rarity' | 'Element'
 
   // Filtered + sorted characters
   const filtered = useMemo(() => {
@@ -81,11 +81,11 @@ export default function Dashboard() {
         )
       }
       if (elementFilter !== 'All') list = list.filter((c) => c.element === elementFilter)
-      if (weaponFilter  !== 'All') list = list.filter((c) => c.weapon_type === weaponFilter)
-        list = list.filter((c) => {
-          const matchesRarity = rarityFilter === 'All' || Number(c.rarity?.length || c.rarity || 0) === Number(rarityFilter);
-          return matchesRarity;
-        })
+      if (weaponFilter !== 'All') list = list.filter((c) => c.weapon_type === weaponFilter)
+      list = list.filter((c) => {
+        const matchesRarity = rarityFilter === 'All' || Number(c.rarity?.length || c.rarity || 0) === Number(rarityFilter);
+        return matchesRarity;
+      })
 
       list.sort((a, b) => {
         if (sortBy === 'Release') {
@@ -116,10 +116,10 @@ export default function Dashboard() {
         list = list.filter((w) => w.name.toLowerCase().includes(q))
       }
       if (weaponFilter !== 'All') list = list.filter((w) => w.type === weaponFilter)
-        list = list.filter((w) => {
-          const matchesRarity = rarityFilter === 'All' || Number(w.rarity?.length || w.rarity || 0) === Number(rarityFilter);
-          return matchesRarity;
-        })
+      list = list.filter((w) => {
+        const matchesRarity = rarityFilter === 'All' || Number(w.rarity?.length || w.rarity || 0) === Number(rarityFilter);
+        return matchesRarity;
+      })
       list.sort((a, b) => {
         if (sortBy === 'Rarity' || sortBy === 'Release') {
           return (b.rarity || 0) - (a.rarity || 0)
@@ -157,9 +157,9 @@ export default function Dashboard() {
             {activeTab === 'characters' ? 'Browse all characters and manage your roster' : 'Browse and track your weapons'}
           </p>
         </div>
-        
+
         {activeTab === 'characters' && (
-          <button 
+          <button
             onClick={handleAddAllCharacters}
             className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
           >
@@ -179,21 +179,19 @@ export default function Dashboard() {
         <div className="bg-[var(--elevated)] border border-[var(--border)] p-1 rounded-full inline-flex">
           <button
             onClick={() => setActiveTab('characters')}
-            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
-              activeTab === 'characters' 
-                ? 'bg-[var(--gold)] text-gray-900 shadow-md' 
-                : 'text-[var(--muted)] hover:text-white'
-            }`}
+            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === 'characters'
+              ? 'bg-[var(--gold)] text-gray-900 shadow-md'
+              : 'text-[var(--muted)] hover:text-white'
+              }`}
           >
             Characters
           </button>
           <button
             onClick={() => setActiveTab('weapons')}
-            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
-              activeTab === 'weapons' 
-                ? 'bg-[var(--gold)] text-gray-900 shadow-md' 
-                : 'text-[var(--muted)] hover:text-white'
-            }`}
+            className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === 'weapons'
+              ? 'bg-[var(--gold)] text-gray-900 shadow-md'
+              : 'text-[var(--muted)] hover:text-white'
+              }`}
           >
             Weapons
           </button>
@@ -204,15 +202,15 @@ export default function Dashboard() {
       {activeTab === 'characters' ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
           <StatCard icon="👥" label="Total Characters" value={charactersData.length} />
-          <StatCard icon="⭐" label="5★ Characters"   value={total5StarChars}  accent="#FFD700" />
-          <StatCard icon="💜" label="4★ Characters"   value={total4StarChars}  accent="#B07FE8" />
-          <StatCard icon="📋" label="In My Roster"    value={rosterCount} accent="#4EC9B0" />
+          <StatCard icon="🟡" label="5★ Characters" value={total5StarChars} accent="#FFD700" />
+          <StatCard icon="🟣" label="4★ Characters" value={total4StarChars} accent="#B07FE8" />
+          <StatCard icon="📋" label="In My Roster" value={rosterCount} accent="#4EC9B0" />
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
           <StatCard icon="🗡️" label="Total Weapons" value={weaponsData.length} />
-          <StatCard icon="⭐" label="5★ Weapons"   value={total5StarWeapons}  accent="#FFD700" />
-          <StatCard icon="💜" label="4★ Weapons"   value={total4StarWeapons}  accent="#B07FE8" />
+          <StatCard icon="🟡" label="5★ Weapons" value={total5StarWeapons} accent="#FFD700" />
+          <StatCard icon="🟣" label="4★ Weapons" value={total4StarWeapons} accent="#B07FE8" />
           <StatCard icon="📋" label="Tracked Weapons" value={trackedWeaponsCount} accent="#4EC9B0" />
         </div>
       )}
@@ -238,19 +236,19 @@ export default function Dashboard() {
 
           {/* Sort dropdown */}
           <div className="relative">
-              <select
-                id="sort-select"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors"
-                aria-label="Sort characters"
-              >
-                <option value="Release">by Release</option>
-                <option value="Name">by Name</option>
-                <option value="Rarity">by Rarity</option>
-                <option value="Element">by Element</option>
-                <option value="Weapon">by Weapon</option>
-              </select>
+            <select
+              id="sort-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors"
+              aria-label="Sort characters"
+            >
+              <option value="Release">by Release</option>
+              <option value="Name">by Name</option>
+              <option value="Rarity">by Rarity</option>
+              <option value="Element">by Element</option>
+              <option value="Weapon">by Weapon</option>
+            </select>
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
           </div>
 
@@ -325,15 +323,15 @@ export default function Dashboard() {
                 { label: '🟢 2★', value: 2 },
                 { label: '⚪ 1★', value: 1 }
               ] : [])].map((r) => (
-                  <button
-                    key={r.value}
-                    id={`filter-rarity-${String(r.value).replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`}
-                    onClick={() => setRarityFilter(r.value)}
-                    className={`filter-pill ${rarityFilter === r.value ? 'active' : ''}`}
-                    aria-pressed={rarityFilter === r.value}
-                  >
-                    {r.label}
-                  </button>
+                <button
+                  key={r.value}
+                  id={`filter-rarity-${String(r.value).replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}`}
+                  onClick={() => setRarityFilter(r.value)}
+                  className={`filter-pill ${rarityFilter === r.value ? 'active' : ''}`}
+                  aria-pressed={rarityFilter === r.value}
+                >
+                  {r.label}
+                </button>
               ))}
             </div>
           </div>
@@ -350,7 +348,7 @@ export default function Dashboard() {
           }}
         >
           {filtered.map((item) => (
-            activeTab === 'characters' 
+            activeTab === 'characters'
               ? <CharacterCard key={item.name} character={item} />
               : <WeaponCard key={item.id} weapon={item} onClick={() => setSelectedWeapon(item)} />
           ))}
@@ -375,9 +373,9 @@ export default function Dashboard() {
       )}
 
       {selectedWeapon && (
-        <AddWeaponModal 
+        <AddWeaponModal
           initialWeapon={selectedWeapon}
-          onClose={() => setSelectedWeapon(null)} 
+          onClose={() => setSelectedWeapon(null)}
         />
       )}
     </div>
