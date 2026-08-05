@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import CharacterCard from '../components/CharacterCard'
 import WeaponCard from '../components/WeaponCard'
+import WeaponInfoModal from '../components/WeaponInfoModal'
 import weaponsData from '../data/weapons.json'
 import ResinTracker from '../components/ResinTracker'
 import charactersData from '../data/characters.json'
@@ -46,6 +47,7 @@ export default function Dashboard() {
   const trackedWeapons = useStore((s) => s.trackedWeapons) || []
 
   const [activeTab, setActiveTab] = useState('characters');
+  const [selectedWeapon, setSelectedWeapon] = useState(null);
 
   const handleAddAllCharacters = () => {
     const missing = charactersData.filter((c) => !roster[c.name])
@@ -350,7 +352,7 @@ export default function Dashboard() {
           {filtered.map((item) => (
             activeTab === 'characters' 
               ? <CharacterCard key={item.name} character={item} />
-              : <WeaponCard key={item.id} weapon={item} />
+              : <WeaponCard key={item.id} weapon={item} onClick={() => setSelectedWeapon(item)} />
           ))}
         </div>
       ) : (
@@ -370,6 +372,14 @@ export default function Dashboard() {
             Clear all filters
           </button>
         </div>
+      )}
+
+      {selectedWeapon && (
+        <WeaponInfoModal 
+          isOpen={!!selectedWeapon} 
+          onClose={() => setSelectedWeapon(null)} 
+          weapon={selectedWeapon} 
+        />
       )}
     </div>
   )
