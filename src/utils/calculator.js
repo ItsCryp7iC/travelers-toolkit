@@ -283,6 +283,61 @@ export const TALENT_BOOK_SCHEDULES = {
            'Moonlight', 'Elysium', 'Transience', 'Vagrancy'],
 }
 
+export const DOMAIN_MAPPINGS = {
+  // Talent Books
+  'Freedom': 'Forsaken Rift',
+  'Resistance': 'Forsaken Rift',
+  'Ballad': 'Forsaken Rift',
+  'Prosperity': 'Taishan Mansion',
+  'Diligence': 'Taishan Mansion',
+  'Gold': 'Taishan Mansion',
+  'Transience': 'Violet Court',
+  'Elegance': 'Violet Court',
+  'Light': 'Violet Court',
+  'Admonition': 'Steeple of Ignorance',
+  'Ingenuity': 'Steeple of Ignorance',
+  'Praxis': 'Steeple of Ignorance',
+  'Equity': 'Pale Forgotten Glory',
+  'Justice': 'Pale Forgotten Glory',
+  'Order': 'Pale Forgotten Glory',
+  'Contention': 'Blazing Ruins',
+  'Kindling': 'Blazing Ruins',
+  'Conflict': 'Blazing Ruins',
+  
+  // Weapon Materials
+  'Decarabian': 'Cecilia Garden',
+  'BorealWolf': 'Cecilia Garden',
+  'DandelionGladiator': 'Cecilia Garden',
+  'Guyun': 'Hidden Palace of Lianshan Formula',
+  'MistVeiled': 'Hidden Palace of Lianshan Formula',
+  'Aerosiderite': 'Hidden Palace of Lianshan Formula',
+  'CoralBranch': 'Court of Flowing Sand',
+  'NarukamiValor': 'Court of Flowing Sand',
+  'Mask': 'Court of Flowing Sand',
+  'OasisGarden': 'Tower of Abject Pride',
+  'ScorchingMight': 'Tower of Abject Pride',
+  'ForestDew': 'Tower of Abject Pride',
+  'BrokenGoblet': 'Echoes of the Deep Tides',
+  'PureSacredDewdrop': 'Echoes of the Deep Tides',
+  'PristineSea': 'Echoes of the Deep Tides',
+  'SacrificialHeart': 'Ancient Watchtower',
+  'DeliriousDecadence': 'Ancient Watchtower',
+  'BlazingSacrificialHeart': 'Ancient Watchtower',
+  
+  // Handling the grouped constants from WEAPON_MAT_GROUPS just in case:
+  'GalesongQuill': 'Echoes of the Deep Tides',
+}
+
+export function getDomainForMaterial(materialName) {
+  if (!materialName) return 'Unknown Domain';
+  for (const [key, domain] of Object.entries(DOMAIN_MAPPINGS)) {
+    if (materialName.toLowerCase().includes(key.toLowerCase())) {
+      return domain;
+    }
+  }
+  return 'Unknown Domain';
+}
+
 // Complete canonical schedule (mirrors in-game domain availability)
 export const BOOK_SCHEDULE_BY_DAY = {
   // 0 = Sunday — all books available (special day)

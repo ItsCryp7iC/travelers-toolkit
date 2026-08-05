@@ -163,3 +163,30 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
   // Fallback
   return { id: genericKey, category: 'unknown', name: genericKey, rarity }
 }
+
+/**
+ * Returns { familyId, familyName, region, tiers: [{ id, name, rarity }, ...] }
+ */
+export function getFamilyData(snakeCaseId) {
+  const searchDatabases = [Object.values(DB.talent), Object.values(DB.weapon)];
+  for (const db of searchDatabases) {
+    for (const family of db) {
+      for (const tierKey in family.tiers) {
+        const item = family.tiers[tierKey];
+        if (toSnakeCase(item.name) === snakeCaseId) {
+          return {
+            familyId: family.id,
+            familyName: family.name,
+            region: family.region || 'Unknown Region',
+            tiers: Object.entries(family.tiers).map(([k, t]) => ({ 
+              id: toSnakeCase(t.name), 
+              name: t.name, 
+              rarity: parseInt(k) || 3
+            })).sort((a, b) => b.rarity - a.rarity)
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
