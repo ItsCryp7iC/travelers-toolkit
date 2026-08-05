@@ -1,14 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function CustomSelect({ options, value, onChange, placeholder }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownStyles, setDropdownStyles] = useState({});
+  const containerRef = useRef(null);
   const dropdownRef = useRef(null);
 
   const selectedOption = options.find((opt) => opt.id === value) || null;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        containerRef.current && !containerRef.current.contains(event.target) &&
+        (!dropdownRef.current || !dropdownRef.current.contains(event.target))
+      ) {
         setIsOpen(false);
       }
     };
@@ -17,6 +23,31 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const updatePosition = () => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setDropdownStyles({
+        position: 'fixed',
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 99999,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition, true);
+      return () => {
+        window.removeEventListener('resize', updatePosition);
+        window.removeEventListener('scroll', updatePosition, true);
+      };
+    }
+  }, [isOpen]);
 
   const getStarCount = (rarity) => {
     if (typeof rarity === 'string') {
@@ -28,7 +59,7 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
   };
 
   return (
-    <div className="relative w-full" ref={dropdownRef}>
+    <div className="relative w-full" ref={containerRef}>
       {/* Selected Value Display */}
       <div 
         className="w-full px-3 py-2.5 bg-[#161B22] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] flex items-center justify-between cursor-pointer focus:outline-none hover:border-gray-500 transition-colors"
@@ -52,9 +83,13 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
         <span className="text-gray-400 text-xs">&#9662;</span>
       </div>
 
-      {/* Dropdown Menu */}
-      {isOpen && (
-        <div className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto bg-gray-900 border border-gray-700 rounded-md shadow-xl custom-scrollbar">
+      {/* Dropdown Menu via Portal */}
+      {isOpen && createPortal(
+        <div 
+          ref={dropdownRef}
+          style={dropdownStyles}
+          className="max-h-60 overflow-y-auto bg-gray-900 border border-gray-700 rounded-md shadow-2xl custom-scrollbar"
+        >
           {options.map((option) => {
             const stars = getStarCount(option.rarity);
             return (
@@ -101,7 +136,8 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
               </div>
             );
           })}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
