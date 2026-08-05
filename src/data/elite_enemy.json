@@ -1,0 +1,553 @@
+[
+  {
+    "id": "mitachurl",
+    "name": "Mitachurl",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "blackcrystalhorn",
+        "name": "Black Crystal Horn"
+      },
+      "3_star": {
+        "id": "blackbronzehorn",
+        "name": "Black Bronze Horn"
+      },
+      "2_star": {
+        "id": "heavyhorn",
+        "name": "Heavy Horn"
+      }
+    }
+  },
+  {
+    "id": "abyssmage",
+    "name": "Abyss Mage",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "leylinesprout",
+        "name": "Ley Line Sprout"
+      },
+      "3_star": {
+        "id": "deadleylineleaves",
+        "name": "Dead Ley Line Leaves"
+      },
+      "2_star": {
+        "id": "deadleylinebranch",
+        "name": "Dead Ley Line Branch"
+      }
+    }
+  },
+  {
+    "id": "humanoidruinmachine",
+    "name": "Humanoid Ruin Machine",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "chaoscore",
+        "name": "Chaos Core"
+      },
+      "3_star": {
+        "id": "chaoscircuit",
+        "name": "Chaos Circuit"
+      },
+      "2_star": {
+        "id": "chaosdevice",
+        "name": "Chaos Device"
+      }
+    }
+  },
+  {
+    "id": "fatuicicinmage",
+    "name": "Fatui Cicin Mage",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "mistgrasswick",
+        "name": "Mist Grass Wick"
+      },
+      "3_star": {
+        "id": "mistgrass",
+        "name": "Mist Grass"
+      },
+      "2_star": {
+        "id": "mistgrasspollen",
+        "name": "Mist Grass Pollen"
+      }
+    }
+  },
+  {
+    "id": "fatuipyroagent",
+    "name": "Fatui Pyro Agent",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "inspectorssacrificialknife",
+        "name": "Inspector's Sacrificial Knife"
+      },
+      "3_star": {
+        "id": "agentssacrificialknife",
+        "name": "Agent's Sacrificial Knife"
+      },
+      "2_star": {
+        "id": "hunterssacrificialknife",
+        "name": "Hunter's Sacrificial Knife"
+      }
+    }
+  },
+  {
+    "id": "vishap",
+    "name": "Vishap",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "fossilizedboneshard",
+        "name": "Fossilized Bone Shard"
+      },
+      "3_star": {
+        "id": "sturdyboneshard",
+        "name": "Sturdy Bone Shard"
+      },
+      "2_star": {
+        "id": "fragileboneshard",
+        "name": "Fragile Bone Shard"
+      }
+    }
+  },
+  {
+    "id": "ruinsentinel",
+    "name": "Ruin Sentinel",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "chaosoculus",
+        "name": "Chaos Oculus"
+      },
+      "3_star": {
+        "id": "chaosaxis",
+        "name": "Chaos Axis"
+      },
+      "2_star": {
+        "id": "chaosgear",
+        "name": "Chaos Gear"
+      }
+    }
+  },
+  {
+    "id": "mirrormaiden",
+    "name": "Mirror Maiden",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "polarizingprism",
+        "name": "Polarizing Prism"
+      },
+      "3_star": {
+        "id": "crystalprism",
+        "name": "Crystal Prism"
+      },
+      "2_star": {
+        "id": "dismalprism",
+        "name": "Dismal Prism"
+      }
+    }
+  },
+  {
+    "id": "riftwolf",
+    "name": "Riftwolf",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "concealedtalon",
+        "name": "Concealed Talon"
+      },
+      "3_star": {
+        "id": "concealedunguis",
+        "name": "Concealed Unguis"
+      },
+      "2_star": {
+        "id": "concealedclaw",
+        "name": "Concealed Claw"
+      }
+    }
+  },
+  {
+    "id": "theblackserpents",
+    "name": "The Black Serpents",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "deathlystatuette",
+        "name": "Deathly Statuette"
+      },
+      "3_star": {
+        "id": "darkstatuette",
+        "name": "Dark Statuette"
+      },
+      "2_star": {
+        "id": "gloomystatuette",
+        "name": "Gloomy Statuette"
+      }
+    }
+  },
+  {
+    "id": "stateshiftedfungus",
+    "name": "State Shifted Fungus",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "robustfungalnucleus",
+        "name": "Robust Fungal Nucleus"
+      },
+      "3_star": {
+        "id": "dormantfungalnucleus",
+        "name": "Dormant Fungal Nucleus"
+      },
+      "2_star": {
+        "id": "inactivatedfungalnucleus",
+        "name": "Inactivated Fungal Nucleus"
+      }
+    }
+  },
+  {
+    "id": "ruindrake",
+    "name": "Ruin Drake",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "chaosbolt",
+        "name": "Chaos Bolt"
+      },
+      "3_star": {
+        "id": "chaosmodule",
+        "name": "Chaos Module"
+      },
+      "2_star": {
+        "id": "chaosstorage",
+        "name": "Chaos Storage"
+      }
+    }
+  },
+  {
+    "id": "primalconstruct",
+    "name": "Primal Construct",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "radiantprism",
+        "name": "Radiant Prism"
+      },
+      "3_star": {
+        "id": "turbidprism",
+        "name": "Turbid Prism"
+      },
+      "2_star": {
+        "id": "damagedprism",
+        "name": "Damaged Prism"
+      }
+    }
+  },
+  {
+    "id": "consecratedbeast",
+    "name": "Consecrated Beast",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "markedshell",
+        "name": "Marked Shell"
+      },
+      "3_star": {
+        "id": "sturdyshell",
+        "name": "Sturdy Shell"
+      },
+      "2_star": {
+        "id": "desiccatedshell",
+        "name": "Desiccated Shell"
+      }
+    }
+  },
+  {
+    "id": "hilichurlrogue",
+    "name": "Hilichurl Rogue",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "wanderersbloomingflower",
+        "name": "Wanderer's Blooming Flower"
+      },
+      "3_star": {
+        "id": "treasuredflower",
+        "name": "Treasured Flower"
+      },
+      "2_star": {
+        "id": "afloweryettobloom",
+        "name": "A Flower Yetto Bloom"
+      }
+    }
+  },
+  {
+    "id": "taintedhydrophantasm",
+    "name": "Tainted Hydro Phantasm",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "newborntaintedhydrophantasm",
+        "name": "Newborn Tainted Hydro Phantasm"
+      },
+      "3_star": {
+        "id": "scoopoftaintedwater",
+        "name": "Scoop of Tainted Water"
+      },
+      "2_star": {
+        "id": "dropoftaintedwater",
+        "name": "Drop of Tainted Water"
+      }
+    }
+  },
+  {
+    "id": "breacherprimus",
+    "name": "Breacher Primus",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "alienlifecore",
+        "name": "Alien Life Core"
+      },
+      "3_star": {
+        "id": "foreignsynapse",
+        "name": "Foreign Synapse"
+      },
+      "2_star": {
+        "id": "riftcore",
+        "name": "Rift Core"
+      }
+    }
+  },
+  {
+    "id": "fatuioperative",
+    "name": "Fatui Operative",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "operativesconstancy",
+        "name": "Operative's Constancy"
+      },
+      "3_star": {
+        "id": "operativesstandardpocketwatch",
+        "name": "Operative's Standard Pocket Watch"
+      },
+      "2_star": {
+        "id": "oldoperativespocketwatch",
+        "name": "Old Operative's Pocket Watch"
+      }
+    }
+  },
+  {
+    "id": "xuanwenbeast",
+    "name": "Xuanwen Beast",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "chasmlightfin",
+        "name": "Chasmlight Fin"
+      },
+      "3_star": {
+        "id": "lunarfin",
+        "name": "Lunar Fin"
+      },
+      "2_star": {
+        "id": "featheryfin",
+        "name": "Feathery Fin"
+      }
+    }
+  },
+  {
+    "id": "praetoriangolem",
+    "name": "Praetorian Golem",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "stillsmolderinghilt",
+        "name": "Still Smoldering Hilt"
+      },
+      "3_star": {
+        "id": "splinteredhilt",
+        "name": "Splintered Hilt"
+      },
+      "2_star": {
+        "id": "ruinedhilt",
+        "name": "Ruined Hilt"
+      }
+    }
+  },
+  {
+    "id": "wayobmanifestation",
+    "name": "Wayob Manifestation",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "sigilofastridingwill",
+        "name": "Sigil of a Striding Will"
+      },
+      "3_star": {
+        "id": "locusofaclearwill",
+        "name": "Locus of a Clear Will"
+      },
+      "2_star": {
+        "id": "shardofashatteredwill",
+        "name": "Shard of a Shattered Will"
+      }
+    }
+  },
+  {
+    "id": "avataroflava",
+    "name": "Avatar of Lava",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "ignitedseeingeye",
+        "name": "Ignited Seeing Eye"
+      },
+      "3_star": {
+        "id": "ignitedseedoflife",
+        "name": "Ignited Seed of Life"
+      },
+      "2_star": {
+        "id": "ignitedstone",
+        "name": "Ignited Stone"
+      }
+    }
+  },
+  {
+    "id": "secretsourceautomatonhunterseeker",
+    "name": "Secret Source Automaton: Hunter-Seeker",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "heartofthesecretsource",
+        "name": "Heart of the Secret Source"
+      },
+      "3_star": {
+        "id": "sheathofthesecretsource",
+        "name": "Sheath of the Secret Source"
+      },
+      "2_star": {
+        "id": "axisofthesecretsource",
+        "name": "Axis of the Secret Source"
+      }
+    }
+  },
+  {
+    "id": "tenebrousmimesis",
+    "name": "Tenebrous Mimesis",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "illusoryleafcoil",
+        "name": "Illusory Leafcoil"
+      },
+      "3_star": {
+        "id": "bewilderingbroadleaf",
+        "name": "Bewildering Broadleaf"
+      },
+      "2_star": {
+        "id": "refractivebud",
+        "name": "Refractive Bud"
+      }
+    }
+  },
+  {
+    "id": "furnaceshellmountainweasel",
+    "name": "Furnace Shell Mountain Weasel",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "blazingprismshell",
+        "name": "Blazing Prismshell"
+      },
+      "3_star": {
+        "id": "warmbackshell",
+        "name": "Warm Back Shell"
+      },
+      "2_star": {
+        "id": "coldcrackedshellshard",
+        "name": "Cold Cracked Shellshard"
+      }
+    }
+  },
+  {
+    "id": "frostnightscion",
+    "name": "Frostnight Scion",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "frostnightsglory",
+        "name": "Frostnight's Glory"
+      },
+      "3_star": {
+        "id": "frostnightsglow",
+        "name": "Frostnight's Glow"
+      },
+      "2_star": {
+        "id": "frostnightsglimmer",
+        "name": "Frostnight's Glimmer"
+      }
+    }
+  },
+  {
+    "id": "radiantbeast",
+    "name": "Radiant Beast",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "radiantexoskeleton",
+        "name": "Radiant Exoskeleton"
+      },
+      "3_star": {
+        "id": "glowingremains",
+        "name": "Glowing Remains"
+      },
+      "2_star": {
+        "id": "lightlessbone",
+        "name": "Lightless Bone"
+      }
+    }
+  },
+  {
+    "id": "wastelandwildhunt",
+    "name": "Wasteland Wild Hunt",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "mistshroudhelmet",
+        "name": "Mistshroud Helmet"
+      },
+      "3_star": {
+        "id": "mistshroudplate",
+        "name": "Mistshroud Plate"
+      },
+      "2_star": {
+        "id": "mistshroudmanifestation",
+        "name": "Mistshroud Manifestation"
+      }
+    }
+  },
+  {
+    "id": "fisherofhiddendepths",
+    "name": "Fisher of Hidden Depths",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "hookedbeakofthedeepshadow",
+        "name": "Hooked Beak of the Deep Shadow"
+      },
+      "3_star": {
+        "id": "aberrantcoreofthedeepshadow",
+        "name": "Aberrant Core of the Deep Shadow"
+      },
+      "2_star": {
+        "id": "fracturedeyeofthedeepshadow",
+        "name": "Fractured Eye of the Deep Shadow"
+      }
+    }
+  }
+]

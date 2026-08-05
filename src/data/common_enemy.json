@@ -1,0 +1,325 @@
+[
+  {
+    "id": "slime",
+    "name": "Slime",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "slimeconcentrate",
+        "name": "Slime Concentrate"
+      },
+      "2_star": {
+        "id": "slimesecretions",
+        "name": "Slime Secretions"
+      },
+      "1_star": {
+        "id": "slimecondensate",
+        "name": "Slime Condensate"
+      }
+    }
+  },
+  {
+    "id": "hilichurl",
+    "name": "Hilichurl",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "ominousmask",
+        "name": "Ominous Mask"
+      },
+      "2_star": {
+        "id": "stainedmask",
+        "name": "Stained Mask"
+      },
+      "1_star": {
+        "id": "damagedmask",
+        "name": "Damaged Mask"
+      }
+    }
+  },
+  {
+    "id": "samachurl",
+    "name": "Samachurl",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "forbiddencursescroll",
+        "name": "Forbidden Curse Scroll"
+      },
+      "2_star": {
+        "id": "sealedscroll",
+        "name": "Sealed Scroll"
+      },
+      "1_star": {
+        "id": "diviningscroll",
+        "name": "Divining Scroll"
+      }
+    }
+  },
+  {
+    "id": "hilichurlshooter",
+    "name": "Hilichurl Shooter",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "weatheredarrowhead",
+        "name": "Weathered Arrowhead"
+      },
+      "2_star": {
+        "id": "sharparrowhead",
+        "name": "Sharp Arrowhead"
+      },
+      "1_star": {
+        "id": "firmarrowhead",
+        "name": "Firm Arrowhead"
+      }
+    }
+  },
+  {
+    "id": "fatuiskirmisher",
+    "name": "Fatui Skirmisher",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "lieutenantsinsignia",
+        "name": "Lieutenant's Insignia"
+      },
+      "2_star": {
+        "id": "sergeantsinsignia",
+        "name": "Sergeant's Insignia"
+      },
+      "1_star": {
+        "id": "recruitsinsignia",
+        "name": "Recruit's Insignia"
+      }
+    }
+  },
+  {
+    "id": "treasurehoarder",
+    "name": "Treasure Hoarder",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "goldenraveninsignia",
+        "name": "Golden Raven Insignia"
+      },
+      "2_star": {
+        "id": "silverraveninsignia",
+        "name": "Silver Raven Insignia"
+      },
+      "1_star": {
+        "id": "treasurehoarderinsignia",
+        "name": "Treasure Hoarder Insignia"
+      }
+    }
+  },
+  {
+    "id": "whopperflower",
+    "name": "Whopperflower",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "energynectar",
+        "name": "Energy Nectar"
+      },
+      "2_star": {
+        "id": "shimmeringnectar",
+        "name": "Shimmering Nectar"
+      },
+      "1_star": {
+        "id": "whopperflowernectar",
+        "name": "Whopperflower Nectar"
+      }
+    }
+  },
+  {
+    "id": "nobushi",
+    "name": "Nobushi",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "famedhandguard",
+        "name": "Famed Handguard"
+      },
+      "2_star": {
+        "id": "kageuchihandguard",
+        "name": "Kageuchi Handguard"
+      },
+      "1_star": {
+        "id": "oldhandguard",
+        "name": "Old Handguard"
+      }
+    }
+  },
+  {
+    "id": "specters",
+    "name": "Specters",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "spectralnucleus",
+        "name": "Spectral Nucleus"
+      },
+      "2_star": {
+        "id": "spectralheart",
+        "name": "Spectral Heart"
+      },
+      "1_star": {
+        "id": "spectralhusk",
+        "name": "Spectral Husk"
+      }
+    }
+  },
+  {
+    "id": "fungus",
+    "name": "Fungus",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "crystallinecystdust",
+        "name": "Crystalline Cyst Dust"
+      },
+      "2_star": {
+        "id": "luminescentpollen",
+        "name": "Luminescent Pollen"
+      },
+      "1_star": {
+        "id": "fungalspores",
+        "name": "Fungal Spores"
+      }
+    }
+  },
+  {
+    "id": "theeremites",
+    "name": "The Eremites",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "richredbrocade",
+        "name": "Rich Red Brocade"
+      },
+      "2_star": {
+        "id": "trimmedredsilk",
+        "name": "Trimmed Red Silk"
+      },
+      "1_star": {
+        "id": "fadedredsatin",
+        "name": "Faded Red Satin"
+      }
+    }
+  },
+  {
+    "id": "fontemeraberrant",
+    "name": "Fontemer Aberrant",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "xenochromaticcrystal",
+        "name": "Xenochromatic Crystal"
+      },
+      "2_star": {
+        "id": "transoceanicchunk",
+        "name": "Transoceanic Chunk"
+      },
+      "1_star": {
+        "id": "transoceanicpearl",
+        "name": "Transoceanic Pearl"
+      }
+    }
+  },
+  {
+    "id": "clockworkmeka",
+    "name": "Clockwork Meka",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "artificeddynamicgear",
+        "name": "Artificed Dynamic Gear"
+      },
+      "2_star": {
+        "id": "mechanicalspurgear",
+        "name": "Mechanical Spur Gear"
+      },
+      "1_star": {
+        "id": "meshinggear",
+        "name": "Meshing Gear"
+      }
+    }
+  },
+  {
+    "id": "natlansaurian",
+    "name": "Natlan Saurian",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "tyrantsfang",
+        "name": "Tyrant's Fang"
+      },
+      "2_star": {
+        "id": "seasonedfang",
+        "name": "Seasoned Fang"
+      },
+      "1_star": {
+        "id": "juvenilefang",
+        "name": "Juvenile Fang"
+      }
+    }
+  },
+  {
+    "id": "sauroformtribalwarriors",
+    "name": "Sauroform Tribal Warriors",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "sauriancrownedwarriorsgoldenwhistle",
+        "name": "Saurian Crowned Warrior's Golden Whistle"
+      },
+      "2_star": {
+        "id": "warriorsmetalwhistle",
+        "name": "Warrior's Metal Whistle"
+      },
+      "1_star": {
+        "id": "sentryswoodenwhistle",
+        "name": "Sentry's Wooden Whistle"
+      }
+    }
+  },
+  {
+    "id": "landcruisers",
+    "name": "Landcruisers",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "precisiondriveshaft",
+        "name": "Precision Drive Shaft"
+      },
+      "2_star": {
+        "id": "reinforceddriveshaft",
+        "name": "Reinforced Drive Shaft"
+      },
+      "1_star": {
+        "id": "brokendriveshaft",
+        "name": "Broken Drive Shaft"
+      }
+    }
+  },
+  {
+    "id": "fatuioprichniki",
+    "name": "Fatui Oprichniki",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "frostetchedwarrant",
+        "name": "Frost Etched Warrant"
+      },
+      "2_star": {
+        "id": "immaculatewarrant",
+        "name": "Immaculate Warrant"
+      },
+      "1_star": {
+        "id": "tatteredwarrant",
+        "name": "Tattered Warrant"
+      }
+    }
+  }
+]

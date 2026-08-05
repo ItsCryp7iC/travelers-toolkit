@@ -1,0 +1,68 @@
+[
+  {
+    "id": "Mora",
+    "name": "Mora",
+    "category": "Currency",
+    "rarity": 5
+  },
+  {
+    "id": "HeroWit",
+    "name": "Hero's Wit",
+    "category": "Experience",
+    "rarity": 4
+  },
+  {
+    "id": "AdventurerExp",
+    "name": "Adventurer Exp",
+    "category": "Experience",
+    "rarity": 2
+  },
+  {
+    "id": "WandererAdvice",
+    "name": "Wanderer's Advice",
+    "category": "Experience",
+    "rarity": 1
+  },
+  {
+    "id": "Crown",
+    "name": "Crown of Insight",
+    "category": "Experience",
+    "rarity": 5
+  },
+  {
+    "id": "masterless_stella_fortuna",
+    "name": "Masterless Stella Fortuna",
+    "category": "Experience",
+    "rarity": 5
+  },
+  {
+    "id": "MysticEnhancementOre",
+    "name": "Mystic Enhancement Ore",
+    "category": "Experience",
+    "rarity": 3
+  },
+  {
+    "id": "FineEnhancementOre",
+    "name": "Fine Enhancement Ore",
+    "category": "Experience",
+    "rarity": 2
+  },
+  {
+    "id": "EnhancementOre",
+    "name": "Enhancement Ore",
+    "category": "Experience",
+    "rarity": 1
+  },
+  {
+    "id": "DreamSolvent",
+    "name": "Dream Solvent",
+    "category": "Experience",
+    "rarity": 4
+  },
+  {
+    "id": "FragileResin",
+    "name": "Fragile Resin",
+    "category": "Experience",
+    "rarity": 4
+  }
+]

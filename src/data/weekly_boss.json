@@ -1,0 +1,275 @@
+[
+  {
+    "id": "dvalinsplume",
+    "name": "Dvalin's Plume",
+    "type": "weekly_boss",
+    "boss_name": "Stormterror Dvalin",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "dvalinsclaw",
+    "name": "Dvalin's Claw",
+    "type": "weekly_boss",
+    "boss_name": "Stormterror Dvalin",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "dvalinssigh",
+    "name": "Dvalin's Sigh",
+    "type": "weekly_boss",
+    "boss_name": "Stormterror Dvalin",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "tailofboreas",
+    "name": "Tail of Boreas",
+    "type": "weekly_boss",
+    "boss_name": "Andrius",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ringofboreas",
+    "name": "Ring of Boreas",
+    "type": "weekly_boss",
+    "boss_name": "Andrius",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "spiritlocketofboreas",
+    "name": "Spirit Locket of Boreas",
+    "type": "weekly_boss",
+    "boss_name": "Andrius",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "tuskofmonoceroscaeli",
+    "name": "Tusk of Monoceros Caeli",
+    "type": "weekly_boss",
+    "boss_name": "Childe",
+    "region": "Liyue"
+  },
+  {
+    "id": "shardofafoullegacy",
+    "name": "Shard of a Foul Legacy",
+    "type": "weekly_boss",
+    "boss_name": "Childe",
+    "region": "Liyue"
+  },
+  {
+    "id": "shadowofthewarrior",
+    "name": "Shadow of the Warrior",
+    "type": "weekly_boss",
+    "boss_name": "Childe",
+    "region": "Liyue"
+  },
+  {
+    "id": "dragonlordscrown",
+    "name": "Dragon Lord's Crown",
+    "type": "weekly_boss",
+    "boss_name": "Azhdaha",
+    "region": "Liyue"
+  },
+  {
+    "id": "bloodjadebranch",
+    "name": "Bloodjade Branch",
+    "type": "weekly_boss",
+    "boss_name": "Azhdaha",
+    "region": "Liyue"
+  },
+  {
+    "id": "gildedscale",
+    "name": "Gilded Scale",
+    "type": "weekly_boss",
+    "boss_name": "Azhdaha",
+    "region": "Liyue"
+  },
+  {
+    "id": "moltenmoment",
+    "name": "Molten Moment",
+    "type": "weekly_boss",
+    "boss_name": "La Signora",
+    "region": "Inazuma"
+  },
+  {
+    "id": "hellfirebutterfly",
+    "name": "Hellfire Butterfly",
+    "type": "weekly_boss",
+    "boss_name": "La Signora",
+    "region": "Inazuma"
+  },
+  {
+    "id": "ashenheart",
+    "name": "Ashen Heart",
+    "type": "weekly_boss",
+    "boss_name": "La Signora",
+    "region": "Inazuma"
+  },
+  {
+    "id": "mudraofthemaleficgeneral",
+    "name": "Mudra of the Malefic General",
+    "type": "weekly_boss",
+    "boss_name": "Magatsu Mitake Narukami no Mikoto",
+    "region": "Inazuma"
+  },
+  {
+    "id": "tearsofthecalamitousgod",
+    "name": "Tears of the Calamitous God",
+    "type": "weekly_boss",
+    "boss_name": "Magatsu Mitake Narukami no Mikoto",
+    "region": "Inazuma"
+  },
+  {
+    "id": "themeaningofaeons",
+    "name": "The Meaning of Aeons",
+    "type": "weekly_boss",
+    "boss_name": "Magatsu Mitake Narukami no Mikoto",
+    "region": "Inazuma"
+  },
+  {
+    "id": "puppetstrings",
+    "name": "Puppet Strings",
+    "type": "weekly_boss",
+    "boss_name": "Everlasting Lord of Arcane Wisdom",
+    "region": "Sumeru"
+  },
+  {
+    "id": "mirrorofmushin",
+    "name": "Mirror of Mushin",
+    "type": "weekly_boss",
+    "boss_name": "Everlasting Lord of Arcane Wisdom",
+    "region": "Sumeru"
+  },
+  {
+    "id": "dakasbell",
+    "name": "Daka's Bell",
+    "type": "weekly_boss",
+    "boss_name": "Everlasting Lord of Arcane Wisdom",
+    "region": "Sumeru"
+  },
+  {
+    "id": "worldspanfern",
+    "name": "Worldspan Fern",
+    "type": "weekly_boss",
+    "boss_name": "Evolved From an Apocalyptic Millennium",
+    "region": "Sumeru"
+  },
+  {
+    "id": "primordialgreenbloom",
+    "name": "Primordial Greenbloom",
+    "type": "weekly_boss",
+    "boss_name": "Evolved From an Apocalyptic Millennium",
+    "region": "Sumeru"
+  },
+  {
+    "id": "everamber",
+    "name": "Everamber",
+    "type": "weekly_boss",
+    "boss_name": "Evolved From an Apocalyptic Millennium",
+    "region": "Sumeru"
+  },
+  {
+    "id": "lightlesssilkstring",
+    "name": "Lightless Silk String",
+    "type": "weekly_boss",
+    "boss_name": "All-Devouring Narwhal",
+    "region": "Fontaine"
+  },
+  {
+    "id": "lightlesseyeofthemaelstrom",
+    "name": "Lightless Eye of the Maelstrom",
+    "type": "weekly_boss",
+    "boss_name": "All-Devouring Narwhal",
+    "region": "Fontaine"
+  },
+  {
+    "id": "lightlessmass",
+    "name": "Lightless Mass",
+    "type": "weekly_boss",
+    "boss_name": "All-Devouring Narwhal",
+    "region": "Fontaine"
+  },
+  {
+    "id": "fadingcandle",
+    "name": "Fading Candle",
+    "type": "weekly_boss",
+    "boss_name": "The Knave",
+    "region": "Fontaine"
+  },
+  {
+    "id": "silkenfeather",
+    "name": "Silken Feather",
+    "type": "weekly_boss",
+    "boss_name": "The Knave",
+    "region": "Fontaine"
+  },
+  {
+    "id": "denialandjudgment",
+    "name": "Denialand Judgment",
+    "type": "weekly_boss",
+    "boss_name": "The Knave",
+    "region": "Fontaine"
+  },
+  {
+    "id": "erodedhorn",
+    "name": "Eroded Horn",
+    "type": "weekly_boss",
+    "boss_name": "Lord of Eroded Primal Fire",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "erodedsunfire",
+    "name": "Eroded Sunfire",
+    "type": "weekly_boss",
+    "boss_name": "Lord of Eroded Primal Fire",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "erodedscalefeather",
+    "name": "Eroded Scale Feather",
+    "type": "weekly_boss",
+    "boss_name": "Lord of Eroded Primal Fire",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ascendedsampleknight",
+    "name": "Ascended Sample Knight",
+    "type": "weekly_boss",
+    "boss_name": "The Game Before the Gate",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ascendedsamplerook",
+    "name": "Ascended Sample Rook",
+    "type": "weekly_boss",
+    "boss_name": "The Game Before the Gate",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "ascendedsamplequeen",
+    "name": "Ascended Sample Queen",
+    "type": "weekly_boss",
+    "boss_name": "The Game Before the Gate",
+    "region": "Mondstadt"
+  },
+  {
+    "id": "maskofthevirtuousdoctor",
+    "name": "Mask of the Virtuous Doctor",
+    "type": "weekly_boss",
+    "boss_name": "Heretic of the False Moon",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "madmansrestraint",
+    "name": "Madman's Restraint",
+    "type": "weekly_boss",
+    "boss_name": "Heretic of the False Moon",
+    "region": "Nod-Krai"
+  },
+  {
+    "id": "elixiroftheheretic",
+    "name": "Elixir of the Heretic",
+    "type": "weekly_boss",
+    "boss_name": "Heretic of the False Moon",
+    "region": "Nod-Krai"
+  }
+]
