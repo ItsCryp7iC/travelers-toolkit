@@ -148,34 +148,44 @@ export function resolveWeaponMaterials(weaponState) {
 
 // ─── Master Inventory List Generator ─────────────────────────────────────
 
-const flattenAndFormatMaterials = (dataArray, category, subCategory, getAccent, getSublabel, getIconCategory, getRarity) => {
+const flattenAndFormatMaterials = (dataArray, category, subCategory, getSublabel, getIconCategory, getRarity) => {
+  const getUniversalAccent = (rarity) => {
+    if (rarity === 5) return '#FBBF24';
+    if (rarity === 4) return '#A855F7';
+    if (rarity === 3) return '#60A5FA';
+    if (rarity === 2) return '#4ADE80';
+    return '#9CA3AF';
+  };
+
   return dataArray.flatMap(item => {
     if (item.tiers) {
       const keys = Object.keys(item.tiers).sort();
       return keys.map((k, index) => {
         const tierItem = item.tiers[k];
+        const computedRarity = getRarity ? getRarity(item, tierItem, k, index) : (parseInt(k) || 0);
         return {
           matKey: tierItem.id,
           label: tierItem.name,
           category: category || item.category,
           subCategory: subCategory || item.type || null,
           sublabel: getSublabel ? getSublabel(item, tierItem, k, index) : (subCategory || category),
-          accent: getAccent ? getAccent(item, tierItem, k, index) : '#C8A96E',
+          accent: getUniversalAccent(computedRarity),
           iconCategory: getIconCategory ? getIconCategory(item, tierItem, k, index) : (subCategory || category),
-          rarity: getRarity ? getRarity(item, tierItem, k, index) : (parseInt(k) || 0),
+          rarity: computedRarity,
           sortOrder: tierItem.sortOrder
         };
       });
     } else {
+      const computedRarity = getRarity ? getRarity(item, null, null, null) : (item.rarity || 0);
       return {
         matKey: item.id,
         label: item.name,
         category: category || item.category,
         subCategory: subCategory || item.type || null,
         sublabel: getSublabel ? getSublabel(item, null, null, null) : (subCategory || category),
-        accent: getAccent ? getAccent(item, null, null, null) : '#C8A96E',
+        accent: getUniversalAccent(computedRarity),
         iconCategory: getIconCategory ? getIconCategory(item, null, null, null) : (subCategory || category),
-        rarity: getRarity ? getRarity(item, null, null, null) : (item.rarity || 0),
+        rarity: computedRarity,
         sortOrder: item.sortOrder
       };
     }
@@ -184,13 +194,6 @@ const flattenAndFormatMaterials = (dataArray, category, subCategory, getAccent, 
 
 export const getPrimaryInventoryList = () => {
   const formattedMisc = flattenAndFormatMaterials(miscMaterials, null, null, 
-    (item) => {
-      if (item.rarity === 5) return '#FBBF24';
-      if (item.rarity === 4) return '#A855F7';
-      if (item.rarity === 3) return '#60A5FA';
-      if (item.rarity === 2) return '#4ADE80';
-      return '#9CA3AF';
-    },
     (item) => {
       if (item.name.includes('Wit') || item.name.includes('Advice') || item.name.includes('Exp')) return `EXP Book ${'★'.repeat(item.rarity)}`;
       if (item.name.includes('Ore')) return `Weapon EXP ${'★'.repeat(item.rarity)}`;
@@ -203,41 +206,36 @@ export const getPrimaryInventoryList = () => {
     (item) => item.rarity
   );
 
-  const formattedNormalBoss = flattenAndFormatMaterials(normalBoss, 'Boss Drops', 'Normal Boss', () => '#EF6D22', () => 'Normal Boss', () => 'Normal Boss Material', () => 4);
-  const formattedWeeklyBoss = flattenAndFormatMaterials(weeklyBoss, 'Boss Drops', 'Weekly Boss', () => '#A855F7', () => 'Weekly Boss', () => 'Weekly Boss Material', () => 5);
+  const formattedNormalBoss = flattenAndFormatMaterials(normalBoss, 'Boss Drops', 'Normal Boss', () => 'Normal Boss', () => 'Normal Boss Material', () => 4);
+  const formattedWeeklyBoss = flattenAndFormatMaterials(weeklyBoss, 'Boss Drops', 'Weekly Boss', () => 'Weekly Boss', () => 'Weekly Boss Material', () => 5);
   
   const formattedCommonEnemy = flattenAndFormatMaterials(commonEnemy, 'Enemy Drops', 'Common Enhancement Material', 
-    (item, t, k, i) => ['#9CA3AF', '#60A5FA', '#A78BFA'][i] || '#C8A96E',
     (item, t, k, i) => ['Common', 'Uncommon', 'Rare', 'Epic'][i] || 'Common',
     () => 'Common Enhancement Material',
     (item, t, k, i) => [1, 2, 3][i] || 1
   );
 
   const formattedEliteEnemy = flattenAndFormatMaterials(eliteEnemy, 'Enemy Drops', 'Elite Enhancement Material',
-    (item, t, k, i) => ['#9CA3AF', '#60A5FA', '#A78BFA', '#F59E0B'][i] || '#C8A96E',
     (item, t, k, i) => ['Common', 'Uncommon', 'Rare', 'Epic'][i] || 'Common',
     () => 'Elite Enhancement Material',
     (item, t, k, i) => [2, 3, 4, 5][i] || 2
   );
 
-  const formattedLocal = flattenAndFormatMaterials(localSpecialty, 'Local Specialty', null, () => '#22C55E', () => 'Local Specialty', () => 'Local Specialty', () => 1);
+  const formattedLocal = flattenAndFormatMaterials(localSpecialty, 'Local Specialty', null, () => 'Local Specialty', () => 'Local Specialty', () => 1);
 
   const formattedTalent = flattenAndFormatMaterials(talentMaterials, 'Talent Materials', null, 
-    () => '#60A5FA',
     (item, t, k, i) => TIER_STARS_BOOK[i] || 'Book',
     () => 'Talent Material',
     (item, t, k, i) => [2, 3, 4][i] || 2
   );
 
   const formattedWeapon = flattenAndFormatMaterials(weaponAscension, 'Weapon Ascension Material', null,
-    () => '#F59E0B',
     (item, t, k, i) => TIER_STARS_WEAPON[i] || 'Ascension',
     () => 'Weapon Ascension Material',
     (item, t, k, i) => [2, 3, 4, 5][i] || 2
   );
 
   const formattedGems = flattenAndFormatMaterials(characterGems, 'Character Ascension Gem', null,
-    (item) => item.color,
     (item, t, k, i) => TIER_STARS_GEM[i] || 'Gem',
     () => 'Character Ascension Gem',
     (item, t, k, i) => [2, 3, 4, 5][i] || 2
