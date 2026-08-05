@@ -6,19 +6,23 @@
     "tiers": {
       "5_star": {
         "id": "scatteredpieceofdecarabiansdream",
-        "name": "Scattered Piece of Decarabian's Dream"
+        "name": "Scattered Piece of Decarabian's Dream",
+        "sortOrder": 303
       },
       "4_star": {
         "id": "fragmentofdecarabiansepic",
-        "name": "Fragment of Decarabian's Epic"
+        "name": "Fragment of Decarabian's Epic",
+        "sortOrder": 304
       },
       "3_star": {
         "id": "debrisofdecarabianscity",
-        "name": "Debris of Decarabian's City"
+        "name": "Debris of Decarabian's City",
+        "sortOrder": 305
       },
       "2_star": {
         "id": "tileofdecarabianstower",
-        "name": "Tile of Decarabian's Tower"
+        "name": "Tile of Decarabian's Tower",
+        "sortOrder": 306
       }
     }
   },
@@ -29,19 +33,23 @@
     "tiers": {
       "5_star": {
         "id": "borealwolfsnostalgia",
-        "name": "Boreal Wolf's Nostalgia"
+        "name": "Boreal Wolf's Nostalgia",
+        "sortOrder": 307
       },
       "4_star": {
         "id": "borealwolfsbrokenfang",
-        "name": "Boreal Wolf's Broken Fang"
+        "name": "Boreal Wolf's Broken Fang",
+        "sortOrder": 308
       },
       "3_star": {
         "id": "borealwolfscrackedtooth",
-        "name": "Boreal Wolf's Cracked Tooth"
+        "name": "Boreal Wolf's Cracked Tooth",
+        "sortOrder": 309
       },
       "2_star": {
         "id": "borealwolfsmilktooth",
-        "name": "Boreal Wolf's Milk Tooth"
+        "name": "Boreal Wolf's Milk Tooth",
+        "sortOrder": 310
       }
     }
   },
@@ -52,19 +60,23 @@
     "tiers": {
       "5_star": {
         "id": "dreamofthedandeliongladiator",
-        "name": "Dream of the Dandelion Gladiator"
+        "name": "Dream of the Dandelion Gladiator",
+        "sortOrder": 311
       },
       "4_star": {
         "id": "shacklesofthedandeliongladiator",
-        "name": "Shackles of the Dandelion Gladiator"
+        "name": "Shackles of the Dandelion Gladiator",
+        "sortOrder": 312
       },
       "3_star": {
         "id": "chainsofthedandeliongladiator",
-        "name": "Chains of the Dandelion Gladiator"
+        "name": "Chains of the Dandelion Gladiator",
+        "sortOrder": 313
       },
       "2_star": {
         "id": "fettersofthedandeliongladiator",
-        "name": "Fetters of the Dandelion Gladiator"
+        "name": "Fetters of the Dandelion Gladiator",
+        "sortOrder": 314
       }
     }
   },
@@ -75,19 +87,23 @@
     "tiers": {
       "5_star": {
         "id": "divinebodyfromguyun",
-        "name": "Divine Body from Guyun"
+        "name": "Divine Body from Guyun",
+        "sortOrder": 315
       },
       "4_star": {
         "id": "relicfromguyun",
-        "name": "Relic from Guyun"
+        "name": "Relic from Guyun",
+        "sortOrder": 316
       },
       "3_star": {
         "id": "lustrousstonefromguyun",
-        "name": "Lustrous Stone from Guyun"
+        "name": "Lustrous Stone from Guyun",
+        "sortOrder": 317
       },
       "2_star": {
         "id": "luminoussandsfromguyun",
-        "name": "Luminous Sands from Guyun"
+        "name": "Luminous Sands from Guyun",
+        "sortOrder": 318
       }
     }
   },
@@ -98,19 +114,23 @@
     "tiers": {
       "5_star": {
         "id": "mistveiledprimoelixir",
-        "name": "Mist Veiled Primo Elixir"
+        "name": "Mist Veiled Primo Elixir",
+        "sortOrder": 319
       },
       "4_star": {
         "id": "mistveiledgoldelixir",
-        "name": "Mist Veiled Gold Elixir"
+        "name": "Mist Veiled Gold Elixir",
+        "sortOrder": 320
       },
       "3_star": {
         "id": "mistveiledmercuryelixir",
-        "name": "Mist Veiled Mercury Elixir"
+        "name": "Mist Veiled Mercury Elixir",
+        "sortOrder": 321
       },
       "2_star": {
         "id": "mistveiledleadelixir",
-        "name": "Mist Veiled Lead Elixir"
+        "name": "Mist Veiled Lead Elixir",
+        "sortOrder": 322
       }
     }
   },
@@ -120,19 +140,23 @@
     "tiers": {
       "5_star": {
         "id": "chunkofaerosiderite",
-        "name": "Chunk of Aerosiderite"
+        "name": "Chunk of Aerosiderite",
+        "sortOrder": 323
       },
       "4_star": {
         "id": "bitofaerosiderite",
-        "name": "Bit of Aerosiderite"
+        "name": "Bit of Aerosiderite",
+        "sortOrder": 324
       },
       "3_star": {
         "id": "pieceofaerosiderite",
-        "name": "Piece of Aerosiderite"
+        "name": "Piece of Aerosiderite",
+        "sortOrder": 325
       },
       "2_star": {
         "id": "grainofaerosiderite",
-        "name": "Grain of Aerosiderite"
+        "name": "Grain of Aerosiderite",
+        "sortOrder": 326
       }
     }
   },
@@ -143,19 +167,23 @@
     "tiers": {
       "5_star": {
         "id": "goldenbranchofadistantsea",
-        "name": "Golden Branch of a Distant Sea"
+        "name": "Golden Branch of a Distant Sea",
+        "sortOrder": 327
       },
       "4_star": {
         "id": "jadebranchofadistantsea",
-        "name": "Jade Branch of a Distant Sea"
+        "name": "Jade Branch of a Distant Sea",
+        "sortOrder": 328
       },
       "3_star": {
         "id": "jeweledbranchofadistantsea",
-        "name": "Jeweled Branch of a Distant Sea"
+        "name": "Jeweled Branch of a Distant Sea",
+        "sortOrder": 329
       },
       "2_star": {
         "id": "coralbranchofadistantsea",
-        "name": "Coral Branch of a Distant Sea"
+        "name": "Coral Branch of a Distant Sea",
+        "sortOrder": 330
       }
     }
   },
@@ -166,19 +194,23 @@
     "tiers": {
       "5_star": {
         "id": "narukamisvalor",
-        "name": "Narukami's Valor"
+        "name": "Narukami's Valor",
+        "sortOrder": 331
       },
       "4_star": {
         "id": "narukamisaffection",
-        "name": "Narukami's Affection"
+        "name": "Narukami's Affection",
+        "sortOrder": 332
       },
       "3_star": {
         "id": "narukamisjoy",
-        "name": "Narukami's Joy"
+        "name": "Narukami's Joy",
+        "sortOrder": 333
       },
       "2_star": {
         "id": "narukamiswisdom",
-        "name": "Narukami's Wisdom"
+        "name": "Narukami's Wisdom",
+        "sortOrder": 334
       }
     }
   },
@@ -189,19 +221,23 @@
     "tiers": {
       "5_star": {
         "id": "maskofthekijin",
-        "name": "Mask of the Kijin"
+        "name": "Mask of the Kijin",
+        "sortOrder": 335
       },
       "4_star": {
         "id": "maskoftheonehorned",
-        "name": "Mask of the One-Horned"
+        "name": "Mask of the One-Horned",
+        "sortOrder": 336
       },
       "3_star": {
         "id": "maskofthetigersbite",
-        "name": "Mask of the Tiger's Bite"
+        "name": "Mask of the Tiger's Bite",
+        "sortOrder": 337
       },
       "2_star": {
         "id": "maskofthewickedlieutenant",
-        "name": "Mask of the Wicked Lieutenant"
+        "name": "Mask of the Wicked Lieutenant",
+        "sortOrder": 338
       }
     }
   },
@@ -212,19 +248,23 @@
     "tiers": {
       "5_star": {
         "id": "goldentalismanoftheforestdew",
-        "name": "Golden Talisman of the Forest Dew"
+        "name": "Golden Talisman of the Forest Dew",
+        "sortOrder": 339
       },
       "4_star": {
         "id": "silvertalismanoftheforestdew",
-        "name": "Silver Talisman of the Forest Dew"
+        "name": "Silver Talisman of the Forest Dew",
+        "sortOrder": 340
       },
       "3_star": {
         "id": "irontalismanoftheforestdew",
-        "name": "Iron Talisman of the Forest Dew"
+        "name": "Iron Talisman of the Forest Dew",
+        "sortOrder": 341
       },
       "2_star": {
         "id": "coppertalismanoftheforestdew",
-        "name": "Copper Talisman of the Forest Dew"
+        "name": "Copper Talisman of the Forest Dew",
+        "sortOrder": 342
       }
     }
   },
@@ -235,19 +275,23 @@
     "tiers": {
       "5_star": {
         "id": "oasisgardenstruth",
-        "name": "Oasis Garden's Truth"
+        "name": "Oasis Garden's Truth",
+        "sortOrder": 343
       },
       "4_star": {
         "id": "oasisgardensmourning",
-        "name": "Oasis Garden's Mourning"
+        "name": "Oasis Garden's Mourning",
+        "sortOrder": 344
       },
       "3_star": {
         "id": "oasisgardenskindness",
-        "name": "Oasis Garden's Kindness"
+        "name": "Oasis Garden's Kindness",
+        "sortOrder": 345
       },
       "2_star": {
         "id": "oasisgardensreminiscence",
-        "name": "Oasis Garden's Reminiscence"
+        "name": "Oasis Garden's Reminiscence",
+        "sortOrder": 346
       }
     }
   },
@@ -258,19 +302,23 @@
     "tiers": {
       "5_star": {
         "id": "oldendaysofscorchingmight",
-        "name": "Olden Days of Scorching Might"
+        "name": "Olden Days of Scorching Might",
+        "sortOrder": 347
       },
       "4_star": {
         "id": "dreamofscorchingmight",
-        "name": "Dream of Scorching Might"
+        "name": "Dream of Scorching Might",
+        "sortOrder": 348
       },
       "3_star": {
         "id": "remnantglowofscorchingmight",
-        "name": "Remnant Glow of Scorching Might"
+        "name": "Remnant Glow of Scorching Might",
+        "sortOrder": 349
       },
       "2_star": {
         "id": "echoofscorchingmight",
-        "name": "Echo of Scorching Might"
+        "name": "Echo of Scorching Might",
+        "sortOrder": 350
       }
     }
   },
@@ -281,19 +329,23 @@
     "tiers": {
       "5_star": {
         "id": "echoofanancientchord",
-        "name": "Echo of an Ancient Chord"
+        "name": "Echo of an Ancient Chord",
+        "sortOrder": 351
       },
       "4_star": {
         "id": "movementofanancientchord",
-        "name": "Movement of an Ancient Chord"
+        "name": "Movement of an Ancient Chord",
+        "sortOrder": 352
       },
       "3_star": {
         "id": "chapterofanancientchord",
-        "name": "Chapter of an Ancient Chord"
+        "name": "Chapter of an Ancient Chord",
+        "sortOrder": 353
       },
       "2_star": {
         "id": "fragmentofanancientchord",
-        "name": "Fragment of an Ancient Chord"
+        "name": "Fragment of an Ancient Chord",
+        "sortOrder": 354
       }
     }
   },
@@ -304,19 +356,23 @@
     "tiers": {
       "5_star": {
         "id": "essenceofpuresacreddewdrop",
-        "name": "Essence of Pure Sacred Dewdrop"
+        "name": "Essence of Pure Sacred Dewdrop",
+        "sortOrder": 355
       },
       "4_star": {
         "id": "springofpuresacreddewdrop",
-        "name": "Spring of Pure Sacred Dewdrop"
+        "name": "Spring of Pure Sacred Dewdrop",
+        "sortOrder": 356
       },
       "3_star": {
         "id": "sublimationofpuresacreddewdrop",
-        "name": "Sublimation of Pure Sacred Dewdrop"
+        "name": "Sublimation of Pure Sacred Dewdrop",
+        "sortOrder": 357
       },
       "2_star": {
         "id": "drossofpuresacreddewdrop",
-        "name": "Dross of Pure Sacred Dewdrop"
+        "name": "Dross of Pure Sacred Dewdrop",
+        "sortOrder": 358
       }
     }
   },
@@ -327,19 +383,23 @@
     "tiers": {
       "5_star": {
         "id": "goldengobletofthepristinesea",
-        "name": "Golden Goblet of the Pristine Sea"
+        "name": "Golden Goblet of the Pristine Sea",
+        "sortOrder": 359
       },
       "4_star": {
         "id": "silvergobletofthepristinesea",
-        "name": "Silver Goblet of the Pristine Sea"
+        "name": "Silver Goblet of the Pristine Sea",
+        "sortOrder": 360
       },
       "3_star": {
         "id": "winegobletofthepristinesea",
-        "name": "Wine Goblet of the Pristine Sea"
+        "name": "Wine Goblet of the Pristine Sea",
+        "sortOrder": 361
       },
       "2_star": {
         "id": "brokengobletofthepristinesea",
-        "name": "Broken Goblet of the Pristine Sea"
+        "name": "Broken Goblet of the Pristine Sea",
+        "sortOrder": 362
       }
     }
   },
@@ -350,19 +410,23 @@
     "tiers": {
       "5_star": {
         "id": "blazingsacrificialheartssplendor",
-        "name": "Blazing Sacrificial Hearts Splendor"
+        "name": "Blazing Sacrificial Hearts Splendor",
+        "sortOrder": 363
       },
       "4_star": {
         "id": "blazingsacrificialheartsresolve",
-        "name": "Blazing Sacrificial Hearts Resolve"
+        "name": "Blazing Sacrificial Hearts Resolve",
+        "sortOrder": 364
       },
       "3_star": {
         "id": "blazingsacrificialheartshesitance",
-        "name": "Blazing Sacrificial Hearts Hesitance"
+        "name": "Blazing Sacrificial Hearts Hesitance",
+        "sortOrder": 365
       },
       "2_star": {
         "id": "blazingsacrificialheartsterror",
-        "name": "Blazing Sacrificial Hearts Terror"
+        "name": "Blazing Sacrificial Hearts Terror",
+        "sortOrder": 366
       }
     }
   },
@@ -373,19 +437,23 @@
     "tiers": {
       "5_star": {
         "id": "deliriousdivinityofthesacredlord",
-        "name": "Delirious Divinity of the Sacred Lord"
+        "name": "Delirious Divinity of the Sacred Lord",
+        "sortOrder": 367
       },
       "4_star": {
         "id": "deliriousdemeanorofthesacredlord",
-        "name": "Delirious Demeanor of the Sacred Lord"
+        "name": "Delirious Demeanor of the Sacred Lord",
+        "sortOrder": 368
       },
       "3_star": {
         "id": "deliriousdesolationofthesacredlord",
-        "name": "Delirious Desolation of the Sacred Lord"
+        "name": "Delirious Desolation of the Sacred Lord",
+        "sortOrder": 369
       },
       "2_star": {
         "id": "deliriousdecadenceofthesacredlord",
-        "name": "Delirious Decadence of the Sacred Lord"
+        "name": "Delirious Decadence of the Sacred Lord",
+        "sortOrder": 370
       }
     }
   },
@@ -396,19 +464,23 @@
     "tiers": {
       "5_star": {
         "id": "nightwindsmysticrevelation",
-        "name": "Night Wind's Mystic Revelation"
+        "name": "Night Wind's Mystic Revelation",
+        "sortOrder": 371
       },
       "4_star": {
         "id": "nightwindsmysticaugury",
-        "name": "Night Wind's Mystic Augury"
+        "name": "Night Wind's Mystic Augury",
+        "sortOrder": 372
       },
       "3_star": {
         "id": "nightwindsmysticpremonition",
-        "name": "Night Wind's Mystic Premonition"
+        "name": "Night Wind's Mystic Premonition",
+        "sortOrder": 373
       },
       "2_star": {
         "id": "nightwindsmysticconsideration",
-        "name": "Night Wind's Mystic Consideration"
+        "name": "Night Wind's Mystic Consideration",
+        "sortOrder": 374
       }
     }
   },
@@ -419,19 +491,23 @@
     "tiers": {
       "5_star": {
         "id": "artfuldevicewish",
-        "name": "Artful Device Wish"
+        "name": "Artful Device Wish",
+        "sortOrder": 375
       },
       "4_star": {
         "id": "artfuldeviceinheritance",
-        "name": "Artful Device Inheritance"
+        "name": "Artful Device Inheritance",
+        "sortOrder": 376
       },
       "3_star": {
         "id": "artfuldevicereplica",
-        "name": "Artful Device Replica"
+        "name": "Artful Device Replica",
+        "sortOrder": 377
       },
       "2_star": {
         "id": "artfuldevicefragment",
-        "name": "Artful Device Fragment"
+        "name": "Artful Device Fragment",
+        "sortOrder": 378
       }
     }
   },
@@ -442,19 +518,23 @@
     "tiers": {
       "5_star": {
         "id": "blazeoflongnightflint",
-        "name": "Blaze of Long Night Flint"
+        "name": "Blaze of Long Night Flint",
+        "sortOrder": 379
       },
       "4_star": {
         "id": "flareoflongnightflint",
-        "name": "Flare of Long Night Flint"
+        "name": "Flare of Long Night Flint",
+        "sortOrder": 380
       },
       "3_star": {
         "id": "afterglowoflongnightflint",
-        "name": "Afterglow of Long Night Flint"
+        "name": "Afterglow of Long Night Flint",
+        "sortOrder": 381
       },
       "2_star": {
         "id": "emberoflongnightflint",
-        "name": "Ember of Long Night Flint"
+        "name": "Ember of Long Night Flint",
+        "sortOrder": 382
       }
     }
   },
@@ -465,19 +545,23 @@
     "tiers": {
       "5_star": {
         "id": "aureateradianceofthefarnorthscions",
-        "name": "Aureate Radiance of the Far North Scions"
+        "name": "Aureate Radiance of the Far North Scions",
+        "sortOrder": 383
       },
       "4_star": {
         "id": "oblationofthefarnorthscions",
-        "name": "Oblation of the Far North Scions"
+        "name": "Oblation of the Far North Scions",
+        "sortOrder": 384
       },
       "3_star": {
         "id": "unyieldingdelusionofthefarnorthscions",
-        "name": "Unyielding Delusion of the Far North Scions"
+        "name": "Unyielding Delusion of the Far North Scions",
+        "sortOrder": 385
       },
       "2_star": {
         "id": "sunderedgloryofthefarnorthscions",
-        "name": "Sundered Glory of the Far North Scions"
+        "name": "Sundered Glory of the Far North Scions",
+        "sortOrder": 386
       }
     }
   }
