@@ -77,7 +77,7 @@ const ALL_RARITIES  = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★'
 const LEVEL_MAX     = 90
 const ASC_MAX       = 6
 
-export default function AddWeaponModal({ onClose, existingWeapon = null }) {
+export default function AddWeaponModal({ onClose, existingWeapon = null, initialWeapon = null }) {
   const roster         = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
@@ -86,8 +86,8 @@ export default function AddWeaponModal({ onClose, existingWeapon = null }) {
   const modalRef = useRef(null)
 
   // Step 1 state
-  const [step, setStep]                   = useState(existingWeapon ? 2 : 1) // 1=Select, 2=Configure
-  const [selectedWeapon, setSelectedWeapon] = useState(existingWeapon ? existingWeapon.data : null)
+  const [step, setStep]                   = useState((existingWeapon || initialWeapon) ? 2 : 1) // 1=Select, 2=Configure
+  const [selectedWeapon, setSelectedWeapon] = useState(existingWeapon ? existingWeapon.data : (initialWeapon || null))
   const [search, setSearch]               = useState('')
   const [typeFilter, setTypeFilter]       = useState('All')
   const [rarityFilter, setRarityFilter]   = useState('All')

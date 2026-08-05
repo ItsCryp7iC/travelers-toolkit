@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import CharacterCard from '../components/CharacterCard'
 import WeaponCard from '../components/WeaponCard'
-import WeaponInfoModal from '../components/WeaponInfoModal'
+import AddWeaponModal from '../components/AddWeaponModal'
 import weaponsData from '../data/weapons.json'
 import ResinTracker from '../components/ResinTracker'
 import charactersData from '../data/characters.json'
@@ -375,10 +375,9 @@ export default function Dashboard() {
       )}
 
       {selectedWeapon && (
-        <WeaponInfoModal 
-          isOpen={!!selectedWeapon} 
+        <AddWeaponModal 
+          initialWeapon={selectedWeapon}
           onClose={() => setSelectedWeapon(null)} 
-          weapon={selectedWeapon} 
         />
       )}
     </div>
