@@ -23,6 +23,7 @@ const lookupEnemy = new Map([...commonEnemy, ...eliteEnemy].map(item => [item.id
 const lookupLocal = new Map(localSpecialty.map(item => [item.id, item]))
 const lookupTalent = new Map(talentMaterials.map(item => [item.id, item]))
 const lookupWeaponAsc = new Map(weaponAscension.map(item => [item.id, item]))
+const lookupGems = new Map(characterGems.map(item => [item.id, item]))
 
 const ID_ALIASES = {
   // Weapon Ascension Aliases
@@ -79,18 +80,7 @@ export const resolveCharacterMaterials = (char) => {
     talent: SAFE_FALLBACK,
     enemy: SAFE_FALLBACK,
     localSpecialty: localId ? (lookupLocal.get(localId) || SAFE_FALLBACK) : SAFE_FALLBACK,
-    gem: m.gem_family_id ? GEM_INFO[m.gem_family_id] || SAFE_FALLBACK : SAFE_FALLBACK
-  }
-
-  // Generate 4 tiers for gems based on baseName
-  if (resolved.gem && resolved.gem.baseName) {
-    const base = resolved.gem.baseName
-    resolved.gem.tiers = {
-      '1_star': { name: `${base} Sliver` },
-      '2_star': { name: `${base} Fragment` },
-      '3_star': { name: `${base} Chunk` },
-      '4_star': { name: `${base} Gemstone` }
-    }
+    gem: m.gem_family_id ? (lookupGems.get(m.gem_family_id) || SAFE_FALLBACK) : SAFE_FALLBACK
   }
 
   const talentData = talentId ? lookupTalent.get(talentId) : null

@@ -396,13 +396,13 @@ export default function Characters() {
                       const resolvedMats = resolveCharacterMaterials(char)
 
                       // Aggregate Stones
-                      const totalStones = (asc.gem_sliver || 0) + (asc.gem_fragment || 0) + (asc.gem_chunk || 0) + (asc.gem_gemstone || 0)
+                      const totalStones = (asc?.gem_sliver || 0) + (asc?.gem_fragment || 0) + (asc?.gem_chunk || 0) + (asc?.gem_gemstone || 0)
 
                       // Grand Totals Calculations
-                      const grandEnh3 = (asc['3_star_enemy_material'] || 0) + (tal['3_star_enemy_material'] || 0)
-                      const grandEnh2 = (asc['2_star_enemy_material'] || 0) + (tal['2_star_enemy_material'] || 0)
-                      const grandEnh1 = (asc['1_star_enemy_material'] || 0) + (tal['1_star_enemy_material'] || 0)
-                      const grandMora = (asc.mora || 0) + (tal.mora || 0)
+                      const grandEnh3 = (asc?.['3_star_enemy_material'] || 0) + (tal?.['3_star_enemy_material'] || 0)
+                      const grandEnh2 = (asc?.['2_star_enemy_material'] || 0) + (tal?.['2_star_enemy_material'] || 0)
+                      const grandEnh1 = (asc?.['1_star_enemy_material'] || 0) + (tal?.['1_star_enemy_material'] || 0)
+                      const grandMora = (asc?.mora || 0) + (tal?.mora || 0)
 
                       return (
                         <tr
