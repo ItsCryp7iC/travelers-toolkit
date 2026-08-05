@@ -1,5 +1,33 @@
 [
   {
+    "id": "brilliantdiamond",
+    "name": "Brilliant Diamond",
+    "color": "#E8E3D5",
+    "element": "All",
+    "tiers": {
+      "4_star": {
+        "id": "brilliantdiamond_gemstone",
+        "name": "Brilliant Diamond Gemstone",
+        "sortOrder": 9.001
+      },
+      "3_star": {
+        "id": "brilliantdiamond_chunk",
+        "name": "Brilliant Diamond Chunk",
+        "sortOrder": 9.002
+      },
+      "2_star": {
+        "id": "brilliantdiamond_fragment",
+        "name": "Brilliant Diamond Fragment",
+        "sortOrder": 9.003
+      },
+      "1_star": {
+        "id": "brilliantdiamond_sliver",
+        "name": "Brilliant Diamond Sliver",
+        "sortOrder": 9.004
+      }
+    }
+  },
+  {
     "id": "agnidusagate",
     "name": "Agnidus Agate",
     "color": "#F97316",
@@ -8,22 +36,22 @@
       "4_star": {
         "id": "agnidusagate_gemstone",
         "name": "Agnidus Agate Gemstone",
-        "sortOrder": 9.001
+        "sortOrder": 9.005
       },
       "3_star": {
         "id": "agnidusagate_chunk",
         "name": "Agnidus Agate Chunk",
-        "sortOrder": 9.002
+        "sortOrder": 9.006
       },
       "2_star": {
         "id": "agnidusagate_fragment",
         "name": "Agnidus Agate Fragment",
-        "sortOrder": 9.003
+        "sortOrder": 9.007
       },
       "1_star": {
         "id": "agnidusagate_sliver",
         "name": "Agnidus Agate Sliver",
-        "sortOrder": 9.004
+        "sortOrder": 9.008
       }
     }
   },
@@ -36,22 +64,22 @@
       "4_star": {
         "id": "nagadusemerald_gemstone",
         "name": "Nagadus Emerald Gemstone",
-        "sortOrder": 9.005
+        "sortOrder": 9.009
       },
       "3_star": {
         "id": "nagadusemerald_chunk",
         "name": "Nagadus Emerald Chunk",
-        "sortOrder": 9.006
+        "sortOrder": 9.01
       },
       "2_star": {
         "id": "nagadusemerald_fragment",
         "name": "Nagadus Emerald Fragment",
-        "sortOrder": 9.007
+        "sortOrder": 9.011
       },
       "1_star": {
         "id": "nagadusemerald_sliver",
         "name": "Nagadus Emerald Sliver",
-        "sortOrder": 9.008
+        "sortOrder": 9.012
       }
     }
   },
@@ -64,22 +92,22 @@
       "4_star": {
         "id": "prithivatopaz_gemstone",
         "name": "Prithiva Topaz Gemstone",
-        "sortOrder": 9.009
+        "sortOrder": 9.013
       },
       "3_star": {
         "id": "prithivatopaz_chunk",
         "name": "Prithiva Topaz Chunk",
-        "sortOrder": 9.01
+        "sortOrder": 9.014
       },
       "2_star": {
         "id": "prithivatopaz_fragment",
         "name": "Prithiva Topaz Fragment",
-        "sortOrder": 9.011
+        "sortOrder": 9.015
       },
       "1_star": {
         "id": "prithivatopaz_sliver",
         "name": "Prithiva Topaz Sliver",
-        "sortOrder": 9.012
+        "sortOrder": 9.016
       }
     }
   },
@@ -92,22 +120,22 @@
       "4_star": {
         "id": "shivadajade_gemstone",
         "name": "Shivada Jade Gemstone",
-        "sortOrder": 9.013
+        "sortOrder": 9.017
       },
       "3_star": {
         "id": "shivadajade_chunk",
         "name": "Shivada Jade Chunk",
-        "sortOrder": 9.014
+        "sortOrder": 9.018
       },
       "2_star": {
         "id": "shivadajade_fragment",
         "name": "Shivada Jade Fragment",
-        "sortOrder": 9.015
+        "sortOrder": 9.019
       },
       "1_star": {
         "id": "shivadajade_sliver",
         "name": "Shivada Jade Sliver",
-        "sortOrder": 9.016
+        "sortOrder": 9.02
       }
     }
   },
@@ -120,22 +148,22 @@
       "4_star": {
         "id": "vajradaamethyst_gemstone",
         "name": "Vajrada Amethyst Gemstone",
-        "sortOrder": 9.017
+        "sortOrder": 9.021
       },
       "3_star": {
         "id": "vajradaamethyst_chunk",
         "name": "Vajrada Amethyst Chunk",
-        "sortOrder": 9.018
+        "sortOrder": 9.022
       },
       "2_star": {
         "id": "vajradaamethyst_fragment",
         "name": "Vajrada Amethyst Fragment",
-        "sortOrder": 9.019
+        "sortOrder": 9.023
       },
       "1_star": {
         "id": "vajradaamethyst_sliver",
         "name": "Vajrada Amethyst Sliver",
-        "sortOrder": 9.02
+        "sortOrder": 9.024
       }
     }
   },
@@ -148,22 +176,22 @@
       "4_star": {
         "id": "varunadalazurite_gemstone",
         "name": "Varunada Lazurite Gemstone",
-        "sortOrder": 9.021
+        "sortOrder": 9.025
       },
       "3_star": {
         "id": "varunadalazurite_chunk",
         "name": "Varunada Lazurite Chunk",
-        "sortOrder": 9.022
+        "sortOrder": 9.026
       },
       "2_star": {
         "id": "varunadalazurite_fragment",
         "name": "Varunada Lazurite Fragment",
-        "sortOrder": 9.023
+        "sortOrder": 9.027
       },
       "1_star": {
         "id": "varunadalazurite_sliver",
         "name": "Varunada Lazurite Sliver",
-        "sortOrder": 9.024
+        "sortOrder": 9.028
       }
     }
   },
@@ -176,49 +204,21 @@
       "4_star": {
         "id": "vayudaturquoise_gemstone",
         "name": "Vayuda Turquoise Gemstone",
-        "sortOrder": 9.025
+        "sortOrder": 9.029
       },
       "3_star": {
         "id": "vayudaturquoise_chunk",
         "name": "Vayuda Turquoise Chunk",
-        "sortOrder": 9.026
+        "sortOrder": 9.03
       },
       "2_star": {
         "id": "vayudaturquoise_fragment",
         "name": "Vayuda Turquoise Fragment",
-        "sortOrder": 9.027
+        "sortOrder": 9.031
       },
       "1_star": {
         "id": "vayudaturquoise_sliver",
         "name": "Vayuda Turquoise Sliver",
-        "sortOrder": 9.028
-      }
-    }
-  },
-  {
-    "id": "brilliantdiamond",
-    "name": "Brilliant Diamond",
-    "color": "#E8E3D5",
-    "element": "All",
-    "tiers": {
-      "4_star": {
-        "id": "brilliantdiamond_gemstone",
-        "name": "Brilliant Diamond Gemstone",
-        "sortOrder": 9.029
-      },
-      "3_star": {
-        "id": "brilliantdiamond_chunk",
-        "name": "Brilliant Diamond Chunk",
-        "sortOrder": 9.03
-      },
-      "2_star": {
-        "id": "brilliantdiamond_fragment",
-        "name": "Brilliant Diamond Fragment",
-        "sortOrder": 9.031
-      },
-      "1_star": {
-        "id": "brilliantdiamond_sliver",
-        "name": "Brilliant Diamond Sliver",
         "sortOrder": 9.032
       }
     }
