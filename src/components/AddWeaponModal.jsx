@@ -9,7 +9,7 @@ import CustomSelect from './CustomSelect'
 import { getWeaponIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
 import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
 
-function AscensionSelector({ value, onChange, label, elementColor }) {
+function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 }) {
   const getPhaseMax = (a) => a === 6 ? 90 : ASCENSION_CAPS[a];
   
   return (
@@ -18,21 +18,25 @@ function AscensionSelector({ value, onChange, label, elementColor }) {
         {label}
       </p>
       <div className="flex gap-1.5 flex-wrap" role="group" aria-label={label}>
-        {[0, 1, 2, 3, 4, 5, 6].map((a) => (
-          <button
-            key={a}
-            onClick={() => onChange(a)}
-            title={`A${a} — Max Lv${getPhaseMax(a)}`}
-            className="w-8 h-8 rounded-lg text-xs font-bold transition-all duration-150 border"
-            style={
-              value === a
-                ? { background: `${elementColor}25`, borderColor: elementColor, color: elementColor, boxShadow: `0 0 12px ${elementColor}40` }
-                : { background: 'var(--elevated)', borderColor: 'var(--border)', color: 'var(--muted)' }
-            }
-          >
-            {a}
-          </button>
-        ))}
+        {[0, 1, 2, 3, 4, 5, 6].map((a) => {
+          const disabled = a < minValid;
+          return (
+            <button
+              key={a}
+              disabled={disabled}
+              onClick={() => onChange(a)}
+              title={`A${a} — Max Lv${getPhaseMax(a)}`}
+              className={`w-8 h-8 rounded-lg text-xs font-bold transition-all duration-150 border ${disabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+              style={
+                value === a
+                  ? { background: `${elementColor}25`, borderColor: elementColor, color: elementColor, boxShadow: `0 0 12px ${elementColor}40` }
+                  : { background: 'var(--elevated)', borderColor: 'var(--border)', color: 'var(--muted)' }
+              }
+            >
+              {a}
+            </button>
+          )
+        })}
       </div>
       <p className="text-[10px] text-[var(--muted)] mt-1">
         Max Level: <span style={{ color: elementColor }}>Lv{getPhaseMax(value)}</span>
@@ -41,9 +45,9 @@ function AscensionSelector({ value, onChange, label, elementColor }) {
   )
 }
 
-function LevelSlider({ value, onChange, ascension, label, elementColor }) {
+function LevelSlider({ value, onChange, ascension, label, elementColor, minOverride }) {
   const range = getLevelRange(ascension)
-  const min = range.min
+  const min = minOverride !== undefined ? Math.max(range.min, minOverride) : range.min
   const max = Math.min(range.max, 90)
   const pct = max > min ? ((value - min) / (max - min)) * 100 : 0
   return (
@@ -305,16 +309,52 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                       <div className="modal-state-panel">
                         <p className={`text-[10px] font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
-                        <AscensionSelector value={ascension} onChange={(a) => { setAscension(a); setLevel(clampLevel(level, a)) }} label="Ascension" elementColor={theme.elementColor} />
+                        <AscensionSelector 
+                          value={ascension} 
+                          onChange={(a) => { 
+                            setAscension(a); 
+                            const clampedLevel = clampLevel(level, a);
+                            setLevel(clampedLevel); 
+                            if (a > targetAscension) setTargetAscension(a);
+                            if (clampedLevel > targetLevel) setTargetLevel(clampedLevel);
+                          }} 
+                          label="Ascension" 
+                          elementColor={theme.elementColor} 
+                        />
                         <div className="mt-4">
-                          <LevelSlider value={level} onChange={setLevel} ascension={ascension} label="Level" elementColor={theme.elementColor} />
+                          <LevelSlider 
+                            value={level} 
+                            onChange={(l) => {
+                              setLevel(l);
+                              if (l > targetLevel) setTargetLevel(l);
+                            }} 
+                            ascension={ascension} 
+                            label="Level" 
+                            elementColor={theme.elementColor} 
+                          />
                         </div>
                       </div>
                       <div className="modal-state-panel">
                         <p className={`text-[10px] font-bold tracking-widest uppercase mb-4 ${theme.text}`}>🎯 Weapon Target</p>
-                        <AscensionSelector value={targetAscension} onChange={(a) => { setTargetAscension(a); setTargetLevel(clampLevel(targetLevel, a)) }} label="Ascension" elementColor={theme.elementColor} />
+                        <AscensionSelector 
+                          value={targetAscension} 
+                          onChange={(a) => { 
+                            setTargetAscension(a); 
+                            setTargetLevel(clampLevel(targetLevel, a)) 
+                          }} 
+                          label="Ascension" 
+                          elementColor={theme.elementColor}
+                          minValid={ascension} 
+                        />
                         <div className="mt-4">
-                          <LevelSlider value={targetLevel} onChange={setTargetLevel} ascension={targetAscension} label="Level" elementColor={theme.elementColor} />
+                          <LevelSlider 
+                            value={targetLevel} 
+                            onChange={setTargetLevel} 
+                            ascension={targetAscension} 
+                            label="Level" 
+                            elementColor={theme.elementColor}
+                            minOverride={targetAscension === ascension ? level : undefined} 
+                          />
                         </div>
                       </div>
                     </div>
