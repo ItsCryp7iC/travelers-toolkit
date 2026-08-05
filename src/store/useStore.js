@@ -143,17 +143,17 @@ const useStore = create(
       // ─── TRACKED WEAPONS (ARMORY) ──────────────────────────────────────
       trackedWeapons: [],
 
-      addTrackedWeapon: (weaponName, assignedTo = null) => {
+      addTrackedWeapon: (weaponName, assignedTo = null, config = {}) => {
         // Generate the ID outside set() so we can return it to the caller
         const id = crypto.randomUUID()
         const newWeapon = {
           id,
           weapon_id: weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
           weaponName,
-          level: 1,
-          ascension: 0,
-          targetLevel: 90,
-          targetAscension: 6,
+          level: config.currentLevel ?? 1,
+          ascension: config.currentAscension ?? 0,
+          targetLevel: config.targetLevel ?? 90,
+          targetAscension: config.targetAscension ?? 6,
           assignedTo,
           createdAt: Date.now(),
         }

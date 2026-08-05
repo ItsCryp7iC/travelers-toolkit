@@ -1,16 +1,101 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { WEAPON_TYPES, formatName, getStars, getRarityClass, RARITY_COLORS, getRarityBg } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
 import { getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
-import { formatMaterialName } from '../utils/calculator'
+import useStore from '../store/useStore'
+
+const getAscensionMaxLevel = (asc) => {
+  if (asc === 0) return 20;
+  if (asc === 1) return 40;
+  if (asc === 2) return 50;
+  if (asc === 3) return 60;
+  if (asc === 4) return 70;
+  if (asc === 5) return 80;
+  return 90;
+}
+
+const AscensionPanel = ({ label, asc, setAsc, level, setLevel }) => {
+  const cap = getAscensionMaxLevel(asc);
+  
+  useEffect(() => {
+    if (level > cap) setLevel(cap);
+  }, [asc, cap, level, setLevel]);
+  
+  return (
+    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 shadow-sm flex-1">
+      <h4 className="font-cinzel font-bold text-[var(--gold)] mb-3 text-sm">{label}</h4>
+      
+      <div className="mb-4">
+        <p className="text-[10px] text-[var(--muted)] tracking-widest uppercase mb-2">Ascension Phase</p>
+        <div className="flex gap-1.5 flex-wrap">
+          {[0, 1, 2, 3, 4, 5, 6].map(a => (
+            <button
+              key={a}
+              onClick={() => setAsc(a)}
+              className={`w-8 h-8 rounded-lg font-mono text-xs font-bold transition-all ${
+                asc === a 
+                  ? 'bg-[var(--gold)] text-gray-900 shadow-md transform scale-105' 
+                  : 'bg-[var(--elevated)] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-gray-500'
+              }`}
+            >
+              {a}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="flex justify-between items-end mb-2">
+          <p className="text-[10px] text-[var(--muted)] tracking-widest uppercase">Weapon Level</p>
+          <span className="font-mono text-[var(--text)] text-sm font-bold">Lv. {level} / {cap}</span>
+        </div>
+        <input 
+          type="range" 
+          min={1} 
+          max={cap} 
+          value={level}
+          onChange={(e) => setLevel(Number(e.target.value))}
+          className="w-full accent-[var(--gold)] h-1.5 bg-[var(--border)] rounded-lg appearance-none cursor-pointer"
+        />
+        <div className="flex justify-between mt-1 px-1">
+          <span className="text-[10px] text-[var(--muted)] font-mono">1</span>
+          <span className="text-[10px] text-[var(--muted)] font-mono">{cap}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function WeaponInfoModal({ weapon, onClose }) {
   const modalRef = useRef(null)
-  const { name, rarity, type, materials } = weapon
+  const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
+  const roster = useStore((s) => s.roster)
+  
+  const { name, rarity, type } = weapon
   const displayName = formatName(name)
   const wpConfig = WEAPON_TYPES[type] || { emoji: '✨', label: 'Unknown' }
   const rarityClass = getRarityClass(rarity)
   const rarityColor = RARITY_COLORS[rarity] || '#C8A96E'
+
+  // Configuration States
+  const [currentAscension, setCurrentAscension] = useState(0)
+  const [currentLevel, setCurrentLevel] = useState(1)
+  const [targetAscension, setTargetAscension] = useState(6)
+  const [targetLevel, setTargetLevel] = useState(90)
+  const [assignedCharacter, setAssignedCharacter] = useState('unassigned')
+
+  // Prevent invalid targets
+  useEffect(() => {
+    if (targetAscension < currentAscension) {
+      setTargetAscension(currentAscension)
+    }
+  }, [currentAscension, targetAscension])
+
+  useEffect(() => {
+    if (targetLevel < currentLevel) {
+      setTargetLevel(currentLevel)
+    }
+  }, [currentLevel, targetLevel])
 
   // Close when clicking outside
   useEffect(() => {
@@ -29,27 +114,26 @@ export default function WeaponInfoModal({ weapon, onClose }) {
     return () => { document.body.style.overflow = '' }
   }, [])
 
-  const renderMaterial = (label, value, icon) => {
-    if (!value || value === 'nan' || value === 'None') return null
-    return (
-      <div className="flex items-center gap-3 p-3 rounded-lg border bg-[var(--surface)] border-[var(--border)]">
-        <span className="text-xl flex-shrink-0">{icon}</span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[10px] text-[var(--muted)] font-semibold tracking-widest uppercase mb-0.5">{label}</p>
-          <p className="text-sm font-semibold text-[var(--text)] truncate">{formatMaterialName(value)}</p>
-        </div>
-      </div>
-    )
+  const handleSave = () => {
+    const assignTo = assignedCharacter === 'unassigned' ? null : assignedCharacter;
+    const config = {
+      currentLevel,
+      currentAscension,
+      targetLevel,
+      targetAscension
+    }
+    addTrackedWeapon(name, assignTo, config)
+    onClose()
   }
 
-  const hasMaterials = materials && (materials.ascension_mat || materials.elite_mat || materials.mob_mat)
+  const rosterNames = Object.keys(roster).sort()
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-fade-in"
          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
       <div
         ref={modalRef}
-        className="w-full max-w-lg bg-[var(--elevated)] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-slide-up border"
+        className="w-full max-w-2xl bg-[var(--elevated)] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-slide-up border"
         style={{ borderColor: `${rarityColor}40` }}
       >
         {/* ── Header ── */}
@@ -57,7 +141,6 @@ export default function WeaponInfoModal({ weapon, onClose }) {
           className="relative p-6 shrink-0 overflow-hidden"
           style={{ background: `linear-gradient(135deg, ${rarityColor}40 0%, ${rarityColor}10 100%)` }}
         >
-          {/* Close button */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/30 text-white flex items-center justify-center hover:bg-black/50 transition-colors z-20"
@@ -94,24 +177,60 @@ export default function WeaponInfoModal({ weapon, onClose }) {
         {/* ── Body ── */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           
-          <div>
-            <h3 className="font-cinzel font-bold text-lg mb-4 text-[var(--gold)] flex items-center gap-2">
-              <span className="text-[var(--muted)] text-sm">🎒</span> Progression Materials
-            </h3>
-            
-            {hasMaterials ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {renderMaterial('Weapon Ascension Material', materials?.ascension_mat, '✨')}
-              {renderMaterial('Elite Enhancement Material', materials?.elite_mat, '🏵️')}
-              {renderMaterial('Common Enhancement Material', materials?.mob_mat, '⚔️')}
-            </div>
-            ) : (
-              <div className="text-center py-6 border border-[var(--border)] rounded-xl bg-[var(--surface)] text-[var(--muted)] text-sm">
-                Material data for this weapon is currently unavailable.
-              </div>
-            )}
+          {/* Progression Panels */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <AscensionPanel 
+              label="WEAPON CURRENT" 
+              asc={currentAscension} 
+              setAsc={setCurrentAscension} 
+              level={currentLevel} 
+              setLevel={setCurrentLevel} 
+            />
+            <AscensionPanel 
+              label="WEAPON TARGET" 
+              asc={targetAscension} 
+              setAsc={setTargetAscension} 
+              level={targetLevel} 
+              setLevel={setTargetLevel} 
+            />
           </div>
-          
+
+          {/* Character Assignment Dropdown */}
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4">
+            <label className="block text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+              Assign to Character (Optional)
+            </label>
+            <div className="relative">
+              <select
+                value={assignedCharacter}
+                onChange={(e) => setAssignedCharacter(e.target.value)}
+                className="w-full bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-sm rounded-lg px-4 py-3 outline-none focus:border-[var(--gold)] transition-colors appearance-none cursor-pointer"
+              >
+                <option value="unassigned">-- Unassigned --</option>
+                {rosterNames.map(char => (
+                  <option key={char} value={char}>{formatName(char)}</option>
+                ))}
+              </select>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--muted)]">▼</span>
+            </div>
+          </div>
+
+        </div>
+
+        {/* ── Footer ── */}
+        <div className="p-4 sm:p-6 border-t border-[var(--border)] bg-[var(--surface)] shrink-0 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 rounded-xl font-semibold text-[var(--text)] bg-[var(--elevated)] border border-[var(--border)] hover:bg-[var(--border)] transition-colors text-sm sm:text-base"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="flex-[2] py-3 rounded-xl font-cinzel font-bold text-[var(--bg)] bg-[var(--gold)] hover:brightness-110 active:brightness-90 transition-all shadow-md text-sm sm:text-lg"
+          >
+            Add to Armory
+          </button>
         </div>
       </div>
     </div>
