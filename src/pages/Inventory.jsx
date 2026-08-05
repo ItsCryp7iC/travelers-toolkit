@@ -259,7 +259,20 @@ export default function Inventory() {
 
       {/* ── Content Grid ── */}
       <div className="animate-fade-in grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-6">
-        {filteredMats.map((mat) => (
+        {[...filteredMats].sort((a, b) => {
+          // 1. Identify the core family name (with fallback for stripping common suffixes if baseName is missing)
+          const getFamily = (item) => item.baseName || item.name || item.label.replace(/ (Sliver|Fragment|Chunk|Gemstone)$/, '');
+          const familyA = getFamily(a);
+          const familyB = getFamily(b);
+
+          // 2. If they are in the same family, sort by rarity DESCENDING
+          if (familyA === familyB) {
+            return (b.rarity || 0) - (a.rarity || 0);
+          }
+
+          // 3. If they are different families, sort them alphabetically by family name
+          return familyA.localeCompare(familyB);
+        }).map((mat) => (
           <MaterialCard
             key={mat.matKey}
             matKey={mat.matKey}
