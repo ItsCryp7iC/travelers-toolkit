@@ -187,7 +187,7 @@ export const getPrimaryInventoryList = () => {
     (item) => {
       if (item.category === 'Currency') return '#FAB632';
       if (item.rarity === 5) return '#FBBF24';
-      if (item.rarity === 4) return '#60A5FA';
+      if (item.rarity === 4) return '#A855F7';
       if (item.rarity === 3) return '#60A5FA';
       if (item.rarity === 2) return '#4ADE80';
       return '#9CA3AF';
