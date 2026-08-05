@@ -75,63 +75,41 @@ export default function FarmableToday() {
   const totals  = useMemo(() => aggregateRosterCosts(roster), [roster])
   const toFarm  = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
 
-  // ── Talent Books ───────────────────────────────────────────────────────────
-  const todayBooks = useMemo(() => getTodayBooks(), [])
-  const neededBooksMap = useMemo(() => {
-    const map = {}
-    for (const item of (toFarm.talentBooks || [])) {
-      map[item.name] = item.toFarm
-    }
-    return map
-  }, [toFarm.talentBooks])
+  const todayRotation = useMemo(() => {
+    if (today === 0) return 'ALL';
+    const ROTATION = {
+      1: ['Freedom', 'Prosperity', 'Transience', 'Admonition', 'Equity', 'Decarabian', 'Guyun', 'Mask', 'Forest Dew', 'Talisman of the Dew'],
+      2: ['Resistance', 'Diligence', 'Elegance', 'Ingenuity', 'Justice', 'Boreal Wolf', 'Mist Veiled', 'Narukami', 'Oasis', 'Pure Sacred Dewdrop'],
+      3: ['Ballad', 'Gold', 'Light', 'Praxis', 'Order', 'Dandelion Gladiator', 'Aerosiderite', 'Mask (Inazuma)', 'Scorching Might', 'Pristine Sea']
+    };
+    ROTATION[4] = ROTATION[1];
+    ROTATION[5] = ROTATION[2];
+    ROTATION[6] = ROTATION[3];
+    return ROTATION[today] || [];
+  }, [today]);
 
+  const matchesRotation = (itemName) => {
+    if (todayRotation === 'ALL') return true;
+    const lowerName = itemName.toLowerCase();
+    return todayRotation.some(keyword => {
+      if (keyword === 'Mask (Inazuma)' || keyword === 'Mask') return lowerName.includes('mask');
+      return lowerName.includes(keyword.toLowerCase());
+    });
+  };
+
+  // ── Talent Books ───────────────────────────────────────────────────────────
   const todayBooksFarmable = useMemo(() => {
-    const result = []
-    for (const base of todayBooks) {
-      const matchedEntries = Object.entries(neededBooksMap).filter(([k]) => k.startsWith(base))
-      if (matchedEntries.length > 0) {
-        for (const [matKey, qty] of matchedEntries) {
-          result.push({ matKey, qty, needed: true })
-        }
-      } else {
-        result.push({ matKey: `${base}Philosophies`, qty: 0, needed: false })
-      }
-    }
-    return result
-  }, [todayBooks, neededBooksMap])
+    return (toFarm.talentBooks || [])
+      .filter(item => matchesRotation(item.name))
+      .map(item => ({ matKey: item.name, qty: item.toFarm, needed: true }));
+  }, [toFarm.talentBooks, todayRotation]);
 
   // ── Weapon Mats ────────────────────────────────────────────────────────────
-  const todayWeaponGroup = useMemo(() => getTodayWeaponMatGroup(), [])
-  const neededWeaponMap = useMemo(() => {
-    const map = {}
-    for (const item of (toFarm.weaponAscMats || [])) {
-      map[item.name] = item.toFarm
-    }
-    return map
-  }, [toFarm.weaponAscMats])
-
   const todayWeaponFarmable = useMemo(() => {
-    const result = []
-    if (todayWeaponGroup === 'all') {
-      // Sunday: just show all needed weapon mats without the "Done" pills
-      for (const [matKey, qty] of Object.entries(neededWeaponMap)) {
-        result.push({ matKey, qty, needed: true })
-      }
-    } else {
-      const bases = WEAPON_MAT_GROUPS[todayWeaponGroup] || []
-      for (const base of bases) {
-        const matchedEntries = Object.entries(neededWeaponMap).filter(([k]) => k.toLowerCase().includes(base.toLowerCase()))
-        if (matchedEntries.length > 0) {
-          for (const [matKey, qty] of matchedEntries) {
-            result.push({ matKey, qty, needed: true })
-          }
-        } else {
-          result.push({ matKey: `${base} (Domain)`, qty: 0, needed: false })
-        }
-      }
-    }
-    return result
-  }, [todayWeaponGroup, neededWeaponMap])
+    return (toFarm.weaponAscMats || [])
+      .filter(item => matchesRotation(item.name))
+      .map(item => ({ matKey: item.name, qty: item.toFarm, needed: true }));
+  }, [toFarm.weaponAscMats, todayRotation]);
 
   // ── Aggregation ────────────────────────────────────────────────────────────
   const farmableCount = todayBooksFarmable.filter((b) => b.needed).length + todayWeaponFarmable.filter((w) => w.needed).length

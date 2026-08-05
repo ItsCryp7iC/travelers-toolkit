@@ -257,6 +257,25 @@ export default function Planner() {
 
   const hasRoster = Object.keys(roster).length > 0
 
+  const remainingTotals = useMemo(() => {
+    let mora = toFarm.mora?.toFarm || 0;
+    let crowns = toFarm.crown?.toFarm || 0;
+    let sumItems = 0;
+    
+    for (const key of Object.keys(toFarm)) {
+      if (['totalItems', 'allDone', 'mora', 'crown'].includes(key)) continue;
+      const val = toFarm[key];
+      if (Array.isArray(val)) {
+        val.forEach(item => {
+          if (item?.toFarm) sumItems += item.toFarm;
+        });
+      } else if (val?.toFarm) {
+        sumItems += val.toFarm;
+      }
+    }
+    return { mora, crowns, sumItems };
+  }, [toFarm]);
+
   if (!hasRoster) return (
     <div className="animate-fade-in">
       <div className="mb-8">
@@ -285,12 +304,12 @@ export default function Planner() {
       {/* ── Grand Total Stats ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <PlannerStat icon="👥" label="Tracked Characters" value={totals.trackedCount}                  accent="#4EC9B0" />
-        <PlannerStat icon="🪙" label="Total Mora"         value={formatNumber(totals.totalMora)}        accent="#FAB632" />
-        <PlannerStat icon="👑" label="Crowns Needed"      value={totals.totalCrowns || 0}              accent="#FBBF24"
-          sub={totals.totalCrowns > 0 ? 'Crown of Insight' : 'None needed'} />
-        <PlannerStat icon="🎒" label="Still to Farm"      value={toFarm.totalItems}
+        <PlannerStat icon="🪙" label="Total Mora"         value={formatNumber(remainingTotals.mora)}        accent="#FAB632" />
+        <PlannerStat icon="👑" label="Crowns Needed"      value={remainingTotals.crowns}              accent="#FBBF24"
+          sub={remainingTotals.crowns > 0 ? 'Crown of Insight' : 'None needed'} />
+        <PlannerStat icon="🎒" label="Still to Farm"      value={formatNumber(remainingTotals.sumItems)}
           accent={toFarm.allDone ? '#4ADE80' : '#F97316'}
-          sub={toFarm.allDone ? '✅ All stocked!' : 'material lines'} />
+          sub={toFarm.allDone ? '✅ All stocked!' : 'materials left'} />
       </div>
 
       {/* ── Farmable Today Widget ── */}
