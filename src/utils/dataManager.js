@@ -7,16 +7,6 @@ import talentMaterials from '../data/talent_materials.json'
 import weaponAscension from '../data/weapon_ascension.json'
 
 // ─── Element / Gemstone Info ──────────────────────────────────────────────
-export const GEM_INFO = {
-  agnidusagate: { color: '#F97316', label: 'Pyro', emoji: '🔥', baseName: 'Agnidus Agate' },
-  nagadusemerald: { color: '#4ADE80', label: 'Dendro', emoji: '🌿', baseName: 'Nagadus Emerald' },
-  prithivatopaz: { color: '#FAB632', label: 'Geo', emoji: '⛰️', baseName: 'Prithiva Topaz' },
-  shivadajade: { color: '#BAE6FD', label: 'Cryo', emoji: '❄️', baseName: 'Shivada Jade' },
-  vajradaamethyst: { color: '#A855F7', label: 'Electro', emoji: '⚡', baseName: 'Vajrada Amethyst' },
-  varunadalazurite: { color: '#60A5FA', label: 'Hydro', emoji: '💧', baseName: 'Varunada Lazurite' },
-  vayudaturquoise: { color: '#4EC9B0', label: 'Anemo', emoji: '🌪️', baseName: 'Vayuda Turquoise' },
-  brilliantdiamond: { color: '#E8E3D5', label: 'All', emoji: '💎', baseName: 'Brilliant Diamond' },
-}
 
 const TIER_STARS_GEM = ['Sliver ★', 'Fragment ★★', 'Chunk ★★★', 'Gemstone ★★★★']
 const TIER_STARS_WEAPON = ['Debris ★', 'Fragment ★★', 'Chunk ★★★', 'Core ★★★★'] // generic fallback
@@ -216,25 +206,6 @@ export const getPrimaryInventoryList = () => {
     tiers.forEach((tier, i) => {
       addMat(tier.id, 'Weapon Ascension Material', null, tier.name, TIER_STARS_WEAPON[i] || 'Ascension', '#F59E0B', 'Weapon Ascension Material', weaponAscRarities[i] || 2, tier.sortOrder)
     })
-  })
-
-  // 7. Character Ascension Gems
-  const gemRarities = [2, 3, 4, 5]
-  let currentGemCounter = 1;
-  const getGemOrder = () => parseFloat((9 + currentGemCounter++ / 1000).toFixed(3));
-  Object.keys(GEM_INFO).forEach(gemKey => {
-    const gem = GEM_INFO[gemKey]
-    if (gemKey === 'brilliantdiamond') {
-      addMat('brilliantdiamond_gemstone', 'Character Ascension Gem', null, 'Brilliant Diamond Gemstone', TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3], getGemOrder())
-      addMat('brilliantdiamond_chunk', 'Character Ascension Gem', null, 'Brilliant Diamond Chunk', TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2], getGemOrder())
-      addMat('brilliantdiamond_fragment', 'Character Ascension Gem', null, 'Brilliant Diamond Fragment', TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1], getGemOrder())
-      addMat('brilliantdiamond_sliver', 'Character Ascension Gem', null, 'Brilliant Diamond Sliver', TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0], getGemOrder())
-    } else {
-      addMat(`${gemKey}_gemstone`, 'Character Ascension Gem', null, `${gem.baseName} Gemstone`, TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3], getGemOrder())
-      addMat(`${gemKey}_chunk`, 'Character Ascension Gem', null, `${gem.baseName} Chunk`, TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2], getGemOrder())
-      addMat(`${gemKey}_fragment`, 'Character Ascension Gem', null, `${gem.baseName} Fragment`, TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1], getGemOrder())
-      addMat(`${gemKey}_sliver`, 'Character Ascension Gem', null, `${gem.baseName} Sliver`, TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0], getGemOrder())
-    }
   })
 
   return Array.from(mats.values()).sort((a, b) => a.label.localeCompare(b.label))
