@@ -260,8 +260,7 @@ export default function Inventory() {
       {/* ── Content Grid ── */}
       <div className="animate-fade-in grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-6">
         {[...filteredMats].sort((a, b) => {
-          // Sort explicitly by the assigned index in the JSON data
-          return (a.sortOrder || 999) - (b.sortOrder || 999);
+          return (a.sortOrder || 9999) - (b.sortOrder || 9999);
         }).map((mat) => (
           <MaterialCard
             key={mat.matKey}
