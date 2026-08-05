@@ -6,15 +6,18 @@
     "tiers": {
       "3_star": {
         "id": "slimeconcentrate",
-        "name": "Slime Concentrate"
+        "name": "Slime Concentrate",
+        "sortOrder": 5.001
       },
       "2_star": {
         "id": "slimesecretions",
-        "name": "Slime Secretions"
+        "name": "Slime Secretions",
+        "sortOrder": 5.002
       },
       "1_star": {
         "id": "slimecondensate",
-        "name": "Slime Condensate"
+        "name": "Slime Condensate",
+        "sortOrder": 5.003
       }
     }
   },
@@ -25,15 +28,18 @@
     "tiers": {
       "3_star": {
         "id": "ominousmask",
-        "name": "Ominous Mask"
+        "name": "Ominous Mask",
+        "sortOrder": 5.004
       },
       "2_star": {
         "id": "stainedmask",
-        "name": "Stained Mask"
+        "name": "Stained Mask",
+        "sortOrder": 5.005
       },
       "1_star": {
         "id": "damagedmask",
-        "name": "Damaged Mask"
+        "name": "Damaged Mask",
+        "sortOrder": 5.006
       }
     }
   },
@@ -44,15 +50,18 @@
     "tiers": {
       "3_star": {
         "id": "forbiddencursescroll",
-        "name": "Forbidden Curse Scroll"
+        "name": "Forbidden Curse Scroll",
+        "sortOrder": 5.007
       },
       "2_star": {
         "id": "sealedscroll",
-        "name": "Sealed Scroll"
+        "name": "Sealed Scroll",
+        "sortOrder": 5.008
       },
       "1_star": {
         "id": "diviningscroll",
-        "name": "Divining Scroll"
+        "name": "Divining Scroll",
+        "sortOrder": 5.009
       }
     }
   },
@@ -63,15 +72,18 @@
     "tiers": {
       "3_star": {
         "id": "weatheredarrowhead",
-        "name": "Weathered Arrowhead"
+        "name": "Weathered Arrowhead",
+        "sortOrder": 5.01
       },
       "2_star": {
         "id": "sharparrowhead",
-        "name": "Sharp Arrowhead"
+        "name": "Sharp Arrowhead",
+        "sortOrder": 5.011
       },
       "1_star": {
         "id": "firmarrowhead",
-        "name": "Firm Arrowhead"
+        "name": "Firm Arrowhead",
+        "sortOrder": 5.012
       }
     }
   },
@@ -82,15 +94,18 @@
     "tiers": {
       "3_star": {
         "id": "lieutenantsinsignia",
-        "name": "Lieutenant's Insignia"
+        "name": "Lieutenant's Insignia",
+        "sortOrder": 5.013
       },
       "2_star": {
         "id": "sergeantsinsignia",
-        "name": "Sergeant's Insignia"
+        "name": "Sergeant's Insignia",
+        "sortOrder": 5.014
       },
       "1_star": {
         "id": "recruitsinsignia",
-        "name": "Recruit's Insignia"
+        "name": "Recruit's Insignia",
+        "sortOrder": 5.015
       }
     }
   },
@@ -101,15 +116,18 @@
     "tiers": {
       "3_star": {
         "id": "goldenraveninsignia",
-        "name": "Golden Raven Insignia"
+        "name": "Golden Raven Insignia",
+        "sortOrder": 5.016
       },
       "2_star": {
         "id": "silverraveninsignia",
-        "name": "Silver Raven Insignia"
+        "name": "Silver Raven Insignia",
+        "sortOrder": 5.017
       },
       "1_star": {
         "id": "treasurehoarderinsignia",
-        "name": "Treasure Hoarder Insignia"
+        "name": "Treasure Hoarder Insignia",
+        "sortOrder": 5.018
       }
     }
   },
@@ -120,15 +138,18 @@
     "tiers": {
       "3_star": {
         "id": "energynectar",
-        "name": "Energy Nectar"
+        "name": "Energy Nectar",
+        "sortOrder": 5.019
       },
       "2_star": {
         "id": "shimmeringnectar",
-        "name": "Shimmering Nectar"
+        "name": "Shimmering Nectar",
+        "sortOrder": 5.02
       },
       "1_star": {
         "id": "whopperflowernectar",
-        "name": "Whopperflower Nectar"
+        "name": "Whopperflower Nectar",
+        "sortOrder": 5.021
       }
     }
   },
@@ -139,15 +160,18 @@
     "tiers": {
       "3_star": {
         "id": "famedhandguard",
-        "name": "Famed Handguard"
+        "name": "Famed Handguard",
+        "sortOrder": 5.022
       },
       "2_star": {
         "id": "kageuchihandguard",
-        "name": "Kageuchi Handguard"
+        "name": "Kageuchi Handguard",
+        "sortOrder": 5.023
       },
       "1_star": {
         "id": "oldhandguard",
-        "name": "Old Handguard"
+        "name": "Old Handguard",
+        "sortOrder": 5.024
       }
     }
   },
@@ -158,15 +182,18 @@
     "tiers": {
       "3_star": {
         "id": "spectralnucleus",
-        "name": "Spectral Nucleus"
+        "name": "Spectral Nucleus",
+        "sortOrder": 5.025
       },
       "2_star": {
         "id": "spectralheart",
-        "name": "Spectral Heart"
+        "name": "Spectral Heart",
+        "sortOrder": 5.026
       },
       "1_star": {
         "id": "spectralhusk",
-        "name": "Spectral Husk"
+        "name": "Spectral Husk",
+        "sortOrder": 5.027
       }
     }
   },
@@ -177,15 +204,18 @@
     "tiers": {
       "3_star": {
         "id": "crystallinecystdust",
-        "name": "Crystalline Cyst Dust"
+        "name": "Crystalline Cyst Dust",
+        "sortOrder": 5.028
       },
       "2_star": {
         "id": "luminescentpollen",
-        "name": "Luminescent Pollen"
+        "name": "Luminescent Pollen",
+        "sortOrder": 5.029
       },
       "1_star": {
         "id": "fungalspores",
-        "name": "Fungal Spores"
+        "name": "Fungal Spores",
+        "sortOrder": 5.03
       }
     }
   },
@@ -196,15 +226,18 @@
     "tiers": {
       "3_star": {
         "id": "richredbrocade",
-        "name": "Rich Red Brocade"
+        "name": "Rich Red Brocade",
+        "sortOrder": 5.031
       },
       "2_star": {
         "id": "trimmedredsilk",
-        "name": "Trimmed Red Silk"
+        "name": "Trimmed Red Silk",
+        "sortOrder": 5.032
       },
       "1_star": {
         "id": "fadedredsatin",
-        "name": "Faded Red Satin"
+        "name": "Faded Red Satin",
+        "sortOrder": 5.033
       }
     }
   },
@@ -215,15 +248,18 @@
     "tiers": {
       "3_star": {
         "id": "xenochromaticcrystal",
-        "name": "Xenochromatic Crystal"
+        "name": "Xenochromatic Crystal",
+        "sortOrder": 5.034
       },
       "2_star": {
         "id": "transoceanicchunk",
-        "name": "Transoceanic Chunk"
+        "name": "Transoceanic Chunk",
+        "sortOrder": 5.035
       },
       "1_star": {
         "id": "transoceanicpearl",
-        "name": "Transoceanic Pearl"
+        "name": "Transoceanic Pearl",
+        "sortOrder": 5.036
       }
     }
   },
@@ -234,15 +270,18 @@
     "tiers": {
       "3_star": {
         "id": "artificeddynamicgear",
-        "name": "Artificed Dynamic Gear"
+        "name": "Artificed Dynamic Gear",
+        "sortOrder": 5.037
       },
       "2_star": {
         "id": "mechanicalspurgear",
-        "name": "Mechanical Spur Gear"
+        "name": "Mechanical Spur Gear",
+        "sortOrder": 5.038
       },
       "1_star": {
         "id": "meshinggear",
-        "name": "Meshing Gear"
+        "name": "Meshing Gear",
+        "sortOrder": 5.039
       }
     }
   },
@@ -253,15 +292,18 @@
     "tiers": {
       "3_star": {
         "id": "tyrantsfang",
-        "name": "Tyrant's Fang"
+        "name": "Tyrant's Fang",
+        "sortOrder": 5.04
       },
       "2_star": {
         "id": "seasonedfang",
-        "name": "Seasoned Fang"
+        "name": "Seasoned Fang",
+        "sortOrder": 5.041
       },
       "1_star": {
         "id": "juvenilefang",
-        "name": "Juvenile Fang"
+        "name": "Juvenile Fang",
+        "sortOrder": 5.042
       }
     }
   },
@@ -272,15 +314,18 @@
     "tiers": {
       "3_star": {
         "id": "sauriancrownedwarriorsgoldenwhistle",
-        "name": "Saurian Crowned Warrior's Golden Whistle"
+        "name": "Saurian Crowned Warrior's Golden Whistle",
+        "sortOrder": 5.043
       },
       "2_star": {
         "id": "warriorsmetalwhistle",
-        "name": "Warrior's Metal Whistle"
+        "name": "Warrior's Metal Whistle",
+        "sortOrder": 5.044
       },
       "1_star": {
         "id": "sentryswoodenwhistle",
-        "name": "Sentry's Wooden Whistle"
+        "name": "Sentry's Wooden Whistle",
+        "sortOrder": 5.045
       }
     }
   },
@@ -291,15 +336,18 @@
     "tiers": {
       "3_star": {
         "id": "precisiondriveshaft",
-        "name": "Precision Drive Shaft"
+        "name": "Precision Drive Shaft",
+        "sortOrder": 5.046
       },
       "2_star": {
         "id": "reinforceddriveshaft",
-        "name": "Reinforced Drive Shaft"
+        "name": "Reinforced Drive Shaft",
+        "sortOrder": 5.047
       },
       "1_star": {
         "id": "brokendriveshaft",
-        "name": "Broken Drive Shaft"
+        "name": "Broken Drive Shaft",
+        "sortOrder": 5.048
       }
     }
   },
@@ -310,15 +358,18 @@
     "tiers": {
       "3_star": {
         "id": "frostetchedwarrant",
-        "name": "Frost Etched Warrant"
+        "name": "Frost Etched Warrant",
+        "sortOrder": 5.049
       },
       "2_star": {
         "id": "immaculatewarrant",
-        "name": "Immaculate Warrant"
+        "name": "Immaculate Warrant",
+        "sortOrder": 5.05
       },
       "1_star": {
         "id": "tatteredwarrant",
-        "name": "Tattered Warrant"
+        "name": "Tattered Warrant",
+        "sortOrder": 5.051
       }
     }
   }

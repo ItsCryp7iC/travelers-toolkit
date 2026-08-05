@@ -6,15 +6,18 @@
     "tiers": {
       "4_star": {
         "id": "blackcrystalhorn",
-        "name": "Black Crystal Horn"
+        "name": "Black Crystal Horn",
+        "sortOrder": 6.001
       },
       "3_star": {
         "id": "blackbronzehorn",
-        "name": "Black Bronze Horn"
+        "name": "Black Bronze Horn",
+        "sortOrder": 6.002
       },
       "2_star": {
         "id": "heavyhorn",
-        "name": "Heavy Horn"
+        "name": "Heavy Horn",
+        "sortOrder": 6.003
       }
     }
   },
@@ -25,15 +28,18 @@
     "tiers": {
       "4_star": {
         "id": "leylinesprout",
-        "name": "Ley Line Sprout"
+        "name": "Ley Line Sprout",
+        "sortOrder": 6.004
       },
       "3_star": {
         "id": "deadleylineleaves",
-        "name": "Dead Ley Line Leaves"
+        "name": "Dead Ley Line Leaves",
+        "sortOrder": 6.005
       },
       "2_star": {
         "id": "deadleylinebranch",
-        "name": "Dead Ley Line Branch"
+        "name": "Dead Ley Line Branch",
+        "sortOrder": 6.006
       }
     }
   },
@@ -44,15 +50,18 @@
     "tiers": {
       "4_star": {
         "id": "chaoscore",
-        "name": "Chaos Core"
+        "name": "Chaos Core",
+        "sortOrder": 6.007
       },
       "3_star": {
         "id": "chaoscircuit",
-        "name": "Chaos Circuit"
+        "name": "Chaos Circuit",
+        "sortOrder": 6.008
       },
       "2_star": {
         "id": "chaosdevice",
-        "name": "Chaos Device"
+        "name": "Chaos Device",
+        "sortOrder": 6.009
       }
     }
   },
@@ -63,15 +72,18 @@
     "tiers": {
       "4_star": {
         "id": "mistgrasswick",
-        "name": "Mist Grass Wick"
+        "name": "Mist Grass Wick",
+        "sortOrder": 6.01
       },
       "3_star": {
         "id": "mistgrass",
-        "name": "Mist Grass"
+        "name": "Mist Grass",
+        "sortOrder": 6.011
       },
       "2_star": {
         "id": "mistgrasspollen",
-        "name": "Mist Grass Pollen"
+        "name": "Mist Grass Pollen",
+        "sortOrder": 6.012
       }
     }
   },
@@ -82,15 +94,18 @@
     "tiers": {
       "4_star": {
         "id": "inspectorssacrificialknife",
-        "name": "Inspector's Sacrificial Knife"
+        "name": "Inspector's Sacrificial Knife",
+        "sortOrder": 6.013
       },
       "3_star": {
         "id": "agentssacrificialknife",
-        "name": "Agent's Sacrificial Knife"
+        "name": "Agent's Sacrificial Knife",
+        "sortOrder": 6.014
       },
       "2_star": {
         "id": "hunterssacrificialknife",
-        "name": "Hunter's Sacrificial Knife"
+        "name": "Hunter's Sacrificial Knife",
+        "sortOrder": 6.015
       }
     }
   },
@@ -101,15 +116,18 @@
     "tiers": {
       "4_star": {
         "id": "fossilizedboneshard",
-        "name": "Fossilized Bone Shard"
+        "name": "Fossilized Bone Shard",
+        "sortOrder": 6.016
       },
       "3_star": {
         "id": "sturdyboneshard",
-        "name": "Sturdy Bone Shard"
+        "name": "Sturdy Bone Shard",
+        "sortOrder": 6.017
       },
       "2_star": {
         "id": "fragileboneshard",
-        "name": "Fragile Bone Shard"
+        "name": "Fragile Bone Shard",
+        "sortOrder": 6.018
       }
     }
   },
@@ -120,15 +138,18 @@
     "tiers": {
       "4_star": {
         "id": "chaosoculus",
-        "name": "Chaos Oculus"
+        "name": "Chaos Oculus",
+        "sortOrder": 6.019
       },
       "3_star": {
         "id": "chaosaxis",
-        "name": "Chaos Axis"
+        "name": "Chaos Axis",
+        "sortOrder": 6.02
       },
       "2_star": {
         "id": "chaosgear",
-        "name": "Chaos Gear"
+        "name": "Chaos Gear",
+        "sortOrder": 6.021
       }
     }
   },
@@ -139,15 +160,18 @@
     "tiers": {
       "4_star": {
         "id": "polarizingprism",
-        "name": "Polarizing Prism"
+        "name": "Polarizing Prism",
+        "sortOrder": 6.022
       },
       "3_star": {
         "id": "crystalprism",
-        "name": "Crystal Prism"
+        "name": "Crystal Prism",
+        "sortOrder": 6.023
       },
       "2_star": {
         "id": "dismalprism",
-        "name": "Dismal Prism"
+        "name": "Dismal Prism",
+        "sortOrder": 6.024
       }
     }
   },
@@ -158,15 +182,18 @@
     "tiers": {
       "4_star": {
         "id": "concealedtalon",
-        "name": "Concealed Talon"
+        "name": "Concealed Talon",
+        "sortOrder": 6.025
       },
       "3_star": {
         "id": "concealedunguis",
-        "name": "Concealed Unguis"
+        "name": "Concealed Unguis",
+        "sortOrder": 6.026
       },
       "2_star": {
         "id": "concealedclaw",
-        "name": "Concealed Claw"
+        "name": "Concealed Claw",
+        "sortOrder": 6.027
       }
     }
   },
@@ -177,15 +204,18 @@
     "tiers": {
       "4_star": {
         "id": "deathlystatuette",
-        "name": "Deathly Statuette"
+        "name": "Deathly Statuette",
+        "sortOrder": 6.028
       },
       "3_star": {
         "id": "darkstatuette",
-        "name": "Dark Statuette"
+        "name": "Dark Statuette",
+        "sortOrder": 6.029
       },
       "2_star": {
         "id": "gloomystatuette",
-        "name": "Gloomy Statuette"
+        "name": "Gloomy Statuette",
+        "sortOrder": 6.03
       }
     }
   },
@@ -196,15 +226,18 @@
     "tiers": {
       "4_star": {
         "id": "robustfungalnucleus",
-        "name": "Robust Fungal Nucleus"
+        "name": "Robust Fungal Nucleus",
+        "sortOrder": 6.031
       },
       "3_star": {
         "id": "dormantfungalnucleus",
-        "name": "Dormant Fungal Nucleus"
+        "name": "Dormant Fungal Nucleus",
+        "sortOrder": 6.032
       },
       "2_star": {
         "id": "inactivatedfungalnucleus",
-        "name": "Inactivated Fungal Nucleus"
+        "name": "Inactivated Fungal Nucleus",
+        "sortOrder": 6.033
       }
     }
   },
@@ -215,15 +248,18 @@
     "tiers": {
       "4_star": {
         "id": "chaosbolt",
-        "name": "Chaos Bolt"
+        "name": "Chaos Bolt",
+        "sortOrder": 6.034
       },
       "3_star": {
         "id": "chaosmodule",
-        "name": "Chaos Module"
+        "name": "Chaos Module",
+        "sortOrder": 6.035
       },
       "2_star": {
         "id": "chaosstorage",
-        "name": "Chaos Storage"
+        "name": "Chaos Storage",
+        "sortOrder": 6.036
       }
     }
   },
@@ -234,15 +270,18 @@
     "tiers": {
       "4_star": {
         "id": "radiantprism",
-        "name": "Radiant Prism"
+        "name": "Radiant Prism",
+        "sortOrder": 6.037
       },
       "3_star": {
         "id": "turbidprism",
-        "name": "Turbid Prism"
+        "name": "Turbid Prism",
+        "sortOrder": 6.038
       },
       "2_star": {
         "id": "damagedprism",
-        "name": "Damaged Prism"
+        "name": "Damaged Prism",
+        "sortOrder": 6.039
       }
     }
   },
@@ -253,15 +292,18 @@
     "tiers": {
       "4_star": {
         "id": "markedshell",
-        "name": "Marked Shell"
+        "name": "Marked Shell",
+        "sortOrder": 6.04
       },
       "3_star": {
         "id": "sturdyshell",
-        "name": "Sturdy Shell"
+        "name": "Sturdy Shell",
+        "sortOrder": 6.041
       },
       "2_star": {
         "id": "desiccatedshell",
-        "name": "Desiccated Shell"
+        "name": "Desiccated Shell",
+        "sortOrder": 6.042
       }
     }
   },
@@ -272,15 +314,18 @@
     "tiers": {
       "4_star": {
         "id": "wanderersbloomingflower",
-        "name": "Wanderer's Blooming Flower"
+        "name": "Wanderer's Blooming Flower",
+        "sortOrder": 6.043
       },
       "3_star": {
         "id": "treasuredflower",
-        "name": "Treasured Flower"
+        "name": "Treasured Flower",
+        "sortOrder": 6.044
       },
       "2_star": {
         "id": "afloweryettobloom",
-        "name": "A Flower Yetto Bloom"
+        "name": "A Flower Yetto Bloom",
+        "sortOrder": 6.045
       }
     }
   },
@@ -291,15 +336,18 @@
     "tiers": {
       "4_star": {
         "id": "newborntaintedhydrophantasm",
-        "name": "Newborn Tainted Hydro Phantasm"
+        "name": "Newborn Tainted Hydro Phantasm",
+        "sortOrder": 6.046
       },
       "3_star": {
         "id": "scoopoftaintedwater",
-        "name": "Scoop of Tainted Water"
+        "name": "Scoop of Tainted Water",
+        "sortOrder": 6.047
       },
       "2_star": {
         "id": "dropoftaintedwater",
-        "name": "Drop of Tainted Water"
+        "name": "Drop of Tainted Water",
+        "sortOrder": 6.048
       }
     }
   },
@@ -310,15 +358,18 @@
     "tiers": {
       "4_star": {
         "id": "alienlifecore",
-        "name": "Alien Life Core"
+        "name": "Alien Life Core",
+        "sortOrder": 6.049
       },
       "3_star": {
         "id": "foreignsynapse",
-        "name": "Foreign Synapse"
+        "name": "Foreign Synapse",
+        "sortOrder": 6.05
       },
       "2_star": {
         "id": "riftcore",
-        "name": "Rift Core"
+        "name": "Rift Core",
+        "sortOrder": 6.051
       }
     }
   },
@@ -329,15 +380,18 @@
     "tiers": {
       "4_star": {
         "id": "operativesconstancy",
-        "name": "Operative's Constancy"
+        "name": "Operative's Constancy",
+        "sortOrder": 6.052
       },
       "3_star": {
         "id": "operativesstandardpocketwatch",
-        "name": "Operative's Standard Pocket Watch"
+        "name": "Operative's Standard Pocket Watch",
+        "sortOrder": 6.053
       },
       "2_star": {
         "id": "oldoperativespocketwatch",
-        "name": "Old Operative's Pocket Watch"
+        "name": "Old Operative's Pocket Watch",
+        "sortOrder": 6.054
       }
     }
   },
@@ -348,15 +402,18 @@
     "tiers": {
       "4_star": {
         "id": "chasmlightfin",
-        "name": "Chasmlight Fin"
+        "name": "Chasmlight Fin",
+        "sortOrder": 6.055
       },
       "3_star": {
         "id": "lunarfin",
-        "name": "Lunar Fin"
+        "name": "Lunar Fin",
+        "sortOrder": 6.056
       },
       "2_star": {
         "id": "featheryfin",
-        "name": "Feathery Fin"
+        "name": "Feathery Fin",
+        "sortOrder": 6.057
       }
     }
   },
@@ -367,15 +424,18 @@
     "tiers": {
       "4_star": {
         "id": "stillsmolderinghilt",
-        "name": "Still Smoldering Hilt"
+        "name": "Still Smoldering Hilt",
+        "sortOrder": 6.058
       },
       "3_star": {
         "id": "splinteredhilt",
-        "name": "Splintered Hilt"
+        "name": "Splintered Hilt",
+        "sortOrder": 6.059
       },
       "2_star": {
         "id": "ruinedhilt",
-        "name": "Ruined Hilt"
+        "name": "Ruined Hilt",
+        "sortOrder": 6.06
       }
     }
   },
@@ -386,15 +446,18 @@
     "tiers": {
       "4_star": {
         "id": "sigilofastridingwill",
-        "name": "Sigil of a Striding Will"
+        "name": "Sigil of a Striding Will",
+        "sortOrder": 6.061
       },
       "3_star": {
         "id": "locusofaclearwill",
-        "name": "Locus of a Clear Will"
+        "name": "Locus of a Clear Will",
+        "sortOrder": 6.062
       },
       "2_star": {
         "id": "shardofashatteredwill",
-        "name": "Shard of a Shattered Will"
+        "name": "Shard of a Shattered Will",
+        "sortOrder": 6.063
       }
     }
   },
@@ -405,15 +468,18 @@
     "tiers": {
       "4_star": {
         "id": "ignitedseeingeye",
-        "name": "Ignited Seeing Eye"
+        "name": "Ignited Seeing Eye",
+        "sortOrder": 6.064
       },
       "3_star": {
         "id": "ignitedseedoflife",
-        "name": "Ignited Seed of Life"
+        "name": "Ignited Seed of Life",
+        "sortOrder": 6.065
       },
       "2_star": {
         "id": "ignitedstone",
-        "name": "Ignited Stone"
+        "name": "Ignited Stone",
+        "sortOrder": 6.066
       }
     }
   },
@@ -424,15 +490,18 @@
     "tiers": {
       "4_star": {
         "id": "heartofthesecretsource",
-        "name": "Heart of the Secret Source"
+        "name": "Heart of the Secret Source",
+        "sortOrder": 6.067
       },
       "3_star": {
         "id": "sheathofthesecretsource",
-        "name": "Sheath of the Secret Source"
+        "name": "Sheath of the Secret Source",
+        "sortOrder": 6.068
       },
       "2_star": {
         "id": "axisofthesecretsource",
-        "name": "Axis of the Secret Source"
+        "name": "Axis of the Secret Source",
+        "sortOrder": 6.069
       }
     }
   },
@@ -443,15 +512,18 @@
     "tiers": {
       "4_star": {
         "id": "illusoryleafcoil",
-        "name": "Illusory Leafcoil"
+        "name": "Illusory Leafcoil",
+        "sortOrder": 6.07
       },
       "3_star": {
         "id": "bewilderingbroadleaf",
-        "name": "Bewildering Broadleaf"
+        "name": "Bewildering Broadleaf",
+        "sortOrder": 6.071
       },
       "2_star": {
         "id": "refractivebud",
-        "name": "Refractive Bud"
+        "name": "Refractive Bud",
+        "sortOrder": 6.072
       }
     }
   },
@@ -462,15 +534,18 @@
     "tiers": {
       "4_star": {
         "id": "blazingprismshell",
-        "name": "Blazing Prismshell"
+        "name": "Blazing Prismshell",
+        "sortOrder": 6.073
       },
       "3_star": {
         "id": "warmbackshell",
-        "name": "Warm Back Shell"
+        "name": "Warm Back Shell",
+        "sortOrder": 6.074
       },
       "2_star": {
         "id": "coldcrackedshellshard",
-        "name": "Cold Cracked Shellshard"
+        "name": "Cold Cracked Shellshard",
+        "sortOrder": 6.075
       }
     }
   },
@@ -481,15 +556,18 @@
     "tiers": {
       "4_star": {
         "id": "frostnightsglory",
-        "name": "Frostnight's Glory"
+        "name": "Frostnight's Glory",
+        "sortOrder": 6.076
       },
       "3_star": {
         "id": "frostnightsglow",
-        "name": "Frostnight's Glow"
+        "name": "Frostnight's Glow",
+        "sortOrder": 6.077
       },
       "2_star": {
         "id": "frostnightsglimmer",
-        "name": "Frostnight's Glimmer"
+        "name": "Frostnight's Glimmer",
+        "sortOrder": 6.078
       }
     }
   },
@@ -500,15 +578,18 @@
     "tiers": {
       "4_star": {
         "id": "radiantexoskeleton",
-        "name": "Radiant Exoskeleton"
+        "name": "Radiant Exoskeleton",
+        "sortOrder": 6.079
       },
       "3_star": {
         "id": "glowingremains",
-        "name": "Glowing Remains"
+        "name": "Glowing Remains",
+        "sortOrder": 6.08
       },
       "2_star": {
         "id": "lightlessbone",
-        "name": "Lightless Bone"
+        "name": "Lightless Bone",
+        "sortOrder": 6.081
       }
     }
   },
@@ -519,15 +600,18 @@
     "tiers": {
       "4_star": {
         "id": "mistshroudhelmet",
-        "name": "Mistshroud Helmet"
+        "name": "Mistshroud Helmet",
+        "sortOrder": 6.082
       },
       "3_star": {
         "id": "mistshroudplate",
-        "name": "Mistshroud Plate"
+        "name": "Mistshroud Plate",
+        "sortOrder": 6.083
       },
       "2_star": {
         "id": "mistshroudmanifestation",
-        "name": "Mistshroud Manifestation"
+        "name": "Mistshroud Manifestation",
+        "sortOrder": 6.084
       }
     }
   },
@@ -538,15 +622,18 @@
     "tiers": {
       "4_star": {
         "id": "hookedbeakofthedeepshadow",
-        "name": "Hooked Beak of the Deep Shadow"
+        "name": "Hooked Beak of the Deep Shadow",
+        "sortOrder": 6.085
       },
       "3_star": {
         "id": "aberrantcoreofthedeepshadow",
-        "name": "Aberrant Core of the Deep Shadow"
+        "name": "Aberrant Core of the Deep Shadow",
+        "sortOrder": 6.086
       },
       "2_star": {
         "id": "fracturedeyeofthedeepshadow",
-        "name": "Fractured Eye of the Deep Shadow"
+        "name": "Fractured Eye of the Deep Shadow",
+        "sortOrder": 6.087
       }
     }
   }

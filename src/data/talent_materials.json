@@ -7,17 +7,17 @@
       "4_star": {
         "id": "philosophiesoffreedom",
         "name": "Philosophies of Freedom",
-        "sortOrder": 102
+        "sortOrder": 4.001
       },
       "3_star": {
         "id": "guidetofreedom",
         "name": "Guide to Freedom",
-        "sortOrder": 103
+        "sortOrder": 4.002
       },
       "2_star": {
         "id": "teachingsoffreedom",
         "name": "Teachings of Freedom",
-        "sortOrder": 104
+        "sortOrder": 4.003
       }
     }
   },
@@ -29,17 +29,17 @@
       "4_star": {
         "id": "philosophiesofresistance",
         "name": "Philosophies of Resistance",
-        "sortOrder": 105
+        "sortOrder": 4.004
       },
       "3_star": {
         "id": "guidetoresistance",
         "name": "Guide to Resistance",
-        "sortOrder": 106
+        "sortOrder": 4.005
       },
       "2_star": {
         "id": "teachingsofresistance",
         "name": "Teachings of Resistance",
-        "sortOrder": 107
+        "sortOrder": 4.006
       }
     }
   },
@@ -51,17 +51,17 @@
       "4_star": {
         "id": "philosophiesofballad",
         "name": "Philosophies of Ballad",
-        "sortOrder": 108
+        "sortOrder": 4.007
       },
       "3_star": {
         "id": "guidetoballad",
         "name": "Guide to Ballad",
-        "sortOrder": 109
+        "sortOrder": 4.008
       },
       "2_star": {
         "id": "teachingsofballad",
         "name": "Teachings of Ballad",
-        "sortOrder": 110
+        "sortOrder": 4.009
       }
     }
   },
@@ -73,17 +73,17 @@
       "4_star": {
         "id": "philosophiesofprosperity",
         "name": "Philosophies of Prosperity",
-        "sortOrder": 111
+        "sortOrder": 4.01
       },
       "3_star": {
         "id": "guidetoprosperity",
         "name": "Guide to Prosperity",
-        "sortOrder": 112
+        "sortOrder": 4.011
       },
       "2_star": {
         "id": "teachingsofprosperity",
         "name": "Teachings of Prosperity",
-        "sortOrder": 113
+        "sortOrder": 4.012
       }
     }
   },
@@ -95,17 +95,17 @@
       "4_star": {
         "id": "philosophiesofdiligence",
         "name": "Philosophiesof Diligence",
-        "sortOrder": 114
+        "sortOrder": 4.013
       },
       "3_star": {
         "id": "guidetodiligence",
         "name": "Guide to Diligence",
-        "sortOrder": 115
+        "sortOrder": 4.014
       },
       "2_star": {
         "id": "teachingsofdiligence",
         "name": "Teachings of Diligence",
-        "sortOrder": 116
+        "sortOrder": 4.015
       }
     }
   },
@@ -117,17 +117,17 @@
       "4_star": {
         "id": "philosophiesofgold",
         "name": "Philosophies of Gold",
-        "sortOrder": 117
+        "sortOrder": 4.016
       },
       "3_star": {
         "id": "guidetogold",
         "name": "Guide to Gold",
-        "sortOrder": 118
+        "sortOrder": 4.017
       },
       "2_star": {
         "id": "teachingsofgold",
         "name": "Teachings of Gold",
-        "sortOrder": 119
+        "sortOrder": 4.018
       }
     }
   },
@@ -139,17 +139,17 @@
       "4_star": {
         "id": "philosophiesoftransience",
         "name": "Philosophies of Transience",
-        "sortOrder": 120
+        "sortOrder": 4.019
       },
       "3_star": {
         "id": "guidetotransience",
         "name": "Guide to Transience",
-        "sortOrder": 121
+        "sortOrder": 4.02
       },
       "2_star": {
         "id": "teachingsoftransience",
         "name": "Teachings of Transience",
-        "sortOrder": 122
+        "sortOrder": 4.021
       }
     }
   },
@@ -161,17 +161,17 @@
       "4_star": {
         "id": "philosophiesofelegance",
         "name": "Philosophies of Elegance",
-        "sortOrder": 123
+        "sortOrder": 4.022
       },
       "3_star": {
         "id": "guidetoelegance",
         "name": "Guide to Elegance",
-        "sortOrder": 124
+        "sortOrder": 4.023
       },
       "2_star": {
         "id": "teachingsofelegance",
         "name": "Teachings of Elegance",
-        "sortOrder": 125
+        "sortOrder": 4.024
       }
     }
   },
@@ -183,17 +183,17 @@
       "4_star": {
         "id": "philosophiesoflight",
         "name": "Philosophies of Light",
-        "sortOrder": 126
+        "sortOrder": 4.025
       },
       "3_star": {
         "id": "guidetolight",
         "name": "Guide to Light",
-        "sortOrder": 127
+        "sortOrder": 4.026
       },
       "2_star": {
         "id": "teachingsoflight",
         "name": "Teachings of Light",
-        "sortOrder": 128
+        "sortOrder": 4.027
       }
     }
   },
@@ -205,17 +205,17 @@
       "4_star": {
         "id": "philosophiesofadmonition",
         "name": "Philosophies of Admonition",
-        "sortOrder": 129
+        "sortOrder": 4.028
       },
       "3_star": {
         "id": "guidetoadmonition",
         "name": "Guide to Admonition",
-        "sortOrder": 130
+        "sortOrder": 4.029
       },
       "2_star": {
         "id": "teachingsofadmonition",
         "name": "Teachings of Admonition",
-        "sortOrder": 131
+        "sortOrder": 4.03
       }
     }
   },
@@ -227,17 +227,17 @@
       "4_star": {
         "id": "philosophiesofingenuity",
         "name": "Philosophies of Ingenuity",
-        "sortOrder": 132
+        "sortOrder": 4.031
       },
       "3_star": {
         "id": "guidetoingenuity",
         "name": "Guide to Ingenuity",
-        "sortOrder": 133
+        "sortOrder": 4.032
       },
       "2_star": {
         "id": "teachingsofingenuity",
         "name": "Teachings of Ingenuity",
-        "sortOrder": 134
+        "sortOrder": 4.033
       }
     }
   },
@@ -249,17 +249,17 @@
       "4_star": {
         "id": "philosophiesofpraxis",
         "name": "Philosophies of Praxis",
-        "sortOrder": 135
+        "sortOrder": 4.034
       },
       "3_star": {
         "id": "guidetopraxis",
         "name": "Guide to Praxis",
-        "sortOrder": 136
+        "sortOrder": 4.035
       },
       "2_star": {
         "id": "teachingsofpraxis",
         "name": "Teachings of Praxis",
-        "sortOrder": 137
+        "sortOrder": 4.036
       }
     }
   },
@@ -271,17 +271,17 @@
       "4_star": {
         "id": "philosophiesofequity",
         "name": "Philosophies of Equity",
-        "sortOrder": 138
+        "sortOrder": 4.037
       },
       "3_star": {
         "id": "guidetoequity",
         "name": "Guide to Equity",
-        "sortOrder": 139
+        "sortOrder": 4.038
       },
       "2_star": {
         "id": "teachingsofequity",
         "name": "Teachings of Equity",
-        "sortOrder": 140
+        "sortOrder": 4.039
       }
     }
   },
@@ -293,17 +293,17 @@
       "4_star": {
         "id": "philosophiesofjustice",
         "name": "Philosophies of Justice",
-        "sortOrder": 141
+        "sortOrder": 4.04
       },
       "3_star": {
         "id": "guidetojustice",
         "name": "Guide to Justice",
-        "sortOrder": 142
+        "sortOrder": 4.041
       },
       "2_star": {
         "id": "teachingsofjustice",
         "name": "Teachings of Justice",
-        "sortOrder": 143
+        "sortOrder": 4.042
       }
     }
   },
@@ -315,17 +315,17 @@
       "4_star": {
         "id": "philosophiesoforder",
         "name": "Philosophies of Order",
-        "sortOrder": 144
+        "sortOrder": 4.043
       },
       "3_star": {
         "id": "guidetoorder",
         "name": "Guide to Order",
-        "sortOrder": 145
+        "sortOrder": 4.044
       },
       "2_star": {
         "id": "teachingsoforder",
         "name": "Teachings of Order",
-        "sortOrder": 146
+        "sortOrder": 4.045
       }
     }
   },
@@ -337,17 +337,17 @@
       "4_star": {
         "id": "philosophiesofcontention",
         "name": "Philosophies of Contention",
-        "sortOrder": 147
+        "sortOrder": 4.046
       },
       "3_star": {
         "id": "guidetocontention",
         "name": "Guide to Contention",
-        "sortOrder": 148
+        "sortOrder": 4.047
       },
       "2_star": {
         "id": "teachingsofcontention",
         "name": "Teachings of Contention",
-        "sortOrder": 149
+        "sortOrder": 4.048
       }
     }
   },
@@ -359,17 +359,17 @@
       "4_star": {
         "id": "philosophiesofkindling",
         "name": "Philosophies of Kindling",
-        "sortOrder": 150
+        "sortOrder": 4.049
       },
       "3_star": {
         "id": "guidetokindling",
         "name": "Guide to Kindling",
-        "sortOrder": 151
+        "sortOrder": 4.05
       },
       "2_star": {
         "id": "teachingsofkindling",
         "name": "Teachings of Kindling",
-        "sortOrder": 152
+        "sortOrder": 4.051
       }
     }
   },
@@ -381,17 +381,17 @@
       "4_star": {
         "id": "philosophiesofconflict",
         "name": "Philosophies of Conflict",
-        "sortOrder": 153
+        "sortOrder": 4.052
       },
       "3_star": {
         "id": "guidetoconflict",
         "name": "Guide to Conflict",
-        "sortOrder": 154
+        "sortOrder": 4.053
       },
       "2_star": {
         "id": "teachingsofconflict",
         "name": "Teachings of Conflict",
-        "sortOrder": 155
+        "sortOrder": 4.054
       }
     }
   },
@@ -403,17 +403,17 @@
       "4_star": {
         "id": "philosophiesofmoonlight",
         "name": "Philosophies of Moonlight",
-        "sortOrder": 156
+        "sortOrder": 4.055
       },
       "3_star": {
         "id": "guidetomoonlight",
         "name": "Guide to Moonlight",
-        "sortOrder": 157
+        "sortOrder": 4.056
       },
       "2_star": {
         "id": "teachingsofmoonlight",
         "name": "Teachings of Moonlight",
-        "sortOrder": 158
+        "sortOrder": 4.057
       }
     }
   },
@@ -425,17 +425,17 @@
       "4_star": {
         "id": "philosophiesofelysium",
         "name": "Philosophies of Elysium",
-        "sortOrder": 159
+        "sortOrder": 4.058
       },
       "3_star": {
         "id": "guidetoelysium",
         "name": "Guide to Elysium",
-        "sortOrder": 160
+        "sortOrder": 4.059
       },
       "2_star": {
         "id": "teachingsofelysium",
         "name": "Teachings of Elysium",
-        "sortOrder": 161
+        "sortOrder": 4.06
       }
     }
   },
@@ -447,17 +447,17 @@
       "4_star": {
         "id": "philosophiesofvagrancy",
         "name": "Philosophies of Vagrancy",
-        "sortOrder": 162
+        "sortOrder": 4.061
       },
       "3_star": {
         "id": "guidetovagrancy",
         "name": "Guide to Vagrancy",
-        "sortOrder": 163
+        "sortOrder": 4.062
       },
       "2_star": {
         "id": "teachingsofvagrancy",
         "name": "Teachings of Vagrancy",
-        "sortOrder": 164
+        "sortOrder": 4.063
       }
     }
   }

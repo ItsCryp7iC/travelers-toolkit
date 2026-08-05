@@ -220,19 +220,20 @@ export const getPrimaryInventoryList = () => {
 
   // 7. Character Ascension Gems
   const gemRarities = [2, 3, 4, 5]
-  let currentGemOrder = 1000; // Place gems after other materials
+  let currentGemCounter = 1;
+  const getGemOrder = () => parseFloat((9 + currentGemCounter++ / 1000).toFixed(3));
   Object.keys(GEM_INFO).forEach(gemKey => {
     const gem = GEM_INFO[gemKey]
     if (gemKey === 'brilliantdiamond') {
-      addMat('brilliantdiamond_gemstone', 'Character Ascension Gem', null, 'Brilliant Diamond Gemstone', TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3], currentGemOrder++)
-      addMat('brilliantdiamond_chunk', 'Character Ascension Gem', null, 'Brilliant Diamond Chunk', TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2], currentGemOrder++)
-      addMat('brilliantdiamond_fragment', 'Character Ascension Gem', null, 'Brilliant Diamond Fragment', TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1], currentGemOrder++)
-      addMat('brilliantdiamond_sliver', 'Character Ascension Gem', null, 'Brilliant Diamond Sliver', TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0], currentGemOrder++)
+      addMat('brilliantdiamond_gemstone', 'Character Ascension Gem', null, 'Brilliant Diamond Gemstone', TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3], getGemOrder())
+      addMat('brilliantdiamond_chunk', 'Character Ascension Gem', null, 'Brilliant Diamond Chunk', TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2], getGemOrder())
+      addMat('brilliantdiamond_fragment', 'Character Ascension Gem', null, 'Brilliant Diamond Fragment', TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1], getGemOrder())
+      addMat('brilliantdiamond_sliver', 'Character Ascension Gem', null, 'Brilliant Diamond Sliver', TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0], getGemOrder())
     } else {
-      addMat(`${gemKey}_gemstone`, 'Character Ascension Gem', null, `${gem.baseName} Gemstone`, TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3], currentGemOrder++)
-      addMat(`${gemKey}_chunk`, 'Character Ascension Gem', null, `${gem.baseName} Chunk`, TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2], currentGemOrder++)
-      addMat(`${gemKey}_fragment`, 'Character Ascension Gem', null, `${gem.baseName} Fragment`, TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1], currentGemOrder++)
-      addMat(`${gemKey}_sliver`, 'Character Ascension Gem', null, `${gem.baseName} Sliver`, TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0], currentGemOrder++)
+      addMat(`${gemKey}_gemstone`, 'Character Ascension Gem', null, `${gem.baseName} Gemstone`, TIER_STARS_GEM[3], gem.color, 'Character Ascension Gem', gemRarities[3], getGemOrder())
+      addMat(`${gemKey}_chunk`, 'Character Ascension Gem', null, `${gem.baseName} Chunk`, TIER_STARS_GEM[2], gem.color, 'Character Ascension Gem', gemRarities[2], getGemOrder())
+      addMat(`${gemKey}_fragment`, 'Character Ascension Gem', null, `${gem.baseName} Fragment`, TIER_STARS_GEM[1], gem.color, 'Character Ascension Gem', gemRarities[1], getGemOrder())
+      addMat(`${gemKey}_sliver`, 'Character Ascension Gem', null, `${gem.baseName} Sliver`, TIER_STARS_GEM[0], gem.color, 'Character Ascension Gem', gemRarities[0], getGemOrder())
     }
   })
 

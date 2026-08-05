@@ -4,272 +4,311 @@
     "name": "Dvalin's Plume",
     "type": "weekly_boss",
     "boss_name": "Stormterror Dvalin",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.001
   },
   {
     "id": "dvalinsclaw",
     "name": "Dvalin's Claw",
     "type": "weekly_boss",
     "boss_name": "Stormterror Dvalin",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.002
   },
   {
     "id": "dvalinssigh",
     "name": "Dvalin's Sigh",
     "type": "weekly_boss",
     "boss_name": "Stormterror Dvalin",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.003
   },
   {
     "id": "tailofboreas",
     "name": "Tail of Boreas",
     "type": "weekly_boss",
     "boss_name": "Andrius",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.004
   },
   {
     "id": "ringofboreas",
     "name": "Ring of Boreas",
     "type": "weekly_boss",
     "boss_name": "Andrius",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.005
   },
   {
     "id": "spiritlocketofboreas",
     "name": "Spirit Locket of Boreas",
     "type": "weekly_boss",
     "boss_name": "Andrius",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.006
   },
   {
     "id": "tuskofmonoceroscaeli",
     "name": "Tusk of Monoceros Caeli",
     "type": "weekly_boss",
     "boss_name": "Childe",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 3.007
   },
   {
     "id": "shardofafoullegacy",
     "name": "Shard of a Foul Legacy",
     "type": "weekly_boss",
     "boss_name": "Childe",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 3.008
   },
   {
     "id": "shadowofthewarrior",
     "name": "Shadow of the Warrior",
     "type": "weekly_boss",
     "boss_name": "Childe",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 3.009
   },
   {
     "id": "dragonlordscrown",
     "name": "Dragon Lord's Crown",
     "type": "weekly_boss",
     "boss_name": "Azhdaha",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 3.01
   },
   {
     "id": "bloodjadebranch",
     "name": "Bloodjade Branch",
     "type": "weekly_boss",
     "boss_name": "Azhdaha",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 3.011
   },
   {
     "id": "gildedscale",
     "name": "Gilded Scale",
     "type": "weekly_boss",
     "boss_name": "Azhdaha",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 3.012
   },
   {
     "id": "moltenmoment",
     "name": "Molten Moment",
     "type": "weekly_boss",
     "boss_name": "La Signora",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 3.013
   },
   {
     "id": "hellfirebutterfly",
     "name": "Hellfire Butterfly",
     "type": "weekly_boss",
     "boss_name": "La Signora",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 3.014
   },
   {
     "id": "ashenheart",
     "name": "Ashen Heart",
     "type": "weekly_boss",
     "boss_name": "La Signora",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 3.015
   },
   {
     "id": "mudraofthemaleficgeneral",
     "name": "Mudra of the Malefic General",
     "type": "weekly_boss",
     "boss_name": "Magatsu Mitake Narukami no Mikoto",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 3.016
   },
   {
     "id": "tearsofthecalamitousgod",
     "name": "Tears of the Calamitous God",
     "type": "weekly_boss",
     "boss_name": "Magatsu Mitake Narukami no Mikoto",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 3.017
   },
   {
     "id": "themeaningofaeons",
     "name": "The Meaning of Aeons",
     "type": "weekly_boss",
     "boss_name": "Magatsu Mitake Narukami no Mikoto",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 3.018
   },
   {
     "id": "puppetstrings",
     "name": "Puppet Strings",
     "type": "weekly_boss",
     "boss_name": "Everlasting Lord of Arcane Wisdom",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 3.019
   },
   {
     "id": "mirrorofmushin",
     "name": "Mirror of Mushin",
     "type": "weekly_boss",
     "boss_name": "Everlasting Lord of Arcane Wisdom",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 3.02
   },
   {
     "id": "dakasbell",
     "name": "Daka's Bell",
     "type": "weekly_boss",
     "boss_name": "Everlasting Lord of Arcane Wisdom",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 3.021
   },
   {
     "id": "worldspanfern",
     "name": "Worldspan Fern",
     "type": "weekly_boss",
     "boss_name": "Evolved From an Apocalyptic Millennium",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 3.022
   },
   {
     "id": "primordialgreenbloom",
     "name": "Primordial Greenbloom",
     "type": "weekly_boss",
     "boss_name": "Evolved From an Apocalyptic Millennium",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 3.023
   },
   {
     "id": "everamber",
     "name": "Everamber",
     "type": "weekly_boss",
     "boss_name": "Evolved From an Apocalyptic Millennium",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 3.024
   },
   {
     "id": "lightlesssilkstring",
     "name": "Lightless Silk String",
     "type": "weekly_boss",
     "boss_name": "All-Devouring Narwhal",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 3.025
   },
   {
     "id": "lightlesseyeofthemaelstrom",
     "name": "Lightless Eye of the Maelstrom",
     "type": "weekly_boss",
     "boss_name": "All-Devouring Narwhal",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 3.026
   },
   {
     "id": "lightlessmass",
     "name": "Lightless Mass",
     "type": "weekly_boss",
     "boss_name": "All-Devouring Narwhal",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 3.027
   },
   {
     "id": "fadingcandle",
     "name": "Fading Candle",
     "type": "weekly_boss",
     "boss_name": "The Knave",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 3.028
   },
   {
     "id": "silkenfeather",
     "name": "Silken Feather",
     "type": "weekly_boss",
     "boss_name": "The Knave",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 3.029
   },
   {
     "id": "denialandjudgment",
     "name": "Denialand Judgment",
     "type": "weekly_boss",
     "boss_name": "The Knave",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 3.03
   },
   {
     "id": "erodedhorn",
     "name": "Eroded Horn",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.031
   },
   {
     "id": "erodedsunfire",
     "name": "Eroded Sunfire",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.032
   },
   {
     "id": "erodedscalefeather",
     "name": "Eroded Scale Feather",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.033
   },
   {
     "id": "ascendedsampleknight",
     "name": "Ascended Sample Knight",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.034
   },
   {
     "id": "ascendedsamplerook",
     "name": "Ascended Sample Rook",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.035
   },
   {
     "id": "ascendedsamplequeen",
     "name": "Ascended Sample Queen",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 3.036
   },
   {
     "id": "maskofthevirtuousdoctor",
     "name": "Mask of the Virtuous Doctor",
     "type": "weekly_boss",
     "boss_name": "Heretic of the False Moon",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 3.037
   },
   {
     "id": "madmansrestraint",
     "name": "Madman's Restraint",
     "type": "weekly_boss",
     "boss_name": "Heretic of the False Moon",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 3.038
   },
   {
     "id": "elixiroftheheretic",
     "name": "Elixir of the Heretic",
     "type": "weekly_boss",
     "boss_name": "Heretic of the False Moon",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 3.039
   }
 ]

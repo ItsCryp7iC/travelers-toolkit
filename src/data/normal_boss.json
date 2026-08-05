@@ -4,300 +4,343 @@
     "name": "Hurricane Seed",
     "type": "normal_boss",
     "boss_name": "Anemo Hypostasis",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 2.001
   },
   {
     "id": "lightningprism",
     "name": "Lightning Prism",
     "type": "normal_boss",
     "boss_name": "Electro Hypostasis",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 2.002
   },
   {
     "id": "hoarfrostcore",
     "name": "Hoarfrost Core",
     "type": "normal_boss",
     "boss_name": "Cryo Regisvine",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 2.003
   },
   {
     "id": "crystallinebloom",
     "name": "Crystalline Bloom",
     "type": "normal_boss",
     "boss_name": "Cryo Hypostasis",
-    "region": "Mondstadt"
+    "region": "Mondstadt",
+    "sortOrder": 2.004
   },
   {
     "id": "basaltpillar",
     "name": "Basalt Pillar",
     "type": "normal_boss",
     "boss_name": "Geo Hypostasis",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 2.005
   },
   {
     "id": "everflameseed",
     "name": "Everflame Seed",
     "type": "normal_boss",
     "boss_name": "Pyro Regisvine",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 2.006
   },
   {
     "id": "cleansingheart",
     "name": "Cleansing Heart",
     "type": "normal_boss",
     "boss_name": "Oceanid",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 2.007
   },
   {
     "id": "juvenilejade",
     "name": "Juvenile Jade",
     "type": "normal_boss",
     "boss_name": "Primo Geovishap",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 2.008
   },
   {
     "id": "runicfang",
     "name": "Runic Fang",
     "type": "normal_boss",
     "boss_name": "Ruin Serpent",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 2.009
   },
   {
     "id": "cloudseamscale",
     "name": "Cloudseam Scale",
     "type": "normal_boss",
     "boss_name": "Solitary Suanni",
-    "region": "Liyue"
+    "region": "Liyue",
+    "sortOrder": 2.01
   },
   {
     "id": "marionettecore",
     "name": "Marionette Core",
     "type": "normal_boss",
     "boss_name": "Maguu Kenki",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 2.011
   },
   {
     "id": "perpetualheart",
     "name": "Perpetual Heart",
     "type": "normal_boss",
     "boss_name": "Perpetual Mechanical Array",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 2.012
   },
   {
     "id": "smolderingpearl",
     "name": "Smoldering Pearl",
     "type": "normal_boss",
     "boss_name": "Pyro Hypostasis",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 2.013
   },
   {
     "id": "dewofrepudiation",
     "name": "Dew of Repudiation",
     "type": "normal_boss",
     "boss_name": "Hydro Hypostasis",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 2.014
   },
   {
     "id": "stormbeads",
     "name": "Storm Beads",
     "type": "normal_boss",
     "boss_name": "Thunder Manifestation",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 2.015
   },
   {
     "id": "riftbornregalia",
     "name": "Riftborn Regalia",
     "type": "normal_boss",
     "boss_name": "Golden Wolflord",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 2.016
   },
   {
     "id": "dragonheirsfalsefin",
     "name": "Dragonheirs False Fin",
     "type": "normal_boss",
     "boss_name": "Coral Defenders",
-    "region": "Inazuma"
+    "region": "Inazuma",
+    "sortOrder": 2.017
   },
   {
     "id": "majestichookedbeak",
     "name": "Majestic Hooked Beak",
     "type": "normal_boss",
     "boss_name": "Jadeplume Terrorshroom",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 2.018
   },
   {
     "id": "thunderclapfruitcore",
     "name": "Thunderclap Fruitcore",
     "type": "normal_boss",
     "boss_name": "Electro Regisvine",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 2.019
   },
   {
     "id": "perpetualcaliber",
     "name": "Perpetual Caliber",
     "type": "normal_boss",
     "boss_name": "Aeonblight Drake",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 2.02
   },
   {
     "id": "lightguidingtetrahedron",
     "name": "Light Guiding Tetrahedron",
     "type": "normal_boss",
     "boss_name": "Algorithm of Semi-Intransient Matrix of Overseer Network",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 2.021
   },
   {
     "id": "quelledcreeper",
     "name": "Quelled Creeper",
     "type": "normal_boss",
     "boss_name": "Dendro Hypostasis",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 2.022
   },
   {
     "id": "pseudostamens",
     "name": "Pseudo Stamens",
     "type": "normal_boss",
     "boss_name": "Setekh Wenut",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 2.023
   },
   {
     "id": "evergloomring",
     "name": "Evergloom Ring",
     "type": "normal_boss",
     "boss_name": "Iniquitous Baptist",
-    "region": "Sumeru"
+    "region": "Sumeru",
+    "sortOrder": 2.024
   },
   {
     "id": "artificedspareclockworkcomponentcoppelia",
     "name": "Artificed Spare Clockwork Component — Coppelia",
     "type": "normal_boss",
     "boss_name": "Icewind Suite",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 2.025
   },
   {
     "id": "artificedspareclockworkcomponentcoppelius",
     "name": "Artificed Spare Clockwork Component — Coppelius",
     "type": "normal_boss",
     "boss_name": "Icewind Suite",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 2.026
   },
   {
     "id": "emperorsresolution",
     "name": "Emperor's Resolution",
     "type": "normal_boss",
     "boss_name": "Emperor of Fire and Iron",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 2.027
   },
   {
     "id": "fontemerunihorn",
     "name": "Fontemer Unihorn",
     "type": "normal_boss",
     "boss_name": "Millennial Pearl Seahorse",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 2.028
   },
   {
     "id": "tourbillondevice",
     "name": "Tourbillon Device",
     "type": "normal_boss",
     "boss_name": "Prototype Cal. Breguet",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 2.029
   },
   {
     "id": "waterthatfailedtotranscend",
     "name": "Water That Failed To Transcend",
     "type": "normal_boss",
     "boss_name": "Hydro Tulpa",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 2.03
   },
   {
     "id": "fragmentofagoldenmelody",
     "name": "Fragment of a Golden Melody",
     "type": "normal_boss",
     "boss_name": "Statue of Marble and Brass",
-    "region": "Fontaine"
+    "region": "Fontaine",
+    "sortOrder": 2.031
   },
   {
     "id": "markofthebindingblessing",
     "name": "Mark of the Binding Blessing",
     "type": "normal_boss",
     "boss_name": "Holawaqa Ngoubou",
-    "region": "Natlan"
+    "region": "Natlan",
+    "sortOrder": 2.032
   },
   {
     "id": "overripeflamegranate",
     "name": "Overripe Flamegranate",
     "type": "normal_boss",
     "boss_name": "Kongamato",
-    "region": "Natlan"
+    "region": "Natlan",
+    "sortOrder": 2.033
   },
   {
     "id": "goldinscribedsecretsourcecore",
     "name": "Gold Inscribed Secret Source Core",
     "type": "normal_boss",
     "boss_name": "Secret Source Automaton: Configuration Device",
-    "region": "Natlan"
+    "region": "Natlan",
+    "sortOrder": 2.034
   },
   {
     "id": "ensnaringgaze",
     "name": "Ensnaring Gaze",
     "type": "normal_boss",
     "boss_name": "Tenebrous Papilla",
-    "region": "Natlan"
+    "region": "Natlan",
+    "sortOrder": 2.035
   },
   {
     "id": "talismanoftheenigmaticland",
     "name": "Talisman of the Enigmatic Land",
     "type": "normal_boss",
     "boss_name": "Wayward Hermetic Spiritspeaker",
-    "region": "Natlan"
+    "region": "Natlan",
+    "sortOrder": 2.036
   },
   {
     "id": "sparklessstatuecore",
     "name": "Sparkless Statue Core",
     "type": "normal_boss",
     "boss_name": "Lava Dragon Statue",
-    "region": "Natlan"
+    "region": "Natlan",
+    "sortOrder": 2.037
   },
   {
     "id": "secretsourceairflowaccumulator",
     "name": "Secret Source Airflow Accumulator",
     "type": "normal_boss",
     "boss_name": "Secret Source Automaton: Overseer Device",
-    "region": "Natlan"
+    "region": "Natlan",
+    "sortOrder": 2.038
   },
   {
     "id": "precisionkuuvahkistampingdie",
     "name": "Precision Kuuvahki Stamping Die",
     "type": "normal_boss",
     "boss_name": "Knuckle Duckle",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 2.039
   },
   {
     "id": "lightbearingscalefeather",
     "name": "Lightbearing Scale Feather",
     "type": "normal_boss",
     "boss_name": "Radiant Moonfly",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 2.04
   },
   {
     "id": "radiantantler",
     "name": "Radiant Antler",
     "type": "normal_boss",
     "boss_name": "Frostnight Herra",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 2.041
   },
   {
     "id": "cyclicmilitarykuuvahkicore",
     "name": "Cyclic Military Kuuvahki Core",
     "type": "normal_boss",
     "boss_name": "Super-Heavy Landrover: Mechanized Fortress",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 2.042
   },
   {
     "id": "remnantofthedreadwing",
     "name": "Remnantofthe Dreadwing",
     "type": "normal_boss",
     "boss_name": "Lord of the Hidden Depths: Whisperer of Nightmares",
-    "region": "Nod-Krai"
+    "region": "Nod-Krai",
+    "sortOrder": 2.043
   }
 ]
