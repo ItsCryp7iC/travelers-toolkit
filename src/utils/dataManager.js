@@ -185,7 +185,6 @@ const flattenAndFormatMaterials = (dataArray, category, subCategory, getAccent, 
 export const getPrimaryInventoryList = () => {
   const formattedMisc = flattenAndFormatMaterials(miscMaterials, null, null, 
     (item) => {
-      if (item.category === 'Currency') return '#FAB632';
       if (item.rarity === 5) return '#FBBF24';
       if (item.rarity === 4) return '#A855F7';
       if (item.rarity === 3) return '#60A5FA';
