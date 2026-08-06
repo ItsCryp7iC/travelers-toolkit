@@ -11,6 +11,7 @@ import {
 } from '../utils/calculator'
 import weaponsData from '../data/weapons.json'
 import { resolveSpecificItem, getFamilyData } from '../utils/resolver'
+import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
 
 const DAY_SCHEDULE_LABEL = {
   1: 'Monday',
@@ -83,20 +84,20 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
           return (
             <div key={tier.id} className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex items-center gap-3 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
                   <img 
-                    src={`/assets/items/${tier.id}.png`} 
+                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : 'Weapon Ascension Material')} 
                     alt={tier.name} 
-                    className="w-6 h-6 object-contain" 
+                    className="w-8 h-8 object-contain drop-shadow-md" 
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
                   />
-                  <span className="hidden text-xs">📦</span>
-                  <span className="text-xs text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
+                  <span className="hidden text-xl">📦</span>
+                  <span className="text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
                     {formatItemName(tier.name)}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] flex-shrink-0">
+                <div className="flex items-center gap-2 text-xs flex-shrink-0">
                   <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-cinzel font-bold">{owned}</span></span>
                   <span className="text-[var(--muted)]">Need: <span className="font-cinzel font-bold" style={{ color: accent }}>{required}</span></span>
                 </div>
@@ -118,7 +119,7 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
             {neededBy.map((entity, i) => (
               <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
                 <img 
-                  src={entity.type === 'character' ? `/assets/characters/${entity.icon}.png` : `/assets/weapons/${entity.icon}.png`}
+                  src={entity.type === 'character' ? getCharacterAvatar(entity.name) : getWeaponIcon(entity.name)}
                   alt={entity.name}
                   title={entity.name}
                   className="w-full h-full object-cover relative z-10"
@@ -215,6 +216,7 @@ export default function FarmableToday() {
         groups[region][domainName][familyName] = {
           familyName,
           familyData,
+          type: todayBooksFarmable.includes(item) ? 'talent' : 'weapon',
           items: {},
           neededBy: []
         };
