@@ -8,6 +8,7 @@ import FarmableToday from '../components/FarmableToday'
 import DomainCard from '../components/DomainCard'
 import { getJsonData } from '../utils/resolver'
 import weeklyBossData from '../data/weekly_boss.json'
+import weaponsData from '../data/weapons.json'
 
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
@@ -297,16 +298,37 @@ export default function Planner() {
 
   const getNeededBy = useCallback((matKey, type) => {
     const needed = []
-    if (type === 'talent') {
+    if (type === 'talent' || type === 'weekly_boss') {
       totals.breakdown.forEach(b => {
         if (b.totalCosts[matKey] > 0) {
           const charId = b.character?.id || b.name.toLowerCase().replace(/[^a-z0-9]/g, '')
           needed.push({ name: b.name, icon: charId, type: 'character' })
         }
       })
+    } else {
+      trackedWeapons.forEach(w => {
+        if (w.ascension === w.targetAscension && w.level >= w.targetLevel) return;
+        const wData = weaponsData.find(wd => wd.name === w.weaponName)
+        if (wData && wData.materials) {
+           const family = wData.materials.ascension_material_family_id;
+           const matFamilyData = getJsonData(matKey);
+           
+           if (matFamilyData && matFamilyData.familyId) {
+             if (family && matFamilyData.familyId.toLowerCase().includes(family.toLowerCase())) {
+               needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
+             }
+           } else {
+             // Fallback
+             const normalizedMatKey = matKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+             if (family && normalizedMatKey.includes(family.toLowerCase().replace(/[^a-z0-9]/g, ''))) {
+               needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
+             }
+           }
+        }
+      })
     }
     return needed.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i);
-  }, [totals.breakdown]);
+  }, [totals.breakdown, trackedWeapons]);
 
   const groupedBooksData = useMemo(() => {
     const groups = {}; // Region -> Domain -> FamilyName -> FamilyObj
@@ -345,6 +367,44 @@ export default function Planner() {
 
     return groups;
   }, [toFarm.talentBooks, getNeededBy]);
+
+  const groupedWeaponMatsData = useMemo(() => {
+    const groups = {}; // Region -> Domain -> FamilyName -> FamilyObj
+    const allWeaponMats = toFarm.weaponAscMats || [];
+
+    allWeaponMats.forEach(item => {
+      const familyData = getJsonData(item.name);
+      if (!familyData) return;
+
+      const region = familyData.region;
+      const domainName = familyData.domain || 'Unknown Domain';
+      const familyName = familyData.familyName;
+
+      if (!groups[region]) groups[region] = {};
+      if (!groups[region][domainName]) groups[region][domainName] = {};
+      if (!groups[region][domainName][familyName]) {
+        groups[region][domainName][familyName] = {
+          familyName,
+          familyData,
+          type: 'weapon',
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'weapon');
+      
+      groups[region][domainName][familyName].items[item.name] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[region][domainName][familyName].neededBy.find(e => e.name === entity.name)) {
+          groups[region][domainName][familyName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.weaponAscMats, getNeededBy]);
 
   const groupedWeeklyBosses = useMemo(() => {
     const groups = {}; // Region -> BossName -> { bossName, region, items: [], neededBy: [] }
@@ -670,7 +730,27 @@ export default function Planner() {
               All weekly boss drops covered
             </div>
           )}
-          <ToFarmCategory icon="🔗" title="Weapon Ascension Material"   items={toFarm.weaponAscMats}  accent="var(--gold)" emptyMsg="All weapon domains covered" />
+          {/* General Weapon Ascension Materials Accordion */}
+          {toFarm.weaponAscMats?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-weapon-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-weapon-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>🔗</span> Weapon Ascension Material
+                </p>
+                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weapon', false, groupedWeaponMatsData)}>Expand All Regions</button>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weapon', true, groupedWeaponMatsData)}>Collapse All Regions</button>
+                </div>
+              </div>
+              {!collapsed['all-weapon-main'] && renderRegionGroups(groupedWeaponMatsData, 'var(--gold)', 'all-weapon')}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All weapon domains covered
+            </div>
+          )}
           <ToFarmCategory icon="💎" title="Character Ascension Gem"          items={toFarm.gemstones}      accent="#C8A96E" emptyMsg="All gemstones covered" />
           <ToFarmCategory icon="🐉" title="Normal Boss Material"   items={toFarm.worldBoss}      accent="#F97316" emptyMsg="All boss drops covered" />
           <ToFarmCategory icon="🛡️" title="Elite Enhancement Material"    items={toFarm.eliteMob}       accent="var(--gold)" emptyMsg="All elite drops covered" />
