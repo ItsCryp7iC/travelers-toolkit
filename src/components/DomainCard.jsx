@@ -1,0 +1,95 @@
+import React from 'react'
+import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
+import { formatItemName } from '../utils/calculator'
+
+const RARITY_COLORS = {
+  5: '#D87A34',
+  4: '#9370DB',
+  3: '#4682B4',
+  2: '#6B8E23',
+  1: '#808080'
+}
+
+export default function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
+  const { familyName, familyData, items, neededBy } = familyObj;
+
+  return (
+    <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors overflow-hidden relative group">
+      {/* Glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity pointer-events-none" style={{ background: accent }} />
+      
+      {/* Header */}
+      <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
+        <span className="text-xs">🏛️</span>
+        <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
+          Domain: {domainName}
+        </span>
+      </div>
+
+      {/* Body: Tier List */}
+      <div className="p-3 space-y-3 flex-1">
+        {familyData.tiers.map(tier => {
+          let required = globalCosts[tier.id] || 0;
+          if (items[tier.id]) {
+             required = items[tier.id].item.required || items[tier.id].item.toFarm || globalCosts[tier.id];
+          }
+          const owned = inventory[tier.id] || 0;
+          
+          if (required === 0 && owned === 0) return null;
+
+          const percent = required > 0 ? Math.min(100, (owned / required) * 100) : (owned > 0 ? 100 : 0);
+          const rarityColor = RARITY_COLORS[tier.rarity] || RARITY_COLORS[3];
+
+          return (
+            <div key={tier.id} className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
+                  <img 
+                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : 'Weapon Ascension Material')} 
+                    alt={tier.name} 
+                    className="w-8 h-8 object-contain drop-shadow-md" 
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
+                  />
+                  <span className="hidden text-xl">📦</span>
+                  <span className="text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
+                    {formatItemName(tier.name)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs flex-shrink-0">
+                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-cinzel font-bold">{owned}</span></span>
+                  <span className="text-[var(--muted)]">Need: <span className="font-cinzel font-bold" style={{ color: accent }}>{required}</span></span>
+                </div>
+              </div>
+              <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
+                <div className="absolute top-0 left-0 h-full rounded-full transition-all" style={{ width: `${percent}%`, background: required > 0 && owned >= required ? '#4ADE80' : rarityColor }} />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Footer (Needed By) */}
+      {neededBy && neededBy.length > 0 && (
+        <div className="px-3 pb-3 mt-auto">
+          <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
+          <p className="text-[9px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
+          <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
+            {neededBy.map((entity, i) => (
+              <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
+                <img 
+                  src={entity.type === 'character' ? getCharacterAvatar(entity.name) : getWeaponIcon(entity.name)}
+                  alt={entity.name}
+                  title={entity.name}
+                  className="w-full h-full object-cover relative z-10"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

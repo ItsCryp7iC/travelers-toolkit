@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { aggregateRosterCosts, computeToFarm } from '../utils/aggregator'
 import { formatNumber, formatItemName } from '../utils/calculator'
 import { formatName } from '../utils/gameData'
 import FarmableToday from '../components/FarmableToday'
+import DomainCard from '../components/DomainCard'
+import { getJsonData } from '../utils/resolver'
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
 function ProgressBar({ owned, required, accent }) {
@@ -291,6 +293,139 @@ export default function Planner() {
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
 
+  const getNeededBy = useCallback((matKey, type) => {
+    const needed = []
+    if (type === 'talent') {
+      totals.breakdown.forEach(b => {
+        if (b.totalCosts[matKey] > 0) {
+          const charId = b.character?.id || b.name.toLowerCase().replace(/[^a-z0-9]/g, '')
+          needed.push({ name: b.name, icon: charId, type: 'character' })
+        }
+      })
+    }
+    return needed.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i);
+  }, [totals.breakdown]);
+
+  const groupedBooksData = useMemo(() => {
+    const groups = {}; // Region -> Domain -> FamilyName -> FamilyObj
+    const allBooks = toFarm.talentBooks || [];
+
+    allBooks.forEach(item => {
+      const familyData = getJsonData(item.name);
+      if (!familyData) return;
+
+      const region = familyData.region;
+      const domainName = familyData.domain || 'Unknown Domain';
+      const familyName = familyData.familyName;
+
+      if (!groups[region]) groups[region] = {};
+      if (!groups[region][domainName]) groups[region][domainName] = {};
+      if (!groups[region][domainName][familyName]) {
+        groups[region][domainName][familyName] = {
+          familyName,
+          familyData,
+          type: 'talent',
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'talent');
+      
+      groups[region][domainName][familyName].items[item.name] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[region][domainName][familyName].neededBy.find(e => e.name === entity.name)) {
+          groups[region][domainName][familyName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.talentBooks, getNeededBy]);
+
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      const saved = localStorage.getItem('planner-collapsed-state');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
+
+  const toggleSection = (key) => {
+    setCollapsed(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem('planner-collapsed-state', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const setAllRegions = (category, isCollapsed, groupedData) => {
+    setCollapsed(prev => {
+      const next = { ...prev };
+      Object.keys(groupedData).forEach(region => {
+        next[`${category}-${region}`] = isCollapsed;
+      });
+      localStorage.setItem('planner-collapsed-state', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya'];
+
+  const getScheduleWeight = (familyData) => {
+    if (familyData?.days?.length) return Math.min(...familyData.days);
+    return 99;
+  };
+
+  const renderRegionGroups = (groupedData, accent, categoryKey) => {
+    if (Object.keys(groupedData).length === 0) return null;
+
+    return Object.keys(groupedData)
+      .sort((a, b) => {
+        const idxA = REGION_ORDER.indexOf(a);
+        const idxB = REGION_ORDER.indexOf(b);
+        if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+      })
+      .map(region => {
+        const regionKey = `${categoryKey}-${region}`;
+        const isCollapsed = collapsed[regionKey];
+        return (
+          <div key={region} className="mb-8 last:mb-2">
+            <h3 
+              className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => toggleSection(regionKey)}
+            >
+              <span className={`text-lg inline-block transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>›</span>
+              <span className="text-sm">📍</span> {region}
+            </h3>
+            {!isCollapsed && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {Object.keys(groupedData[region]).map(domainName => (
+                  Object.values(groupedData[region][domainName])
+                    .sort((a, b) => getScheduleWeight(a.familyData) - getScheduleWeight(b.familyData))
+                    .map(familyObj => (
+                      <DomainCard 
+                        key={familyObj.familyName} 
+                        domainName={domainName} 
+                        familyObj={familyObj} 
+                        accent={accent} 
+                        globalCosts={totals.totalCosts}
+                        inventory={inventory}
+                      />
+                  ))
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })
+  }
+
   const hasRoster = Object.keys(roster).length > 0
 
   const remainingTotals = useMemo(() => {
@@ -400,7 +535,27 @@ export default function Planner() {
             </div>
           )}
 
-          <ToFarmCategory icon="📖" title="Talent Material"      items={toFarm.talentBooks}    accent="#A855F7" emptyMsg="All talent books covered" />
+          {/* General Talent Materials Accordion */}
+          {toFarm.talentBooks?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-talent-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-talent-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>📖</span> Talent Materials
+                </p>
+                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-talent', false, groupedBooksData)}>Expand All Regions</button>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-talent', true, groupedBooksData)}>Collapse All Regions</button>
+                </div>
+              </div>
+              {!collapsed['all-talent-main'] && renderRegionGroups(groupedBooksData, '#A855F7', 'all-talent')}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All talent books covered
+            </div>
+          )}
           <ToFarmCategory icon="👑" title="Weekly Boss Material"  items={toFarm.weeklyBoss}     accent="#FBBF24" emptyMsg="All weekly boss drops covered" />
           <ToFarmCategory icon="🔗" title="Weapon Ascension Material"   items={toFarm.weaponAscMats}  accent="var(--gold)" emptyMsg="All weapon domains covered" />
           <ToFarmCategory icon="💎" title="Character Ascension Gem"          items={toFarm.gemstones}      accent="#C8A96E" emptyMsg="All gemstones covered" />
