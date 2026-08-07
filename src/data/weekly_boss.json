@@ -244,7 +244,7 @@
     "name": "Eroded Horn",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
-    "region": "Mondstadt",
+    "region": "Natlan",
     "sortOrder": 3.031
   },
   {
@@ -252,7 +252,7 @@
     "name": "Eroded Sunfire",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
-    "region": "Mondstadt",
+    "region": "Natlan",
     "sortOrder": 3.032
   },
   {
@@ -260,7 +260,7 @@
     "name": "Eroded Scale Feather",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
-    "region": "Mondstadt",
+    "region": "Natlan",
     "sortOrder": 3.033
   },
   {

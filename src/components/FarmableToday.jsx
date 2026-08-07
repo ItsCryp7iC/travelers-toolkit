@@ -10,7 +10,7 @@ import { resolveSpecificItem, getJsonData } from '../utils/resolver'
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
 import weeklyBossData from '../data/weekly_boss.json'
 
-const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai'];
+const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya'];
 
 const DAY_SCHEDULE_LABEL = {
   1: 'Monday',
@@ -141,7 +141,7 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
       </div>
 
       <div className="p-3 space-y-3 flex-1">
-        {items.map(({ data }) => {
+        {[...items].sort((a, b) => (a.data.sortOrder || 0) - (b.data.sortOrder || 0)).map(({ data }) => {
           const required = globalCosts[data.id] || 0;
           const owned = inventory[data.id] || 0;
           
@@ -379,9 +379,11 @@ export default function FarmableToday() {
       
       if (!groups[region][bossName]) {
         const allBossMaterials = weeklyBossData.filter(b => b.boss_name === bossName);
+        const bossSortOrder = Math.min(...allBossMaterials.map(m => m.sortOrder || 999));
         groups[region][bossName] = {
           bossName,
           region,
+          bossSortOrder,
           items: allBossMaterials.map(data => ({ data, item: { name: data.id, toFarm: 0 } })),
           neededBy: []
         };
@@ -429,7 +431,9 @@ export default function FarmableToday() {
             </h3>
             {!isCollapsed && (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {Object.values(groupedData[region]).map(bossObj => (
+                {Object.values(groupedData[region])
+                  .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
+                  .map(bossObj => (
                   <BossCard 
                     key={bossObj.bossName} 
                     bossName={bossObj.bossName} 
