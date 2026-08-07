@@ -282,11 +282,13 @@ function EmptyRosterPrompt() {
 
 // ─── Main Planner Page ────────────────────────────────────────────────────
 export default function Planner() {
-  const roster    = useStore((s) => s.roster)
-  const inventory = useStore((s) => s.inventory)
+  const roster = useStore(s => s.roster)
+  const trackedWeapons = useStore(s => s.trackedWeapons)
+  const inventory = useStore(s => s.inventory)
+
   const [view, setView] = useState('toFarm')
 
-  const totals = useMemo(() => aggregateRosterCosts(roster), [roster])
+  const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
 
   const hasRoster = Object.keys(roster).length > 0

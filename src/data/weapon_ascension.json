@@ -24,7 +24,12 @@
         "name": "Tile of Decarabian's Tower",
         "sortOrder": 7.004
       }
-    }
+    },
+    "domain": "Cecilia Garden",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "borealwolfteeth",
@@ -51,11 +56,16 @@
         "name": "Boreal Wolf's Milk Tooth",
         "sortOrder": 7.008
       }
-    }
+    },
+    "domain": "Cecilia Garden",
+    "days": [
+      2,
+      5
+    ]
   },
   {
-    "id": "dandelionshackles",
-    "name": "Dandelion Shackles",
+    "id": "gladiatorshackles",
+    "name": "Gladiator Shackles",
     "region": "Mondstadt",
     "tiers": {
       "5_star": {
@@ -78,7 +88,12 @@
         "name": "Fetters of the Dandelion Gladiator",
         "sortOrder": 7.012
       }
-    }
+    },
+    "domain": "Cecilia Garden",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "guyunpillar",
@@ -105,7 +120,12 @@
         "name": "Luminous Sands from Guyun",
         "sortOrder": 7.016
       }
-    }
+    },
+    "domain": "Hidden Palace of Lianshan Formula",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "elixir",
@@ -132,11 +152,17 @@
         "name": "Mist Veiled Lead Elixir",
         "sortOrder": 7.02
       }
-    }
+    },
+    "domain": "Hidden Palace of Lianshan Formula",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "aerosiderite",
     "name": "Aerosiderite",
+    "region": "Liyue",
     "tiers": {
       "5_star": {
         "id": "chunkofaerosiderite",
@@ -158,12 +184,17 @@
         "name": "Grain of Aerosiderite",
         "sortOrder": 7.024
       }
-    }
+    },
+    "domain": "Hidden Palace of Lianshan Formula",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "branchesofadistantsea",
     "name": "Branches of a Distant Sea",
-    "region": "Liyue",
+    "region": "Inazuma",
     "tiers": {
       "5_star": {
         "id": "goldenbranchofadistantsea",
@@ -185,7 +216,12 @@
         "name": "Coral Branch of a Distant Sea",
         "sortOrder": 7.028
       }
-    }
+    },
+    "domain": "Court of Flowing Sand",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "narukamismagatama",
@@ -212,7 +248,12 @@
         "name": "Narukami's Wisdom",
         "sortOrder": 7.032
       }
-    }
+    },
+    "domain": "Court of Flowing Sand",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "onimask",
@@ -239,7 +280,12 @@
         "name": "Mask of the Wicked Lieutenant",
         "sortOrder": 7.036
       }
-    }
+    },
+    "domain": "Court of Flowing Sand",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "talismanoftheforestdew",
@@ -266,7 +312,12 @@
         "name": "Copper Talisman of the Forest Dew",
         "sortOrder": 7.04
       }
-    }
+    },
+    "domain": "Tower of Abject Pride",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "oasisgarden",
@@ -293,7 +344,12 @@
         "name": "Oasis Garden's Reminiscence",
         "sortOrder": 7.044
       }
-    }
+    },
+    "domain": "Tower of Abject Pride",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "scorchingmights",
@@ -320,7 +376,12 @@
         "name": "Echo of Scorching Might",
         "sortOrder": 7.048
       }
-    }
+    },
+    "domain": "Tower of Abject Pride",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "ancientchords",
@@ -347,7 +408,12 @@
         "name": "Fragment of an Ancient Chord",
         "sortOrder": 7.052
       }
-    }
+    },
+    "domain": "Echoes of the Deep Tides",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "sacreddewdrops",
@@ -374,7 +440,12 @@
         "name": "Dross of Pure Sacred Dewdrop",
         "sortOrder": 7.056
       }
-    }
+    },
+    "domain": "Echoes of the Deep Tides",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "gobletofthepristinesea",
@@ -401,7 +472,12 @@
         "name": "Broken Goblet of the Pristine Sea",
         "sortOrder": 7.06
       }
-    }
+    },
+    "domain": "Echoes of the Deep Tides",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "blazingsacrificialhearts",
@@ -428,7 +504,12 @@
         "name": "Blazing Sacrificial Hearts Terror",
         "sortOrder": 7.064
       }
-    }
+    },
+    "domain": "Ancient Watchtower",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "deliriousmasksofthesacredlord",
@@ -455,7 +536,12 @@
         "name": "Delirious Decadence of the Sacred Lord",
         "sortOrder": 7.068
       }
-    }
+    },
+    "domain": "Ancient Watchtower",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "nightwindsmystics",
@@ -482,7 +568,12 @@
         "name": "Night Wind's Mystic Consideration",
         "sortOrder": 7.072
       }
-    }
+    },
+    "domain": "Ancient Watchtower",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "artfuldevices",
@@ -509,7 +600,12 @@
         "name": "Artful Device Fragment",
         "sortOrder": 7.076
       }
-    }
+    },
+    "domain": "Lost Mooncourt",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "longnightflints",
@@ -536,7 +632,12 @@
         "name": "Ember of Long Night Flint",
         "sortOrder": 7.08
       }
-    }
+    },
+    "domain": "Lost Mooncourt",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "thefarnorthscions",
@@ -563,6 +664,11 @@
         "name": "Sundered Glory of the Far North Scions",
         "sortOrder": 7.084
       }
-    }
+    },
+    "domain": "Lost Mooncourt",
+    "days": [
+      3,
+      6
+    ]
   }
 ]

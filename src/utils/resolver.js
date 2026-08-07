@@ -7,6 +7,7 @@ import weeklyBossData from '../data/weekly_boss.json'
 import normalBossData from '../data/normal_boss.json'
 import localSpecialtyData from '../data/local_specialty.json'
 import miscMaterialsData from '../data/misc_materials.json'
+import weaponsData from '../data/weapons.json'
 
 const DB = {
   talent: Object.fromEntries(talentMatsData.map(i => [i.id, i])),
@@ -24,6 +25,7 @@ function toSnakeCase(str) {
   if (!str) return '';
   return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`).replace(/^_/, '').replace(/ /g, '_').replace(/'/g, '').toLowerCase();
 }
+
 
 const getRarity = (key) => {
   if (key.includes('5_star')) return 5;
@@ -101,7 +103,7 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
       const family = DB.talent[mats.talent_material_family_id]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
-        return { id: toSnakeCase(item.name), category: 'talentBooks', name: item.name, rarity }
+        return { id: item.id || toSnakeCase(item.name), category: 'talentBooks', name: item.name, rarity }
       }
     }
     
@@ -124,11 +126,14 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
         '4_star_ascension_material': '4_star',
         '5_star_ascension_material': '5_star'
       }
-      const family = DB.weapon[mats.ascension_material_family_id]
+      let family = DB.weapon[mats.ascension_material_family_id]
+
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
-        return { id: toSnakeCase(item.name), category: 'weaponAscMats', name: item.name, rarity }
+        return { id: item.id || toSnakeCase(item.name), category: 'weaponAscMats', name: item.name, rarity }
       }
+      
+      return { id: genericKey, category: 'weaponAscMats', name: genericKey, rarity }
     }
     
     // Elite Enemy
@@ -138,11 +143,12 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
         '3_star_enhancement_material': '3_star',
         '4_star_enhancement_material': '4_star'
       }
-      const family = DB.elite[mats.enhancement_material_family_id]
+      let family = DB.elite[mats.enhancement_material_family_id]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
         return { id: toSnakeCase(item.name), category: 'eliteMob', name: item.name, rarity }
       }
+      return { id: genericKey, category: 'eliteMob', name: genericKey, rarity }
     }
     
     // Common Enemy (Weapon)
@@ -152,11 +158,12 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
         '2_star_enemy_material': '2_star',
         '3_star_enemy_material': '3_star'
       }
-      const family = DB.common[mats.enemy_material_family_id]
+      let family = DB.common[mats.enemy_material_family_id] || DB.elite[mats.enemy_material_family_id]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
         return { id: toSnakeCase(item.name), category: 'mob', name: item.name, rarity }
       }
+      return { id: genericKey, category: 'mob', name: genericKey, rarity }
     }
   }
 
@@ -167,26 +174,66 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
 /**
  * Returns { familyId, familyName, region, tiers: [{ id, name, rarity }, ...] }
  */
-export function getFamilyData(snakeCaseId) {
+export function getJsonData(id) {
   const searchDatabases = [Object.values(DB.talent), Object.values(DB.weapon)];
   for (const db of searchDatabases) {
-    for (const family of db) {
-      for (const tierKey in family.tiers) {
-        const item = family.tiers[tierKey];
-        if (toSnakeCase(item.name) === snakeCaseId) {
-          return {
-            familyId: family.id,
-            familyName: family.name,
-            region: family.region || 'Unknown Region',
-            tiers: Object.entries(family.tiers).map(([k, t]) => ({ 
-              id: toSnakeCase(t.name), 
-              name: t.name, 
-              rarity: parseInt(k) || 3
-            })).sort((a, b) => b.rarity - a.rarity)
-          }
-        }
-      }
+    const family = db.find(group => 
+      group.id === id || 
+      (group.tiers && Object.values(group.tiers).some(tier => (tier.id || toSnakeCase(tier.name)) === id))
+    );
+    if (family) {
+      return {
+        familyId: family.id,
+        familyName: family.name,
+        region: family.region,
+        domain: family.domain,
+        days: family.days,
+        tiers: Object.entries(family.tiers).map(([k, t]) => ({ 
+          id: t.id || toSnakeCase(t.name), 
+          name: t.name, 
+          rarity: parseInt(k) || 3
+        })).sort((a, b) => b.rarity - a.rarity)
+      };
     }
   }
   return null;
 }
+
+// ─── Startup Sanity Check ─────────────────────────────────────────────────
+// Assert every weapon's material family IDs resolve to a real entry with a
+// DIRECT id match. Throws on first failure so data mismatches surface
+// immediately instead of causing silent missing-material bugs.
+
+function validateWeaponMaterialIds() {
+  const allEnemy = { ...DB.common, ...DB.elite }
+
+  for (const weapon of weaponsData) {
+    if (!weapon.materials) continue
+
+    const ascId = weapon.materials.ascension_material_family_id
+    if (ascId && !DB.weapon[ascId]) {
+      throw new Error(
+        `[Data Integrity] Weapon "${weapon.name}" has ascension_material_family_id "${ascId}" ` +
+        `which does not match any id in weapon_ascension.json`
+      )
+    }
+
+    const enhId = weapon.materials.enhancement_material_family_id
+    if (enhId && !DB.elite[enhId]) {
+      throw new Error(
+        `[Data Integrity] Weapon "${weapon.name}" has enhancement_material_family_id "${enhId}" ` +
+        `which does not match any id in elite_enemy.json`
+      )
+    }
+
+    const enemyId = weapon.materials.enemy_material_family_id
+    if (enemyId && !allEnemy[enemyId]) {
+      throw new Error(
+        `[Data Integrity] Weapon "${weapon.name}" has enemy_material_family_id "${enemyId}" ` +
+        `which does not match any id in common_enemy.json or elite_enemy.json`
+      )
+    }
+  }
+}
+
+validateWeaponMaterialIds()

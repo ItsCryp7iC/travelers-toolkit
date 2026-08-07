@@ -33,7 +33,7 @@ function merge(acc, src) {
  *
  * @param {Object} roster  — Zustand roster slice { [charName]: entry }
  */
-export function aggregateRosterCosts(roster) {
+export function aggregateRosterCosts(roster, trackedWeapons = []) {
   const grandTotalCosts = {}
   const grandTotalCategories = {}
   const grandTotalRarities = {}
@@ -60,19 +60,7 @@ export function aggregateRosterCosts(roster) {
       talentState.skillTo  <= talentState.skillFrom  &&
       talentState.burstTo  <= talentState.burstFrom
 
-    const weaponState = {
-      equippedWeapon: entry.equippedWeapon,
-      weaponFromLv:   entry.weaponLevel ?? 1,
-      weaponToLv:     entry.targetWeaponLevel ?? 90,
-      weaponFromAsc:  entry.weaponAscension ?? 0,
-      weaponToAsc:    entry.targetWeaponAscension ?? 6,
-    }
-    const weaponNoop =
-      !weaponState.equippedWeapon ||
-      (weaponState.weaponFromAsc === weaponState.weaponToAsc &&
-       weaponState.weaponFromLv >= weaponState.weaponToLv)
-
-    if (ascNoop && talentNoop && weaponNoop) continue
+    if (ascNoop && talentNoop) continue
 
     const character = CHAR_MAP[charName]
     if (!character) continue
@@ -87,13 +75,6 @@ export function aggregateRosterCosts(roster) {
       normalCosts = calculateTalentCost(character, talentState.normalFrom, talentState.normalTo)
       skillCosts = calculateTalentCost(character, talentState.skillFrom, talentState.skillTo)
       burstCosts = calculateTalentCost(character, talentState.burstFrom, talentState.burstTo)
-    }
-
-    let weaponCosts = null
-    let wData = null
-    if (!weaponNoop && weaponState.equippedWeapon) {
-      wData = WEAPON_MAP[weaponState.equippedWeapon]
-      weaponCosts = calculateWeaponCost(wData, weaponState.weaponFromLv, weaponState.weaponToLv)
     }
 
     const totalCosts = {}
@@ -116,10 +97,44 @@ export function aggregateRosterCosts(roster) {
     processCosts(normalCosts, false)
     processCosts(skillCosts, false)
     processCosts(burstCosts, false)
-    processCosts(weaponCosts, true)
 
     if (Object.values(totalCosts).some(val => val > 0)) {
-      breakdown.push({ name: charName, character, entry, totalCosts, talentState, weaponState })
+      breakdown.push({ name: charName, character, entry, totalCosts, talentState })
+    }
+  }
+
+  for (const weapon of trackedWeapons) {
+    const wFromLv = weapon.level ?? 1
+    const wToLv = weapon.targetLevel ?? 90
+    const wFromAsc = weapon.ascension ?? 0
+    const wToAsc = weapon.targetAscension ?? 6
+
+    if (wFromAsc === wToAsc && wFromLv >= wToLv) continue
+    
+    const wData = WEAPON_MAP[weapon.weaponName]
+    if (!wData) continue
+
+    const weaponCosts = calculateWeaponCost(wData, wFromLv, wToLv, wFromAsc, wToAsc, false, roster)
+    
+    const totalCosts = {}
+    const processWeaponCosts = (costObj) => {
+      if (!costObj) return
+      Object.entries(costObj).forEach(([key, val]) => {
+        if (typeof val === 'number' && val > 0) {
+          const resolved = resolveSpecificItem(key, null, wData);
+          const finalId = resolved.id;
+          totalCosts[finalId] = (totalCosts[finalId] || 0) + val
+          grandTotalCosts[finalId] = (grandTotalCosts[finalId] || 0) + val
+          grandTotalCategories[finalId] = resolved.category;
+          grandTotalRarities[finalId] = resolved.rarity;
+        }
+      })
+    }
+    
+    processWeaponCosts(weaponCosts)
+    
+    if (Object.values(totalCosts).some(val => val > 0)) {
+      breakdown.push({ name: weapon.weaponName, isWeapon: true, entry: weapon, totalCosts })
     }
   }
 

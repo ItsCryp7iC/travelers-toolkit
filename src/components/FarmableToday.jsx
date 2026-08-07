@@ -4,14 +4,12 @@
 import React, { useMemo, useState } from 'react'
 import useStore from '../store/useStore'
 import { aggregateRosterCosts, computeToFarm } from '../utils/aggregator'
-import { 
-  BOOK_SCHEDULE_BY_DAY, getDayLabel, formatItemName,
-  WEAPON_MAT_SCHEDULE_BY_DAY, WEAPON_MAT_GROUPS, getDomainForMaterial,
-  calculateWeaponCost
-} from '../utils/calculator'
+import { getDayLabel, formatItemName } from '../utils/calculator'
 import weaponsData from '../data/weapons.json'
-import { resolveSpecificItem, getFamilyData } from '../utils/resolver'
+import { resolveSpecificItem, getJsonData } from '../utils/resolver'
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
+
+const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai'];
 
 const DAY_SCHEDULE_LABEL = {
   1: 'Monday',
@@ -38,16 +36,8 @@ const RARITY_COLORS = {
   1: '#808080'
 }
 
-const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Snezhnaya']
-
-const getScheduleWeight = (familyName) => {
-  const familyLower = familyName.toLowerCase();
-  for (const group of ['MonThu', 'TueFri', 'WedSat']) {
-    if ((BOOK_SCHEDULE_BY_DAY[1] || []).some(k => familyLower.includes(k.toLowerCase())) && group === 'MonThu') return 1;
-    if ((BOOK_SCHEDULE_BY_DAY[2] || []).some(k => familyLower.includes(k.toLowerCase())) && group === 'TueFri') return 2;
-    if ((BOOK_SCHEDULE_BY_DAY[3] || []).some(k => familyLower.includes(k.toLowerCase())) && group === 'WedSat') return 3;
-    if ((WEAPON_MAT_GROUPS[group] || []).some(k => familyLower.includes(k.toLowerCase()))) return ['MonThu', 'TueFri', 'WedSat'].indexOf(group) + 1;
-  }
+const getScheduleWeight = (familyData) => {
+  if (familyData?.days?.length) return Math.min(...familyData.days);
   return 99;
 }
 
@@ -145,24 +135,10 @@ export default function FarmableToday() {
   const dayLabel = DAY_SCHEDULE_LABEL[selectedDay]
   const dayColor = WEEKDAY_COLORS[selectedDay] || '#C8A96E'
 
-  const totals = useMemo(() => aggregateRosterCosts(roster), [roster])
+  const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
 
-  const matchesBookRotation = (itemName) => {
-    if (selectedDay === 0) return true;
-    const rotation = BOOK_SCHEDULE_BY_DAY[selectedDay] || [];
-    const lowerName = itemName.toLowerCase();
-    return rotation.some(keyword => lowerName.includes(keyword.toLowerCase()));
-  };
 
-  const matchesWeaponRotation = (itemName) => {
-    if (selectedDay === 0) return true;
-    const group = WEAPON_MAT_SCHEDULE_BY_DAY[selectedDay];
-    if (!group) return false;
-    const rotation = WEAPON_MAT_GROUPS[group] || [];
-    const lowerName = itemName.toLowerCase();
-    return rotation.some(keyword => lowerName.includes(keyword.toLowerCase()));
-  };
   
   const getNeededBy = (matKey, type) => {
     const needed = []
@@ -179,8 +155,18 @@ export default function FarmableToday() {
         const wData = weaponsData.find(wd => wd.name === w.weaponName)
         if (wData && wData.materials) {
            const family = wData.materials.ascension_material_family_id;
-           if (family && matKey.includes(family)) {
-             needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
+           const matFamilyData = getJsonData(matKey);
+           
+           if (matFamilyData && matFamilyData.familyId) {
+             if (family && matFamilyData.familyId.toLowerCase().includes(family.toLowerCase())) {
+               needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
+             }
+           } else {
+             // Fallback
+             const normalizedMatKey = matKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+             if (family && normalizedMatKey.includes(family.toLowerCase().replace(/[^a-z0-9]/g, ''))) {
+               needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
+             }
            }
         }
       })
@@ -191,23 +177,27 @@ export default function FarmableToday() {
 
   // First, map the farmables
   const todayBooksFarmable = useMemo(() => {
-    return (toFarm.talentBooks || []).filter(item => matchesBookRotation(item.name))
+    return (toFarm.talentBooks || []).filter(item => {
+      const dbItem = getJsonData(item.name);
+      return dbItem && (selectedDay === 0 || dbItem.days.includes(selectedDay));
+    })
   }, [toFarm.talentBooks, selectedDay]);
 
   const todayWeaponFarmable = useMemo(() => {
-    return (toFarm.weaponAscMats || []).filter(item => matchesWeaponRotation(item.name))
+    return (toFarm.weaponAscMats || []).filter(item => {
+      const dbItem = getJsonData(item.name);
+      return dbItem && (selectedDay === 0 || dbItem.days.includes(selectedDay));
+    })
   }, [toFarm.weaponAscMats, selectedDay]);
 
-  const groupedData = useMemo(() => {
+  const groupedBooksData = useMemo(() => {
     const groups = {}; // Region -> Domain -> FamilyName -> FamilyObj
-    const allFarmable = [...todayBooksFarmable, ...todayWeaponFarmable];
-
-    allFarmable.forEach(item => {
-      const familyData = getFamilyData(item.name);
+    todayBooksFarmable.forEach(item => {
+      const familyData = getJsonData(item.name);
       if (!familyData) return;
 
       const region = familyData.region;
-      const domainName = getDomainForMaterial(familyData.familyName) || 'Unknown Domain';
+      const domainName = familyData.domain || 'Unknown Domain';
       const familyName = familyData.familyName;
 
       if (!groups[region]) groups[region] = {};
@@ -216,13 +206,13 @@ export default function FarmableToday() {
         groups[region][domainName][familyName] = {
           familyName,
           familyData,
-          type: todayBooksFarmable.includes(item) ? 'talent' : 'weapon',
+          type: 'talent',
           items: {},
           neededBy: []
         };
       }
 
-      const neededBy = getNeededBy(item.name, todayBooksFarmable.includes(item) ? 'talent' : 'weapon');
+      const neededBy = getNeededBy(item.name, 'talent');
       groups[region][domainName][familyName].items[item.name] = { item, neededBy };
       
       neededBy.forEach(entity => {
@@ -233,7 +223,85 @@ export default function FarmableToday() {
     });
 
     return groups;
-  }, [todayBooksFarmable, todayWeaponFarmable, totals.breakdown, trackedWeapons]);
+  }, [todayBooksFarmable, totals.breakdown, trackedWeapons]);
+
+  const groupedWeaponData = useMemo(() => {
+    const groups = {}; // Region -> Domain -> FamilyName -> FamilyObj
+    todayWeaponFarmable.forEach(item => {
+      const familyData = getJsonData(item.name);
+      if (!familyData) return;
+
+      const region = familyData.region;
+      const domainName = familyData.domain || 'Unknown Domain';
+      const familyName = familyData.familyName;
+
+      if (!groups[region]) groups[region] = {};
+      if (!groups[region][domainName]) groups[region][domainName] = {};
+      if (!groups[region][domainName][familyName]) {
+        groups[region][domainName][familyName] = {
+          familyName,
+          familyData,
+          type: 'weapon',
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'weapon');
+      groups[region][domainName][familyName].items[item.name] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[region][domainName][familyName].neededBy.find(e => e.name === entity.name)) {
+          groups[region][domainName][familyName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [todayWeaponFarmable, totals.breakdown, trackedWeapons]);
+
+  const renderRegionGroups = (groupedData, accent) => {
+    if (Object.keys(groupedData).length === 0) return (
+      <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-4">
+        {selectedDay === 0
+          ? 'All materials are available today — farm anything!'
+          : 'No materials needed from today\'s domains.'}
+      </div>
+    );
+
+    return Object.keys(groupedData)
+      .sort((a, b) => {
+        const idxA = REGION_ORDER.indexOf(a);
+        const idxB = REGION_ORDER.indexOf(b);
+        if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+      })
+      .map(region => (
+        <div key={region} className="mb-8 last:mb-2">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <span className="text-sm">📍</span> {region}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {Object.keys(groupedData[region]).map(domainName => (
+              Object.values(groupedData[region][domainName])
+                .sort((a, b) => getScheduleWeight(a.familyData) - getScheduleWeight(b.familyData))
+                .map(familyObj => (
+                  <DomainCard 
+                    key={familyObj.familyName} 
+                    domainName={domainName} 
+                    familyObj={familyObj} 
+                    accent={accent} 
+                    globalCosts={totals.totalCosts}
+                    inventory={inventory}
+                  />
+              ))
+            ))}
+          </div>
+        </div>
+      ))
+  }
 
   // Aggregation
   const farmableCount = todayBooksFarmable.length + todayWeaponFarmable.length
@@ -241,6 +309,7 @@ export default function FarmableToday() {
 
   if (Object.keys(roster).length === 0) return null
 
+  console.log("FarmableToday toFarm prop:", toFarm);
   return (
     <div
       className="rounded-2xl border overflow-hidden bg-[var(--surface)]"
@@ -290,47 +359,17 @@ export default function FarmableToday() {
       </div>
 
       <div className="px-5 py-5">
-        
-        {Object.keys(groupedData).length === 0 ? (
-          <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-4">
-            {selectedDay === 0
-              ? 'All materials are available today — farm anything!'
-              : 'No materials needed from today\'s domains.'}
-          </div>
-        ) : (
-          Object.keys(groupedData)
-            .sort((a, b) => {
-              const idxA = REGION_ORDER.indexOf(a);
-              const idxB = REGION_ORDER.indexOf(b);
-              if (idxA === -1 && idxB === -1) return a.localeCompare(b);
-              if (idxA === -1) return 1;
-              if (idxB === -1) return -1;
-              return idxA - idxB;
-            })
-            .map(region => (
-            <div key={region} className="mb-8 last:mb-2">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="text-sm">📍</span> {region}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {Object.keys(groupedData[region]).map(domainName => (
-                  Object.values(groupedData[region][domainName])
-                    .sort((a, b) => getScheduleWeight(a.familyName) - getScheduleWeight(b.familyName))
-                    .map(familyObj => (
-                    <DomainCard 
-                      key={familyObj.familyName} 
-                      domainName={domainName} 
-                      familyObj={familyObj} 
-                      accent={dayColor} 
-                      globalCosts={totals.totalCosts}
-                      inventory={inventory}
-                    />
-                  ))
-                ))}
-              </div>
-            </div>
-          ))
-        )}
+        <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] uppercase mb-3 flex items-center gap-2">
+          <span>📚</span> Talent Materials
+        </p>
+        {renderRegionGroups(groupedBooksData, dayColor)}
+
+        <div className="genshin-divider my-6" />
+
+        <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] uppercase mb-3 flex items-center gap-2">
+          <span>🗡️</span> Weapon Ascension Materials
+        </p>
+        {renderRegionGroups(groupedWeaponData, 'var(--gold)')}
 
         {/* Weekly Boss reminder */}
         {weeklyNeeded.length > 0 && (

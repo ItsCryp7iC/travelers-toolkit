@@ -25,32 +25,6 @@ const lookupTalent = new Map(talentMaterials.map(item => [item.id, item]))
 const lookupWeaponAsc = new Map(weaponAscension.map(item => [item.id, item]))
 const lookupGems = new Map(characterGems.map(item => [item.id, item]))
 
-const ID_ALIASES = {
-  // Weapon Ascension Aliases
-  decarabian: 'decarabiantiles',
-  borealwolf: 'borealwolfteeth',
-  dandeliongladiator: 'dandelionshackles',
-  guyun: 'guyunpillar',
-  mistveiled: 'elixir',
-  distantsea: 'branchesofadistantsea',
-  narukami: 'narukamismagatama',
-  mask: 'onimask',
-  scorchingmight: 'scorchingmights',
-  ancientchord: 'ancientchords',
-  puresacreddewdrop: 'sacreddewdrops',
-  blazingsacrificialheart: 'blazingsacrificialhearts',
-  sacredlord: 'deliriousmasksofthesacredlord',
-  nightwind: 'nightwindsmystics',
-  // Enemy Material Aliases
-  fatui: 'fatuiskirmisher',
-  fungi: 'fungus',
-}
-
-const resolveId = (id) => {
-  if (!id) return null
-  return ID_ALIASES[id] || id
-}
-
 const SAFE_FALLBACK = { name: 'Unknown', id: 'unknown', tiers: {} }
 
 
@@ -68,27 +42,21 @@ export const resolveCharacterMaterials = (char) => {
   const m = char?.materials
   if (!m) return null
 
-  const worldBossId = resolveId(m.world_boss_material_id)
-  const weeklyBossId = resolveId(m.weekly_boss_material_id)
-  const talentId = resolveId(m.talent_material_family_id)
-  const enemyId = resolveId(m.enemy_material_family_id)
-  const localId = resolveId(m.local_specialty_id)
-
   const resolved = {
-    worldBoss: worldBossId ? (lookupBoss.get(worldBossId) || SAFE_FALLBACK) : SAFE_FALLBACK,
-    weeklyBoss: weeklyBossId ? (lookupBoss.get(weeklyBossId) || SAFE_FALLBACK) : SAFE_FALLBACK,
+    worldBoss: m.world_boss_material_id ? (lookupBoss.get(m.world_boss_material_id) || SAFE_FALLBACK) : SAFE_FALLBACK,
+    weeklyBoss: m.weekly_boss_material_id ? (lookupBoss.get(m.weekly_boss_material_id) || SAFE_FALLBACK) : SAFE_FALLBACK,
     talent: SAFE_FALLBACK,
     enemy: SAFE_FALLBACK,
-    localSpecialty: localId ? (lookupLocal.get(localId) || SAFE_FALLBACK) : SAFE_FALLBACK,
+    localSpecialty: m.local_specialty_id ? (lookupLocal.get(m.local_specialty_id) || SAFE_FALLBACK) : SAFE_FALLBACK,
     gem: m.gem_family_id ? (lookupGems.get(m.gem_family_id) || SAFE_FALLBACK) : SAFE_FALLBACK
   }
 
-  const talentData = talentId ? lookupTalent.get(talentId) : null
+  const talentData = m.talent_material_family_id ? lookupTalent.get(m.talent_material_family_id) : null
   if (talentData) {
     resolved.talent = { ...talentData }
   }
 
-  const enemyData = enemyId ? lookupEnemy.get(enemyId) : null
+  const enemyData = m.enemy_material_family_id ? lookupEnemy.get(m.enemy_material_family_id) : null
   if (enemyData) {
     resolved.enemy = { ...enemyData }
   }
@@ -116,22 +84,14 @@ export function resolveWeaponMaterials(weaponState) {
     return { ascensionFamily: SAFE_FALLBACK, eliteFamily: SAFE_FALLBACK, commonFamily: SAFE_FALLBACK };
   }
 
-  const rawAsc = dbWeapon.materials.ascension_material_family_id;
-  const rawElite = dbWeapon.materials.enhancement_material_family_id;
-  const rawCommon = dbWeapon.materials.enemy_material_family_id;
+  // IDs in weapons.json now match reference files directly — no alias resolution needed
+  const ascId = dbWeapon.materials.ascension_material_family_id;
+  const eliteId = dbWeapon.materials.enhancement_material_family_id;
+  const commonId = dbWeapon.materials.enemy_material_family_id;
 
-  // Apply aliases robustly
-  const ascId = typeof resolveId === 'function' ? resolveId(rawAsc) : (ID_ALIASES[rawAsc] || rawAsc);
-  const eliteId = typeof resolveId === 'function' ? resolveId(rawElite) : (ID_ALIASES[rawElite] || rawElite);
-  const commonId = typeof resolveId === 'function' ? resolveId(rawCommon) : (ID_ALIASES[rawCommon] || rawCommon);
-
-  // Fallback to whichever variable name the import actually uses
-  const ascDataArray = typeof weaponAscension !== 'undefined' ? weaponAscension : [];
-  const enemyDataArray = [...commonEnemy, ...eliteEnemy];
-
-  const ascensionFamily = ascDataArray.find(mat => mat.id === ascId) || SAFE_FALLBACK;
-  const eliteFamily = enemyDataArray.find(mat => mat.id === eliteId) || SAFE_FALLBACK;
-  const commonFamily = enemyDataArray.find(mat => mat.id === commonId) || SAFE_FALLBACK;
+  const ascensionFamily = lookupWeaponAsc.get(ascId) || SAFE_FALLBACK;
+  const eliteFamily = lookupEnemy.get(eliteId) || SAFE_FALLBACK;
+  const commonFamily = lookupEnemy.get(commonId) || SAFE_FALLBACK;
 
   return { ascensionFamily, eliteFamily, commonFamily };
 }
@@ -183,7 +143,7 @@ const flattenAndFormatMaterials = (dataArray, category, subCategory, getSublabel
 };
 
 export const getPrimaryInventoryList = () => {
-  const formattedMisc = flattenAndFormatMaterials(miscMaterials, null, null, 
+  const formattedMisc = flattenAndFormatMaterials(miscMaterials, null, null,
     (item) => {
       if (item.name.includes('Wit') || item.name.includes('Advice') || item.name.includes('Exp')) return `EXP Book ${'★'.repeat(item.rarity)}`;
       if (item.name.includes('Ore')) return `Weapon EXP ${'★'.repeat(item.rarity)}`;
@@ -198,8 +158,8 @@ export const getPrimaryInventoryList = () => {
 
   const formattedNormalBoss = flattenAndFormatMaterials(normalBoss, 'Boss Drops', 'Normal Boss', () => 'Normal Boss', () => 'Normal Boss Material', () => 4);
   const formattedWeeklyBoss = flattenAndFormatMaterials(weeklyBoss, 'Boss Drops', 'Weekly Boss', () => 'Weekly Boss', () => 'Weekly Boss Material', () => 5);
-  
-  const formattedCommonEnemy = flattenAndFormatMaterials(commonEnemy, 'Enemy Drops', 'Common Enhancement Material', 
+
+  const formattedCommonEnemy = flattenAndFormatMaterials(commonEnemy, 'Enemy Drops', 'Common Enhancement Material',
     (item, t, k, i) => ['Common', 'Uncommon', 'Rare', 'Epic'][i] || 'Common',
     () => 'Common Enhancement Material',
     (item, t, k, i) => [1, 2, 3][i] || 1
@@ -213,7 +173,7 @@ export const getPrimaryInventoryList = () => {
 
   const formattedLocal = flattenAndFormatMaterials(localSpecialty, 'Local Specialty', null, () => 'Local Specialty', () => 'Local Specialty', () => 1);
 
-  const formattedTalent = flattenAndFormatMaterials(talentMaterials, 'Talent Materials', null, 
+  const formattedTalent = flattenAndFormatMaterials(talentMaterials, 'Talent Materials', null,
     (item, t, k, i) => TIER_STARS_BOOK[i] || 'Book',
     () => 'Talent Material',
     (item, t, k, i) => [2, 3, 4][i] || 2

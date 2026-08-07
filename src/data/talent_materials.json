@@ -19,7 +19,12 @@
         "name": "Teachings of Freedom",
         "sortOrder": 4.003
       }
-    }
+    },
+    "domain": "Forsaken Rift",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "resistance",
@@ -41,7 +46,12 @@
         "name": "Teachings of Resistance",
         "sortOrder": 4.006
       }
-    }
+    },
+    "domain": "Forsaken Rift",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "ballad",
@@ -63,7 +73,12 @@
         "name": "Teachings of Ballad",
         "sortOrder": 4.009
       }
-    }
+    },
+    "domain": "Forsaken Rift",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "prosperity",
@@ -85,7 +100,12 @@
         "name": "Teachings of Prosperity",
         "sortOrder": 4.012
       }
-    }
+    },
+    "domain": "Taishan Mansion",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "diligence",
@@ -107,7 +127,12 @@
         "name": "Teachings of Diligence",
         "sortOrder": 4.015
       }
-    }
+    },
+    "domain": "Taishan Mansion",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "gold",
@@ -129,7 +154,12 @@
         "name": "Teachings of Gold",
         "sortOrder": 4.018
       }
-    }
+    },
+    "domain": "Taishan Mansion",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "transience",
@@ -151,7 +181,12 @@
         "name": "Teachings of Transience",
         "sortOrder": 4.021
       }
-    }
+    },
+    "domain": "Violet Court",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "elegance",
@@ -173,7 +208,12 @@
         "name": "Teachings of Elegance",
         "sortOrder": 4.024
       }
-    }
+    },
+    "domain": "Violet Court",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "light",
@@ -195,7 +235,12 @@
         "name": "Teachings of Light",
         "sortOrder": 4.027
       }
-    }
+    },
+    "domain": "Violet Court",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "admonition",
@@ -217,7 +262,12 @@
         "name": "Teachings of Admonition",
         "sortOrder": 4.03
       }
-    }
+    },
+    "domain": "Steeple of Ignorance",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "ingenuity",
@@ -239,7 +289,12 @@
         "name": "Teachings of Ingenuity",
         "sortOrder": 4.033
       }
-    }
+    },
+    "domain": "Steeple of Ignorance",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "praxis",
@@ -261,7 +316,12 @@
         "name": "Teachings of Praxis",
         "sortOrder": 4.036
       }
-    }
+    },
+    "domain": "Steeple of Ignorance",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "equity",
@@ -283,7 +343,12 @@
         "name": "Teachings of Equity",
         "sortOrder": 4.039
       }
-    }
+    },
+    "domain": "Pale Forgotten Glory",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "justice",
@@ -305,7 +370,12 @@
         "name": "Teachings of Justice",
         "sortOrder": 4.042
       }
-    }
+    },
+    "domain": "Pale Forgotten Glory",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "order",
@@ -327,7 +397,12 @@
         "name": "Teachings of Order",
         "sortOrder": 4.045
       }
-    }
+    },
+    "domain": "Pale Forgotten Glory",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "contention",
@@ -349,7 +424,12 @@
         "name": "Teachings of Contention",
         "sortOrder": 4.048
       }
-    }
+    },
+    "domain": "Blazing Ruins",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "kindling",
@@ -371,7 +451,12 @@
         "name": "Teachings of Kindling",
         "sortOrder": 4.051
       }
-    }
+    },
+    "domain": "Blazing Ruins",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "conflict",
@@ -393,7 +478,12 @@
         "name": "Teachings of Conflict",
         "sortOrder": 4.054
       }
-    }
+    },
+    "domain": "Blazing Ruins",
+    "days": [
+      3,
+      6
+    ]
   },
   {
     "id": "moonlight",
@@ -415,7 +505,12 @@
         "name": "Teachings of Moonlight",
         "sortOrder": 4.057
       }
-    }
+    },
+    "domain": "Violet Court",
+    "days": [
+      1,
+      4
+    ]
   },
   {
     "id": "elysium",
@@ -437,7 +532,12 @@
         "name": "Teachings of Elysium",
         "sortOrder": 4.06
       }
-    }
+    },
+    "domain": "Unknown Domain",
+    "days": [
+      2,
+      5
+    ]
   },
   {
     "id": "vagrancy",
@@ -459,6 +559,11 @@
         "name": "Teachings of Vagrancy",
         "sortOrder": 4.063
       }
-    }
+    },
+    "domain": "Unknown Domain",
+    "days": [
+      2,
+      6
+    ]
   }
 ]
