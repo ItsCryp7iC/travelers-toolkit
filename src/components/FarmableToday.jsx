@@ -8,6 +8,7 @@ import { getDayLabel, formatItemName } from '../utils/calculator'
 import weaponsData from '../data/weapons.json'
 import { resolveSpecificItem, getJsonData } from '../utils/resolver'
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
+import weeklyBossData from '../data/weekly_boss.json'
 
 const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai'];
 
@@ -125,6 +126,81 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
   )
 }
 
+function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
+  const { items, neededBy } = bossObj;
+
+  return (
+    <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[#FBBF24] transition-colors overflow-hidden relative group">
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity pointer-events-none" style={{ background: accent }} />
+      
+      <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
+        <span className="text-xs">👑</span>
+        <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
+          Boss: {bossName}
+        </span>
+      </div>
+
+      <div className="p-3 space-y-3 flex-1">
+        {items.map(({ data }) => {
+          const required = globalCosts[data.id] || 0;
+          const owned = inventory[data.id] || 0;
+          
+          const percent = required > 0 ? Math.min(100, (owned / required) * 100) : (owned > 0 ? 100 : 0);
+          const rarityColor = RARITY_COLORS[5];
+
+          return (
+            <div key={data.id} className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
+                  <img 
+                    src={getMaterialIcon(data.name, 'Weekly Boss Material')} 
+                    alt={data.name} 
+                    className="w-8 h-8 object-contain drop-shadow-md" 
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
+                  />
+                  <span className="hidden text-xl">📦</span>
+                  <span className="text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
+                    {formatItemName(data.name)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs flex-shrink-0">
+                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-cinzel font-bold">{owned}</span></span>
+                  <span className="text-[var(--muted)]">Need: <span className="font-cinzel font-bold" style={{ color: accent }}>{required}</span></span>
+                </div>
+              </div>
+              <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
+                <div className="absolute top-0 left-0 h-full rounded-full transition-all" style={{ width: `${percent}%`, background: required > 0 && owned >= required ? '#4ADE80' : rarityColor }} />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {neededBy && neededBy.length > 0 && (
+        <div className="px-3 pb-3 mt-auto">
+          <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
+          <p className="text-[9px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
+          <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
+            {neededBy.map((entity, i) => (
+              <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
+                <img 
+                  src={entity.type === 'character' ? getCharacterAvatar(entity.name) : getWeaponIcon(entity.name)}
+                  alt={entity.name}
+                  title={entity.name}
+                  className="w-full h-full object-cover relative z-10"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function FarmableToday() {
   const roster = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
@@ -169,7 +245,7 @@ export default function FarmableToday() {
   
   const getNeededBy = (matKey, type) => {
     const needed = []
-    if (type === 'talent') {
+    if (type === 'talent' || type === 'weekly_boss') {
       totals.breakdown.forEach(b => {
         if (b.totalCosts[matKey] > 0) {
           const charId = b.character?.id || b.name.toLowerCase().replace(/[^a-z0-9]/g, '')
@@ -286,6 +362,89 @@ export default function FarmableToday() {
 
     return groups;
   }, [todayWeaponFarmable, totals.breakdown, trackedWeapons]);
+
+  const groupedWeeklyBosses = useMemo(() => {
+    const groups = {}; // Region -> BossName -> { bossName, region, items: [], neededBy: [] }
+    const weeklyNeeded = toFarm.weeklyBoss || [];
+    
+    weeklyNeeded.forEach(item => {
+      const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const bossData = weeklyBossData.find(b => b.id === normalizedKey || b.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
+      
+      if (!bossData) return;
+      const bossName = bossData.boss_name || 'Unknown Boss';
+      const region = bossData.region || 'Unknown Region';
+      
+      if (!groups[region]) groups[region] = {};
+      
+      if (!groups[region][bossName]) {
+        const allBossMaterials = weeklyBossData.filter(b => b.boss_name === bossName);
+        groups[region][bossName] = {
+          bossName,
+          region,
+          items: allBossMaterials.map(data => ({ data, item: { name: data.id, toFarm: 0 } })),
+          neededBy: []
+        };
+      }
+      
+      const matEntry = groups[region][bossName].items.find(i => i.data.id === bossData.id);
+      if (matEntry) {
+        matEntry.item = item;
+      }
+      
+      const neededBy = getNeededBy(item.name, 'weekly_boss');
+      
+      neededBy.forEach(entity => {
+        if (!groups[region][bossName].neededBy.find(e => e.name === entity.name)) {
+          groups[region][bossName].neededBy.push(entity);
+        }
+      });
+    });
+    return groups;
+  }, [toFarm.weeklyBoss, totals.breakdown]);
+
+  const renderBossRegionGroups = (groupedData, accent, categoryKey) => {
+    if (Object.keys(groupedData).length === 0) return null;
+
+    return Object.keys(groupedData)
+      .sort((a, b) => {
+        const idxA = REGION_ORDER.indexOf(a);
+        const idxB = REGION_ORDER.indexOf(b);
+        if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+      })
+      .map(region => {
+        const regionKey = `${categoryKey}-${region}`;
+        const isCollapsed = collapsed[regionKey];
+        return (
+          <div key={region} className="mb-8 last:mb-2">
+            <h3 
+              className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => toggleSection(regionKey)}
+            >
+              <span className={`text-lg inline-block transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>›</span>
+              <span className="text-sm">📍</span> {region}
+            </h3>
+            {!isCollapsed && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {Object.values(groupedData[region]).map(bossObj => (
+                  <BossCard 
+                    key={bossObj.bossName} 
+                    bossName={bossObj.bossName} 
+                    bossObj={bossObj} 
+                    accent={accent} 
+                    globalCosts={totals.totalCosts}
+                    inventory={inventory}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })
+  }
 
   const renderRegionGroups = (groupedData, accent, categoryKey) => {
     if (Object.keys(groupedData).length === 0) return (
@@ -426,22 +585,17 @@ export default function FarmableToday() {
         {weeklyNeeded.length > 0 && (
           <>
             <div className="genshin-divider my-6" />
-            <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] uppercase mb-3 flex items-center gap-2">
-              <span>👑</span> Weekly Boss Reminders
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {weeklyNeeded.map((item) => (
-                <div key={item.name}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg border"
-                  style={{ background: 'rgba(251,191,36,0.08)', borderColor: 'rgba(251,191,36,0.25)' }}>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-sm">👑</span>
-                    <span className="text-xs font-bold text-[var(--text)] truncate">{formatItemName(item.name)}</span>
-                  </div>
-                  <span className="font-cinzel font-bold text-sm text-[#FBBF24] flex-shrink-0">×{item.toFarm}</span>
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('weekly-boss-main')}>
+              <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['weekly-boss-main'] ? '' : 'rotate-90'}`}>›</span>
+                <span>👑</span> Weekly Boss Reminders
+              </p>
+              <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', false, groupedWeeklyBosses)}>Expand All Regions</button>
+                <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', true, groupedWeeklyBosses)}>Collapse All Regions</button>
+              </div>
             </div>
+            {!collapsed['weekly-boss-main'] && renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'weekly-boss')}
           </>
         )}
 
