@@ -7,6 +7,8 @@ import { formatName } from '../utils/gameData'
 import FarmableToday from '../components/FarmableToday'
 import DomainCard from '../components/DomainCard'
 import { getJsonData } from '../utils/resolver'
+import weeklyBossData from '../data/weekly_boss.json'
+
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
 function ProgressBar({ owned, required, accent }) {
@@ -344,6 +346,97 @@ export default function Planner() {
     return groups;
   }, [toFarm.talentBooks, getNeededBy]);
 
+  const groupedWeeklyBosses = useMemo(() => {
+    const groups = {}; // Region -> BossName -> { bossName, region, items: [], neededBy: [] }
+    const weeklyNeeded = toFarm.weeklyBoss || [];
+    
+    weeklyNeeded.forEach(item => {
+      const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const bossData = weeklyBossData.find(b => b.id === normalizedKey || b.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
+      
+      if (!bossData) return;
+      const bossName = bossData.boss_name || 'Unknown Boss';
+      const region = bossData.region || 'Unknown Region';
+      
+      if (!groups[region]) groups[region] = {};
+      
+      if (!groups[region][bossName]) {
+        const allBossMaterials = weeklyBossData.filter(b => b.boss_name === bossName).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+        const bossSortOrder = Math.min(...allBossMaterials.map(m => m.sortOrder || 999));
+        
+        groups[region][bossName] = {
+          bossName,
+          region,
+          bossSortOrder,
+          familyName: bossName,
+          type: 'weekly_boss',
+          familyData: {
+             tiers: allBossMaterials.map(m => ({ id: m.id, name: m.name, rarity: 5 })) // mock tiers for DomainCard
+          },
+          items: {},
+          neededBy: []
+        };
+      }
+      
+      const neededBy = getNeededBy(item.name, 'weekly_boss');
+      
+      groups[region][bossName].items[bossData.id] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[region][bossName].neededBy.find(e => e.name === entity.name)) {
+          groups[region][bossName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.weeklyBoss, getNeededBy]);
+
+  const renderBossRegionGroups = (groupedData, accent, categoryKey) => {
+    if (Object.keys(groupedData).length === 0) return null;
+
+    return Object.keys(groupedData)
+      .sort((a, b) => {
+        const idxA = REGION_ORDER.indexOf(a);
+        const idxB = REGION_ORDER.indexOf(b);
+        if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+      })
+      .map(region => {
+        const regionKey = `${categoryKey}-${region}`;
+        const isCollapsed = collapsed[regionKey];
+        return (
+          <div key={region} className="mb-8 last:mb-2">
+            <h3 
+              className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => toggleSection(regionKey)}
+            >
+              <span className={`text-lg inline-block transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>›</span>
+              <span className="text-sm">📍</span> {region}
+            </h3>
+            {!isCollapsed && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {Object.values(groupedData[region])
+                  .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
+                  .map(bossObj => (
+                    <DomainCard 
+                      key={bossObj.bossName} 
+                      domainName={`BOSS: ${bossObj.bossName.toUpperCase()}`}
+                      familyObj={bossObj} 
+                      accent={accent} 
+                      globalCosts={totals.totalCosts}
+                      inventory={inventory}
+                    />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      });
+  };
+
   const [collapsed, setCollapsed] = useState(() => {
     try {
       const saved = localStorage.getItem('planner-collapsed-state');
@@ -556,7 +649,27 @@ export default function Planner() {
               All talent books covered
             </div>
           )}
-          <ToFarmCategory icon="👑" title="Weekly Boss Material"  items={toFarm.weeklyBoss}     accent="#FBBF24" emptyMsg="All weekly boss drops covered" />
+          {/* General Weekly Boss Materials Accordion */}
+          {toFarm.weeklyBoss?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-weekly-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-weekly-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>👑</span> Weekly Boss Material
+                </p>
+                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weekly', false, groupedWeeklyBosses)}>Expand All Regions</button>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weekly', true, groupedWeeklyBosses)}>Collapse All Regions</button>
+                </div>
+              </div>
+              {!collapsed['all-weekly-main'] && renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'all-weekly')}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All weekly boss drops covered
+            </div>
+          )}
           <ToFarmCategory icon="🔗" title="Weapon Ascension Material"   items={toFarm.weaponAscMats}  accent="var(--gold)" emptyMsg="All weapon domains covered" />
           <ToFarmCategory icon="💎" title="Character Ascension Gem"          items={toFarm.gemstones}      accent="#C8A96E" emptyMsg="All gemstones covered" />
           <ToFarmCategory icon="🐉" title="Normal Boss Material"   items={toFarm.worldBoss}      accent="#F97316" emptyMsg="All boss drops covered" />

@@ -20,9 +20,9 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
       
       {/* Header */}
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
-        <span className="text-xs">🏛️</span>
+        <span className="text-xs">{familyObj.type === 'weekly_boss' ? '👑' : '🏛️'}</span>
         <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
-          Domain: {domainName}
+          {familyObj.type === 'weekly_boss' ? domainName : `Domain: ${domainName}`}
         </span>
       </div>
 
@@ -46,7 +46,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
                   <img 
-                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : 'Weapon Ascension Material')} 
+                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : familyObj.type === 'weekly_boss' ? 'Weekly Boss Material' : 'Weapon Ascension Material')} 
                     alt={tier.name} 
                     className="w-8 h-8 object-contain drop-shadow-md" 
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
