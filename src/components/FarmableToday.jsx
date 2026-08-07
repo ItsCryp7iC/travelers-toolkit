@@ -138,6 +138,33 @@ export default function FarmableToday() {
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
 
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      const saved = localStorage.getItem('planner-collapsed-state');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
+
+  const toggleSection = (key) => {
+    setCollapsed(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      localStorage.setItem('planner-collapsed-state', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const setAllRegions = (category, isCollapsed, groupedData) => {
+    setCollapsed(prev => {
+      const next = { ...prev };
+      Object.keys(groupedData).forEach(region => {
+        next[`${category}-${region}`] = isCollapsed;
+      });
+      localStorage.setItem('planner-collapsed-state', JSON.stringify(next));
+      return next;
+    });
+  };
 
   
   const getNeededBy = (matKey, type) => {
@@ -260,7 +287,7 @@ export default function FarmableToday() {
     return groups;
   }, [todayWeaponFarmable, totals.breakdown, trackedWeapons]);
 
-  const renderRegionGroups = (groupedData, accent) => {
+  const renderRegionGroups = (groupedData, accent, categoryKey) => {
     if (Object.keys(groupedData).length === 0) return (
       <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-4">
         {selectedDay === 0
@@ -278,29 +305,39 @@ export default function FarmableToday() {
         if (idxB === -1) return -1;
         return idxA - idxB;
       })
-      .map(region => (
-        <div key={region} className="mb-8 last:mb-2">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="text-sm">📍</span> {region}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {Object.keys(groupedData[region]).map(domainName => (
-              Object.values(groupedData[region][domainName])
-                .sort((a, b) => getScheduleWeight(a.familyData) - getScheduleWeight(b.familyData))
-                .map(familyObj => (
-                  <DomainCard 
-                    key={familyObj.familyName} 
-                    domainName={domainName} 
-                    familyObj={familyObj} 
-                    accent={accent} 
-                    globalCosts={totals.totalCosts}
-                    inventory={inventory}
-                  />
-              ))
-            ))}
+      .map(region => {
+        const regionKey = `${categoryKey}-${region}`;
+        const isCollapsed = collapsed[regionKey];
+        return (
+          <div key={region} className="mb-8 last:mb-2">
+            <h3 
+              className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => toggleSection(regionKey)}
+            >
+              <span className={`text-lg inline-block transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>›</span>
+              <span className="text-sm">📍</span> {region}
+            </h3>
+            {!isCollapsed && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {Object.keys(groupedData[region]).map(domainName => (
+                  Object.values(groupedData[region][domainName])
+                    .sort((a, b) => getScheduleWeight(a.familyData) - getScheduleWeight(b.familyData))
+                    .map(familyObj => (
+                      <DomainCard 
+                        key={familyObj.familyName} 
+                        domainName={domainName} 
+                        familyObj={familyObj} 
+                        accent={accent} 
+                        globalCosts={totals.totalCosts}
+                        inventory={inventory}
+                      />
+                  ))
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      ))
+        );
+      })
   }
 
   // Aggregation
@@ -359,17 +396,31 @@ export default function FarmableToday() {
       </div>
 
       <div className="px-5 py-5">
-        <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] uppercase mb-3 flex items-center gap-2">
-          <span>📚</span> Talent Materials
-        </p>
-        {renderRegionGroups(groupedBooksData, dayColor)}
+        <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('talent-main')}>
+          <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+            <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['talent-main'] ? '' : 'rotate-90'}`}>›</span>
+            <span>📚</span> Talent Materials
+          </p>
+          <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', false, groupedBooksData)}>Expand All Regions</button>
+            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', true, groupedBooksData)}>Collapse All Regions</button>
+          </div>
+        </div>
+        {!collapsed['talent-main'] && renderRegionGroups(groupedBooksData, dayColor, 'talent')}
 
         <div className="genshin-divider my-6" />
 
-        <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] uppercase mb-3 flex items-center gap-2">
-          <span>🗡️</span> Weapon Ascension Materials
-        </p>
-        {renderRegionGroups(groupedWeaponData, 'var(--gold)')}
+        <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('weapon-main')}>
+          <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+            <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['weapon-main'] ? '' : 'rotate-90'}`}>›</span>
+            <span>🗡️</span> Weapon Ascension Materials
+          </p>
+          <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', false, groupedWeaponData)}>Expand All Regions</button>
+            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', true, groupedWeaponData)}>Collapse All Regions</button>
+          </div>
+        </div>
+        {!collapsed['weapon-main'] && renderRegionGroups(groupedWeaponData, 'var(--gold)', 'weapon')}
 
         {/* Weekly Boss reminder */}
         {weeklyNeeded.length > 0 && (
