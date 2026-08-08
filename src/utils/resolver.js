@@ -175,7 +175,7 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
  * Returns { familyId, familyName, region, tiers: [{ id, name, rarity }, ...] }
  */
 export function getJsonData(id) {
-  const searchDatabases = [Object.values(DB.talent), Object.values(DB.weapon), Object.values(DB.gems)];
+  const searchDatabases = [Object.values(DB.talent), Object.values(DB.weapon), Object.values(DB.gems), Object.values(DB.elite), Object.values(DB.common)];
   for (const db of searchDatabases) {
     const family = db.find(group => 
       group.id === id || 

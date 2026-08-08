@@ -11,6 +11,7 @@ import weeklyBossData from '../data/weekly_boss.json'
 import weaponsData from '../data/weapons.json'
 import characterGemsData from '../data/character_gems.json'
 import normalBossData from '../data/normal_boss.json'
+import eliteEnemyData from '../data/elite_enemy.json'
 
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
@@ -300,19 +301,27 @@ export default function Planner() {
 
   const getNeededBy = useCallback((matKey, type) => {
     const needed = []
-    if (type === 'talent' || type === 'weekly_boss' || type === 'gemstones' || type === 'world_boss') {
+    if (['talent', 'weekly_boss', 'gemstones', 'world_boss', 'elite_mob', 'mob', 'local_specialty', 'weapon'].includes(type)) {
       totals.breakdown.forEach(b => {
         if (b.totalCosts[matKey] > 0) {
-          const charId = b.character?.id || b.name.toLowerCase().replace(/[^a-z0-9]/g, '')
-          needed.push({ name: b.name, icon: charId, type: 'character' })
+          const isWeaponBreakdown = !b.character && weaponsData.some(w => w.name === b.name);
+          const entityType = isWeaponBreakdown ? 'weapon' : 'character';
+          const entityIcon = b.character?.id || b.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+          needed.push({ name: b.name, icon: entityIcon, type: entityType });
         }
       })
-    } else {
+    }
+    
+    if (['weapon_ascension', 'weapon', 'elite_mob', 'mob'].includes(type)) {
       trackedWeapons.forEach(w => {
         if (w.ascension === w.targetAscension && w.level >= w.targetLevel) return;
         const wData = weaponsData.find(wd => wd.name === w.weaponName)
         if (wData && wData.materials) {
-           const family = wData.materials.ascension_material_family_id;
+           let family = null;
+           if (type === 'weapon_ascension' || type === 'weapon') family = wData.materials.ascension_material_family_id;
+           if (type === 'elite_mob') family = wData.materials.elite_enemy_material_family_id;
+           if (type === 'mob') family = wData.materials.common_enemy_material_family_id;
+           
            const matFamilyData = getJsonData(matKey);
            
            if (matFamilyData && matFamilyData.familyId) {
@@ -605,22 +614,81 @@ export default function Planner() {
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {Object.values(groupedData[region])
                   .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
-                  .map(bossObj => (
-                    <DomainCard 
-                      key={bossObj.bossName} 
-                      domainName={`BOSS: ${bossObj.bossName.toUpperCase()}`}
-                      familyObj={bossObj} 
-                      accent={accent} 
-                      globalCosts={totals.totalCosts}
-                      inventory={inventory}
-                    />
-                ))}
+                  .map(bossObj => {
+                    let prefix = 'BOSS';
+                    if (bossObj.type === 'elite_mob' || bossObj.type === 'mob') prefix = 'ENEMY';
+                    
+                    return (
+                      <DomainCard 
+                        key={bossObj.bossName} 
+                        domainName={`${prefix}: ${bossObj.bossName.toUpperCase()}`}
+                        familyObj={bossObj} 
+                        accent={accent} 
+                        globalCosts={totals.totalCosts}
+                        inventory={inventory}
+                      />
+                    );
+                  })}
               </div>
             )}
           </div>
         );
       });
   };
+
+  const groupedEliteEnemies = useMemo(() => {
+    const groups = {}; // EnemyName -> { bossName, items: [], neededBy: [] }
+    const eliteNeeded = toFarm.eliteMob || [];
+    
+    eliteNeeded.forEach(item => {
+      let matchedEnemy = null;
+      let matchedTierId = null;
+
+      // Find which enemy and tier this item belongs to
+      for (const enemy of eliteEnemyData) {
+        if (matchedEnemy) break;
+        for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
+          if (tierObj.name === item.name || tierObj.id === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
+             matchedEnemy = enemy;
+             matchedTierId = tierObj.id;
+             break;
+          }
+        }
+      }
+
+      if (!matchedEnemy) return;
+      const enemyName = matchedEnemy.name || 'Unknown Enemy';
+      
+      if (!groups[enemyName]) {
+        groups[enemyName] = {
+          bossName: enemyName,
+          bossSortOrder: matchedEnemy.tiers['2_star']?.sortOrder || 999,
+          type: 'elite_mob',
+          familyData: { 
+            tiers: [
+               { id: matchedEnemy.tiers['2_star'].id, name: matchedEnemy.tiers['2_star'].name, rarity: 2 },
+               { id: matchedEnemy.tiers['3_star'].id, name: matchedEnemy.tiers['3_star'].name, rarity: 3 },
+               { id: matchedEnemy.tiers['4_star'].id, name: matchedEnemy.tiers['4_star'].name, rarity: 4 }
+            ] 
+          },
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'elite_mob');
+      
+      groups[enemyName].items[matchedTierId] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[enemyName].neededBy.find(e => e.name === entity.name)) {
+          groups[enemyName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.eliteMob, getNeededBy]);
 
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -914,7 +982,41 @@ export default function Planner() {
               All boss drops covered
             </div>
           )}
-          <ToFarmCategory icon="🛡️" title="Elite Enhancement Material"    items={toFarm.eliteMob}       accent="var(--gold)" emptyMsg="All elite drops covered" />
+          {/* General Elite Enhancement Materials Accordion */}
+          {toFarm.eliteMob?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-elite-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-elite-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>🛡️</span> Elite Enhancement Material
+                </p>
+                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                  {/* Kept header structure but removed expand/collapse regions buttons since regions are gone */}
+                </div>
+              </div>
+              {!collapsed['all-elite-main'] && (
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                  {Object.values(groupedEliteEnemies)
+                    .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
+                    .map(bossObj => (
+                      <DomainCard 
+                        key={bossObj.bossName} 
+                        domainName={`ENEMY: ${bossObj.bossName.toUpperCase()}`}
+                        familyObj={bossObj} 
+                        accent="var(--gold)" 
+                        globalCosts={totals.totalCosts}
+                        inventory={inventory}
+                      />
+                    ))}
+                </div>
+              )}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All elite drops covered
+            </div>
+          )}
           <ToFarmCategory icon="🌸" title="Local Specialty"  items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
           <ToFarmCategory icon="⚔️" title="Common Enhancement Material"          items={toFarm.mob}            accent="#A855F7" emptyMsg="All mob drops covered" />
         </div>

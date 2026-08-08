@@ -13,6 +13,24 @@ const RARITY_COLORS = {
 export default function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
   const { familyName, familyData, items, neededBy } = familyObj;
 
+  const getSafeImgId = (id) => {
+    if (!id) return '';
+    const minorWords = new Set(['of', 'the', 'a', 'an', 'and', 'in', 'on', 'for', 'to', 'with']);
+    return String(id)
+      .replace(/[\u2014\u2013-]/g, ' ')
+      .replace(/[^a-zA-Z0-9_ ]/g, '')
+      .split(/[\s_]+/)
+      .filter(word => word.length > 0)
+      .map((word, index) => {
+        const lower = word.toLowerCase();
+        if (index > 0 && minorWords.has(lower)) return lower;
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+      })
+      .join('');
+  };
+
+  if (!familyData || !familyData.tiers) return null;
+
   return (
     <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors overflow-hidden relative group">
       {/* Glow */}
@@ -20,9 +38,9 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
       
       {/* Header */}
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
-        <span className="text-xs">{familyObj.type === 'weekly_boss' ? '👑' : familyObj.type === 'world_boss' ? '🐉' : familyObj.type === 'gemstones' ? '💎' : '🏛️'}</span>
+        <span className="text-xs">{familyObj.type === 'weekly_boss' ? '👑' : familyObj.type === 'world_boss' ? '🐉' : familyObj.type === 'elite_mob' ? '🛡️' : familyObj.type === 'gemstones' ? '💎' : '🏛️'}</span>
         <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
-          {['weekly_boss', 'world_boss', 'gemstones'].includes(familyObj.type) ? domainName : `Domain: ${domainName}`}
+          {['weekly_boss', 'world_boss', 'elite_mob', 'gemstones'].includes(familyObj.type) ? domainName : `Domain: ${domainName}`}
         </span>
       </div>
 
@@ -46,7 +64,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
                   <img 
-                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : familyObj.type === 'weekly_boss' ? 'Weekly Boss Material' : familyObj.type === 'world_boss' ? 'Normal Boss Material' : familyObj.type === 'gemstones' ? 'Character Ascension Gem' : 'Weapon Ascension Material')} 
+                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : familyObj.type === 'weekly_boss' ? 'Weekly Boss Material' : familyObj.type === 'world_boss' ? 'Normal Boss Material' : familyObj.type === 'elite_mob' ? 'Elite Enhancement Material' : familyObj.type === 'gemstones' ? 'Character Ascension Gem' : 'Weapon Ascension Material')} 
                     alt={tier.name} 
                     className="w-8 h-8 object-contain drop-shadow-md" 
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
@@ -75,18 +93,23 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
           <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
           <p className="text-[9px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
           <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
-            {neededBy.map((entity, i) => (
-              <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
-                <img 
-                  src={entity.type === 'character' ? getCharacterAvatar(entity.name) : getWeaponIcon(entity.name)}
-                  alt={entity.name}
-                  title={entity.name}
-                  className="w-full h-full object-cover relative z-10"
-                  onError={(e) => { e.target.style.display = 'none'; }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
-              </div>
-            ))}
+            {neededBy.map((entity, i) => {
+              const isWeapon = entity.type === 'weapon';
+              const folder = isWeapon ? 'weapons' : 'characters';
+              
+              return (
+                <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
+                  <img 
+                    src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${folder}/${getSafeImgId(entity.name)}.png`}
+                    alt={entity.name}
+                    title={entity.name}
+                    className="w-full h-full object-cover relative z-10"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
