@@ -907,18 +907,18 @@ export default function Planner() {
   )
 
   const TABS = [
-    { id: 'daily_action', label: 'Daily Action Plan' },
-    { id: 'currency_exp', label: 'Currency & EXP' },
-    { id: 'normal_boss', label: 'Normal Boss Material' },
-    { id: 'weekly_boss', label: 'Weekly Boss Material' },
-    { id: 'talent', label: 'Talent Materials' },
-    { id: 'common_enhancement', label: 'Common Enhancement Material' },
-    { id: 'elite_enhancement', label: 'Elite Enhancement Material' },
-    { id: 'weapon_ascension', label: 'Weapon Ascension Material' },
-    { id: 'local_specialty', label: 'Local Specialty' },
-    { id: 'character_gem', label: 'Character Ascension Gem' },
-    { id: 'per_character', label: 'Per Character Plan' },
-    { id: 'per_weapon', label: 'Per Weapon Plan' }
+    { id: 'daily_action', label: 'Daily Action', icon: '📅' },
+    { id: 'currency_exp', label: 'Currency & EXP', icon: '🪙' },
+    { id: 'normal_boss', label: 'Normal Boss', icon: '🐉' },
+    { id: 'weekly_boss', label: 'Weekly Boss', icon: '👑' },
+    { id: 'talent', label: 'Talents', icon: '📖' },
+    { id: 'common_enhancement', label: 'Common Mats', icon: '⚔️' },
+    { id: 'elite_enhancement', label: 'Elite Mats', icon: '🛡️' },
+    { id: 'weapon_ascension', label: 'Weapon Mats', icon: '🔗' },
+    { id: 'local_specialty', label: 'Local Specialty', icon: '🌸' },
+    { id: 'character_gem', label: 'Gems', icon: '💎' },
+    { id: 'per_character', label: 'Characters', icon: '👥' },
+    { id: 'per_weapon', label: 'Weapons', icon: '🗡️' }
   ];
 
   return (
@@ -946,18 +946,18 @@ export default function Planner() {
       </div>
 
       {/* ── Tabs Navigation ── */}
-      <div className="flex flex-wrap gap-2 my-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border ${
               activeTab === tab.id 
-                ? 'bg-amber-600 text-white' 
-                : 'bg-[#1a1c23] text-gray-400 hover:bg-[#23252e] hover:text-white'
+                ? 'bg-[#1a1c23] border-amber-500/80 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.1)]'
+                : 'bg-transparent border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200 hover:border-white/10'
             }`}
           >
-            {tab.label}
+            <span>{tab.icon}</span> <span>{tab.label}</span>
           </button>
         ))}
       </div>
