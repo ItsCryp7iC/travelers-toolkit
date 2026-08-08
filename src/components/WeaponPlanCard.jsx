@@ -159,6 +159,13 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
                 const sanitizedKey = matId.toString().toLowerCase().replace(/[\s_]/g, '');
                 return qty > 0 && sanitizedKey !== 'mora' && !['totalexp', 'normalore', 'fineore', 'wastedexp', 'exptonextlevel'].includes(sanitizedKey);
               })
+              .sort(([keyA], [keyB]) => {
+                const a = keyA.toString().toLowerCase().replace(/[\s_]/g, '');
+                const b = keyB.toString().toLowerCase().replace(/[\s_]/g, '');
+                if (a === 'totalmora') return -1;
+                if (b === 'totalmora') return 1;
+                return 0;
+              })
               .map(([matId, qty], index) => {
                 let actualId = matId;
                 const sanitizedKey = matId.toString().toLowerCase().replace(/[\s_]/g, '');
