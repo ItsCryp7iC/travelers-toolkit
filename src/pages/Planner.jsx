@@ -1014,7 +1014,7 @@ export default function Planner() {
 
         {activeTab === 'character_gem' && (
           toFarm.gemstones?.length > 0
-            ? renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem', 'character_gems')
+            ? renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem', 'character_ascension_gems')
             : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All gemstones covered</div>
         )}
 
