@@ -7,6 +7,7 @@ import { formatName } from '../utils/gameData'
 import FarmableToday from '../components/FarmableToday'
 import DomainCard from '../components/DomainCard'
 import CharacterPlanCard from '../components/CharacterPlanCard'
+import WeaponPlanCard from '../components/WeaponPlanCard'
 import { getJsonData } from '../utils/resolver'
 import weeklyBossData from '../data/weekly_boss.json'
 import weaponsData from '../data/weapons.json'
@@ -299,6 +300,7 @@ export default function Planner() {
 
   const [activeTab, setActiveTab] = useState('daily_action')
   const [charSearchQuery, setCharSearchQuery] = useState('')
+  const [weaponSearchQuery, setWeaponSearchQuery] = useState('')
 
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
@@ -1132,10 +1134,25 @@ export default function Planner() {
 
         {activeTab === 'per_weapon' && (
           <div>
-            <p className="text-xs text-[var(--muted)] mb-4">Click a row to expand the full cost breakdown</p>
-            {totals.breakdown.filter(entry => !entry.character).length > 0
-              ? totals.breakdown.filter(entry => !entry.character).map((entry) => <BreakdownRow key={entry.name} entry={entry} />)
-              : <div className="text-center py-12 text-[var(--muted)]"><p>No stand-alone weapons have active goals yet.</p></div>
+            <div className="mb-6">
+              <input 
+                type="text" 
+                placeholder="Search weapons..." 
+                value={weaponSearchQuery}
+                onChange={(e) => setWeaponSearchQuery(e.target.value)}
+                className="w-full md:w-1/3 bg-[#1a1c23] border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
+              />
+            </div>
+            
+            {totals.breakdown.filter(entry => !entry.character && formatName(entry.name).toLowerCase().includes(weaponSearchQuery.toLowerCase())).length > 0
+              ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {totals.breakdown
+                    .filter(entry => !entry.character && formatName(entry.name).toLowerCase().includes(weaponSearchQuery.toLowerCase()))
+                    .map((entry) => <WeaponPlanCard key={entry.name} entryObj={entry} inventory={inventory} categories={totals.categories} />)}
+                </div>
+              )
+              : <div className="text-center py-12 text-[var(--muted)]"><p>No stand-alone weapons match your search or have active goals yet.</p></div>
             }
           </div>
         )}
