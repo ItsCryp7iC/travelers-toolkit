@@ -9,6 +9,7 @@ import DomainCard from '../components/DomainCard'
 import { getJsonData } from '../utils/resolver'
 import weeklyBossData from '../data/weekly_boss.json'
 import weaponsData from '../data/weapons.json'
+import characterGemsData from '../data/character_gems.json'
 
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
@@ -430,16 +431,23 @@ export default function Planner() {
       const baseKey = formattedFamilyName.toLowerCase().replace(/[^a-z0-9]/g, '');
 
       if (!groups[baseKey]) {
+        const jsonEntry = characterGemsData.find(g => g.id === baseKey);
+        let jsonSortOrder = 999;
+        if (jsonEntry && jsonEntry.tiers) {
+           jsonSortOrder = Math.min(...Object.values(jsonEntry.tiers).map(t => t.sortOrder || 999));
+        }
+
         groups[baseKey] = {
           familyName: formattedFamilyName,
           familyKey: baseKey,
+          jsonSortOrder,
           type: 'gemstones',
           familyData: {
              tiers: [
-               { id: `${prefix}gemstone`, name: `${formattedFamilyName} Gemstone`, rarity: 4 },
-               { id: `${prefix}chunk`, name: `${formattedFamilyName} Chunk`, rarity: 3 },
+               { id: `${prefix}sliver`, name: `${formattedFamilyName} Sliver`, rarity: 1 },
                { id: `${prefix}fragment`, name: `${formattedFamilyName} Fragment`, rarity: 2 },
-               { id: `${prefix}sliver`, name: `${formattedFamilyName} Sliver`, rarity: 1 }
+               { id: `${prefix}chunk`, name: `${formattedFamilyName} Chunk`, rarity: 3 },
+               { id: `${prefix}gemstone`, name: `${formattedFamilyName} Gemstone`, rarity: 4 }
              ]
           },
           items: {},
@@ -465,7 +473,7 @@ export default function Planner() {
     if (Object.keys(groupedData).length === 0) return null;
 
     return Object.values(groupedData)
-      .sort((a, b) => a.familyName.localeCompare(b.familyName))
+      .sort((a, b) => a.jsonSortOrder - b.jsonSortOrder)
       .map(familyObj => {
         const regionKey = `${categoryKey}-${familyObj.familyKey}`;
         const isCollapsed = collapsed[regionKey];
