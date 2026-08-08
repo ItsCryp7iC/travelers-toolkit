@@ -43,7 +43,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
         <span className="text-xs">{familyObj.type === 'weekly_boss' ? '👑' : familyObj.type === 'world_boss' ? '🐉' : familyObj.type === 'elite_mob' ? '🛡️' : familyObj.type === 'gemstones' ? '💎' : '🏛️'}</span>
         <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
-          {['weekly_boss', 'world_boss', 'elite_mob', 'gemstones'].includes(familyObj.type) ? domainName : `Domain: ${domainName}`}
+          {['weekly_boss', 'world_boss', 'elite_mob', 'gemstones', 'currency'].includes(familyObj.type) ? domainName : `Domain: ${domainName}`}
         </span>
       </div>
 
@@ -56,7 +56,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
           }
           const owned = inventory[tier.id] || 0;
           
-          if (required === 0 && owned === 0) return null;
+          if (required === 0 && owned === 0 && familyObj.type !== 'currency') return null;
 
           const percent = required > 0 ? Math.min(100, (owned / required) * 100) : (owned > 0 ? 100 : 0);
           const rarityColor = RARITY_COLORS[tier.rarity] || RARITY_COLORS[3];
