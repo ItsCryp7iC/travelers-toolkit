@@ -7,16 +7,38 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
   
   const getSafeImgId = (id) => {
     if (!id) return '';
-    const minorWords = new Set(['of', 'the', 'a', 'an', 'and', 'in', 'on', 'for', 'to', 'with']);
-    return String(id)
-      .replace(/[\u2014\u2013-]/g, ' ')
-      .replace(/[^a-zA-Z0-9_ ]/g, '')
-      .split(/[\s_]+/)
-      .filter(word => word.length > 0)
+    
+    // 1. Decode URI to catch %E2%80%94 (em-dash), then strip apostrophes and replace dashes with spaces
+    let strId = decodeURIComponent(id.toString());
+    strId = strId.replace(/['’]/g, '').replace(/[-—]/g, ' ');
+  
+    // 2. Intercept Talent Books (continuous strings)
+    const talentMatch = strId.match(/^(philosophiesof|guideto|teachingsof)(.+)$/i);
+    if (talentMatch) {
+      const prefix = talentMatch[1].toLowerCase();
+      const suffix = talentMatch[2];
+      
+      let formattedPrefix = '';
+      if (prefix === 'philosophiesof') formattedPrefix = 'Philosophiesof';
+      else if (prefix === 'guideto') formattedPrefix = 'Guideto';
+      else if (prefix === 'teachingsof') formattedPrefix = 'Teachingsof';
+      
+      const formattedSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
+      return `${formattedPrefix}${formattedSuffix}`;
+    }
+  
+    // 3. True Title Case (spaces removed)
+    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for'];
+    return strId
+      .split(/[\s_]+/) 
       .map((word, index) => {
-        const lower = word.toLowerCase();
-        if (index > 0 && minorWords.has(lower)) return lower;
-        return lower.charAt(0).toUpperCase() + lower.slice(1);
+        if (!word) return '';
+        const lowerWord = word.toLowerCase();
+        // Keep articles/prepositions lowercase unless they are the first word
+        if (index > 0 && lowercaseExceptions.includes(lowerWord)) {
+          return lowerWord;
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1);
       })
       .join('');
   };
