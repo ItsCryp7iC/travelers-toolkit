@@ -95,44 +95,38 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
         <div className="px-3 pb-3 mt-auto">
           <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
           <p className="text-[9px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
-          <div className="max-h-24 overflow-y-auto pr-1 custom-scrollbar space-y-2">
+          <div>
             {chars.length > 0 && (
-              <div>
-                {weaps.length > 0 && <div className="text-[10px] text-[var(--muted)] mb-1">Characters</div>}
-                <div className="flex flex-wrap gap-1">
-                  {chars.map((entity, i) => (
-                    <div key={`char-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
-                      <img 
-                        src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/characters/${getSafeImgId(entity.name)}.png`}
-                        alt={entity.name}
-                        title={entity.name}
-                        className="w-full h-full object-cover relative z-10"
-                        onError={(e) => { e.target.style.display = 'none'; }}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex flex-wrap gap-1">
+                {chars.map((entity, i) => (
+                  <div key={`char-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
+                    <img 
+                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/characters/${getSafeImgId(entity.name)}.png`}
+                      alt={entity.name}
+                      title={entity.name}
+                      className="w-full h-full object-cover relative z-10"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+                  </div>
+                ))}
               </div>
             )}
             
             {weaps.length > 0 && (
-              <div>
-                {chars.length > 0 && <div className="text-[10px] text-[var(--muted)] mb-1 mt-1">Weapons</div>}
-                <div className="flex flex-wrap gap-1">
-                  {weaps.map((entity, i) => (
-                    <div key={`weap-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
-                      <img 
-                        src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/weapons/${getSafeImgId(entity.name)}.png`}
-                        alt={entity.name}
-                        title={entity.name}
-                        className="w-full h-full object-cover relative z-10"
-                        onError={(e) => { e.target.style.display = 'none'; }}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
-                    </div>
-                  ))}
-                </div>
+              <div className={`flex flex-wrap gap-1 ${chars.length > 0 ? 'mt-2' : ''}`}>
+                {weaps.map((entity, i) => (
+                  <div key={`weap-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
+                    <img 
+                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/weapons/${getSafeImgId(entity.name)}.png`}
+                      alt={entity.name}
+                      title={entity.name}
+                      className="w-full h-full object-cover relative z-10"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
