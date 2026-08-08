@@ -296,7 +296,7 @@ export default function Planner() {
   const trackedWeapons = useStore(s => s.trackedWeapons)
   const inventory = useStore(s => s.inventory)
 
-  const [view, setView] = useState('toFarm')
+  const [activeTab, setActiveTab] = useState('daily_action')
 
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
@@ -906,6 +906,21 @@ export default function Planner() {
     </div>
   )
 
+  const TABS = [
+    { id: 'daily_action', label: 'Daily Action Plan' },
+    { id: 'currency_exp', label: 'Currency & EXP' },
+    { id: 'normal_boss', label: 'Normal Boss Material' },
+    { id: 'weekly_boss', label: 'Weekly Boss Material' },
+    { id: 'talent', label: 'Talent Materials' },
+    { id: 'common_enhancement', label: 'Common Enhancement Material' },
+    { id: 'elite_enhancement', label: 'Elite Enhancement Material' },
+    { id: 'weapon_ascension', label: 'Weapon Ascension Material' },
+    { id: 'local_specialty', label: 'Local Specialty' },
+    { id: 'character_gem', label: 'Character Ascension Gem' },
+    { id: 'per_character', label: 'Per Character Plan' },
+    { id: 'per_weapon', label: 'Per Weapon Plan' }
+  ];
+
   return (
     <div className="animate-fade-in">
       {/* ── Page Header ── */}
@@ -930,172 +945,88 @@ export default function Planner() {
           sub={toFarm.allDone ? '✅ All stocked!' : 'materials left'} />
       </div>
 
-      {/* ── Farmable Today Widget ── */}
-      <div className="mb-8">
-        <FarmableToday />
-      </div>
-
-      {/* ── All-Done Banner ── */}
-      {toFarm.allDone && (
-        <div className="rounded-2xl border mb-8 px-6 py-5 flex items-center gap-4"
-          style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.3)' }}>
-          <span className="text-3xl">🎉</span>
-          <div>
-            <p className="font-cinzel font-bold text-lg" style={{ color: '#4ADE80' }}>Inventory is fully stocked!</p>
-            <p className="text-sm text-[var(--muted)] mt-0.5">Your current inventory covers all progression goals. Time to ascend!</p>
-          </div>
-        </div>
-      )}
-
-      {/* ── View Toggle ── */}
-      <div className="flex gap-2 mb-6 p-1 bg-[var(--surface)] rounded-xl border border-[var(--border)] w-fit">
-        {[
-          { id: 'toFarm', label: '🌾 To-Farm List' },
-          { id: 'breakdown', label: '📊 Per Character' },
-        ].map(({ id, label }) => (
-          <button key={id} id={`planner-view-${id}`} onClick={() => setView(id)}
-            className="px-5 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
-            style={
-              view === id
-                ? { background: 'rgba(200,169,110,0.15)', color: 'var(--gold)', border: '1px solid rgba(200,169,110,0.3)' }
-                : { background: 'transparent', color: 'var(--muted)', border: '1px solid transparent' }
-            }>
-            {label}
+      {/* ── Tabs Navigation ── */}
+      <div className="flex flex-wrap gap-2 my-6">
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+              activeTab === tab.id 
+                ? 'bg-amber-600 text-white' 
+                : 'bg-[#1a1c23] text-gray-400 hover:bg-[#23252e] hover:text-white'
+            }`}
+          >
+            {tab.label}
           </button>
         ))}
       </div>
 
-      {/* ── To-Farm View ── */}
-      {view === 'toFarm' && (
-        <div className="animate-fade-in">
-          {/* Currency & EXP */}
-          {(toFarm.mora || toFarm.heroWits || toFarm.crown || toFarm.mysticOre || toFarm.stellaFortuna) && (
-            <div className="mb-6">
-              <h3 className="planner-section-title mb-3">🪙 Currency & EXP</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {toFarm.mora && <ItemCard item={toFarm.mora} accent="#FAB632" />}
-                {toFarm.heroWits && <ItemCard item={toFarm.heroWits} accent="#60A5FA" />}
-                {toFarm.mysticOre && <ItemCard item={toFarm.mysticOre} accent="#F472B6" />}
-                {toFarm.crown && <ItemCard item={toFarm.crown} accent="#FBBF24" />}
-                {toFarm.stellaFortuna && <ItemCard item={toFarm.stellaFortuna} accent="#FBBF24" />}
+      {/* ── Tab Content ── */}
+      <div className="animate-fade-in">
+        {activeTab === 'daily_action' && (
+          <>
+            {toFarm.allDone && (
+              <div className="rounded-2xl border mb-8 px-6 py-5 flex items-center gap-4"
+                style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.3)' }}>
+                <span className="text-3xl">🎉</span>
+                <div>
+                  <p className="font-cinzel font-bold text-lg" style={{ color: '#4ADE80' }}>Inventory is fully stocked!</p>
+                  <p className="text-sm text-[var(--muted)] mt-0.5">Your current inventory covers all progression goals. Time to ascend!</p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+            <FarmableToday />
+          </>
+        )}
 
-          {/* General Talent Materials Accordion */}
-          {toFarm.talentBooks?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-talent-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-talent-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>📖</span> Talent Materials
-                </p>
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-talent', false, groupedBooksData)}>Expand All Regions</button>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-talent', true, groupedBooksData)}>Collapse All Regions</button>
-                </div>
-              </div>
-              {!collapsed['all-talent-main'] && renderRegionGroups(groupedBooksData, '#A855F7', 'all-talent', 'talent_materials')}
-              <div className="genshin-divider my-6" />
+        {activeTab === 'currency_exp' && (
+          (toFarm.mora || toFarm.heroWits || toFarm.crown || toFarm.mysticOre || toFarm.stellaFortuna) ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {toFarm.mora && <ItemCard item={toFarm.mora} accent="#FAB632" />}
+              {toFarm.heroWits && <ItemCard item={toFarm.heroWits} accent="#60A5FA" />}
+              {toFarm.mysticOre && <ItemCard item={toFarm.mysticOre} accent="#F472B6" />}
+              {toFarm.crown && <ItemCard item={toFarm.crown} accent="#FBBF24" />}
+              {toFarm.stellaFortuna && <ItemCard item={toFarm.stellaFortuna} accent="#FBBF24" />}
             </div>
           ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All talent books covered
-            </div>
-          )}
-          {/* General Weekly Boss Materials Accordion */}
-          {toFarm.weeklyBoss?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-weekly-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-weekly-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>👑</span> Weekly Boss Material
-                </p>
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weekly', false, groupedWeeklyBosses)}>Expand All Regions</button>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weekly', true, groupedWeeklyBosses)}>Collapse All Regions</button>
-                </div>
-              </div>
-              {!collapsed['all-weekly-main'] && renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'all-weekly', 'weekly_boss_materials')}
-              <div className="genshin-divider my-6" />
-            </div>
-          ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All weekly boss drops covered
-            </div>
-          )}
-          {/* General Weapon Ascension Materials Accordion */}
-          {toFarm.weaponAscMats?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-weapon-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-weapon-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>🔗</span> Weapon Ascension Material
-                </p>
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weapon', false, groupedWeaponMatsData)}>Expand All Regions</button>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weapon', true, groupedWeaponMatsData)}>Collapse All Regions</button>
-                </div>
-              </div>
-              {!collapsed['all-weapon-main'] && renderRegionGroups(groupedWeaponMatsData, 'var(--gold)', 'all-weapon', 'weapon_ascension_materials')}
-              <div className="genshin-divider my-6" />
-            </div>
-          ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All weapon domains covered
-            </div>
-          )}
-          {/* General Character Ascension Gems Accordion */}
-          {toFarm.gemstones?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-gem-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-gem-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>💎</span> Character Ascension Gem
-                </p>
-              </div>
-              {!collapsed['all-gem-main'] && renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem', 'character_gems')}
-              <div className="genshin-divider my-6" />
-            </div>
-          ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All gemstones covered
-            </div>
-          )}
-          {/* General Normal Boss Materials Accordion */}
-          {toFarm.worldBoss?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-normalboss-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-normalboss-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>🐉</span> Normal Boss Material
-                </p>
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-normalboss', false, groupedNormalBosses)}>Expand All Regions</button>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-normalboss', true, groupedNormalBosses)}>Collapse All Regions</button>
-                </div>
-              </div>
-              {!collapsed['all-normalboss-main'] && renderBossRegionGroups(groupedNormalBosses, '#F97316', 'all-normalboss', 'normal_boss_materials')}
-              <div className="genshin-divider my-6" />
-            </div>
-          ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All boss drops covered
-            </div>
-          )}
-          {/* General Elite Enhancement Materials Accordion */}
-          {toFarm.eliteMob?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-elite-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-elite-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>🛡️</span> Elite Enhancement Material
-                </p>
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                  {/* Kept header structure but removed expand/collapse regions buttons since regions are gone */}
-                </div>
-              </div>
-              {!collapsed['all-elite-main'] && (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All currency and EXP covered</div>
+          )
+        )}
+
+        {activeTab === 'talent' && (
+          toFarm.talentBooks?.length > 0
+            ? renderRegionGroups(groupedBooksData, '#A855F7', 'all-talent', 'talent_materials')
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All talent books covered</div>
+        )}
+
+        {activeTab === 'weekly_boss' && (
+          toFarm.weeklyBoss?.length > 0
+            ? renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'all-weekly', 'weekly_boss_materials')
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All weekly boss drops covered</div>
+        )}
+
+        {activeTab === 'weapon_ascension' && (
+          toFarm.weaponAscMats?.length > 0
+            ? renderRegionGroups(groupedWeaponMatsData, 'var(--gold)', 'all-weapon', 'weapon_ascension_materials')
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All weapon domains covered</div>
+        )}
+
+        {activeTab === 'character_gem' && (
+          toFarm.gemstones?.length > 0
+            ? renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem', 'character_gems')
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All gemstones covered</div>
+        )}
+
+        {activeTab === 'normal_boss' && (
+          toFarm.worldBoss?.length > 0
+            ? renderBossRegionGroups(groupedNormalBosses, '#F97316', 'all-normalboss', 'normal_boss_materials')
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All boss drops covered</div>
+        )}
+
+        {activeTab === 'elite_enhancement' && (
+          toFarm.eliteMob?.length > 0
+            ? (
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                   {Object.values(groupedEliteEnemies)
                     .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
@@ -1111,45 +1042,19 @@ export default function Planner() {
                       />
                     ))}
                 </div>
-              )}
-              <div className="genshin-divider my-6" />
-            </div>
-          ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All elite drops covered
-            </div>
-          )}
-          {/* General Local Specialty Accordion */}
-          {toFarm.localSpecialty?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-specialty-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-specialty-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>🌸</span> Local Specialty
-                </p>
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-specialty', false, groupedLocalSpecialties)}>Expand All Regions</button>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-specialty', true, groupedLocalSpecialties)}>Collapse All Regions</button>
-                </div>
-              </div>
-              {!collapsed['all-specialty-main'] && renderBossRegionGroups(groupedLocalSpecialties, '#4ADE80', 'all-specialty', 'local_specialties')}
-              <div className="genshin-divider my-6" />
-            </div>
-          ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All local specialties covered
-            </div>
-          )}
-          {/* General Common Enhancement Materials Accordion */}
-          {toFarm.mob?.length > 0 ? (
-            <div className="mb-8 mt-2">
-              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-common-main')}>
-                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-common-main'] ? '' : 'rotate-90'}`}>›</span>
-                  <span>⚔️</span> Common Enhancement Material
-                </p>
-              </div>
-              {!collapsed['all-common-main'] && (
+              )
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All elite drops covered</div>
+        )}
+
+        {activeTab === 'local_specialty' && (
+          toFarm.localSpecialty?.length > 0
+            ? renderBossRegionGroups(groupedLocalSpecialties, '#4ADE80', 'all-specialty', 'local_specialties')
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All local specialties covered</div>
+        )}
+
+        {activeTab === 'common_enhancement' && (
+          toFarm.mob?.length > 0
+            ? (
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                   {Object.values(groupedCommonEnemies)
                     .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
@@ -1165,27 +1070,30 @@ export default function Planner() {
                       />
                     ))}
                 </div>
-              )}
-              <div className="genshin-divider my-6" />
-            </div>
-          ) : (
-            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
-              All mob drops covered
-            </div>
-          )}
-        </div>
-      )}
+              )
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All mob drops covered</div>
+        )}
 
-      {/* ── Per-Character Breakdown ── */}
-      {view === 'breakdown' && (
-        <div className="animate-fade-in">
-          <p className="text-xs text-[var(--muted)] mb-4">Click a row to expand the full cost breakdown</p>
-          {totals.breakdown.length > 0
-            ? totals.breakdown.map((entry) => <BreakdownRow key={entry.name} entry={entry} />)
-            : <div className="text-center py-12 text-[var(--muted)]"><p>No characters have active goals yet.</p></div>
-          }
-        </div>
-      )}
+        {activeTab === 'per_character' && (
+          <div>
+            <p className="text-xs text-[var(--muted)] mb-4">Click a row to expand the full cost breakdown</p>
+            {totals.breakdown.filter(entry => entry.character).length > 0
+              ? totals.breakdown.filter(entry => entry.character).map((entry) => <BreakdownRow key={entry.name} entry={entry} />)
+              : <div className="text-center py-12 text-[var(--muted)]"><p>No characters have active goals yet.</p></div>
+            }
+          </div>
+        )}
+
+        {activeTab === 'per_weapon' && (
+          <div>
+            <p className="text-xs text-[var(--muted)] mb-4">Click a row to expand the full cost breakdown</p>
+            {totals.breakdown.filter(entry => !entry.character).length > 0
+              ? totals.breakdown.filter(entry => !entry.character).map((entry) => <BreakdownRow key={entry.name} entry={entry} />)
+              : <div className="text-center py-12 text-[var(--muted)]"><p>No stand-alone weapons have active goals yet.</p></div>
+            }
+          </div>
+        )}
+      </div>
 
       {/* ── Inventory link ── */}
       <div className="mt-10 p-4 rounded-xl border border-[var(--border)] flex items-center justify-between gap-4 bg-[var(--surface)]">
