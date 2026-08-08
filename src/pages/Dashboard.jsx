@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import CharacterCard from '../components/CharacterCard'
 import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
+import BatchAddWeaponModal from '../components/BatchAddWeaponModal'
 import weaponsData from '../data/weapons.json'
 import ResinTracker from '../components/ResinTracker'
 import charactersData from '../data/characters.json'
@@ -48,6 +49,7 @@ export default function Dashboard() {
 
   const [activeTab, setActiveTab] = useState('characters');
   const [selectedWeapon, setSelectedWeapon] = useState(null);
+  const [showBatchWeaponModal, setShowBatchWeaponModal] = useState(false);
 
   const handleAddAllCharacters = () => {
     const missing = charactersData.filter((c) => !roster[c.name])
@@ -158,13 +160,21 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {activeTab === 'characters' && (
+        {activeTab === 'characters' ? (
           <button
             onClick={handleAddAllCharacters}
             className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
           >
             <span className="text-lg">✦</span>
             Add All Available Characters
+          </button>
+        ) : (
+          <button
+            onClick={() => setShowBatchWeaponModal(true)}
+            className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+          >
+            <span className="text-lg">✦</span>
+            Batch Add Weapons
           </button>
         )}
       </div>
@@ -377,6 +387,10 @@ export default function Dashboard() {
           initialWeapon={selectedWeapon}
           onClose={() => setSelectedWeapon(null)}
         />
+      )}
+
+      {showBatchWeaponModal && (
+        <BatchAddWeaponModal onClose={() => setShowBatchWeaponModal(false)} />
       )}
     </div>
   )
