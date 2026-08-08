@@ -26,6 +26,16 @@ const PLANNER_TABS = [
   { id: 'per_weapon', label: 'Weapons', icon: '🗡️' }
 ];
 
+const INVENTORY_TABS = [
+  { id: 'currency_exp', label: 'Currency & Exp', icon: '🪙' },
+  { id: 'boss_drops', label: 'Boss Drops', icon: '🐉' },
+  { id: 'talent_mats', label: 'Talent Mats', icon: '📚' },
+  { id: 'enemy_drops', label: 'Enemy Drops', icon: '⚔️' },
+  { id: 'weapon_asc', label: 'Weapon Asc', icon: '🗡️' },
+  { id: 'local_spec', label: 'Local Spec', icon: '🌸' },
+  { id: 'character_gems', label: 'Character Gems', icon: '💎' },
+];
+
 const devItems = [
   { to: '/builder', label: 'DB Builder', icon: '🔧', id: 'nav-builder' },
 ]
@@ -34,9 +44,12 @@ export default function AppLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isPlannerOpen, setIsPlannerOpen] = useState(location.pathname === '/planner')
+  const [isInventoryOpen, setIsInventoryOpen] = useState(location.pathname === '/inventory')
   const rosterCount = useStore((s) => Object.keys(s.roster).length)
   
-  const currentTab = new URLSearchParams(location.search).get('tab') || 'daily_action';
+  const currentTab = new URLSearchParams(location.search).get('tab');
+  const plannerTab = location.pathname === '/planner' ? currentTab || 'daily_action' : null;
+  const inventoryTab = location.pathname === '/inventory' ? currentTab || 'currency_exp' : null;
 
   return (
     <div className="page-bg min-h-screen">
@@ -87,11 +100,48 @@ export default function AppLayout() {
                   {isPlannerOpen && (
                     <div className="flex flex-col mt-1 mb-2">
                       {PLANNER_TABS.map(tab => {
-                        const isTabActive = location.pathname === '/planner' && currentTab === tab.id;
+                        const isTabActive = location.pathname === '/planner' && plannerTab === tab.id;
                         return (
                           <Link
                             key={tab.id}
                             to={`/planner?tab=${tab.id}`}
+                            className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
+                              isTabActive ? 'text-amber-500 font-medium' : 'text-[var(--muted)] hover:text-gray-200'
+                            }`}
+                            onClick={() => setSidebarOpen(false)}
+                          >
+                            <span className="opacity-70">{tab.icon}</span>
+                            <span>{tab.label}</span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            if (item.id === 'nav-inventory') {
+              return (
+                <div key={item.to} className="flex flex-col">
+                  <div 
+                    className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/inventory' ? 'active' : ''}`}
+                    onClick={() => setIsInventoryOpen(!isInventoryOpen)}
+                  >
+                    <div className="flex items-center">
+                      <span className="nav-icon text-base w-5 text-center mr-2">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </div>
+                    <span className={`text-[10px] text-gray-500 transition-transform ${isInventoryOpen ? 'rotate-180' : ''}`}>▼</span>
+                  </div>
+                  {isInventoryOpen && (
+                    <div className="flex flex-col mt-1 mb-2">
+                      {INVENTORY_TABS.map(tab => {
+                        const isTabActive = location.pathname === '/inventory' && inventoryTab === tab.id;
+                        return (
+                          <Link
+                            key={tab.id}
+                            to={`/inventory?tab=${tab.id}`}
                             className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
                               isTabActive ? 'text-amber-500 font-medium' : 'text-[var(--muted)] hover:text-gray-200'
                             }`}

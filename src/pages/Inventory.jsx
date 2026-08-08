@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { getPrimaryInventoryList } from '../utils/dataManager'
 import { getRarityBg } from '../utils/gameData'
@@ -142,15 +143,15 @@ function QuickStats() {
 
 // ─── Main Inventory Page ─────────────────────────────────────────────────
 
-const PRIMARY_TABS = [
-  { id: 'Currency & Experience', label: 'Currency & Exp', icon: '🪙' },
-  { id: 'Boss Drops', label: 'Boss Drops', icon: '🐉' },
-  { id: 'Talent Materials', label: 'Talent Mats', icon: '📚' },
-  { id: 'Enemy Drops', label: 'Enemy Drops', icon: '⚔️' },
-  { id: 'Weapon Ascension Material', label: 'Weapon Asc', icon: '🗡️' },
-  { id: 'Local Specialty', label: 'Local Spec', icon: '🌸' },
-  { id: 'Character Ascension Gem', label: 'Character Gems', icon: '💎' },
-]
+const TAB_MAP = {
+  'currency_exp': 'Currency & Experience',
+  'boss_drops': 'Boss Drops',
+  'talent_mats': 'Talent Materials',
+  'enemy_drops': 'Enemy Drops',
+  'weapon_asc': 'Weapon Ascension Material',
+  'local_spec': 'Local Specialty',
+  'character_gems': 'Character Ascension Gem',
+}
 
 const SUB_TABS = {
   'Boss Drops': ['Normal Boss', 'Weekly Boss'],
@@ -158,17 +159,19 @@ const SUB_TABS = {
 }
 
 export default function Inventory() {
-  const [activeTab, setActiveTab] = useState('Currency & Experience')
+  const [searchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab') || 'currency_exp'
+  const activeTab = TAB_MAP[tabParam] || 'Currency & Experience'
+  
   const [activeSubTab, setActiveSubTab] = useState('')
 
-  const handleTabClick = (tabId) => {
-    setActiveTab(tabId)
-    if (SUB_TABS[tabId]) {
-      setActiveSubTab(SUB_TABS[tabId][0])
+  useEffect(() => {
+    if (SUB_TABS[activeTab]) {
+      setActiveSubTab(SUB_TABS[activeTab][0])
     } else {
       setActiveSubTab('')
     }
-  }
+  }, [activeTab])
 
   // Generate an exhaustive categorized list of all materials in the game
   const allMaterials = useMemo(() => getPrimaryInventoryList(), [])
@@ -204,32 +207,6 @@ export default function Inventory() {
       {/* ── Quick Stats ── */}
       <QuickStats />
 
-      {/* ── Primary Tabs ── */}
-      <div className="flex flex-wrap gap-2 mb-4 p-1 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
-        {PRIMARY_TABS.map(({ id, label, icon }) => (
-          <button
-            key={id}
-            id={`inv-tab-${id.replace(/\s+/g, '-')}`}
-            onClick={() => handleTabClick(id)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex-1 justify-center whitespace-nowrap"
-            style={
-              activeTab === id
-                ? {
-                    background: 'rgba(200,169,110,0.15)',
-                    color: 'var(--gold)',
-                    border: '1px solid rgba(200,169,110,0.3)',
-                  }
-                : {
-                    background: 'transparent',
-                    color: 'var(--muted)',
-                    border: '1px solid transparent',
-                  }
-            }
-          >
-            {icon} {label}
-          </button>
-        ))}
-      </div>
 
       {/* ── Secondary Tabs ── */}
       {SUB_TABS[activeTab] && (
