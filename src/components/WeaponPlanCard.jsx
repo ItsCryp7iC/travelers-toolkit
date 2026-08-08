@@ -96,6 +96,21 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
     return itemId;
   };
 
+  const getSafeRarity = (weapon) => {
+    if (!weapon) return 0;
+    
+    const rawRarity = weapon.rarity || weapon.stars || weapon.star;
+    
+    // If the rarity is a string containing star symbols, count them
+    if (typeof rawRarity === 'string' && rawRarity.includes('★')) {
+      return (rawRarity.match(/★/g) || []).length;
+    }
+
+    // Fallback for standard numeric strings (e.g., "5", "5-star")
+    const parsedRarity = parseInt(String(rawRarity).replace(/\D/g, ''), 10);
+    return isNaN(parsedRarity) ? 0 : parsedRarity;
+  };
+
   const getRarityGradient = (rarity) => {
     switch (Number(rarity)) {
       case 5: return 'from-amber-500/10'; // Gold
@@ -108,7 +123,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
   };
 
   return (
-    <div className={`bg-gradient-to-br ${getRarityGradient(weapon.rarity)} to-[#1a1c23] border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10`}>
+    <div className={`bg-gradient-to-br ${getRarityGradient(getSafeRarity(weapon))} to-[#1a1c23] border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10`}>
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--gold)] bg-[var(--surface)] flex-shrink-0 relative">

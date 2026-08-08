@@ -103,8 +103,21 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
     return itemId;
   };
 
+  const getElementGradient = (element) => {
+    switch (element?.toLowerCase()) {
+      case 'pyro': return 'from-red-500/10';
+      case 'hydro': return 'from-blue-500/10';
+      case 'anemo': return 'from-teal-400/10';
+      case 'electro': return 'from-purple-500/10';
+      case 'dendro': return 'from-green-500/10';
+      case 'cryo': return 'from-cyan-400/10';
+      case 'geo': return 'from-yellow-500/10';
+      default: return 'from-white/5';
+    }
+  };
+
   return (
-    <div className="bg-[#1a1c23] border border-white/5 rounded-xl p-4 flex flex-col gap-4 hover:border-amber-500/50 transition-colors relative overflow-hidden group">
+    <div className={`bg-gradient-to-br ${getElementGradient(character?.element)} to-[#1a1c23] border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10 group`}>
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--gold)] bg-[var(--surface)] flex-shrink-0 relative">
