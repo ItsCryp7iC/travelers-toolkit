@@ -12,6 +12,7 @@ import weaponsData from '../data/weapons.json'
 import characterGemsData from '../data/character_gems.json'
 import normalBossData from '../data/normal_boss.json'
 import eliteEnemyData from '../data/elite_enemy.json'
+import commonEnemyData from '../data/common_enemy.json'
 
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
@@ -690,6 +691,59 @@ export default function Planner() {
     return groups;
   }, [toFarm.eliteMob, getNeededBy]);
 
+  const groupedCommonEnemies = useMemo(() => {
+    const groups = {}; // EnemyName -> { bossName, items: {}, neededBy: [] }
+    const mobNeeded = toFarm.mob || [];
+    
+    mobNeeded.forEach(item => {
+      let matchedEnemy = null;
+      let matchedTierId = null;
+
+      for (const enemy of commonEnemyData) {
+        if (matchedEnemy) break;
+        for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
+          if (tierObj.name === item.name || tierObj.id === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
+             matchedEnemy = enemy;
+             matchedTierId = tierObj.id;
+             break;
+          }
+        }
+      }
+
+      if (!matchedEnemy) return;
+      const enemyName = matchedEnemy.name || 'Unknown Enemy';
+      
+      if (!groups[enemyName]) {
+        groups[enemyName] = {
+          bossName: enemyName,
+          bossSortOrder: matchedEnemy.tiers['1_star']?.sortOrder || 999,
+          type: 'mob',
+          familyData: { 
+            tiers: [
+               { id: matchedEnemy.tiers['1_star'].id, name: matchedEnemy.tiers['1_star'].name, rarity: 1 },
+               { id: matchedEnemy.tiers['2_star'].id, name: matchedEnemy.tiers['2_star'].name, rarity: 2 },
+               { id: matchedEnemy.tiers['3_star'].id, name: matchedEnemy.tiers['3_star'].name, rarity: 3 }
+            ] 
+          },
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'mob');
+      
+      groups[enemyName].items[matchedTierId] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[enemyName].neededBy.find(e => e.name === entity.name)) {
+          groups[enemyName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.mob, getNeededBy]);
+
   const [collapsed, setCollapsed] = useState(() => {
     try {
       const saved = localStorage.getItem('planner-collapsed-state');
@@ -1018,7 +1072,38 @@ export default function Planner() {
             </div>
           )}
           <ToFarmCategory icon="🌸" title="Local Specialty"  items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
-          <ToFarmCategory icon="⚔️" title="Common Enhancement Material"          items={toFarm.mob}            accent="#A855F7" emptyMsg="All mob drops covered" />
+          {/* General Common Enhancement Materials Accordion */}
+          {toFarm.mob?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-common-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-common-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>⚔️</span> Common Enhancement Material
+                </p>
+              </div>
+              {!collapsed['all-common-main'] && (
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                  {Object.values(groupedCommonEnemies)
+                    .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
+                    .map(enemyObj => (
+                      <DomainCard 
+                        key={enemyObj.bossName} 
+                        domainName={`ENEMY: ${enemyObj.bossName.toUpperCase()}`}
+                        familyObj={enemyObj} 
+                        accent="#A855F7" 
+                        globalCosts={totals.totalCosts}
+                        inventory={inventory}
+                      />
+                    ))}
+                </div>
+              )}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All mob drops covered
+            </div>
+          )}
         </div>
       )}
 
