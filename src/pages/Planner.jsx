@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { aggregateRosterCosts, computeToFarm } from '../utils/aggregator'
 import { formatNumber, formatItemName } from '../utils/calculator'
@@ -298,7 +298,8 @@ export default function Planner() {
   const trackedWeapons = useStore(s => s.trackedWeapons)
   const inventory = useStore(s => s.inventory)
 
-  const [activeTab, setActiveTab] = useState('daily_action')
+  const [searchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'daily_action';
   const [charSearchQuery, setCharSearchQuery] = useState('')
   const [weaponSearchQuery, setWeaponSearchQuery] = useState('')
 
@@ -910,20 +911,6 @@ export default function Planner() {
     </div>
   )
 
-  const TABS = [
-    { id: 'daily_action', label: 'Daily Action', icon: '📅' },
-    { id: 'currency_exp', label: 'Currency & EXP', icon: '🪙' },
-    { id: 'normal_boss', label: 'Normal Boss', icon: '🐉' },
-    { id: 'weekly_boss', label: 'Weekly Boss', icon: '👑' },
-    { id: 'talent', label: 'Talents', icon: '📖' },
-    { id: 'common_enhancement', label: 'Common Mats', icon: '⚔️' },
-    { id: 'elite_enhancement', label: 'Elite Mats', icon: '🛡️' },
-    { id: 'weapon_ascension', label: 'Weapon Mats', icon: '🔗' },
-    { id: 'local_specialty', label: 'Local Specialty', icon: '🌸' },
-    { id: 'character_gem', label: 'Gems', icon: '💎' },
-    { id: 'per_character', label: 'Characters', icon: '👥' },
-    { id: 'per_weapon', label: 'Weapons', icon: '🗡️' }
-  ];
 
   return (
     <div className="animate-fade-in">
@@ -949,22 +936,6 @@ export default function Planner() {
           sub={toFarm.allDone ? '✅ All stocked!' : 'materials left'} />
       </div>
 
-      {/* ── Tabs Navigation ── */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border ${
-              activeTab === tab.id 
-                ? 'bg-[#1a1c23] border-amber-500/80 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.1)]'
-                : 'bg-transparent border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200 hover:border-white/10'
-            }`}
-          >
-            <span>{tab.icon}</span> <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
 
       {/* ── Tab Content ── */}
       <div className="animate-fade-in">

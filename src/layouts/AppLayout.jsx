@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
 import useStore from '../store/useStore'
 
 const navItems = [
@@ -11,13 +11,32 @@ const navItems = [
   { to: '/settings',   label: 'Settings',    icon: '⚙️', id: 'nav-settings' },
 ]
 
+const PLANNER_TABS = [
+  { id: 'daily_action', label: 'Daily Action', icon: '📅' },
+  { id: 'currency_exp', label: 'Currency & EXP', icon: '🪙' },
+  { id: 'normal_boss', label: 'Normal Boss', icon: '🐉' },
+  { id: 'weekly_boss', label: 'Weekly Boss', icon: '👑' },
+  { id: 'talent', label: 'Talents', icon: '📖' },
+  { id: 'common_enhancement', label: 'Common Mats', icon: '⚔️' },
+  { id: 'elite_enhancement', label: 'Elite Mats', icon: '🛡️' },
+  { id: 'weapon_ascension', label: 'Weapon Mats', icon: '🔗' },
+  { id: 'local_specialty', label: 'Local Specialty', icon: '🌸' },
+  { id: 'character_gem', label: 'Gems', icon: '💎' },
+  { id: 'per_character', label: 'Characters', icon: '👥' },
+  { id: 'per_weapon', label: 'Weapons', icon: '🗡️' }
+];
+
 const devItems = [
   { to: '/builder', label: 'DB Builder', icon: '🔧', id: 'nav-builder' },
 ]
 
 export default function AppLayout() {
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isPlannerOpen, setIsPlannerOpen] = useState(location.pathname === '/planner')
   const rosterCount = useStore((s) => Object.keys(s.roster).length)
+  
+  const currentTab = new URLSearchParams(location.search).get('tab') || 'daily_action';
 
   return (
     <div className="page-bg min-h-screen">
@@ -51,21 +70,60 @@ export default function AppLayout() {
           <p className="px-5 mb-2 text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">
             Navigation
           </p>
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              id={item.id}
-              className={({ isActive }) =>
-                `sidebar-nav-link ${isActive ? 'active' : ''}`
-              }
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            if (item.id === 'nav-planner') {
+              return (
+                <div key={item.to} className="flex flex-col">
+                  <div 
+                    className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/planner' ? 'active' : ''}`}
+                    onClick={() => setIsPlannerOpen(!isPlannerOpen)}
+                  >
+                    <div className="flex items-center">
+                      <span className="nav-icon text-base w-5 text-center mr-2">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </div>
+                    <span className={`text-[10px] text-gray-500 transition-transform ${isPlannerOpen ? 'rotate-180' : ''}`}>▼</span>
+                  </div>
+                  {isPlannerOpen && (
+                    <div className="flex flex-col mt-1 mb-2">
+                      {PLANNER_TABS.map(tab => {
+                        const isTabActive = location.pathname === '/planner' && currentTab === tab.id;
+                        return (
+                          <Link
+                            key={tab.id}
+                            to={`/planner?tab=${tab.id}`}
+                            className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
+                              isTabActive ? 'text-amber-500 font-medium' : 'text-[var(--muted)] hover:text-gray-200'
+                            }`}
+                            onClick={() => setSidebarOpen(false)}
+                          >
+                            <span className="opacity-70">{tab.icon}</span>
+                            <span>{tab.label}</span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                id={item.id}
+                className={({ isActive }) =>
+                  `sidebar-nav-link ${isActive ? 'active' : ''}`
+                }
+                onClick={() => setSidebarOpen(false)}
+              >
+                <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
+                <span>{item.label}</span>
+              </NavLink>
+            )
+          })}
         </nav>
 
         {/* Dev Tools */}
