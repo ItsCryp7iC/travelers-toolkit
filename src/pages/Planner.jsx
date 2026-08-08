@@ -472,34 +472,22 @@ export default function Planner() {
   const renderGemGroups = (groupedData, accent, categoryKey) => {
     if (Object.keys(groupedData).length === 0) return null;
 
-    return Object.values(groupedData)
-      .sort((a, b) => a.jsonSortOrder - b.jsonSortOrder)
-      .map(familyObj => {
-        const regionKey = `${categoryKey}-${familyObj.familyKey}`;
-        const isCollapsed = collapsed[regionKey];
-        return (
-          <div key={familyObj.familyKey} className="mb-8 last:mb-2">
-            <h3 
-              className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => toggleSection(regionKey)}
-            >
-              <span className={`text-lg inline-block transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>›</span>
-              <span className="text-sm">🔮</span> {familyObj.familyName}
-            </h3>
-            {!isCollapsed && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <DomainCard 
-                  domainName={`FAMILY: ${familyObj.familyName.toUpperCase()}`}
-                  familyObj={familyObj} 
-                  accent={accent} 
-                  globalCosts={totals.totalCosts}
-                  inventory={inventory}
-                />
-              </div>
-            )}
-          </div>
-        );
-      });
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {Object.values(groupedData)
+          .sort((a, b) => a.jsonSortOrder - b.jsonSortOrder)
+          .map(familyObj => (
+            <DomainCard 
+              key={familyObj.familyKey}
+              domainName={`FAMILY: ${familyObj.familyName.toUpperCase()}`}
+              familyObj={familyObj} 
+              accent={accent} 
+              globalCosts={totals.totalCosts}
+              inventory={inventory}
+            />
+          ))}
+      </div>
+    );
   };
 
   const groupedWeeklyBosses = useMemo(() => {
@@ -855,10 +843,6 @@ export default function Planner() {
                   <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-gem-main'] ? '' : 'rotate-90'}`}>›</span>
                   <span>💎</span> Character Ascension Gem
                 </p>
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-gem', false, groupedGemstonesData)}>Expand All Elements</button>
-                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-gem', true, groupedGemstonesData)}>Collapse All Elements</button>
-                </div>
               </div>
               {!collapsed['all-gem-main'] && renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem')}
               <div className="genshin-divider my-6" />
