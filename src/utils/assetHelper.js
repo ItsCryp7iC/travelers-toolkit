@@ -62,7 +62,32 @@ const CATEGORY_MAP = {
 
 export function getMaterialIcon(materialName, category) {
   if (!materialName) return ''
+  
   let fileName = materialName.replace(/[^a-zA-Z0-9]/g, '');
+  
+  // Sanitize IDs for Normal Boss Materials to convert snake_case to Smart PascalCase
+  if (category === 'Normal Boss Material') {
+    const minorWords = new Set(['of', 'the', 'a', 'an', 'and', 'in', 'on', 'for', 'to', 'with']);
+    
+    fileName = String(materialName)
+      // Replace em-dashes, en-dashes, and standard dashes with a space to separate words
+      .replace(/[\u2014\u2013-]/g, ' ')
+      // Remove all other non-alphanumeric characters (keeps spaces and underscores)
+      .replace(/[^a-zA-Z0-9_ ]/g, '')
+      // Split by any combination of spaces or underscores
+      .split(/[\s_]+/)
+      .filter(word => word.length > 0)
+      .map((word, index) => {
+        const lower = word.toLowerCase();
+        // Keep minor words lowercase unless it's the very first word
+        if (index > 0 && minorWords.has(lower)) {
+          return lower;
+        }
+        // Capitalize everything else
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+      })
+      .join('');
+  }
   
   // Explicit filename mappings for CDN assets that differ from in-game label
   if (materialName === 'Adventurer Exp') {

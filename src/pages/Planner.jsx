@@ -10,6 +10,7 @@ import { getJsonData } from '../utils/resolver'
 import weeklyBossData from '../data/weekly_boss.json'
 import weaponsData from '../data/weapons.json'
 import characterGemsData from '../data/character_gems.json'
+import normalBossData from '../data/normal_boss.json'
 
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
@@ -299,7 +300,7 @@ export default function Planner() {
 
   const getNeededBy = useCallback((matKey, type) => {
     const needed = []
-    if (type === 'talent' || type === 'weekly_boss' || type === 'gemstones') {
+    if (type === 'talent' || type === 'weekly_boss' || type === 'gemstones' || type === 'world_boss') {
       totals.breakdown.forEach(b => {
         if (b.totalCosts[matKey] > 0) {
           const charId = b.character?.id || b.name.toLowerCase().replace(/[^a-z0-9]/g, '')
@@ -535,6 +536,46 @@ export default function Planner() {
 
     return groups;
   }, [toFarm.weeklyBoss, getNeededBy]);
+
+  const groupedNormalBosses = useMemo(() => {
+    const groups = {}; // Region -> BossName -> { bossName, region, items: [], neededBy: [] }
+    const bossNeeded = toFarm.worldBoss || [];
+    
+    bossNeeded.forEach(item => {
+      const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const bossData = normalBossData.find(b => b.id === normalizedKey || b.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
+      
+      if (!bossData) return;
+      const bossName = bossData.boss_name || 'Unknown Boss';
+      const region = bossData.region || 'Unknown Region';
+      
+      if (!groups[region]) groups[region] = {};
+      
+      if (!groups[region][bossName]) {
+        groups[region][bossName] = {
+          bossName,
+          region,
+          bossSortOrder: bossData.sortOrder || 999,
+          type: 'world_boss',
+          familyData: { tiers: [{ id: bossData.id, name: item.name, rarity: 4 }] },
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'world_boss');
+      
+      groups[region][bossName].items[bossData.id] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[region][bossName].neededBy.find(e => e.name === entity.name)) {
+          groups[region][bossName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.worldBoss, getNeededBy]);
 
   const renderBossRegionGroups = (groupedData, accent, categoryKey) => {
     if (Object.keys(groupedData).length === 0) return null;
@@ -852,7 +893,27 @@ export default function Planner() {
               All gemstones covered
             </div>
           )}
-          <ToFarmCategory icon="🐉" title="Normal Boss Material"   items={toFarm.worldBoss}      accent="#F97316" emptyMsg="All boss drops covered" />
+          {/* General Normal Boss Materials Accordion */}
+          {toFarm.worldBoss?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-normalboss-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-normalboss-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>🐉</span> Normal Boss Material
+                </p>
+                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-normalboss', false, groupedNormalBosses)}>Expand All Regions</button>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-normalboss', true, groupedNormalBosses)}>Collapse All Regions</button>
+                </div>
+              </div>
+              {!collapsed['all-normalboss-main'] && renderBossRegionGroups(groupedNormalBosses, '#F97316', 'all-normalboss')}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All boss drops covered
+            </div>
+          )}
           <ToFarmCategory icon="🛡️" title="Elite Enhancement Material"    items={toFarm.eliteMob}       accent="var(--gold)" emptyMsg="All elite drops covered" />
           <ToFarmCategory icon="🌸" title="Local Specialty"  items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
           <ToFarmCategory icon="⚔️" title="Common Enhancement Material"          items={toFarm.mob}            accent="#A855F7" emptyMsg="All mob drops covered" />
