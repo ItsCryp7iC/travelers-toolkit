@@ -1,6 +1,14 @@
 import React from 'react'
 import { formatName } from '../utils/gameData'
 import { formatNumber, formatItemName } from '../utils/calculator'
+import characterGemsData from '../data/character_gems.json'
+import normalBossData from '../data/normal_boss.json'
+import localSpecialtyData from '../data/local_specialty.json'
+import commonEnemyData from '../data/common_enemy.json'
+import talentMatsData from '../data/talent_materials.json'
+import weeklyBossData from '../data/weekly_boss.json'
+import eliteEnemyData from '../data/elite_enemy.json'
+import weaponAscData from '../data/weapon_ascension.json'
 import weaponsData from '../data/weapons.json'
 
 export default function WeaponPlanCard({ entryObj, inventory, categories = {} }) {
@@ -22,7 +30,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
       const formattedSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
       return `${formattedPrefix}${formattedSuffix}`;
     }
-    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for'];
+    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for', 'from'];
     return strId
       .split(/[\s_]+/) 
       .map((word, index) => {
@@ -58,6 +66,36 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
     }
   };
 
+  const getItemName = (itemId) => {
+    if (!itemId) return '';
+    
+    const allItems = [
+      ...localSpecialtyData,
+      ...normalBossData,
+      ...weeklyBossData
+    ];
+    
+    const allTierFamilies = [
+      ...characterGemsData,
+      ...commonEnemyData,
+      ...talentMatsData,
+      ...eliteEnemyData,
+      ...weaponAscData
+    ];
+    
+    const flatFound = allItems.find(item => item.id === itemId);
+    if (flatFound) return flatFound.name;
+    
+    for (const family of allTierFamilies) {
+      if (family.tiers) {
+        const tierFound = Object.values(family.tiers).find(t => t.id === itemId);
+        if (tierFound) return tierFound.name;
+      }
+    }
+    
+    return itemId;
+  };
+
   const getRarityGradient = (rarity) => {
     switch (Number(rarity)) {
       case 5: return 'from-amber-500/10'; // Gold
@@ -88,6 +126,13 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
           <h3 className="font-semibold text-[var(--text)] text-sm truncate">{displayName}</h3>
           <p className="text-[10px] text-[var(--gold)] font-cinzel tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
         </div>
+        {weapon.type && (
+          <img 
+            src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/billets/${getSafeImgId(weapon.type)}.png`} 
+            alt={weapon.type} 
+            className="w-8 h-8 object-contain opacity-80 ml-auto" 
+          />
+        )}
       </div>
 
       {/* State Block */}
@@ -109,26 +154,26 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
           <p className="text-xs text-gray-500 italic">No materials needed.</p>
         ) : (
           <div className="grid grid-cols-4 gap-2 mt-2">
-            {Object.entries(totalCosts)
-              .filter(([matId, qty]) => qty > 0 && matId !== 'mora')
-              .map(([matId, qty]) => {
-                const owned = inventory[matId] || 0;
-                const toFarm = Math.max(0, qty - owned);
+            {Object.entries(totalCosts || {})
+              .filter(([matId, qty]) => {
+                const sanitizedKey = matId.toString().toLowerCase().replace(/[\s_]/g, '');
+                return qty > 0 && sanitizedKey !== 'mora' && !['totalexp', 'normalore', 'fineore', 'wastedexp', 'exptonextlevel'].includes(sanitizedKey);
+              })
+              .map(([matId, qty], index) => {
+                let actualId = matId;
+                const sanitizedKey = matId.toString().toLowerCase().replace(/[\s_]/g, '');
                 
+                if (sanitizedKey === 'totalmora') actualId = 'mora';
+                if (sanitizedKey === 'mysticore') actualId = 'mystic_enhancement_ore';
+
                 return (
-                  <div key={matId} className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-black/30 border border-white/5 relative group/mat hover:border-amber-500/30 transition-colors">
+                  <div key={index} className="flex flex-col items-center p-2 bg-[#1f222b] rounded-lg border border-white/5">
                     <img 
-                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[matId])}/${getSafeImgId(matId)}.png`} 
-                      alt={formatItemName(matId)} 
-                      className="w-8 h-8 object-contain mb-1 drop-shadow-md"
-                      title={`${formatItemName(matId)}\nNeeded: ${toFarm} (Total: ${qty})`}
-                      onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[actualId])}/${getSafeImgId(getItemName(actualId) || actualId)}.png`} 
+                      alt={actualId} 
+                      className="w-8 h-8 object-contain mb-1"
                     />
-                    <span className="hidden text-xl mb-1" title={formatItemName(matId)}>📦</span>
-                    
-                    <span className={`text-[9px] font-bold ${toFarm === 0 ? 'text-green-400' : 'text-gray-300'} text-center`}>
-                      {toFarm === 0 ? '✅' : `×${formatNumber(toFarm)}`}
-                    </span>
+                    <span className="text-[10px] text-gray-400 font-medium">x{qty}</span>
                   </div>
                 );
             })}

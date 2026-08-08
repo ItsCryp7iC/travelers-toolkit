@@ -1,6 +1,14 @@
 import React from 'react'
 import { formatName } from '../utils/gameData'
 import { formatNumber, formatItemName } from '../utils/calculator'
+import characterGemsData from '../data/character_gems.json'
+import normalBossData from '../data/normal_boss.json'
+import localSpecialtyData from '../data/local_specialty.json'
+import commonEnemyData from '../data/common_enemy.json'
+import talentMatsData from '../data/talent_materials.json'
+import weeklyBossData from '../data/weekly_boss.json'
+import eliteEnemyData from '../data/elite_enemy.json'
+import weaponAscData from '../data/weapon_ascension.json'
 
 export default function CharacterPlanCard({ entryObj, inventory, categories = {} }) {
   const { name, entry, totalCosts, talentState, character } = entryObj;
@@ -28,7 +36,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
     }
   
     // 3. True Title Case (spaces removed)
-    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for'];
+    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for', 'from'];
     return strId
       .split(/[\s_]+/) 
       .map((word, index) => {
@@ -63,6 +71,36 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
       case 'mysticOre': return 'experience';
       default: return 'others';
     }
+  };
+
+  const getItemName = (itemId) => {
+    if (!itemId) return '';
+    
+    const allItems = [
+      ...localSpecialtyData,
+      ...normalBossData,
+      ...weeklyBossData
+    ];
+    
+    const allTierFamilies = [
+      ...characterGemsData,
+      ...commonEnemyData,
+      ...talentMatsData,
+      ...eliteEnemyData,
+      ...weaponAscData
+    ];
+    
+    const flatFound = allItems.find(item => item.id === itemId);
+    if (flatFound) return flatFound.name;
+    
+    for (const family of allTierFamilies) {
+      if (family.tiers) {
+        const tierFound = Object.values(family.tiers).find(t => t.id === itemId);
+        if (tierFound) return tierFound.name;
+      }
+    }
+    
+    return itemId;
   };
 
   return (
@@ -133,7 +171,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
                 return (
                   <div key={matId} className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-black/30 border border-white/5 relative group/mat hover:border-amber-500/30 transition-colors">
                     <img 
-                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[matId])}/${getSafeImgId(matId)}.png`} 
+                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[matId])}/${getSafeImgId(getItemName(matId))}.png`} 
                       alt={formatItemName(matId)} 
                       className="w-8 h-8 object-contain mb-1 drop-shadow-md"
                       title={`${formatItemName(matId)}\nNeeded: ${toFarm} (Total: ${qty})`}

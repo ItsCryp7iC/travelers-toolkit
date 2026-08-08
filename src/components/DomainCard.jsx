@@ -36,7 +36,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
     }
   
     // 3. True Title Case (spaces removed)
-    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for'];
+    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for', 'from'];
     return strId
       .split(/[\s_]+/) 
       .map((word, index) => {
