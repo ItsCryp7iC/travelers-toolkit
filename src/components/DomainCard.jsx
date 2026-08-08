@@ -10,7 +10,7 @@ const RARITY_COLORS = {
   1: '#808080'
 }
 
-export default function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
+export default function DomainCard({ domainName, familyObj, accent, globalCosts, inventory, itemFolder = "weapon_ascension_materials" }) {
   const { familyName, familyData, items, neededBy } = familyObj;
 
   const getSafeImgId = (id) => {
@@ -67,7 +67,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
                   <img 
-                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : familyObj.type === 'weekly_boss' ? 'Weekly Boss Material' : familyObj.type === 'world_boss' ? 'Normal Boss Material' : familyObj.type === 'elite_mob' ? 'Elite Enhancement Material' : familyObj.type === 'gemstones' ? 'Character Ascension Gem' : 'Weapon Ascension Material')} 
+                    src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${itemFolder}/${getSafeImgId(tier.name)}.png`}
                     alt={tier.name} 
                     className="w-8 h-8 object-contain drop-shadow-md" 
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 

@@ -51,17 +51,17 @@ const RARITY_BORDERS = {
 // ─── Tailored Item Card ────────────────────────────────────────────────────
 export function ItemCard({ item, accent }) {
   const rarityBg = RARITY_COLORS[item.rarity || 3] || RARITY_COLORS[3];
-  
+
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors relative overflow-hidden group">
-      
+
       {/* Background Glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity" style={{ background: rarityBg }} />
-      
+
       {/* Thumbnail */}
       <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center relative overflow-hidden" style={{ background: rarityBg }}>
-        <img 
-          src={`/assets/items/${item.name}.png`} 
+        <img
+          src={`/assets/items/${item.name}.png`}
           alt={formatItemName(item.name)}
           className="w-10 h-10 object-contain z-10 drop-shadow-md"
           onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
@@ -185,7 +185,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
                 <p className="text-sm font-cinzel font-bold text-[#FBBF24]">×{totalCosts.masterless_stella_fortuna}</p>
               </div>
             )}
-            
+
             {/* Gemstones */}
             {['gem_sliver', 'gem_fragment', 'gem_chunk', 'gem_gemstone'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
@@ -207,7 +207,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.local_specialty}</p>
               </div>
             )}
-            
+
             {/* Talent Books */}
             {['2_star_talent_material', '3_star_talent_material', '4_star_talent_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
@@ -215,7 +215,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
-            
+
             {/* Weekly Boss */}
             {totalCosts?.weekly_boss_material > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
@@ -223,7 +223,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.weekly_boss_material}</p>
               </div>
             )}
-            
+
             {/* Weapon Asc Mats */}
             {['2_star_ascension_material', '3_star_ascension_material', '4_star_ascension_material', '5_star_ascension_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
@@ -231,7 +231,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
-            
+
             {/* Elite Drops */}
             {['2_star_enhancement_material', '3_star_enhancement_material', '4_star_enhancement_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
@@ -239,7 +239,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
-            
+
             {/* Mob Drops */}
             {['1_star_enemy_material', '2_star_enemy_material', '3_star_enemy_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
@@ -312,30 +312,30 @@ export default function Planner() {
         }
       })
     }
-    
+
     if (['weapon_ascension', 'weapon', 'elite_mob', 'mob'].includes(type)) {
       trackedWeapons.forEach(w => {
         if (w.ascension === w.targetAscension && w.level >= w.targetLevel) return;
         const wData = weaponsData.find(wd => wd.name === w.weaponName)
         if (wData && wData.materials) {
-           let family = null;
-           if (type === 'weapon_ascension' || type === 'weapon') family = wData.materials.ascension_material_family_id;
-           if (type === 'elite_mob') family = wData.materials.elite_enemy_material_family_id;
-           if (type === 'mob') family = wData.materials.common_enemy_material_family_id;
-           
-           const matFamilyData = getJsonData(matKey);
-           
-           if (matFamilyData && matFamilyData.familyId) {
-             if (family && matFamilyData.familyId.toLowerCase().includes(family.toLowerCase())) {
-               needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
-             }
-           } else {
-             // Fallback
-             const normalizedMatKey = matKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-             if (family && normalizedMatKey.includes(family.toLowerCase().replace(/[^a-z0-9]/g, ''))) {
-               needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
-             }
-           }
+          let family = null;
+          if (type === 'weapon_ascension' || type === 'weapon') family = wData.materials.ascension_material_family_id;
+          if (type === 'elite_mob') family = wData.materials.elite_enemy_material_family_id;
+          if (type === 'mob') family = wData.materials.common_enemy_material_family_id;
+
+          const matFamilyData = getJsonData(matKey);
+
+          if (matFamilyData && matFamilyData.familyId) {
+            if (family && matFamilyData.familyId.toLowerCase().includes(family.toLowerCase())) {
+              needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
+            }
+          } else {
+            // Fallback
+            const normalizedMatKey = matKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (family && normalizedMatKey.includes(family.toLowerCase().replace(/[^a-z0-9]/g, ''))) {
+              needed.push({ name: w.weaponName, icon: w.weapon_id, type: 'weapon' });
+            }
+          }
         }
       })
     }
@@ -367,9 +367,9 @@ export default function Planner() {
       }
 
       const neededBy = getNeededBy(item.name, 'talent');
-      
+
       groups[region][domainName][familyName].items[item.name] = { item, neededBy };
-      
+
       neededBy.forEach(entity => {
         if (!groups[region][domainName][familyName].neededBy.find(e => e.name === entity.name)) {
           groups[region][domainName][familyName].neededBy.push(entity);
@@ -405,9 +405,9 @@ export default function Planner() {
       }
 
       const neededBy = getNeededBy(item.name, 'weapon');
-      
+
       groups[region][domainName][familyName].items[item.name] = { item, neededBy };
-      
+
       neededBy.forEach(entity => {
         if (!groups[region][domainName][familyName].neededBy.find(e => e.name === entity.name)) {
           groups[region][domainName][familyName].neededBy.push(entity);
@@ -421,7 +421,7 @@ export default function Planner() {
   const groupedGemstonesData = useMemo(() => {
     const groups = {}; // BaseName -> FamilyObj
     const allGems = toFarm.gemstones || [];
-    
+
     const TIER_ORDER = {
       'sliver': 1,
       'fragment': 2,
@@ -436,7 +436,7 @@ export default function Planner() {
 
       const prefix = prefixMatch[1];
       const suffix = prefixMatch[2];
-      
+
       const cleanName = prefix.replace(/_+/g, ' ').trim();
       const formattedFamilyName = cleanName.replace(/\b\w/g, l => l.toUpperCase());
       const baseKey = formattedFamilyName.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -445,7 +445,7 @@ export default function Planner() {
         const jsonEntry = characterGemsData.find(g => g.id === baseKey);
         let jsonSortOrder = 999;
         if (jsonEntry && jsonEntry.tiers) {
-           jsonSortOrder = Math.min(...Object.values(jsonEntry.tiers).map(t => t.sortOrder || 999));
+          jsonSortOrder = Math.min(...Object.values(jsonEntry.tiers).map(t => t.sortOrder || 999));
         }
 
         groups[baseKey] = {
@@ -454,12 +454,12 @@ export default function Planner() {
           jsonSortOrder,
           type: 'gemstones',
           familyData: {
-             tiers: [
-               { id: `${prefix}sliver`, name: `${formattedFamilyName} Sliver`, rarity: 1 },
-               { id: `${prefix}fragment`, name: `${formattedFamilyName} Fragment`, rarity: 2 },
-               { id: `${prefix}chunk`, name: `${formattedFamilyName} Chunk`, rarity: 3 },
-               { id: `${prefix}gemstone`, name: `${formattedFamilyName} Gemstone`, rarity: 4 }
-             ]
+            tiers: [
+              { id: `${prefix}sliver`, name: `${formattedFamilyName} Sliver`, rarity: 1 },
+              { id: `${prefix}fragment`, name: `${formattedFamilyName} Fragment`, rarity: 2 },
+              { id: `${prefix}chunk`, name: `${formattedFamilyName} Chunk`, rarity: 3 },
+              { id: `${prefix}gemstone`, name: `${formattedFamilyName} Gemstone`, rarity: 4 }
+            ]
           },
           items: {},
           neededBy: []
@@ -467,9 +467,9 @@ export default function Planner() {
       }
 
       const neededBy = getNeededBy(item.name, 'gemstones');
-      
+
       groups[baseKey].items[item.name] = { item, neededBy };
-      
+
       neededBy.forEach(entity => {
         if (!groups[baseKey].neededBy.find(e => e.name === entity.name)) {
           groups[baseKey].neededBy.push(entity);
@@ -480,7 +480,7 @@ export default function Planner() {
     return groups;
   }, [toFarm.gemstones, getNeededBy]);
 
-  const renderGemGroups = (groupedData, accent, categoryKey) => {
+  const renderGemGroups = (groupedData, accent, categoryKey, itemFolder) => {
     if (Object.keys(groupedData).length === 0) return null;
 
     return (
@@ -488,13 +488,14 @@ export default function Planner() {
         {Object.values(groupedData)
           .sort((a, b) => a.jsonSortOrder - b.jsonSortOrder)
           .map(familyObj => (
-            <DomainCard 
+            <DomainCard
               key={familyObj.familyKey}
               domainName={`FAMILY: ${familyObj.familyName.toUpperCase()}`}
-              familyObj={familyObj} 
-              accent={accent} 
+              familyObj={familyObj}
+              accent={accent}
               globalCosts={totals.totalCosts}
               inventory={inventory}
+              itemFolder={itemFolder}
             />
           ))}
       </div>
@@ -504,21 +505,21 @@ export default function Planner() {
   const groupedWeeklyBosses = useMemo(() => {
     const groups = {}; // Region -> BossName -> { bossName, region, items: [], neededBy: [] }
     const weeklyNeeded = toFarm.weeklyBoss || [];
-    
+
     weeklyNeeded.forEach(item => {
       const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
       const bossData = weeklyBossData.find(b => b.id === normalizedKey || b.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
-      
+
       if (!bossData) return;
       const bossName = bossData.boss_name || 'Unknown Boss';
       const region = bossData.region || 'Unknown Region';
-      
+
       if (!groups[region]) groups[region] = {};
-      
+
       if (!groups[region][bossName]) {
         const allBossMaterials = weeklyBossData.filter(b => b.boss_name === bossName).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
         const bossSortOrder = Math.min(...allBossMaterials.map(m => m.sortOrder || 999));
-        
+
         groups[region][bossName] = {
           bossName,
           region,
@@ -526,17 +527,17 @@ export default function Planner() {
           familyName: bossName,
           type: 'weekly_boss',
           familyData: {
-             tiers: allBossMaterials.map(m => ({ id: m.id, name: m.name, rarity: 5 })) // mock tiers for DomainCard
+            tiers: allBossMaterials.map(m => ({ id: m.id, name: m.name, rarity: 5 })) // mock tiers for DomainCard
           },
           items: {},
           neededBy: []
         };
       }
-      
+
       const neededBy = getNeededBy(item.name, 'weekly_boss');
-      
+
       groups[region][bossName].items[bossData.id] = { item, neededBy };
-      
+
       neededBy.forEach(entity => {
         if (!groups[region][bossName].neededBy.find(e => e.name === entity.name)) {
           groups[region][bossName].neededBy.push(entity);
@@ -550,17 +551,17 @@ export default function Planner() {
   const groupedNormalBosses = useMemo(() => {
     const groups = {}; // Region -> BossName -> { bossName, region, items: [], neededBy: [] }
     const bossNeeded = toFarm.worldBoss || [];
-    
+
     bossNeeded.forEach(item => {
       const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
       const bossData = normalBossData.find(b => b.id === normalizedKey || b.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
-      
+
       if (!bossData) return;
       const bossName = bossData.boss_name || 'Unknown Boss';
       const region = bossData.region || 'Unknown Region';
-      
+
       if (!groups[region]) groups[region] = {};
-      
+
       if (!groups[region][bossName]) {
         groups[region][bossName] = {
           bossName,
@@ -574,9 +575,9 @@ export default function Planner() {
       }
 
       const neededBy = getNeededBy(item.name, 'world_boss');
-      
+
       groups[region][bossName].items[bossData.id] = { item, neededBy };
-      
+
       neededBy.forEach(entity => {
         if (!groups[region][bossName].neededBy.find(e => e.name === entity.name)) {
           groups[region][bossName].neededBy.push(entity);
@@ -587,7 +588,7 @@ export default function Planner() {
     return groups;
   }, [toFarm.worldBoss, getNeededBy]);
 
-  const renderBossRegionGroups = (groupedData, accent, categoryKey) => {
+  const renderBossRegionGroups = (groupedData, accent, categoryKey, itemFolder) => {
     if (Object.keys(groupedData).length === 0) return null;
 
     return Object.keys(groupedData)
@@ -604,7 +605,7 @@ export default function Planner() {
         const isCollapsed = collapsed[regionKey];
         return (
           <div key={region} className="mb-8 last:mb-2">
-            <h3 
+            <h3
               className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => toggleSection(regionKey)}
             >
@@ -618,15 +619,16 @@ export default function Planner() {
                   .map(bossObj => {
                     let prefix = 'BOSS';
                     if (bossObj.type === 'elite_mob' || bossObj.type === 'mob') prefix = 'ENEMY';
-                    
+
                     return (
-                      <DomainCard 
-                        key={bossObj.bossName} 
+                      <DomainCard
+                        key={bossObj.bossName}
                         domainName={`${prefix}: ${bossObj.bossName.toUpperCase()}`}
-                        familyObj={bossObj} 
-                        accent={accent} 
+                        familyObj={bossObj}
+                        accent={accent}
                         globalCosts={totals.totalCosts}
                         inventory={inventory}
+                        itemFolder={itemFolder}
                       />
                     );
                   })}
@@ -640,7 +642,7 @@ export default function Planner() {
   const groupedEliteEnemies = useMemo(() => {
     const groups = {}; // EnemyName -> { bossName, items: [], neededBy: [] }
     const eliteNeeded = toFarm.eliteMob || [];
-    
+
     eliteNeeded.forEach(item => {
       let matchedEnemy = null;
       let matchedTierId = null;
@@ -650,27 +652,27 @@ export default function Planner() {
         if (matchedEnemy) break;
         for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
           if (tierObj.name === item.name || tierObj.id === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
-             matchedEnemy = enemy;
-             matchedTierId = tierObj.id;
-             break;
+            matchedEnemy = enemy;
+            matchedTierId = tierObj.id;
+            break;
           }
         }
       }
 
       if (!matchedEnemy) return;
       const enemyName = matchedEnemy.name || 'Unknown Enemy';
-      
+
       if (!groups[enemyName]) {
         groups[enemyName] = {
           bossName: enemyName,
           bossSortOrder: matchedEnemy.tiers['2_star']?.sortOrder || 999,
           type: 'elite_mob',
-          familyData: { 
+          familyData: {
             tiers: [
-               { id: matchedEnemy.tiers['2_star'].id, name: matchedEnemy.tiers['2_star'].name, rarity: 2 },
-               { id: matchedEnemy.tiers['3_star'].id, name: matchedEnemy.tiers['3_star'].name, rarity: 3 },
-               { id: matchedEnemy.tiers['4_star'].id, name: matchedEnemy.tiers['4_star'].name, rarity: 4 }
-            ] 
+              { id: matchedEnemy.tiers['2_star'].id, name: matchedEnemy.tiers['2_star'].name, rarity: 2 },
+              { id: matchedEnemy.tiers['3_star'].id, name: matchedEnemy.tiers['3_star'].name, rarity: 3 },
+              { id: matchedEnemy.tiers['4_star'].id, name: matchedEnemy.tiers['4_star'].name, rarity: 4 }
+            ]
           },
           items: {},
           neededBy: []
@@ -678,9 +680,9 @@ export default function Planner() {
       }
 
       const neededBy = getNeededBy(item.name, 'elite_mob');
-      
+
       groups[enemyName].items[matchedTierId] = { item, neededBy };
-      
+
       neededBy.forEach(entity => {
         if (!groups[enemyName].neededBy.find(e => e.name === entity.name)) {
           groups[enemyName].neededBy.push(entity);
@@ -694,7 +696,7 @@ export default function Planner() {
   const groupedCommonEnemies = useMemo(() => {
     const groups = {}; // EnemyName -> { bossName, items: {}, neededBy: [] }
     const mobNeeded = toFarm.mob || [];
-    
+
     mobNeeded.forEach(item => {
       let matchedEnemy = null;
       let matchedTierId = null;
@@ -703,27 +705,27 @@ export default function Planner() {
         if (matchedEnemy) break;
         for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
           if (tierObj.name === item.name || tierObj.id === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
-             matchedEnemy = enemy;
-             matchedTierId = tierObj.id;
-             break;
+            matchedEnemy = enemy;
+            matchedTierId = tierObj.id;
+            break;
           }
         }
       }
 
       if (!matchedEnemy) return;
       const enemyName = matchedEnemy.name || 'Unknown Enemy';
-      
+
       if (!groups[enemyName]) {
         groups[enemyName] = {
           bossName: enemyName,
           bossSortOrder: matchedEnemy.tiers['1_star']?.sortOrder || 999,
           type: 'mob',
-          familyData: { 
+          familyData: {
             tiers: [
-               { id: matchedEnemy.tiers['1_star'].id, name: matchedEnemy.tiers['1_star'].name, rarity: 1 },
-               { id: matchedEnemy.tiers['2_star'].id, name: matchedEnemy.tiers['2_star'].name, rarity: 2 },
-               { id: matchedEnemy.tiers['3_star'].id, name: matchedEnemy.tiers['3_star'].name, rarity: 3 }
-            ] 
+              { id: matchedEnemy.tiers['1_star'].id, name: matchedEnemy.tiers['1_star'].name, rarity: 1 },
+              { id: matchedEnemy.tiers['2_star'].id, name: matchedEnemy.tiers['2_star'].name, rarity: 2 },
+              { id: matchedEnemy.tiers['3_star'].id, name: matchedEnemy.tiers['3_star'].name, rarity: 3 }
+            ]
           },
           items: {},
           neededBy: []
@@ -731,9 +733,9 @@ export default function Planner() {
       }
 
       const neededBy = getNeededBy(item.name, 'mob');
-      
+
       groups[enemyName].items[matchedTierId] = { item, neededBy };
-      
+
       neededBy.forEach(entity => {
         if (!groups[enemyName].neededBy.find(e => e.name === entity.name)) {
           groups[enemyName].neededBy.push(entity);
@@ -779,7 +781,7 @@ export default function Planner() {
     return 99;
   };
 
-  const renderRegionGroups = (groupedData, accent, categoryKey) => {
+  const renderRegionGroups = (groupedData, accent, categoryKey, itemFolder) => {
     if (Object.keys(groupedData).length === 0) return null;
 
     return Object.keys(groupedData)
@@ -796,7 +798,7 @@ export default function Planner() {
         const isCollapsed = collapsed[regionKey];
         return (
           <div key={region} className="mb-8 last:mb-2">
-            <h3 
+            <h3
               className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => toggleSection(regionKey)}
             >
@@ -809,15 +811,16 @@ export default function Planner() {
                   Object.values(groupedData[region][domainName])
                     .sort((a, b) => getScheduleWeight(a.familyData) - getScheduleWeight(b.familyData))
                     .map(familyObj => (
-                      <DomainCard 
-                        key={familyObj.familyName} 
-                        domainName={domainName} 
-                        familyObj={familyObj} 
-                        accent={accent} 
+                      <DomainCard
+                        key={familyObj.familyName}
+                        domainName={domainName}
+                        familyObj={familyObj}
+                        accent={accent}
                         globalCosts={totals.totalCosts}
                         inventory={inventory}
+                        itemFolder={itemFolder}
                       />
-                  ))
+                    ))
                 ))}
               </div>
             )}
@@ -832,7 +835,7 @@ export default function Planner() {
     let mora = toFarm.mora?.toFarm || 0;
     let crowns = toFarm.crown?.toFarm || 0;
     let sumItems = 0;
-    
+
     for (const key of Object.keys(toFarm)) {
       if (['totalItems', 'allDone', 'mora', 'crown'].includes(key)) continue;
       const val = toFarm[key];
@@ -874,11 +877,11 @@ export default function Planner() {
 
       {/* ── Grand Total Stats ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <PlannerStat icon="👥" label="Tracked Characters" value={totals.trackedCount}                  accent="#4EC9B0" />
-        <PlannerStat icon="🪙" label="Total Mora"         value={formatNumber(remainingTotals.mora)}        accent="#FAB632" />
-        <PlannerStat icon="👑" label="Crowns Needed"      value={remainingTotals.crowns}              accent="#FBBF24"
+        <PlannerStat icon="👥" label="Tracked Characters" value={totals.trackedCount} accent="#4EC9B0" />
+        <PlannerStat icon="🪙" label="Total Mora" value={formatNumber(remainingTotals.mora)} accent="#FAB632" />
+        <PlannerStat icon="👑" label="Crowns Needed" value={remainingTotals.crowns} accent="#FBBF24"
           sub={remainingTotals.crowns > 0 ? 'Crown of Insight' : 'None needed'} />
-        <PlannerStat icon="🎒" label="Still to Farm"      value={formatNumber(remainingTotals.sumItems)}
+        <PlannerStat icon="🎒" label="Still to Farm" value={formatNumber(remainingTotals.sumItems)}
           accent={toFarm.allDone ? '#4ADE80' : '#F97316'}
           sub={toFarm.allDone ? '✅ All stocked!' : 'materials left'} />
       </div>
@@ -903,7 +906,7 @@ export default function Planner() {
       {/* ── View Toggle ── */}
       <div className="flex gap-2 mb-6 p-1 bg-[var(--surface)] rounded-xl border border-[var(--border)] w-fit">
         {[
-          { id: 'toFarm',    label: '🌾 To-Farm List' },
+          { id: 'toFarm', label: '🌾 To-Farm List' },
           { id: 'breakdown', label: '📊 Per Character' },
         ].map(({ id, label }) => (
           <button key={id} id={`planner-view-${id}`} onClick={() => setView(id)}
@@ -926,7 +929,7 @@ export default function Planner() {
             <div className="mb-6">
               <h3 className="planner-section-title mb-3">🪙 Currency & EXP</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {toFarm.mora  && <ItemCard item={toFarm.mora} accent="#FAB632" />}
+                {toFarm.mora && <ItemCard item={toFarm.mora} accent="#FAB632" />}
                 {toFarm.heroWits && <ItemCard item={toFarm.heroWits} accent="#60A5FA" />}
                 {toFarm.mysticOre && <ItemCard item={toFarm.mysticOre} accent="#F472B6" />}
                 {toFarm.crown && <ItemCard item={toFarm.crown} accent="#FBBF24" />}
@@ -948,7 +951,7 @@ export default function Planner() {
                   <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-talent', true, groupedBooksData)}>Collapse All Regions</button>
                 </div>
               </div>
-              {!collapsed['all-talent-main'] && renderRegionGroups(groupedBooksData, '#A855F7', 'all-talent')}
+              {!collapsed['all-talent-main'] && renderRegionGroups(groupedBooksData, '#A855F7', 'all-talent', 'talent_materials')}
               <div className="genshin-divider my-6" />
             </div>
           ) : (
@@ -969,7 +972,7 @@ export default function Planner() {
                   <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weekly', true, groupedWeeklyBosses)}>Collapse All Regions</button>
                 </div>
               </div>
-              {!collapsed['all-weekly-main'] && renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'all-weekly')}
+              {!collapsed['all-weekly-main'] && renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'all-weekly', 'weekly_boss_materials')}
               <div className="genshin-divider my-6" />
             </div>
           ) : (
@@ -990,7 +993,7 @@ export default function Planner() {
                   <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-weapon', true, groupedWeaponMatsData)}>Collapse All Regions</button>
                 </div>
               </div>
-              {!collapsed['all-weapon-main'] && renderRegionGroups(groupedWeaponMatsData, 'var(--gold)', 'all-weapon')}
+              {!collapsed['all-weapon-main'] && renderRegionGroups(groupedWeaponMatsData, 'var(--gold)', 'all-weapon', 'weapon_ascension_materials')}
               <div className="genshin-divider my-6" />
             </div>
           ) : (
@@ -1007,7 +1010,7 @@ export default function Planner() {
                   <span>💎</span> Character Ascension Gem
                 </p>
               </div>
-              {!collapsed['all-gem-main'] && renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem')}
+              {!collapsed['all-gem-main'] && renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem', 'character_gems')}
               <div className="genshin-divider my-6" />
             </div>
           ) : (
@@ -1028,7 +1031,7 @@ export default function Planner() {
                   <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-normalboss', true, groupedNormalBosses)}>Collapse All Regions</button>
                 </div>
               </div>
-              {!collapsed['all-normalboss-main'] && renderBossRegionGroups(groupedNormalBosses, '#F97316', 'all-normalboss')}
+              {!collapsed['all-normalboss-main'] && renderBossRegionGroups(groupedNormalBosses, '#F97316', 'all-normalboss', 'normal_boss_materials')}
               <div className="genshin-divider my-6" />
             </div>
           ) : (
@@ -1053,13 +1056,14 @@ export default function Planner() {
                   {Object.values(groupedEliteEnemies)
                     .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                     .map(bossObj => (
-                      <DomainCard 
-                        key={bossObj.bossName} 
+                      <DomainCard
+                        key={bossObj.bossName}
                         domainName={`ENEMY: ${bossObj.bossName.toUpperCase()}`}
-                        familyObj={bossObj} 
-                        accent="var(--gold)" 
+                        familyObj={bossObj}
+                        accent="var(--gold)"
                         globalCosts={totals.totalCosts}
                         inventory={inventory}
+                        itemFolder="elite_enhancement_materials"
                       />
                     ))}
                 </div>
@@ -1071,7 +1075,7 @@ export default function Planner() {
               All elite drops covered
             </div>
           )}
-          <ToFarmCategory icon="🌸" title="Local Specialty"  items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
+          <ToFarmCategory icon="🌸" title="Local Specialty" items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
           {/* General Common Enhancement Materials Accordion */}
           {toFarm.mob?.length > 0 ? (
             <div className="mb-8 mt-2">
@@ -1086,13 +1090,14 @@ export default function Planner() {
                   {Object.values(groupedCommonEnemies)
                     .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                     .map(enemyObj => (
-                      <DomainCard 
-                        key={enemyObj.bossName} 
+                      <DomainCard
+                        key={enemyObj.bossName}
                         domainName={`ENEMY: ${enemyObj.bossName.toUpperCase()}`}
-                        familyObj={enemyObj} 
-                        accent="#A855F7" 
+                        familyObj={enemyObj}
+                        accent="#A855F7"
                         globalCosts={totals.totalCosts}
                         inventory={inventory}
+                        itemFolder="common_enhancement_materials"
                       />
                     ))}
                 </div>
