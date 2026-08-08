@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
+import BatchAddWeaponModal from '../components/BatchAddWeaponModal'
 import BulkEditWeaponModal from '../components/BulkEditWeaponModal'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../data/characters.json'
@@ -53,7 +54,7 @@ export default function Weapons() {
   const [rarityFilter, setRarityFilter] = useState('All')
   const [sortOrder,    setSortOrder]    = useState('Release')
   const [viewMode,     setViewMode]     = useState('table') // 'table' | 'card'
-  const [addModalOpen, setAddModalOpen] = useState(false)
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
   const [bulkModalOpen, setBulkModalOpen] = useState(false)
   const [editingWeapon, setEditingWeapon] = useState(null)
   const [selectedIds, setSelectedIds] = useState([])
@@ -176,10 +177,10 @@ export default function Weapons() {
           )}
           <button
             id="add-weapon-btn"
-            onClick={() => setAddModalOpen(true)}
+            onClick={() => setIsBatchModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md"
           >
-            + Add Weapon
+            + Batch Add Weapons
           </button>
         </div>
       </div>
@@ -190,7 +191,7 @@ export default function Weapons() {
           <span className="text-6xl mb-5">🗡️</span>
           <h3 className="font-cinzel font-semibold text-[var(--text)] text-xl mb-2">Your armory is empty</h3>
           <p className="text-[var(--muted)] text-sm max-w-xs mb-6">Add weapons to track their progression and assign them to your roster characters.</p>
-          <button onClick={() => setAddModalOpen(true)} className="genshin-btn-ghost">+ Add Weapon</button>
+          <button onClick={() => setIsBatchModalOpen(true)} className="genshin-btn-ghost">+ Batch Add Weapons</button>
         </div>
       ) : (
         <>
@@ -568,7 +569,7 @@ export default function Weapons() {
       )}
 
       {/* ── Modals ── */}
-      {addModalOpen && <AddWeaponModal onClose={() => setAddModalOpen(false)} />}
+      {isBatchModalOpen && <BatchAddWeaponModal onClose={() => setIsBatchModalOpen(false)} />}
       {editingWeapon && <AddWeaponModal existingWeapon={editingWeapon} onClose={() => setEditingWeapon(null)} />}
     </div>
   )
