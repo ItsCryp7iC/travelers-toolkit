@@ -298,7 +298,7 @@ export default function Planner() {
 
   const getNeededBy = useCallback((matKey, type) => {
     const needed = []
-    if (type === 'talent' || type === 'weekly_boss') {
+    if (type === 'talent' || type === 'weekly_boss' || type === 'gemstones') {
       totals.breakdown.forEach(b => {
         if (b.totalCosts[matKey] > 0) {
           const charId = b.character?.id || b.name.toLowerCase().replace(/[^a-z0-9]/g, '')
@@ -405,6 +405,94 @@ export default function Planner() {
 
     return groups;
   }, [toFarm.weaponAscMats, getNeededBy]);
+
+  const groupedGemstonesData = useMemo(() => {
+    const groups = {}; // BaseName -> FamilyObj
+    const allGems = toFarm.gemstones || [];
+    
+    const TIER_ORDER = {
+      'sliver': 1,
+      'fragment': 2,
+      'chunk': 3,
+      'gemstone': 4
+    };
+
+    allGems.forEach(item => {
+      const rawName = item.name.toLowerCase();
+      const prefixMatch = rawName.match(/^(.*?)(sliver|fragment|chunk|gemstone)$/);
+      if (!prefixMatch) return;
+
+      const prefix = prefixMatch[1];
+      const suffix = prefixMatch[2];
+      
+      const cleanName = prefix.replace(/_+/g, ' ').trim();
+      const formattedFamilyName = cleanName.replace(/\b\w/g, l => l.toUpperCase());
+      const baseKey = formattedFamilyName.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      if (!groups[baseKey]) {
+        groups[baseKey] = {
+          familyName: formattedFamilyName,
+          familyKey: baseKey,
+          type: 'gemstones',
+          familyData: {
+             tiers: [
+               { id: `${prefix}gemstone`, name: `${formattedFamilyName} Gemstone`, rarity: 4 },
+               { id: `${prefix}chunk`, name: `${formattedFamilyName} Chunk`, rarity: 3 },
+               { id: `${prefix}fragment`, name: `${formattedFamilyName} Fragment`, rarity: 2 },
+               { id: `${prefix}sliver`, name: `${formattedFamilyName} Sliver`, rarity: 1 }
+             ]
+          },
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'gemstones');
+      
+      groups[baseKey].items[item.name] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[baseKey].neededBy.find(e => e.name === entity.name)) {
+          groups[baseKey].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.gemstones, getNeededBy]);
+
+  const renderGemGroups = (groupedData, accent, categoryKey) => {
+    if (Object.keys(groupedData).length === 0) return null;
+
+    return Object.values(groupedData)
+      .sort((a, b) => a.familyName.localeCompare(b.familyName))
+      .map(familyObj => {
+        const regionKey = `${categoryKey}-${familyObj.familyKey}`;
+        const isCollapsed = collapsed[regionKey];
+        return (
+          <div key={familyObj.familyKey} className="mb-8 last:mb-2">
+            <h3 
+              className="text-xl font-bold mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => toggleSection(regionKey)}
+            >
+              <span className={`text-lg inline-block transition-transform duration-200 ${isCollapsed ? '' : 'rotate-90'}`}>›</span>
+              <span className="text-sm">🔮</span> {familyObj.familyName}
+            </h3>
+            {!isCollapsed && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <DomainCard 
+                  domainName={`FAMILY: ${familyObj.familyName.toUpperCase()}`}
+                  familyObj={familyObj} 
+                  accent={accent} 
+                  globalCosts={totals.totalCosts}
+                  inventory={inventory}
+                />
+              </div>
+            )}
+          </div>
+        );
+      });
+  };
 
   const groupedWeeklyBosses = useMemo(() => {
     const groups = {}; // Region -> BossName -> { bossName, region, items: [], neededBy: [] }
@@ -751,7 +839,27 @@ export default function Planner() {
               All weapon domains covered
             </div>
           )}
-          <ToFarmCategory icon="💎" title="Character Ascension Gem"          items={toFarm.gemstones}      accent="#C8A96E" emptyMsg="All gemstones covered" />
+          {/* General Character Ascension Gems Accordion */}
+          {toFarm.gemstones?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-gem-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-gem-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>💎</span> Character Ascension Gem
+                </p>
+                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-gem', false, groupedGemstonesData)}>Expand All Elements</button>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-gem', true, groupedGemstonesData)}>Collapse All Elements</button>
+                </div>
+              </div>
+              {!collapsed['all-gem-main'] && renderGemGroups(groupedGemstonesData, '#C8A96E', 'all-gem')}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All gemstones covered
+            </div>
+          )}
           <ToFarmCategory icon="🐉" title="Normal Boss Material"   items={toFarm.worldBoss}      accent="#F97316" emptyMsg="All boss drops covered" />
           <ToFarmCategory icon="🛡️" title="Elite Enhancement Material"    items={toFarm.eliteMob}       accent="var(--gold)" emptyMsg="All elite drops covered" />
           <ToFarmCategory icon="🌸" title="Local Specialty"  items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
