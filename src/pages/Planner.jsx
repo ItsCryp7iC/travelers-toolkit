@@ -13,6 +13,7 @@ import characterGemsData from '../data/character_gems.json'
 import normalBossData from '../data/normal_boss.json'
 import eliteEnemyData from '../data/elite_enemy.json'
 import commonEnemyData from '../data/common_enemy.json'
+import localSpecialtyData from '../data/local_specialty.json'
 
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
@@ -619,6 +620,7 @@ export default function Planner() {
                   .map(bossObj => {
                     let prefix = 'BOSS';
                     if (bossObj.type === 'elite_mob' || bossObj.type === 'mob') prefix = 'ENEMY';
+                    if (bossObj.type === 'local_specialty') prefix = 'LOCAL SPECIALTY';
 
                     return (
                       <DomainCard
@@ -638,6 +640,48 @@ export default function Planner() {
         );
       });
   };
+
+  const groupedLocalSpecialties = useMemo(() => {
+    const groups = {}; // Region -> itemName -> { bossName, region, items: {}, neededBy: [] }
+    const localNeeded = toFarm.localSpecialty || [];
+
+    localNeeded.forEach(item => {
+      const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const specialtyData = localSpecialtyData.find(s => s.id === normalizedKey || s.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
+      
+      if (!specialtyData) return;
+      const region = specialtyData.region || 'Unknown Region';
+      const itemName = specialtyData.name;
+
+      if (!groups[region]) groups[region] = {};
+
+      if (!groups[region][itemName]) {
+        groups[region][itemName] = {
+          bossName: itemName,
+          region,
+          bossSortOrder: specialtyData.sortOrder || 999,
+          type: 'local_specialty',
+          familyData: {
+            tiers: [{ id: specialtyData.id, name: itemName, rarity: 1 }]
+          },
+          items: {},
+          neededBy: []
+        };
+      }
+
+      const neededBy = getNeededBy(item.name, 'local_specialty');
+      
+      groups[region][itemName].items[specialtyData.id] = { item, neededBy };
+      
+      neededBy.forEach(entity => {
+        if (!groups[region][itemName].neededBy.find(e => e.name === entity.name)) {
+          groups[region][itemName].neededBy.push(entity);
+        }
+      });
+    });
+
+    return groups;
+  }, [toFarm.localSpecialty, getNeededBy]);
 
   const groupedEliteEnemies = useMemo(() => {
     const groups = {}; // EnemyName -> { bossName, items: [], neededBy: [] }
@@ -1075,7 +1119,27 @@ export default function Planner() {
               All elite drops covered
             </div>
           )}
-          <ToFarmCategory icon="🌸" title="Local Specialty" items={toFarm.localSpecialty} accent="#4ADE80" emptyMsg="All local specialties covered" />
+          {/* General Local Specialty Accordion */}
+          {toFarm.localSpecialty?.length > 0 ? (
+            <div className="mb-8 mt-2">
+              <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('all-specialty-main')}>
+                <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                  <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['all-specialty-main'] ? '' : 'rotate-90'}`}>›</span>
+                  <span>🌸</span> Local Specialty
+                </p>
+                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-specialty', false, groupedLocalSpecialties)}>Expand All Regions</button>
+                  <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('all-specialty', true, groupedLocalSpecialties)}>Collapse All Regions</button>
+                </div>
+              </div>
+              {!collapsed['all-specialty-main'] && renderBossRegionGroups(groupedLocalSpecialties, '#4ADE80', 'all-specialty', 'local_specialties')}
+              <div className="genshin-divider my-6" />
+            </div>
+          ) : (
+            <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mb-6 mt-2">
+              All local specialties covered
+            </div>
+          )}
           {/* General Common Enhancement Materials Accordion */}
           {toFarm.mob?.length > 0 ? (
             <div className="mb-8 mt-2">
