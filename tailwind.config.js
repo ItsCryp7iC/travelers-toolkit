@@ -7,6 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: {
+          DEFAULT: 'var(--color-primary)',
+          hover: 'var(--color-primary-hover)',
+        },
+        bg: {
+          base: 'var(--color-bg-base)',
+          surface: 'var(--color-bg-surface)',
+        },
         // Genshin dark theme palette
         'genshin-bg':        '#0D0F1A',
         'genshin-surface':   '#141626',

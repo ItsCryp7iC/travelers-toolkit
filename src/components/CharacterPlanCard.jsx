@@ -117,7 +117,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
   };
 
   return (
-    <div className={`bg-gradient-to-br ${getElementGradient(character?.element)} to-[#1a1c23] border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10 group`}>
+    <div className={`bg-gradient-to-br ${getElementGradient(character?.element)} to-bg-base border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10 group`}>
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--gold)] bg-[var(--surface)] flex-shrink-0 relative">
@@ -182,7 +182,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
                 const toFarm = Math.max(0, qty - owned);
                 
                 return (
-                  <div key={matId} className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-black/30 border border-white/5 relative group/mat hover:border-amber-500/30 transition-colors">
+                  <div key={matId} className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-black/30 border border-white/5 relative group/mat hover:border-primary/30 transition-colors">
                     <img 
                       src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[matId])}/${getSafeImgId(getItemName(matId))}.png`} 
                       alt={formatItemName(matId)} 

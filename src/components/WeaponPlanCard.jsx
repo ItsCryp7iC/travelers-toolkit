@@ -123,7 +123,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
   };
 
   return (
-    <div className={`bg-gradient-to-br ${getRarityGradient(getSafeRarity(weapon))} to-[#1a1c23] border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10`}>
+    <div className={`bg-gradient-to-br ${getRarityGradient(getSafeRarity(weapon))} to-bg-base border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10`}>
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--gold)] bg-[var(--surface)] flex-shrink-0 relative">
@@ -189,7 +189,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
                 if (sanitizedKey === 'mysticore') actualId = 'mystic_enhancement_ore';
 
                 return (
-                  <div key={index} className="flex flex-col items-center p-2 bg-[#1f222b] rounded-lg border border-white/5">
+                  <div key={index} className="flex flex-col items-center p-2 bg-bg-surface rounded-lg border border-white/5">
                     <img 
                       src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[actualId])}/${getSafeImgId(getItemName(actualId) || actualId)}.png`} 
                       alt={actualId} 

@@ -1086,7 +1086,7 @@ export default function Planner() {
                 placeholder="Search characters..." 
                 value={charSearchQuery}
                 onChange={(e) => setCharSearchQuery(e.target.value)}
-                className="w-full md:w-1/3 bg-[#1a1c23] border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
+                className="w-full md:w-1/3 bg-bg-base border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-primary"
               />
             </div>
             
@@ -1111,7 +1111,7 @@ export default function Planner() {
                 placeholder="Search weapons..." 
                 value={weaponSearchQuery}
                 onChange={(e) => setWeaponSearchQuery(e.target.value)}
-                className="w-full md:w-1/3 bg-[#1a1c23] border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
+                className="w-full md:w-1/3 bg-bg-base border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-primary"
               />
             </div>
             

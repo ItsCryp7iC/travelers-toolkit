@@ -68,7 +68,7 @@ export default function AppLayout() {
               <h1 className="font-cinzel font-bold text-sm leading-tight text-[var(--text)]">
                 Traveler's
               </h1>
-              <p className="font-cinzel font-bold text-sm leading-tight text-[var(--gold)]">
+              <p className="font-cinzel font-bold text-sm leading-tight text-primary">
                 Toolkit
               </p>
             </div>
@@ -106,7 +106,7 @@ export default function AppLayout() {
                             key={tab.id}
                             to={`/planner?tab=${tab.id}`}
                             className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
-                              isTabActive ? 'text-amber-500 font-medium' : 'text-[var(--muted)] hover:text-gray-200'
+                              isTabActive ? 'text-primary font-medium' : 'text-[var(--muted)] hover:text-gray-200'
                             }`}
                             onClick={() => setSidebarOpen(false)}
                           >
@@ -143,7 +143,7 @@ export default function AppLayout() {
                             key={tab.id}
                             to={`/inventory?tab=${tab.id}`}
                             className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
-                              isTabActive ? 'text-amber-500 font-medium' : 'text-[var(--muted)] hover:text-gray-200'
+                              isTabActive ? 'text-primary font-medium' : 'text-[var(--muted)] hover:text-gray-200'
                             }`}
                             onClick={() => setSidebarOpen(false)}
                           >
@@ -178,7 +178,7 @@ export default function AppLayout() {
 
         {/* Dev Tools */}
         <nav className="pb-2 border-b border-[var(--border)]" aria-label="Dev navigation">
-          <p className="px-5 mb-2 text-[10px] font-semibold text-amber-500/60 tracking-widest uppercase">
+          <p className="px-5 mb-2 text-[10px] font-semibold text-primary/60 tracking-widest uppercase">
             Dev Tools
           </p>
           {devItems.map((item) => (
@@ -204,7 +204,7 @@ export default function AppLayout() {
               My Roster
             </p>
             <div className="flex items-end gap-2">
-              <span className="font-cinzel text-2xl font-bold text-[var(--gold)]">
+              <span className="font-cinzel text-2xl font-bold text-primary">
                 {rosterCount}
               </span>
               <span className="text-[var(--muted)] text-xs mb-0.5">
@@ -250,7 +250,7 @@ export default function AppLayout() {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)]">
               <span className="text-xs">⚔️</span>
               <span className="text-xs text-[var(--muted)]">Roster:</span>
-              <span className="text-xs font-semibold text-[var(--gold)] font-cinzel">{rosterCount}</span>
+              <span className="text-xs font-semibold text-primary font-cinzel">{rosterCount}</span>
             </div>
           </div>
 

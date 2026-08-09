@@ -163,7 +163,7 @@ export default function Dashboard() {
         {activeTab === 'characters' ? (
           <button
             onClick={handleAddAllCharacters}
-            className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
           >
             <span className="text-lg">✦</span>
             Add All Available Characters
@@ -171,7 +171,7 @@ export default function Dashboard() {
         ) : (
           <button
             onClick={() => setShowBatchWeaponModal(true)}
-            className="flex items-center gap-2 px-4 py-2 border border-[#C8A96E]/50 text-[#C8A96E] hover:bg-[#C8A96E]/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
           >
             <span className="text-lg">✦</span>
             Batch Add Weapons
@@ -190,7 +190,7 @@ export default function Dashboard() {
           <button
             onClick={() => setActiveTab('characters')}
             className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === 'characters'
-              ? 'bg-[var(--gold)] text-gray-900 shadow-md'
+              ? 'bg-primary text-gray-900 shadow-md'
               : 'text-[var(--muted)] hover:text-white'
               }`}
           >
@@ -199,7 +199,7 @@ export default function Dashboard() {
           <button
             onClick={() => setActiveTab('weapons')}
             className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === 'weapons'
-              ? 'bg-[var(--gold)] text-gray-900 shadow-md'
+              ? 'bg-primary text-gray-900 shadow-md'
               : 'text-[var(--muted)] hover:text-white'
               }`}
           >
