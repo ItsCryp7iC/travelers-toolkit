@@ -6,24 +6,24 @@
    CSS Custom Properties — Genshin Dark Theme
 ─────────────────────────────────────────────── */
 :root {
-  /* Midnight Blue Theme */
-  --color-primary: #3b82f6;
-  /* Richer, deeper royal/hydro blue */
-  --color-primary-hover: #60a5fa;
-  /* Softer light blue for hover states */
-  --color-bg-base: #050b14;
-  /* Very dark inky abyss blue, almost black */
-  --color-bg-surface: #0b1426;
-  /* Deep navy for cards and panels */
-  --color-text-main: #f8fafc;
-  --color-text-muted: #64748b;
-  /* Slightly darker muted text to blend better */
+  /* Deep Space Theme */
+  --color-primary: #38bdf8;
+  /* Keeping the vibrant cyan */
+  --color-primary-hover: #7dd3fc;
+  --color-bg-base: #030712;
+  /* Pitch dark, deep space background */
 
-  /* Map the legacy variables to the dynamic ones */
+  /* Update these to translucent rgba values */
+  --color-bg-surface: rgba(15, 23, 42, 0.75);
+  --elevated: rgba(30, 41, 59, 0.85);
+
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+
+  /* Legacy mappings */
   --bg: var(--color-bg-base);
   --surface: var(--color-bg-surface);
-  --elevated: #111d36;
-  /* Slightly lighter navy for modals and dropdowns */
+  /* Slightly lighter for modals/dropdowns */
   --border: rgba(255, 255, 255, 0.08);
   --border-light: rgba(255, 255, 255, 0.14);
   --gold: var(--color-primary);
@@ -109,6 +109,8 @@ body {
 ─────────────────────────────────────────────── */
 .genshin-card {
   background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: 12px;
   transition: all 0.25s ease;
@@ -169,6 +171,8 @@ body {
   width: var(--sidebar-w);
   height: 100vh;
   background: linear-gradient(180deg, #00041e 0%, #000000 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -443,6 +447,8 @@ body {
 ─────────────────────────────────────────────── */
 .stat-card {
   background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 18px 22px;
@@ -530,10 +536,7 @@ body {
    Page Background Texture
 ─────────────────────────────────────────────── */
 .page-bg {
-  background:
-    radial-gradient(ellipse at 20% 0%, rgba(200, 169, 110, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(78, 201, 176, 0.03) 0%, transparent 50%),
-    var(--bg);
+  background: transparent;
 }
 
 /* ──────────────────────────────────────────────
@@ -715,6 +718,8 @@ body {
 .material-card {
   position: relative;
   background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;

@@ -52,7 +52,7 @@ export default function AppLayout() {
   const inventoryTab = location.pathname === '/inventory' ? currentTab || 'currency_exp' : null;
 
   return (
-    <div className="page-bg min-h-screen">
+    <div className="bg-[url('/bg.png')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full">
       {/* ── Sidebar ────────────────────────────────── */}
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`} id="app-sidebar">
         {/* Brand */}
