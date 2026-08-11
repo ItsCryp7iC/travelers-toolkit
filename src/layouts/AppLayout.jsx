@@ -58,24 +58,16 @@ export default function AppLayout() {
         {/* Brand */}
         <div className="px-5 py-6 border-b border-[var(--border)]">
           <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #C8A96E, #7A5C2E)' }}
-            >
-              🧭
-            </div>
+            <img src="/logo.svg" alt="Site Logo" className="w-12 h-12 object-contain drop-shadow-md" />
             <div>
-              <h1 className="font-cinzel font-bold text-sm leading-tight text-[var(--text)]">
+              <h1 className="font-cinzel font-bold text-xl leading-tight text-[var(--text)]">
                 Traveler's
               </h1>
-              <p className="font-cinzel font-bold text-sm leading-tight text-primary">
+              <p className="font-cinzel font-bold text-xl leading-tight text-primary">
                 Toolkit
               </p>
             </div>
           </div>
-          <p className="mt-3 text-[10px] text-[var(--muted)] font-medium tracking-widest uppercase">
-            Genshin Impact Planner
-          </p>
         </div>
 
         {/* Navigation */}
