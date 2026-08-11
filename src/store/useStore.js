@@ -18,6 +18,25 @@ const useStore = create(
   persist(
     (set, get) => ({
 
+      // ─── SETTINGS ──────────────────────────────────────────────────────
+      serverRegion: 'Asia',
+      setServerRegion: (region) => set({ serverRegion: region }),
+      showDbBuilder: false,
+      setShowDbBuilder: (show) => set({ showDbBuilder: show }),
+      importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [] }),
+      resetStore: () => {
+        set({
+          roster: {},
+          trackedWeapons: [],
+          inventory: {},
+          goals: [],
+          resinCount: 200,
+          resinTimestamp: Date.now(),
+          serverRegion: 'Asia',
+          showDbBuilder: false,
+        })
+      },
+
       // ─── RESIN ─────────────────────────────────────────────────────────
       resinCount: 200,
       resinTimestamp: Date.now(),
@@ -365,6 +384,8 @@ const useStore = create(
         goals: state.goals,
         resinCount: state.resinCount,
         resinTimestamp: state.resinTimestamp,
+        serverRegion: state.serverRegion,
+        showDbBuilder: state.showDbBuilder,
       }),
     }
   )

@@ -123,8 +123,8 @@ body {
 }
 
 .genshin-btn {
-  background: linear-gradient(135deg, var(--gold), #A07840);
-  color: #0D0F1A;
+  background: linear-gradient(135deg, var(--color-primary), #0284c7);
+  color: #0f172a; /* Dark navy text for sharp contrast against the bright blue */
   font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 12px;
@@ -137,9 +137,9 @@ body {
 }
 
 .genshin-btn:hover {
-  background: linear-gradient(135deg, var(--gold-light), #C8A86E);
+  background: linear-gradient(135deg, var(--color-primary-hover), #0ea5e9);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(200, 169, 110, 0.4);
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.4);
 }
 
 .genshin-btn-ghost {

@@ -7,9 +7,12 @@ import Inventory from './pages/Inventory'
 import Characters from './pages/Characters'
 import Weapons from './pages/Weapons'
 import PlaceholderPage from './pages/PlaceholderPage'
+import Settings from './pages/Settings'
 import DevBuilder from './pages/DevBuilder'
+import useStore from './store/useStore'
 
 export default function App() {
+  const showDbBuilder = useStore((s) => s.showDbBuilder)
   return (
     <BrowserRouter>
       <Routes>
@@ -25,15 +28,8 @@ export default function App() {
           />
           <Route path="planner"   element={<Planner />} />
           <Route path="inventory" element={<Inventory />} />
-          <Route path="settings" element={
-              <PlaceholderPage
-                title="Settings"
-                icon="⚙️"
-                description="Customize your planner preferences, export/import your roster data, and more."
-              />
-            }
-          />
-          <Route path="builder" element={<DevBuilder />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="builder" element={showDbBuilder ? <DevBuilder /> : <Navigate to="/" replace />} />
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

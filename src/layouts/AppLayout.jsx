@@ -46,6 +46,7 @@ export default function AppLayout() {
   const [isPlannerOpen, setIsPlannerOpen] = useState(location.pathname === '/planner')
   const [isInventoryOpen, setIsInventoryOpen] = useState(location.pathname === '/inventory')
   const rosterCount = useStore((s) => Object.keys(s.roster).length)
+  const showDbBuilder = useStore((s) => s.showDbBuilder)
   
   const currentTab = new URLSearchParams(location.search).get('tab');
   const plannerTab = location.pathname === '/planner' ? currentTab || 'daily_action' : null;
@@ -169,25 +170,27 @@ export default function AppLayout() {
         </nav>
 
         {/* Dev Tools */}
-        <nav className="pb-2 border-b border-[var(--border)]" aria-label="Dev navigation">
-          <p className="px-5 mb-2 text-[10px] font-semibold text-primary/60 tracking-widest uppercase">
-            Dev Tools
-          </p>
-          {devItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              id={item.id}
-              className={({ isActive }) =>
-                `sidebar-nav-link ${isActive ? 'active' : ''}`
-              }
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+        {showDbBuilder && (
+          <nav className="pb-2 border-b border-[var(--border)]" aria-label="Dev navigation">
+            <p className="px-5 mb-2 text-[10px] font-semibold text-primary/60 tracking-widest uppercase">
+              Dev Tools
+            </p>
+            {devItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                id={item.id}
+                className={({ isActive }) =>
+                  `sidebar-nav-link ${isActive ? 'active' : ''}`
+                }
+                onClick={() => setSidebarOpen(false)}
+              >
+                <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+        )}
 
         {/* Roster Summary */}
         <div className="px-5 py-4 border-t border-[var(--border)]">
