@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
 import useStore from '../store/useStore'
+import { uploadBackupToDrive } from '../utils/driveSync'
 
 const navItems = [
   { to: '/',           label: 'Dashboard',   icon: '🏠', id: 'nav-dashboard' },
@@ -47,6 +48,41 @@ export default function AppLayout() {
   const [isInventoryOpen, setIsInventoryOpen] = useState(location.pathname === '/inventory')
   const rosterCount = useStore((s) => Object.keys(s.roster).length)
   const showDbBuilder = useStore((s) => s.showDbBuilder)
+  
+  const autoBackupEnabled = useStore((s) => s.autoBackupEnabled)
+  const googleAccessToken = useStore((s) => s.googleAccessToken)
+  const tokenExpiry = useStore((s) => s.tokenExpiry)
+
+  useEffect(() => {
+    if (autoBackupEnabled) {
+      const currentState = useStore.getState();
+      
+      const dataToExport = {
+        roster: currentState.roster,
+        trackedWeapons: currentState.trackedWeapons,
+        inventory: currentState.inventory,
+        serverRegion: currentState.serverRegion,
+        showDbBuilder: currentState.showDbBuilder
+      };
+      
+      // Local snapshot
+      try {
+        localStorage.setItem('tt-local-backup', JSON.stringify(dataToExport));
+        console.log('Local snapshot saved.');
+      } catch (e) {
+        console.error('Failed to save local snapshot', e);
+      }
+
+      // Cloud silent backup
+      if (googleAccessToken && tokenExpiry && Date.now() < tokenExpiry) {
+        uploadBackupToDrive(googleAccessToken, dataToExport).then(() => {
+          console.log('Silent auto-backup to Google Drive succeeded.');
+        }).catch(err => {
+          console.error('Silent auto-backup to Google Drive failed:', err);
+        });
+      }
+    }
+  }, []);
   
   const currentTab = new URLSearchParams(location.search).get('tab');
   const plannerTab = location.pathname === '/planner' ? currentTab || 'daily_action' : null;

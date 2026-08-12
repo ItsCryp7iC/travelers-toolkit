@@ -1,5 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import useStore from '../store/useStore';
+import { useGoogleLogin } from '@react-oauth/google';
+import { uploadBackupToDrive, downloadBackupFromDrive, listBackupsFromDrive } from '../utils/driveSync';
 
 export default function Settings() {
   const {
@@ -10,11 +12,92 @@ export default function Settings() {
     setServerRegion,
     showDbBuilder,
     setShowDbBuilder,
+    autoBackupEnabled,
+    setAutoBackupEnabled,
+    setGoogleSession,
     importData,
     resetStore
   } = useStore();
 
   const fileInputRef = useRef(null);
+  
+  // Cloud Sync State
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [lastSyncedTime, setLastSyncedTime] = useState(null);
+  const [cloudBackups, setCloudBackups] = useState([]);
+
+  const loginForSync = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
+      await handleCloudBackup(tokenResponse.access_token);
+      await fetchBackups(tokenResponse.access_token);
+    },
+    scope: 'https://www.googleapis.com/auth/drive.appdata',
+  });
+
+  const loginForRestore = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
+      await fetchBackups(tokenResponse.access_token);
+    },
+    scope: 'https://www.googleapis.com/auth/drive.appdata',
+  });
+
+  const fetchBackups = async (token) => {
+    try {
+      const backups = await listBackupsFromDrive(token);
+      setCloudBackups(backups);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to fetch backups from Google Drive.');
+    }
+  };
+
+  const handleCloudBackup = async (token) => {
+    try {
+      setIsSyncing(true);
+      const dataToExport = {
+        roster,
+        trackedWeapons,
+        inventory,
+        serverRegion,
+        showDbBuilder
+      };
+      await uploadBackupToDrive(token, dataToExport);
+      setLastSyncedTime(new Date().toLocaleString());
+      alert('Cloud sync successful!');
+    } catch (error) {
+      console.error(error);
+      alert('Failed to sync to Google Drive.');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleCloudRestore = async (fileId) => {
+    const token = useStore.getState().googleAccessToken;
+    if (!token) {
+      alert('Please connect to Google Drive first.');
+      return;
+    }
+    
+    try {
+      setIsRestoring(true);
+      const data = await downloadBackupFromDrive(token, fileId);
+      if (data) {
+        importData(data);
+        alert('Cloud restore successful!');
+      } else {
+        alert('No backup found in Google Drive.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Failed to restore from Google Drive.');
+    } finally {
+      setIsRestoring(false);
+    }
+  };
 
   const handleExport = () => {
     const dataToExport = {
@@ -77,11 +160,92 @@ export default function Settings() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Cloud Backup Card */}
+        <div className="genshin-card p-6 flex flex-col gap-4">
+          <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
+            <span>Cloud Backup</span>
+            <span className="text-sm">☁️</span>
+          </h2>
+          <p className="text-sm text-[var(--color-text-muted)]">
+            Seamlessly sync your progression data to your Google Drive's hidden AppData folder. Maintain up to 5 rolling backups.
+          </p>
+          
+          <div className="flex items-center justify-between mt-2">
+            <div>
+              <p className="text-sm font-semibold text-[var(--color-text-main)]">Auto-Backup</p>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                Sync on app open (requires recent login).
+              </p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                className="sr-only peer" 
+                checked={autoBackupEnabled}
+                onChange={(e) => setAutoBackupEnabled(e.target.checked)}
+              />
+              <div className="w-11 h-6 bg-[var(--elevated)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary border border-[var(--border)]"></div>
+            </label>
+          </div>
+
+          {lastSyncedTime && (
+            <p className="text-xs text-[var(--color-text-muted)] italic">
+              Last manually synced: {lastSyncedTime}
+            </p>
+          )}
+          
+          <div className="flex flex-col gap-3 mt-2">
+            <button 
+              className="genshin-btn w-full flex justify-center items-center gap-2" 
+              onClick={() => loginForSync()}
+              disabled={isSyncing || isRestoring}
+            >
+              <span>{isSyncing ? '⏳' : '☁️'}</span> 
+              {isSyncing ? 'Syncing...' : 'Sync to Google Drive'}
+            </button>
+            <button 
+              className="genshin-btn-ghost w-full flex justify-center items-center gap-2" 
+              onClick={() => loginForRestore()}
+              disabled={isSyncing || isRestoring}
+            >
+              <span>{isRestoring ? '⏳' : '🌩️'}</span> 
+              {isRestoring ? 'Restoring...' : 'Connect to View Backups'}
+            </button>
+          </div>
+
+          {cloudBackups.length > 0 && (
+            <div className="mt-4 flex flex-col gap-2">
+              <h3 className="text-sm font-semibold text-[var(--color-text-main)] border-b border-[var(--border)] pb-1">
+                Available Backups
+              </h3>
+              {cloudBackups.map((backup) => (
+                <div key={backup.id} className="flex justify-between items-center bg-[var(--elevated)] p-2 rounded border border-[var(--border)]">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-[var(--color-text-main)]">
+                      {new Date(backup.createdTime).toLocaleString()}
+                    </span>
+                    <span className="text-[10px] text-[var(--color-text-muted)]">
+                      {backup.name}
+                    </span>
+                  </div>
+                  <button 
+                    className="text-xs bg-primary text-[#0d0f1a] px-3 py-1 rounded hover:opacity-90 font-bold transition-opacity"
+                    onClick={() => handleCloudRestore(backup.id)}
+                    disabled={isRestoring}
+                  >
+                    Restore
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         
-        {/* Data Management Card */}
+        {/* Local Data Management Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
           <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
-            Data Management
+            Local Data Management
           </h2>
           <p className="text-sm text-[var(--color-text-muted)]">
             Export your roster and inventory to a file, or import an existing backup.
@@ -160,3 +324,4 @@ export default function Settings() {
     </div>
   );
 }
+

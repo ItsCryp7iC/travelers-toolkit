@@ -23,6 +23,11 @@ const useStore = create(
       setServerRegion: (region) => set({ serverRegion: region }),
       showDbBuilder: false,
       setShowDbBuilder: (show) => set({ showDbBuilder: show }),
+      autoBackupEnabled: false,
+      setAutoBackupEnabled: (val) => set({ autoBackupEnabled: val }),
+      googleAccessToken: null,
+      tokenExpiry: null,
+      setGoogleSession: (token, expiresIn) => set({ googleAccessToken: token, tokenExpiry: Date.now() + expiresIn * 1000 }),
       importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [] }),
       resetStore: () => {
         set({
@@ -34,6 +39,9 @@ const useStore = create(
           resinTimestamp: Date.now(),
           serverRegion: 'Asia',
           showDbBuilder: false,
+          autoBackupEnabled: false,
+          googleAccessToken: null,
+          tokenExpiry: null,
         })
       },
 
@@ -386,6 +394,9 @@ const useStore = create(
         resinTimestamp: state.resinTimestamp,
         serverRegion: state.serverRegion,
         showDbBuilder: state.showDbBuilder,
+        autoBackupEnabled: state.autoBackupEnabled,
+        googleAccessToken: state.googleAccessToken,
+        tokenExpiry: state.tokenExpiry,
       }),
     }
   )
