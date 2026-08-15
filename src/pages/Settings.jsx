@@ -3,6 +3,7 @@ import useStore from '../store/useStore';
 import { useGoogleLogin } from '@react-oauth/google';
 import { uploadBackupToDrive, downloadBackupFromDrive, listBackupsFromDrive } from '../utils/driveSync';
 import { parseGoodData } from '../utils/goodParser';
+import GoodImportModal from '../components/GoodImportModal';
 
 export default function Settings() {
   const {
@@ -23,6 +24,8 @@ export default function Settings() {
 
   const fileInputRef = useRef(null);
   const goodFileInputRef = useRef(null);
+  
+  const [pendingImportData, setPendingImportData] = useState(null);
   
   // Cloud Sync State
   const [isSyncing, setIsSyncing] = useState(false);
@@ -160,13 +163,7 @@ export default function Settings() {
       try {
         const parsedData = JSON.parse(event.target.result);
         const goodData = parseGoodData(parsedData);
-        importGoodData(goodData);
-        
-        const matCount = Object.keys(goodData.materials || {}).length;
-        const charCount = (goodData.characters || []).length;
-        const weaponCount = (goodData.weapons || []).length;
-        
-        alert(`GOOD Data Synced!\nImported ${matCount} materials, ${charCount} characters, and ${weaponCount} weapons.`);
+        setPendingImportData(goodData);
       } catch (error) {
         alert('Failed to parse GOOD data. Please ensure it is a valid format.');
         console.error(error);
@@ -174,6 +171,15 @@ export default function Settings() {
     };
     reader.readAsText(file);
     e.target.value = ''; // Reset input
+  };
+
+  const handleGoodImportConfirm = (finalData) => {
+    importGoodData(finalData);
+    const matCount = Object.keys(finalData.materials || {}).length;
+    const charCount = (finalData.characters || []).length;
+    const weaponCount = (finalData.weapons || []).length;
+    alert(`GOOD Data Synced!\nImported ${matCount} materials, ${charCount} characters, and ${weaponCount} weapons.`);
+    setPendingImportData(null);
   };
 
   const handleReset = () => {
@@ -381,6 +387,14 @@ export default function Settings() {
         </div>
 
       </div>
+
+      {pendingImportData && (
+        <GoodImportModal 
+          parsedData={pendingImportData} 
+          onConfirm={handleGoodImportConfirm} 
+          onCancel={() => setPendingImportData(null)} 
+        />
+      )}
     </div>
   );
 }
