@@ -5,9 +5,9 @@
     "rarity": "★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 1.101
   },
@@ -17,9 +17,9 @@
     "rarity": "★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 1.201
   },
@@ -29,9 +29,9 @@
     "rarity": "★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 1.301
   },
@@ -41,9 +41,9 @@
     "rarity": "★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 1.401
   },
@@ -53,9 +53,9 @@
     "rarity": "★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 1.501
   },
@@ -65,9 +65,9 @@
     "rarity": "★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 2.101
   },
@@ -77,9 +77,9 @@
     "rarity": "★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 2.201
   },
@@ -89,9 +89,9 @@
     "rarity": "★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 2.301
   },
@@ -101,9 +101,9 @@
     "rarity": "★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 2.401
   },
@@ -113,9 +113,9 @@
     "rarity": "★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 2.501
   },
@@ -125,9 +125,9 @@
     "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 3.101
   },
@@ -137,9 +137,9 @@
     "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 3.102
   },
@@ -149,9 +149,9 @@
     "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 3.103
   },
@@ -161,9 +161,9 @@
     "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 3.104
   },
@@ -173,9 +173,9 @@
     "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 3.105
   },
@@ -185,9 +185,9 @@
     "rarity": "★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 3.106
   },
@@ -197,9 +197,9 @@
     "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 3.201
   },
@@ -209,9 +209,9 @@
     "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 3.202
   },
@@ -221,9 +221,9 @@
     "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 3.203
   },
@@ -233,9 +233,9 @@
     "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 3.204
   },
@@ -245,9 +245,9 @@
     "rarity": "★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 3.205
   },
@@ -257,9 +257,9 @@
     "rarity": "★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 3.301
   },
@@ -269,9 +269,9 @@
     "rarity": "★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 3.302
   },
@@ -281,9 +281,9 @@
     "rarity": "★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 3.303
   },
@@ -293,9 +293,9 @@
     "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 3.401
   },
@@ -305,9 +305,9 @@
     "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 3.402
   },
@@ -317,9 +317,9 @@
     "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 3.403
   },
@@ -329,9 +329,9 @@
     "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 3.404
   },
@@ -341,9 +341,9 @@
     "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 3.405
   },
@@ -353,9 +353,9 @@
     "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 3.501
   },
@@ -365,9 +365,9 @@
     "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 3.502
   },
@@ -377,9 +377,9 @@
     "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 3.503
   },
@@ -389,9 +389,9 @@
     "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 3.504
   },
@@ -401,9 +401,9 @@
     "rarity": "★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 3.505
   },
@@ -413,9 +413,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.101
   },
@@ -425,9 +425,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.102
   },
@@ -437,9 +437,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.103
   },
@@ -449,9 +449,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.104
   },
@@ -461,9 +461,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.105
   },
@@ -473,9 +473,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.106
   },
@@ -485,9 +485,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.107
   },
@@ -497,9 +497,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.108
   },
@@ -509,9 +509,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.109
   },
@@ -521,9 +521,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.11
   },
@@ -533,9 +533,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.111
   },
@@ -545,9 +545,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.112
   },
@@ -557,9 +557,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "branchesofadistantsea",
-      "enhancement_material_family_id": "ruinsentinel",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "BranchesOfADistantSea",
+      "enhancement_material_family_id": "RuinSentinel",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 4.113
   },
@@ -569,9 +569,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.114
   },
@@ -581,9 +581,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "theblackserpents",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "TheBlackSerpents",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 4.115
   },
@@ -593,9 +593,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "talismanoftheforestdew",
-      "enhancement_material_family_id": "ruindrake",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "RuinDrake",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 4.116
   },
@@ -605,9 +605,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "talismanoftheforestdew",
-      "enhancement_material_family_id": "primalconstruct",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "PrimalConstruct",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 4.117
   },
@@ -617,9 +617,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "primalconstruct",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "PrimalConstruct",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 4.118
   },
@@ -629,9 +629,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.119
   },
@@ -641,9 +641,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "sacreddewdrops",
-      "enhancement_material_family_id": "taintedhydrophantasm",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "TaintedHydroPhantasm",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 4.12
   },
@@ -653,9 +653,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "taintedhydrophantasm",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "TaintedHydroPhantasm",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 4.121
   },
@@ -665,9 +665,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "sacreddewdrops",
-      "enhancement_material_family_id": "fatuioperative",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "FatuiOperative",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 4.122
   },
@@ -677,9 +677,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "fatuioperative",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "FatuiOperative",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 4.123
   },
@@ -689,9 +689,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "praetoriangolem",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "PraetorianGolem",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 4.124
   },
@@ -701,9 +701,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "wayobmanifestation",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "WayobManifestation",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 4.125
   },
@@ -713,9 +713,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "thefarnorthscions",
-      "enhancement_material_family_id": "radiantbeast",
-      "enemy_material_family_id": "landcruisers"
+      "ascension_material_family_id": "TheFarnorthScions",
+      "enhancement_material_family_id": "RadiantBeast",
+      "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 4.126
   },
@@ -725,9 +725,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "tenebrousmimesis",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "TenebrousMimesis",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 4.126
   },
@@ -737,9 +737,9 @@
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "artfuldevices",
-      "enhancement_material_family_id": "frostnightscion",
-      "enemy_material_family_id": "fatuioprichniki"
+      "ascension_material_family_id": "ArtfulDevices",
+      "enhancement_material_family_id": "FrostnightScion",
+      "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 4.127
   },
@@ -749,9 +749,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.201
   },
@@ -761,9 +761,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.202
   },
@@ -773,9 +773,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.203
   },
@@ -785,9 +785,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.204
   },
@@ -797,9 +797,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.205
   },
@@ -809,9 +809,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.206
   },
@@ -821,9 +821,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.207
   },
@@ -833,9 +833,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.208
   },
@@ -845,9 +845,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.209
   },
@@ -857,9 +857,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.21
   },
@@ -869,9 +869,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.211
   },
@@ -881,9 +881,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "ruinsentinel",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "RuinSentinel",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 4.212
   },
@@ -893,9 +893,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.213
   },
@@ -905,9 +905,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "branchesofadistantsea",
-      "enhancement_material_family_id": "riftwolf",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "BranchesOfADistantSea",
+      "enhancement_material_family_id": "Riftwolf",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 4.214
   },
@@ -917,9 +917,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "talismanoftheforestdew",
-      "enhancement_material_family_id": "ruindrake",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "RuinDrake",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 4.215
   },
@@ -929,9 +929,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "scorchingmights",
-      "enhancement_material_family_id": "ruindrake",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "ScorchingMights",
+      "enhancement_material_family_id": "RuinDrake",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.216
   },
@@ -941,9 +941,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "consecratedbeast",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "ConsecratedBeast",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 4.217
   },
@@ -953,9 +953,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "oasisgarden",
-      "enhancement_material_family_id": "consecratedbeast",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "OasisGarden",
+      "enhancement_material_family_id": "ConsecratedBeast",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.218
   },
@@ -965,9 +965,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "breacherprimus",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "BreacherPrimus",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 4.219
   },
@@ -977,9 +977,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "breacherprimus",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "BreacherPrimus",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 4.22
   },
@@ -989,9 +989,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "fatuioperative",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "FatuiOperative",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 4.221
   },
@@ -1001,9 +1001,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "avataroflava",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "AvatarOfLava",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 4.222
   },
@@ -1013,9 +1013,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "SecretSourceAutomatonHunterseeker",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 4.223
   },
@@ -1025,9 +1025,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "furnaceshellmountainweasel",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 4.224
   },
@@ -1037,9 +1037,9 @@
     "rarity": "★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "thefarnorthscions",
-      "enhancement_material_family_id": "radiantbeast",
-      "enemy_material_family_id": "landcruisers"
+      "ascension_material_family_id": "TheFarnorthScions",
+      "enhancement_material_family_id": "RadiantBeast",
+      "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 4.225
   },
@@ -1049,9 +1049,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.301
   },
@@ -1061,9 +1061,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.302
   },
@@ -1073,9 +1073,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.303
   },
@@ -1085,9 +1085,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.304
   },
@@ -1097,9 +1097,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.305
   },
@@ -1109,9 +1109,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.306
   },
@@ -1121,9 +1121,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.307
   },
@@ -1133,9 +1133,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.308
   },
@@ -1145,9 +1145,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.309
   },
@@ -1157,9 +1157,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "ruinsentinel",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "RuinSentinel",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.31
   },
@@ -1169,9 +1169,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "ruinsentinel",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "RuinSentinel",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 4.311
   },
@@ -1181,9 +1181,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "riftwolf",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "Riftwolf",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 4.312
   },
@@ -1193,9 +1193,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "oasisgarden",
-      "enhancement_material_family_id": "ruindrake",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "OasisGarden",
+      "enhancement_material_family_id": "RuinDrake",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.313
   },
@@ -1205,9 +1205,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "theblackserpents",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "TheBlackSerpents",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.314
   },
@@ -1217,9 +1217,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "breacherprimus",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "BreacherPrimus",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 4.315
   },
@@ -1229,9 +1229,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "hilichurlrogue",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "HilichurlRogue",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.316
   },
@@ -1241,9 +1241,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "fatuioperative",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "FatuiOperative",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 4.317
   },
@@ -1253,9 +1253,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "talismanoftheforestdew",
-      "enhancement_material_family_id": "xuanwenbeast",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "XuanwenBeast",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 4.318
   },
@@ -1265,9 +1265,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "SecretSourceAutomatonHunterseeker",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 4.319
   },
@@ -1277,9 +1277,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "avataroflava",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "AvatarOfLava",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.32
   },
@@ -1289,9 +1289,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "tenebrousmimesis",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "TenebrousMimesis",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 4.321
   },
@@ -1301,9 +1301,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "longnightflints",
-      "enhancement_material_family_id": "wastelandwildhunt",
-      "enemy_material_family_id": "landcruisers"
+      "ascension_material_family_id": "LongNightFlints",
+      "enhancement_material_family_id": "WastelandWildHunt",
+      "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 4.322
   },
@@ -1313,9 +1313,9 @@
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "longnightflints",
-      "enhancement_material_family_id": "wastelandwildhunt",
-      "enemy_material_family_id": "landcruisers"
+      "ascension_material_family_id": "LongNightFlints",
+      "enhancement_material_family_id": "WastelandWildHunt",
+      "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 4.323
   },
@@ -1325,9 +1325,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.401
   },
@@ -1337,9 +1337,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.402
   },
@@ -1349,9 +1349,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.403
   },
@@ -1361,9 +1361,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.404
   },
@@ -1373,9 +1373,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.405
   },
@@ -1385,9 +1385,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.406
   },
@@ -1397,9 +1397,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.407
   },
@@ -1409,9 +1409,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.408
   },
@@ -1421,9 +1421,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.409
   },
@@ -1433,9 +1433,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.41
   },
@@ -1445,9 +1445,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.411
   },
@@ -1457,9 +1457,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.412
   },
@@ -1469,9 +1469,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "branchesofadistantsea",
-      "enhancement_material_family_id": "mirrormaiden",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "BranchesOfADistantSea",
+      "enhancement_material_family_id": "MirrorMaiden",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.413
   },
@@ -1481,9 +1481,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "branchesofadistantsea",
-      "enhancement_material_family_id": "riftwolf",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "BranchesOfADistantSea",
+      "enhancement_material_family_id": "Riftwolf",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 4.414
   },
@@ -1493,9 +1493,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "oasisgarden",
-      "enhancement_material_family_id": "theblackserpents",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "OasisGarden",
+      "enhancement_material_family_id": "TheBlackSerpents",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 4.415
   },
@@ -1505,9 +1505,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "oasisgarden",
-      "enhancement_material_family_id": "stateshiftedfungus",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "OasisGarden",
+      "enhancement_material_family_id": "StateShiftedFungus",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 4.416
   },
@@ -1517,9 +1517,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.417
   },
@@ -1529,9 +1529,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "sacreddewdrops",
-      "enhancement_material_family_id": "breacherprimus",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "BreacherPrimus",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 4.418
   },
@@ -1541,9 +1541,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.419
   },
@@ -1553,9 +1553,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "SecretSourceAutomatonHunterseeker",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 4.42
   },
@@ -1565,9 +1565,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "wayobmanifestation",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "WayobManifestation",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.421
   },
@@ -1577,9 +1577,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "wayobmanifestation",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "WayobManifestation",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 4.422
   },
@@ -1589,9 +1589,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "thefarnorthscions",
-      "enhancement_material_family_id": "radiantbeast",
-      "enemy_material_family_id": "fatuioprichniki"
+      "ascension_material_family_id": "TheFarnorthScions",
+      "enhancement_material_family_id": "RadiantBeast",
+      "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 4.423
   },
@@ -1601,9 +1601,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "artfuldevices",
-      "enhancement_material_family_id": "frostnightscion",
-      "enemy_material_family_id": "fatuioprichniki"
+      "ascension_material_family_id": "ArtfulDevices",
+      "enhancement_material_family_id": "FrostnightScion",
+      "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 4.424
   },
@@ -1613,9 +1613,9 @@
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "artfuldevices",
-      "enhancement_material_family_id": "frostnightscion",
-      "enemy_material_family_id": "fatuioprichniki"
+      "ascension_material_family_id": "ArtfulDevices",
+      "enhancement_material_family_id": "FrostnightScion",
+      "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 4.425
   },
@@ -1625,9 +1625,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.501
   },
@@ -1637,9 +1637,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.502
   },
@@ -1649,9 +1649,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.503
   },
@@ -1661,9 +1661,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.504
   },
@@ -1673,9 +1673,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 4.505
   },
@@ -1685,9 +1685,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.506
   },
@@ -1697,9 +1697,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.507
   },
@@ -1709,9 +1709,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.508
   },
@@ -1721,9 +1721,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.509
   },
@@ -1733,9 +1733,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 4.51
   },
@@ -1745,9 +1745,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 4.511
   },
@@ -1757,9 +1757,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 4.512
   },
@@ -1769,9 +1769,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "mirrormaiden",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "MirrorMaiden",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.513
   },
@@ -1781,9 +1781,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "mirrormaiden",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "MirrorMaiden",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.514
   },
@@ -1793,9 +1793,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "mirrormaiden",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "MirrorMaiden",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 4.515
   },
@@ -1805,9 +1805,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 4.516
   },
@@ -1817,9 +1817,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "scorchingmights",
-      "enhancement_material_family_id": "stateshiftedfungus",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "ScorchingMights",
+      "enhancement_material_family_id": "StateShiftedFungus",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.517
   },
@@ -1829,9 +1829,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "scorchingmights",
-      "enhancement_material_family_id": "stateshiftedfungus",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "ScorchingMights",
+      "enhancement_material_family_id": "StateShiftedFungus",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 4.518
   },
@@ -1841,9 +1841,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "talismanoftheforestdew",
-      "enhancement_material_family_id": "hilichurlrogue",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "HilichurlRogue",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 4.519
   },
@@ -1853,9 +1853,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "scorchingmights",
-      "enhancement_material_family_id": "hilichurlrogue",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "ScorchingMights",
+      "enhancement_material_family_id": "HilichurlRogue",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 4.52
   },
@@ -1865,9 +1865,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "taintedhydrophantasm",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "TaintedHydroPhantasm",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.521
   },
@@ -1877,9 +1877,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "taintedhydrophantasm",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "TaintedHydroPhantasm",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 4.522
   },
@@ -1889,9 +1889,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "praetoriangolem",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "PraetorianGolem",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 4.523
   },
@@ -1901,9 +1901,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "xuanwenbeast",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "XuanwenBeast",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 4.524
   },
@@ -1913,9 +1913,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "avataroflava",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "AvatarOfLava",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 4.525
   },
@@ -1925,9 +1925,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "furnaceshellmountainweasel",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 4.526
   },
@@ -1937,9 +1937,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "longnightflints",
-      "enhancement_material_family_id": "wastelandwildhunt",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "LongNightFlints",
+      "enhancement_material_family_id": "WastelandWildHunt",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 4.527
   },
@@ -1949,9 +1949,9 @@
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "tenebrousmimesis",
-      "enemy_material_family_id": "fatuioprichniki"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "TenebrousMimesis",
+      "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 4.528
   },
@@ -1961,9 +1961,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 5.101
   },
@@ -1973,9 +1973,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 5.102
   },
@@ -1985,9 +1985,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 5.103
   },
@@ -1997,9 +1997,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 5.104
   },
@@ -2009,9 +2009,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 5.105
   },
@@ -2021,9 +2021,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "branchesofadistantsea",
-      "enhancement_material_family_id": "ruinsentinel",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "BranchesOfADistantSea",
+      "enhancement_material_family_id": "RuinSentinel",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 5.106
   },
@@ -2033,9 +2033,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "theblackserpents",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "TheBlackSerpents",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 5.107
   },
@@ -2045,9 +2045,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "talismanoftheforestdew",
-      "enhancement_material_family_id": "primalconstruct",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "PrimalConstruct",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 5.108
   },
@@ -2057,9 +2057,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "talismanoftheforestdew",
-      "enhancement_material_family_id": "consecratedbeast",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "ConsecratedBeast",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 5.109
   },
@@ -2069,9 +2069,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "sacreddewdrops",
-      "enhancement_material_family_id": "taintedhydrophantasm",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "TaintedHydroPhantasm",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 5.11
   },
@@ -2081,9 +2081,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "branchesofadistantsea",
-      "enhancement_material_family_id": "ruinsentinel",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "BranchesOfADistantSea",
+      "enhancement_material_family_id": "RuinSentinel",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 5.111
   },
@@ -2093,9 +2093,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "fatuioperative",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "FatuiOperative",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 5.112
   },
@@ -2105,9 +2105,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "SecretSourceAutomatonHunterseeker",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.113
   },
@@ -2117,9 +2117,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "tenebrousmimesis",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "TenebrousMimesis",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 5.114
   },
@@ -2129,9 +2129,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "frostnightscion",
-      "enemy_material_family_id": "landcruisers"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "FrostnightScion",
+      "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 5.115
   },
@@ -2141,9 +2141,9 @@
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "wastelandwildhunt",
-      "enemy_material_family_id": "landcruisers"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "WastelandWildHunt",
+      "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 5.116
   },
@@ -2153,9 +2153,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 5.201
   },
@@ -2165,9 +2165,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 5.202
   },
@@ -2177,9 +2177,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 5.203
   },
@@ -2189,9 +2189,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "decarabiantiles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 5.204
   },
@@ -2201,9 +2201,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "riftwolf",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "Riftwolf",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 5.205
   },
@@ -2213,9 +2213,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "scorchingmights",
-      "enhancement_material_family_id": "consecratedbeast",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "ScorchingMights",
+      "enhancement_material_family_id": "ConsecratedBeast",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 5.206
   },
@@ -2225,9 +2225,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "breacherprimus",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "BreacherPrimus",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 5.207
   },
@@ -2237,9 +2237,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "avataroflava",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "AvatarOfLava",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 5.208
   },
@@ -2249,9 +2249,9 @@
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "secretsourceautomatonhunterseeker",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "SecretSourceAutomatonHunterseeker",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.209
   },
@@ -2261,9 +2261,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "fatuipyroagent",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "FatuiPyroAgent",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 5.301
   },
@@ -2273,9 +2273,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 5.302
   },
@@ -2285,9 +2285,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 5.303
   },
@@ -2297,9 +2297,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 5.304
   },
@@ -2309,9 +2309,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "ruinsentinel",
-      "enemy_material_family_id": "nobushi"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "RuinSentinel",
+      "enemy_material_family_id": "Nobushi"
     },
     "release_order": 5.305
   },
@@ -2321,9 +2321,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "fatuicicinmage",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "FatuiCicinMage",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 5.306
   },
@@ -2333,9 +2333,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "oasisgarden",
-      "enhancement_material_family_id": "ruindrake",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "OasisGarden",
+      "enhancement_material_family_id": "RuinDrake",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 5.307
   },
@@ -2345,9 +2345,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "praetoriangolem",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "PraetorianGolem",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 5.308
   },
@@ -2357,9 +2357,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "praetoriangolem",
-      "enemy_material_family_id": "whopperflower"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "PraetorianGolem",
+      "enemy_material_family_id": "Whopperflower"
     },
     "release_order": 5.309
   },
@@ -2369,9 +2369,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "sacreddewdrops",
-      "enhancement_material_family_id": "taintedhydrophantasm",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "TaintedHydroPhantasm",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 5.31
   },
@@ -2381,9 +2381,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "furnaceshellmountainweasel",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.311
   },
@@ -2393,9 +2393,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "furnaceshellmountainweasel",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.312
   },
@@ -2405,9 +2405,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 5.401
   },
@@ -2417,9 +2417,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 5.402
   },
@@ -2429,9 +2429,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "aerosiderite",
-      "enhancement_material_family_id": "vishap",
-      "enemy_material_family_id": "hilichurl"
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "Hilichurl"
     },
     "release_order": 5.403
   },
@@ -2441,9 +2441,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "branchesofadistantsea",
-      "enhancement_material_family_id": "mirrormaiden",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "BranchesOfADistantSea",
+      "enhancement_material_family_id": "MirrorMaiden",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 5.404
   },
@@ -2453,9 +2453,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "riftwolf",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "Riftwolf",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 5.405
   },
@@ -2465,9 +2465,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "oasisgarden",
-      "enhancement_material_family_id": "primalconstruct",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "OasisGarden",
+      "enhancement_material_family_id": "PrimalConstruct",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 5.406
   },
@@ -2477,9 +2477,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "scorchingmights",
-      "enhancement_material_family_id": "stateshiftedfungus",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "ScorchingMights",
+      "enhancement_material_family_id": "StateShiftedFungus",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 5.407
   },
@@ -2489,9 +2489,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "hilichurlrogue",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "HilichurlRogue",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 5.408
   },
@@ -2501,9 +2501,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "gobletofthepristinesea",
-      "enhancement_material_family_id": "fatuioperative",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "GobletOfThePristineSea",
+      "enhancement_material_family_id": "FatuiOperative",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 5.409
   },
@@ -2513,9 +2513,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "sacreddewdrops",
-      "enhancement_material_family_id": "breacherprimus",
-      "enemy_material_family_id": "clockworkmeka"
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "BreacherPrimus",
+      "enemy_material_family_id": "ClockworkMeka"
     },
     "release_order": 5.41
   },
@@ -2525,9 +2525,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "elixir",
-      "enhancement_material_family_id": "xuanwenbeast",
-      "enemy_material_family_id": "samachurl"
+      "ascension_material_family_id": "Elixir",
+      "enhancement_material_family_id": "XuanwenBeast",
+      "enemy_material_family_id": "Samachurl"
     },
     "release_order": 5.411
   },
@@ -2537,9 +2537,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "blazingsacrificialhearts",
-      "enhancement_material_family_id": "wayobmanifestation",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "WayobManifestation",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.412
   },
@@ -2549,9 +2549,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "wayobmanifestation",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "WayobManifestation",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 5.413
   },
@@ -2561,9 +2561,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "avataroflava",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "AvatarOfLava",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 5.414
   },
@@ -2573,9 +2573,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "furnaceshellmountainweasel",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.415
   },
@@ -2585,9 +2585,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "deliriousmasksofthesacredlord",
-      "enhancement_material_family_id": "furnaceshellmountainweasel",
-      "enemy_material_family_id": "natlansaurian"
+      "ascension_material_family_id": "DeliriousMasksOfTheSacredLord",
+      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
+      "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.416
   },
@@ -2597,9 +2597,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "oasisgarden",
-      "enhancement_material_family_id": "radiantbeast",
-      "enemy_material_family_id": "fungus"
+      "ascension_material_family_id": "OasisGarden",
+      "enhancement_material_family_id": "RadiantBeast",
+      "enemy_material_family_id": "Fungus"
     },
     "release_order": 5.417
   },
@@ -2609,9 +2609,9 @@
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
-      "ascension_material_family_id": "thefarnorthscions",
-      "enhancement_material_family_id": "fisherofhiddendepths",
-      "enemy_material_family_id": "fatuioprichniki"
+      "ascension_material_family_id": "TheFarnorthScions",
+      "enhancement_material_family_id": "FisherOfHiddenDepths",
+      "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 5.418
   },
@@ -2621,9 +2621,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "abyssmage",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "AbyssMage",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 5.501
   },
@@ -2633,9 +2633,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "humanoidruinmachine",
-      "enemy_material_family_id": "slime"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "HumanoidRuinMachine",
+      "enemy_material_family_id": "Slime"
     },
     "release_order": 5.502
   },
@@ -2645,9 +2645,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "borealwolfteeth",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "fatuiskirmisher"
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "FatuiSkirmisher"
     },
     "release_order": 5.503
   },
@@ -2657,9 +2657,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "narukamismagatama",
-      "enhancement_material_family_id": "mirrormaiden",
-      "enemy_material_family_id": "hilichurlshooter"
+      "ascension_material_family_id": "NarukamisMagatama",
+      "enhancement_material_family_id": "MirrorMaiden",
+      "enemy_material_family_id": "HilichurlShooter"
     },
     "release_order": 5.504
   },
@@ -2669,9 +2669,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "onimask",
-      "enhancement_material_family_id": "riftwolf",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "OniMask",
+      "enhancement_material_family_id": "Riftwolf",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 5.505
   },
@@ -2681,9 +2681,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "guyunpillar",
-      "enhancement_material_family_id": "theblackserpents",
-      "enemy_material_family_id": "specters"
+      "ascension_material_family_id": "GuyunPillar",
+      "enhancement_material_family_id": "TheBlackSerpents",
+      "enemy_material_family_id": "Specters"
     },
     "release_order": 5.506
   },
@@ -2693,9 +2693,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "scorchingmights",
-      "enhancement_material_family_id": "stateshiftedfungus",
-      "enemy_material_family_id": "theeremites"
+      "ascension_material_family_id": "ScorchingMights",
+      "enhancement_material_family_id": "StateShiftedFungus",
+      "enemy_material_family_id": "TheEremites"
     },
     "release_order": 5.507
   },
@@ -2705,9 +2705,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "ancientchords",
-      "enhancement_material_family_id": "taintedhydrophantasm",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "AncientChords",
+      "enhancement_material_family_id": "TaintedHydroPhantasm",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 5.508
   },
@@ -2717,9 +2717,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "sacreddewdrops",
-      "enhancement_material_family_id": "xuanwenbeast",
-      "enemy_material_family_id": "fontemeraberrant"
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "XuanwenBeast",
+      "enemy_material_family_id": "FontemerAberrant"
     },
     "release_order": 5.509
   },
@@ -2729,9 +2729,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "nightwindsmystics",
-      "enhancement_material_family_id": "tenebrousmimesis",
-      "enemy_material_family_id": "sauroformtribalwarriors"
+      "ascension_material_family_id": "NightwindsMystics",
+      "enhancement_material_family_id": "TenebrousMimesis",
+      "enemy_material_family_id": "SauroformTribalWarriors"
     },
     "release_order": 5.51
   },
@@ -2741,9 +2741,9 @@
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
-      "ascension_material_family_id": "gladiatorshackles",
-      "enhancement_material_family_id": "mitachurl",
-      "enemy_material_family_id": "treasurehoarder"
+      "ascension_material_family_id": "GladiatorShackles",
+      "enhancement_material_family_id": "Mitachurl",
+      "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 5.511
   }
