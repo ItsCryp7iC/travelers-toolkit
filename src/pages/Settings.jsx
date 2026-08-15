@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import useStore from '../store/useStore';
 import { useGoogleLogin } from '@react-oauth/google';
 import { uploadBackupToDrive, downloadBackupFromDrive, listBackupsFromDrive } from '../utils/driveSync';
+import { parseGoodData } from '../utils/goodParser';
 
 export default function Settings() {
   const {
@@ -16,10 +17,12 @@ export default function Settings() {
     setAutoBackupEnabled,
     setGoogleSession,
     importData,
+    importGoodData,
     resetStore
   } = useStore();
 
   const fileInputRef = useRef(null);
+  const goodFileInputRef = useRef(null);
   
   // Cloud Sync State
   const [isSyncing, setIsSyncing] = useState(false);
@@ -136,6 +139,37 @@ export default function Settings() {
         }
       } catch (error) {
         alert('Failed to import data. Invalid JSON file.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; // Reset input
+  };
+
+  const handleGoodImportClick = () => {
+    if (goodFileInputRef.current) {
+      goodFileInputRef.current.click();
+    }
+  };
+
+  const handleGoodFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsedData = JSON.parse(event.target.result);
+        const goodData = parseGoodData(parsedData);
+        importGoodData(goodData);
+        
+        const matCount = Object.keys(goodData.materials || {}).length;
+        const charCount = (goodData.characters || []).length;
+        const weaponCount = (goodData.weapons || []).length;
+        
+        alert(`GOOD Data Synced!\nImported ${matCount} materials, ${charCount} characters, and ${weaponCount} weapons.`);
+      } catch (error) {
+        alert('Failed to parse GOOD data. Please ensure it is a valid format.');
+        console.error(error);
       }
     };
     reader.readAsText(file);
@@ -269,6 +303,32 @@ export default function Settings() {
                 <span>⚠️</span> Factory Reset
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Inventory Kamera Sync Card */}
+        <div className="genshin-card p-6 flex flex-col gap-4">
+          <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
+            <span>Inventory Kamera Sync</span>
+            <span className="text-sm">📷</span>
+          </h2>
+          <p className="text-sm text-[var(--color-text-muted)]">
+            Sync your characters, weapons, and materials using a GOOD format JSON file exported from Inventory Kamera.
+          </p>
+          <div className="flex flex-col gap-3 mt-2">
+            <input 
+              type="file" 
+              accept=".json" 
+              ref={goodFileInputRef} 
+              onChange={handleGoodFileChange} 
+              style={{ display: 'none' }} 
+            />
+            <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={handleGoodImportClick}>
+              <span>🔄</span> Import GOOD Format JSON
+            </button>
+            <p className="text-xs text-[var(--color-text-muted)] italic">
+              Note: This preserves your existing target levels and talents.
+            </p>
           </div>
         </div>
 

@@ -29,6 +29,93 @@ const useStore = create(
       tokenExpiry: null,
       setGoogleSession: (token, expiresIn) => set({ googleAccessToken: token, tokenExpiry: Date.now() + expiresIn * 1000 }),
       importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [] }),
+      importGoodData: (goodPayload) => set((state) => {
+        // 1. Materials
+        const newInventory = { ...state.inventory };
+        Object.entries(goodPayload.materials || {}).forEach(([matKey, qty]) => {
+          newInventory[matKey] = qty; 
+        });
+
+        // 2. Roster
+        const newRoster = { ...state.roster };
+        (goodPayload.characters || []).forEach(char => {
+          const existing = newRoster[char.name] || {
+            targetLevel: 90,
+            targetAscension: 6,
+            targetTalents: { normal: 10, skill: 10, burst: 10 },
+            equippedWeaponId: null,
+            tracked: true,
+            calculatedCosts: null
+          };
+          
+          newRoster[char.name] = {
+            ...existing,
+            level: char.level,
+            ascension: char.ascension,
+            talents: char.talents,
+            // STRICT RULE: preserve existing target properties
+            targetLevel: existing.targetLevel,
+            targetAscension: existing.targetAscension,
+            targetTalents: existing.targetTalents,
+          };
+          
+          const charData = charactersData.find(c => c.name === char.name);
+          if (charData) {
+             const ascCosts = calculateProgressionCost(charData, newRoster[char.name].level || 1, newRoster[char.name].targetLevel || 90);
+             const talentCosts = calculateAllTalentsCost(charData, {
+                auto: { current: newRoster[char.name].talents?.normal || 1, target: newRoster[char.name].targetTalents?.normal || 10 },
+                skill: { current: newRoster[char.name].talents?.skill || 1, target: newRoster[char.name].targetTalents?.skill || 10 },
+                burst: { current: newRoster[char.name].talents?.burst || 1, target: newRoster[char.name].targetTalents?.burst || 10 }
+             });
+             newRoster[char.name].calculatedCosts = { ascCosts, talentCosts };
+          }
+        });
+
+        // 3. Weapons
+        let newWeapons = [];
+        (goodPayload.weapons || []).forEach(w => {
+           // Attempt to preserve target levels for weapons by matching name and assignment
+           const existing = state.trackedWeapons.find(ew => ew.weaponName === w.weaponName && ew.assignedTo === w.location);
+           const id = existing ? existing.id : crypto.randomUUID();
+           const newWeapon = {
+             id,
+             weapon_id: w.weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
+             weaponName: w.weaponName,
+             level: w.level,
+             ascension: w.ascension,
+             targetLevel: existing?.targetLevel ?? 90,
+             targetAscension: existing?.targetAscension ?? 6,
+             assignedTo: w.location || null,
+             createdAt: existing?.createdAt ?? Date.now()
+           };
+
+           // Calculate weapon costs if possible
+           const wData = weaponsData.find(wd => wd.name === newWeapon.weaponName);
+           if (wData) {
+             newWeapon.costs = calculateWeaponCost(
+                wData, 
+                newWeapon.level, 
+                newWeapon.targetLevel, 
+                newWeapon.ascension, 
+                newWeapon.targetAscension, 
+                newWeapon.hasEventBonus, 
+                Object.values(newRoster)
+             );
+           }
+           
+           newWeapons.push(newWeapon);
+           
+           if (w.location && newRoster[w.location]) {
+             newRoster[w.location].equippedWeaponId = id;
+           }
+        });
+
+        return {
+          inventory: newInventory,
+          roster: newRoster,
+          trackedWeapons: newWeapons,
+        };
+      }),
       resetStore: () => {
         set({
           roster: {},
