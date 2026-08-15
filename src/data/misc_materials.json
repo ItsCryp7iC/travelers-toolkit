@@ -7,7 +7,7 @@
     "sortOrder": 1.001
   },
   {
-    "id": "HeroWit",
+    "id": "HerosWit",
     "name": "Hero's Wit",
     "category": "Experience",
     "rarity": 4,
@@ -21,21 +21,21 @@
     "sortOrder": 1.003
   },
   {
-    "id": "WandererAdvice",
+    "id": "WanderersAdvice",
     "name": "Wanderer's Advice",
     "category": "Experience",
     "rarity": 1,
     "sortOrder": 1.004
   },
   {
-    "id": "Crown",
+    "id": "CrownOfInsight",
     "name": "Crown of Insight",
     "category": "Experience",
     "rarity": 5,
     "sortOrder": 1.005
   },
   {
-    "id": "masterless_stella_fortuna",
+    "id": "MasterlessStellaFortuna",
     "name": "Masterless Stella Fortuna",
     "category": "Experience",
     "rarity": 5,

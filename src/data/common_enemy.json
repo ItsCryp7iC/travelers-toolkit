@@ -1,373 +1,373 @@
 [
   {
-    "id": "slime",
+    "id": "Slime",
     "name": "Slime",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "slimeconcentrate",
+        "id": "SlimeConcentrate",
         "name": "Slime Concentrate",
         "sortOrder": 5.001
       },
       "2_star": {
-        "id": "slimesecretions",
+        "id": "SlimeSecretions",
         "name": "Slime Secretions",
         "sortOrder": 5.002
       },
       "1_star": {
-        "id": "slimecondensate",
+        "id": "SlimeCondensate",
         "name": "Slime Condensate",
         "sortOrder": 5.003
       }
     }
   },
   {
-    "id": "hilichurl",
+    "id": "Hilichurl",
     "name": "Hilichurl",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "ominousmask",
+        "id": "OminousMask",
         "name": "Ominous Mask",
         "sortOrder": 5.004
       },
       "2_star": {
-        "id": "stainedmask",
+        "id": "StainedMask",
         "name": "Stained Mask",
         "sortOrder": 5.005
       },
       "1_star": {
-        "id": "damagedmask",
+        "id": "DamagedMask",
         "name": "Damaged Mask",
         "sortOrder": 5.006
       }
     }
   },
   {
-    "id": "samachurl",
+    "id": "Samachurl",
     "name": "Samachurl",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "forbiddencursescroll",
+        "id": "ForbiddenCurseScroll",
         "name": "Forbidden Curse Scroll",
         "sortOrder": 5.007
       },
       "2_star": {
-        "id": "sealedscroll",
+        "id": "SealedScroll",
         "name": "Sealed Scroll",
         "sortOrder": 5.008
       },
       "1_star": {
-        "id": "diviningscroll",
+        "id": "DiviningScroll",
         "name": "Divining Scroll",
         "sortOrder": 5.009
       }
     }
   },
   {
-    "id": "hilichurlshooter",
+    "id": "HilichurlShooter",
     "name": "Hilichurl Shooter",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "weatheredarrowhead",
+        "id": "WeatheredArrowhead",
         "name": "Weathered Arrowhead",
         "sortOrder": 5.01
       },
       "2_star": {
-        "id": "sharparrowhead",
+        "id": "SharpArrowhead",
         "name": "Sharp Arrowhead",
         "sortOrder": 5.011
       },
       "1_star": {
-        "id": "firmarrowhead",
+        "id": "FirmArrowhead",
         "name": "Firm Arrowhead",
         "sortOrder": 5.012
       }
     }
   },
   {
-    "id": "fatuiskirmisher",
+    "id": "FatuiSkirmisher",
     "name": "Fatui Skirmisher",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "lieutenantsinsignia",
+        "id": "LieutenantsInsignia",
         "name": "Lieutenant's Insignia",
         "sortOrder": 5.013
       },
       "2_star": {
-        "id": "sergeantsinsignia",
+        "id": "SergeantsInsignia",
         "name": "Sergeant's Insignia",
         "sortOrder": 5.014
       },
       "1_star": {
-        "id": "recruitsinsignia",
+        "id": "RecruitsInsignia",
         "name": "Recruit's Insignia",
         "sortOrder": 5.015
       }
     }
   },
   {
-    "id": "treasurehoarder",
+    "id": "TreasureHoarder",
     "name": "Treasure Hoarder",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "goldenraveninsignia",
+        "id": "GoldenRavenInsignia",
         "name": "Golden Raven Insignia",
         "sortOrder": 5.016
       },
       "2_star": {
-        "id": "silverraveninsignia",
+        "id": "SilverRavenInsignia",
         "name": "Silver Raven Insignia",
         "sortOrder": 5.017
       },
       "1_star": {
-        "id": "treasurehoarderinsignia",
+        "id": "TreasureHoarderInsignia",
         "name": "Treasure Hoarder Insignia",
         "sortOrder": 5.018
       }
     }
   },
   {
-    "id": "whopperflower",
+    "id": "Whopperflower",
     "name": "Whopperflower",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "energynectar",
+        "id": "EnergyNectar",
         "name": "Energy Nectar",
         "sortOrder": 5.019
       },
       "2_star": {
-        "id": "shimmeringnectar",
+        "id": "ShimmeringNectar",
         "name": "Shimmering Nectar",
         "sortOrder": 5.02
       },
       "1_star": {
-        "id": "whopperflowernectar",
+        "id": "WhopperflowerNectar",
         "name": "Whopperflower Nectar",
         "sortOrder": 5.021
       }
     }
   },
   {
-    "id": "nobushi",
+    "id": "Nobushi",
     "name": "Nobushi",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "famedhandguard",
+        "id": "FamedHandguard",
         "name": "Famed Handguard",
         "sortOrder": 5.022
       },
       "2_star": {
-        "id": "kageuchihandguard",
+        "id": "KageuchiHandguard",
         "name": "Kageuchi Handguard",
         "sortOrder": 5.023
       },
       "1_star": {
-        "id": "oldhandguard",
+        "id": "OldHandguard",
         "name": "Old Handguard",
         "sortOrder": 5.024
       }
     }
   },
   {
-    "id": "specters",
+    "id": "Specters",
     "name": "Specters",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "spectralnucleus",
+        "id": "SpectralNucleus",
         "name": "Spectral Nucleus",
         "sortOrder": 5.025
       },
       "2_star": {
-        "id": "spectralheart",
+        "id": "SpectralHeart",
         "name": "Spectral Heart",
         "sortOrder": 5.026
       },
       "1_star": {
-        "id": "spectralhusk",
+        "id": "SpectralHusk",
         "name": "Spectral Husk",
         "sortOrder": 5.027
       }
     }
   },
   {
-    "id": "fungus",
+    "id": "Fungus",
     "name": "Fungus",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "crystallinecystdust",
+        "id": "CrystallineCystDust",
         "name": "Crystalline Cyst Dust",
         "sortOrder": 5.028
       },
       "2_star": {
-        "id": "luminescentpollen",
+        "id": "LuminescentPollen",
         "name": "Luminescent Pollen",
         "sortOrder": 5.029
       },
       "1_star": {
-        "id": "fungalspores",
+        "id": "FungalSpores",
         "name": "Fungal Spores",
         "sortOrder": 5.03
       }
     }
   },
   {
-    "id": "theeremites",
+    "id": "TheEremites",
     "name": "The Eremites",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "richredbrocade",
+        "id": "RichRedBrocade",
         "name": "Rich Red Brocade",
         "sortOrder": 5.031
       },
       "2_star": {
-        "id": "trimmedredsilk",
+        "id": "TrimmedRedSilk",
         "name": "Trimmed Red Silk",
         "sortOrder": 5.032
       },
       "1_star": {
-        "id": "fadedredsatin",
+        "id": "FadedRedSatin",
         "name": "Faded Red Satin",
         "sortOrder": 5.033
       }
     }
   },
   {
-    "id": "fontemeraberrant",
+    "id": "FontemerAberrant",
     "name": "Fontemer Aberrant",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "xenochromaticcrystal",
+        "id": "XenochromaticCrystal",
         "name": "Xenochromatic Crystal",
         "sortOrder": 5.034
       },
       "2_star": {
-        "id": "transoceanicchunk",
+        "id": "TransoceanicChunk",
         "name": "Transoceanic Chunk",
         "sortOrder": 5.035
       },
       "1_star": {
-        "id": "transoceanicpearl",
+        "id": "TransoceanicPearl",
         "name": "Transoceanic Pearl",
         "sortOrder": 5.036
       }
     }
   },
   {
-    "id": "clockworkmeka",
+    "id": "ClockworkMeka",
     "name": "Clockwork Meka",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "artificeddynamicgear",
+        "id": "ArtificedDynamicGear",
         "name": "Artificed Dynamic Gear",
         "sortOrder": 5.037
       },
       "2_star": {
-        "id": "mechanicalspurgear",
+        "id": "MechanicalSpurGear",
         "name": "Mechanical Spur Gear",
         "sortOrder": 5.038
       },
       "1_star": {
-        "id": "meshinggear",
+        "id": "MeshingGear",
         "name": "Meshing Gear",
         "sortOrder": 5.039
       }
     }
   },
   {
-    "id": "natlansaurian",
+    "id": "NatlanSaurian",
     "name": "Natlan Saurian",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "tyrantsfang",
+        "id": "TyrantsFang",
         "name": "Tyrant's Fang",
         "sortOrder": 5.04
       },
       "2_star": {
-        "id": "seasonedfang",
+        "id": "SeasonedFang",
         "name": "Seasoned Fang",
         "sortOrder": 5.041
       },
       "1_star": {
-        "id": "juvenilefang",
+        "id": "JuvenileFang",
         "name": "Juvenile Fang",
         "sortOrder": 5.042
       }
     }
   },
   {
-    "id": "sauroformtribalwarriors",
+    "id": "SauroformTribalWarriors",
     "name": "Sauroform Tribal Warriors",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "sauriancrownedwarriorsgoldenwhistle",
+        "id": "SaurianCrownedWarriorsGoldenWhistle",
         "name": "Saurian Crowned Warrior's Golden Whistle",
         "sortOrder": 5.043
       },
       "2_star": {
-        "id": "warriorsmetalwhistle",
+        "id": "WarriorsMetalWhistle",
         "name": "Warrior's Metal Whistle",
         "sortOrder": 5.044
       },
       "1_star": {
-        "id": "sentryswoodenwhistle",
+        "id": "SentrysWoodenWhistle",
         "name": "Sentry's Wooden Whistle",
         "sortOrder": 5.045
       }
     }
   },
   {
-    "id": "landcruisers",
+    "id": "Landcruisers",
     "name": "Landcruisers",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "precisiondriveshaft",
+        "id": "PrecisionDriveShaft",
         "name": "Precision Drive Shaft",
         "sortOrder": 5.046
       },
       "2_star": {
-        "id": "reinforceddriveshaft",
+        "id": "ReinforcedDriveShaft",
         "name": "Reinforced Drive Shaft",
         "sortOrder": 5.047
       },
       "1_star": {
-        "id": "brokendriveshaft",
+        "id": "BrokenDriveShaft",
         "name": "Broken Drive Shaft",
         "sortOrder": 5.048
       }
     }
   },
   {
-    "id": "fatuioprichniki",
+    "id": "FatuiOprichniki",
     "name": "Fatui Oprichniki",
     "type": "common_enemy",
     "tiers": {
       "3_star": {
-        "id": "frostetchedwarrant",
+        "id": "FrostEtchedWarrant",
         "name": "Frost Etched Warrant",
         "sortOrder": 5.049
       },
       "2_star": {
-        "id": "immaculatewarrant",
+        "id": "ImmaculateWarrant",
         "name": "Immaculate Warrant",
         "sortOrder": 5.05
       },
       "1_star": {
-        "id": "tatteredwarrant",
+        "id": "TatteredWarrant",
         "name": "Tattered Warrant",
         "sortOrder": 5.051
       }

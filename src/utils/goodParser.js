@@ -28,24 +28,7 @@ const formatCharacterName = (goodName) => {
   return goodName.replace(/([a-z])([A-Z])/g, '$1 $2');
 };
 
-export const normalizeGoodKey = (key) => {
-  if (key === "HerosWit") return "HeroWit";
-  if (key === "Mora") return "Mora";
-  
-  const lower = key.toLowerCase();
-  
-  const suffixes = ["sliver", "fragment", "chunk", "gemstone"];
-  for (const suffix of suffixes) {
-    if (lower.endsWith(suffix)) {
-      const prefix = lower.slice(0, lower.length - suffix.length);
-      if (prefix.length > 0) {
-        return prefix + "_" + suffix;
-      }
-    }
-  }
-  
-  return lower;
-};
+
 
 export const parseGoodData = (jsonContent) => {
   if (!jsonContent || jsonContent.format !== "GOOD") {
@@ -86,8 +69,7 @@ export const parseGoodData = (jsonContent) => {
   // Parse Materials
   if (jsonContent.materials && typeof jsonContent.materials === 'object') {
     Object.entries(jsonContent.materials).forEach(([goodKey, count]) => {
-      const normalizedKey = normalizeGoodKey(goodKey);
-      parsed.materials[normalizedKey] = count;
+      parsed.materials[goodKey] = count;
     });
   }
 

@@ -1,6 +1,6 @@
 [
   {
-    "id": "dvalinsplume",
+    "id": "DvalinsPlume",
     "name": "Dvalin's Plume",
     "type": "weekly_boss",
     "boss_name": "Stormterror Dvalin",
@@ -8,7 +8,7 @@
     "sortOrder": 3.001
   },
   {
-    "id": "dvalinsclaw",
+    "id": "DvalinsClaw",
     "name": "Dvalin's Claw",
     "type": "weekly_boss",
     "boss_name": "Stormterror Dvalin",
@@ -16,7 +16,7 @@
     "sortOrder": 3.002
   },
   {
-    "id": "dvalinssigh",
+    "id": "DvalinsSigh",
     "name": "Dvalin's Sigh",
     "type": "weekly_boss",
     "boss_name": "Stormterror Dvalin",
@@ -24,7 +24,7 @@
     "sortOrder": 3.003
   },
   {
-    "id": "tailofboreas",
+    "id": "TailOfBoreas",
     "name": "Tail of Boreas",
     "type": "weekly_boss",
     "boss_name": "Andrius",
@@ -32,7 +32,7 @@
     "sortOrder": 3.004
   },
   {
-    "id": "ringofboreas",
+    "id": "RingOfBoreas",
     "name": "Ring of Boreas",
     "type": "weekly_boss",
     "boss_name": "Andrius",
@@ -40,7 +40,7 @@
     "sortOrder": 3.005
   },
   {
-    "id": "spiritlocketofboreas",
+    "id": "SpiritLocketOfBoreas",
     "name": "Spirit Locket of Boreas",
     "type": "weekly_boss",
     "boss_name": "Andrius",
@@ -48,7 +48,7 @@
     "sortOrder": 3.006
   },
   {
-    "id": "tuskofmonoceroscaeli",
+    "id": "TuskOfMonocerosCaeli",
     "name": "Tusk of Monoceros Caeli",
     "type": "weekly_boss",
     "boss_name": "Childe",
@@ -56,7 +56,7 @@
     "sortOrder": 3.007
   },
   {
-    "id": "shardofafoullegacy",
+    "id": "ShardOfAFoulLegacy",
     "name": "Shard of a Foul Legacy",
     "type": "weekly_boss",
     "boss_name": "Childe",
@@ -64,7 +64,7 @@
     "sortOrder": 3.008
   },
   {
-    "id": "shadowofthewarrior",
+    "id": "ShadowOfTheWarrior",
     "name": "Shadow of the Warrior",
     "type": "weekly_boss",
     "boss_name": "Childe",
@@ -72,7 +72,7 @@
     "sortOrder": 3.009
   },
   {
-    "id": "dragonlordscrown",
+    "id": "DragonLordsCrown",
     "name": "Dragon Lord's Crown",
     "type": "weekly_boss",
     "boss_name": "Azhdaha",
@@ -80,7 +80,7 @@
     "sortOrder": 3.01
   },
   {
-    "id": "bloodjadebranch",
+    "id": "BloodjadeBranch",
     "name": "Bloodjade Branch",
     "type": "weekly_boss",
     "boss_name": "Azhdaha",
@@ -88,7 +88,7 @@
     "sortOrder": 3.011
   },
   {
-    "id": "gildedscale",
+    "id": "GildedScale",
     "name": "Gilded Scale",
     "type": "weekly_boss",
     "boss_name": "Azhdaha",
@@ -96,7 +96,7 @@
     "sortOrder": 3.012
   },
   {
-    "id": "moltenmoment",
+    "id": "MoltenMoment",
     "name": "Molten Moment",
     "type": "weekly_boss",
     "boss_name": "La Signora",
@@ -104,7 +104,7 @@
     "sortOrder": 3.013
   },
   {
-    "id": "hellfirebutterfly",
+    "id": "HellfireButterfly",
     "name": "Hellfire Butterfly",
     "type": "weekly_boss",
     "boss_name": "La Signora",
@@ -112,7 +112,7 @@
     "sortOrder": 3.014
   },
   {
-    "id": "ashenheart",
+    "id": "AshenHeart",
     "name": "Ashen Heart",
     "type": "weekly_boss",
     "boss_name": "La Signora",
@@ -120,7 +120,7 @@
     "sortOrder": 3.015
   },
   {
-    "id": "mudraofthemaleficgeneral",
+    "id": "MudraOfTheMaleficGeneral",
     "name": "Mudra of the Malefic General",
     "type": "weekly_boss",
     "boss_name": "Magatsu Mitake Narukami no Mikoto",
@@ -128,7 +128,7 @@
     "sortOrder": 3.016
   },
   {
-    "id": "tearsofthecalamitousgod",
+    "id": "TearsOfTheCalamitousGod",
     "name": "Tears of the Calamitous God",
     "type": "weekly_boss",
     "boss_name": "Magatsu Mitake Narukami no Mikoto",
@@ -136,7 +136,7 @@
     "sortOrder": 3.017
   },
   {
-    "id": "themeaningofaeons",
+    "id": "TheMeaningOfAeons",
     "name": "The Meaning of Aeons",
     "type": "weekly_boss",
     "boss_name": "Magatsu Mitake Narukami no Mikoto",
@@ -144,7 +144,7 @@
     "sortOrder": 3.018
   },
   {
-    "id": "puppetstrings",
+    "id": "PuppetStrings",
     "name": "Puppet Strings",
     "type": "weekly_boss",
     "boss_name": "Everlasting Lord of Arcane Wisdom",
@@ -152,7 +152,7 @@
     "sortOrder": 3.019
   },
   {
-    "id": "mirrorofmushin",
+    "id": "MirrorOfMushin",
     "name": "Mirror of Mushin",
     "type": "weekly_boss",
     "boss_name": "Everlasting Lord of Arcane Wisdom",
@@ -160,7 +160,7 @@
     "sortOrder": 3.02
   },
   {
-    "id": "dakasbell",
+    "id": "DakasBell",
     "name": "Daka's Bell",
     "type": "weekly_boss",
     "boss_name": "Everlasting Lord of Arcane Wisdom",
@@ -168,7 +168,7 @@
     "sortOrder": 3.021
   },
   {
-    "id": "worldspanfern",
+    "id": "WorldspanFern",
     "name": "Worldspan Fern",
     "type": "weekly_boss",
     "boss_name": "Evolved From an Apocalyptic Millennium",
@@ -176,7 +176,7 @@
     "sortOrder": 3.022
   },
   {
-    "id": "primordialgreenbloom",
+    "id": "PrimordialGreenbloom",
     "name": "Primordial Greenbloom",
     "type": "weekly_boss",
     "boss_name": "Evolved From an Apocalyptic Millennium",
@@ -184,7 +184,7 @@
     "sortOrder": 3.023
   },
   {
-    "id": "everamber",
+    "id": "Everamber",
     "name": "Everamber",
     "type": "weekly_boss",
     "boss_name": "Evolved From an Apocalyptic Millennium",
@@ -192,7 +192,7 @@
     "sortOrder": 3.024
   },
   {
-    "id": "lightlesssilkstring",
+    "id": "LightlessSilkString",
     "name": "Lightless Silk String",
     "type": "weekly_boss",
     "boss_name": "All-Devouring Narwhal",
@@ -200,7 +200,7 @@
     "sortOrder": 3.025
   },
   {
-    "id": "lightlesseyeofthemaelstrom",
+    "id": "LightlessEyeOfTheMaelstrom",
     "name": "Lightless Eye of the Maelstrom",
     "type": "weekly_boss",
     "boss_name": "All-Devouring Narwhal",
@@ -208,7 +208,7 @@
     "sortOrder": 3.026
   },
   {
-    "id": "lightlessmass",
+    "id": "LightlessMass",
     "name": "Lightless Mass",
     "type": "weekly_boss",
     "boss_name": "All-Devouring Narwhal",
@@ -216,7 +216,7 @@
     "sortOrder": 3.027
   },
   {
-    "id": "fadingcandle",
+    "id": "FadingCandle",
     "name": "Fading Candle",
     "type": "weekly_boss",
     "boss_name": "The Knave",
@@ -224,7 +224,7 @@
     "sortOrder": 3.028
   },
   {
-    "id": "silkenfeather",
+    "id": "SilkenFeather",
     "name": "Silken Feather",
     "type": "weekly_boss",
     "boss_name": "The Knave",
@@ -232,7 +232,7 @@
     "sortOrder": 3.029
   },
   {
-    "id": "denialandjudgment",
+    "id": "DenialandJudgment",
     "name": "Denialand Judgment",
     "type": "weekly_boss",
     "boss_name": "The Knave",
@@ -240,7 +240,7 @@
     "sortOrder": 3.03
   },
   {
-    "id": "erodedhorn",
+    "id": "ErodedHorn",
     "name": "Eroded Horn",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
@@ -248,7 +248,7 @@
     "sortOrder": 3.031
   },
   {
-    "id": "erodedsunfire",
+    "id": "ErodedSunfire",
     "name": "Eroded Sunfire",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
@@ -256,7 +256,7 @@
     "sortOrder": 3.032
   },
   {
-    "id": "erodedscalefeather",
+    "id": "ErodedScaleFeather",
     "name": "Eroded Scale Feather",
     "type": "weekly_boss",
     "boss_name": "Lord of Eroded Primal Fire",
@@ -264,7 +264,7 @@
     "sortOrder": 3.033
   },
   {
-    "id": "ascendedsampleknight",
+    "id": "AscendedSampleKnight",
     "name": "Ascended Sample Knight",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
@@ -272,7 +272,7 @@
     "sortOrder": 3.034
   },
   {
-    "id": "ascendedsamplerook",
+    "id": "AscendedSampleRook",
     "name": "Ascended Sample Rook",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
@@ -280,7 +280,7 @@
     "sortOrder": 3.035
   },
   {
-    "id": "ascendedsamplequeen",
+    "id": "AscendedSampleQueen",
     "name": "Ascended Sample Queen",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
@@ -288,7 +288,7 @@
     "sortOrder": 3.036
   },
   {
-    "id": "maskofthevirtuousdoctor",
+    "id": "MaskOfTheVirtuousDoctor",
     "name": "Mask of the Virtuous Doctor",
     "type": "weekly_boss",
     "boss_name": "Heretic of the False Moon",
@@ -296,7 +296,7 @@
     "sortOrder": 3.037
   },
   {
-    "id": "madmansrestraint",
+    "id": "MadmansRestraint",
     "name": "Madman's Restraint",
     "type": "weekly_boss",
     "boss_name": "Heretic of the False Moon",
@@ -304,7 +304,7 @@
     "sortOrder": 3.038
   },
   {
-    "id": "elixiroftheheretic",
+    "id": "ElixirOfTheHeretic",
     "name": "Elixir of the Heretic",
     "type": "weekly_boss",
     "boss_name": "Heretic of the False Moon",

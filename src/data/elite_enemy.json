@@ -1,637 +1,637 @@
 [
   {
-    "id": "mitachurl",
+    "id": "Mitachurl",
     "name": "Mitachurl",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "blackcrystalhorn",
+        "id": "BlackCrystalHorn",
         "name": "Black Crystal Horn",
         "sortOrder": 6.001
       },
       "3_star": {
-        "id": "blackbronzehorn",
+        "id": "BlackBronzeHorn",
         "name": "Black Bronze Horn",
         "sortOrder": 6.002
       },
       "2_star": {
-        "id": "heavyhorn",
+        "id": "HeavyHorn",
         "name": "Heavy Horn",
         "sortOrder": 6.003
       }
     }
   },
   {
-    "id": "abyssmage",
+    "id": "AbyssMage",
     "name": "Abyss Mage",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "leylinesprout",
+        "id": "LeyLineSprout",
         "name": "Ley Line Sprout",
         "sortOrder": 6.004
       },
       "3_star": {
-        "id": "deadleylineleaves",
+        "id": "DeadLeyLineLeaves",
         "name": "Dead Ley Line Leaves",
         "sortOrder": 6.005
       },
       "2_star": {
-        "id": "deadleylinebranch",
+        "id": "DeadLeyLineBranch",
         "name": "Dead Ley Line Branch",
         "sortOrder": 6.006
       }
     }
   },
   {
-    "id": "humanoidruinmachine",
+    "id": "HumanoidRuinMachine",
     "name": "Humanoid Ruin Machine",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "chaoscore",
+        "id": "ChaosCore",
         "name": "Chaos Core",
         "sortOrder": 6.007
       },
       "3_star": {
-        "id": "chaoscircuit",
+        "id": "ChaosCircuit",
         "name": "Chaos Circuit",
         "sortOrder": 6.008
       },
       "2_star": {
-        "id": "chaosdevice",
+        "id": "ChaosDevice",
         "name": "Chaos Device",
         "sortOrder": 6.009
       }
     }
   },
   {
-    "id": "fatuicicinmage",
+    "id": "FatuiCicinMage",
     "name": "Fatui Cicin Mage",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "mistgrasswick",
+        "id": "MistGrassWick",
         "name": "Mist Grass Wick",
         "sortOrder": 6.01
       },
       "3_star": {
-        "id": "mistgrass",
+        "id": "MistGrass",
         "name": "Mist Grass",
         "sortOrder": 6.011
       },
       "2_star": {
-        "id": "mistgrasspollen",
+        "id": "MistGrassPollen",
         "name": "Mist Grass Pollen",
         "sortOrder": 6.012
       }
     }
   },
   {
-    "id": "fatuipyroagent",
+    "id": "FatuiPyroAgent",
     "name": "Fatui Pyro Agent",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "inspectorssacrificialknife",
+        "id": "InspectorsSacrificialKnife",
         "name": "Inspector's Sacrificial Knife",
         "sortOrder": 6.013
       },
       "3_star": {
-        "id": "agentssacrificialknife",
+        "id": "AgentsSacrificialKnife",
         "name": "Agent's Sacrificial Knife",
         "sortOrder": 6.014
       },
       "2_star": {
-        "id": "hunterssacrificialknife",
+        "id": "HuntersSacrificialKnife",
         "name": "Hunter's Sacrificial Knife",
         "sortOrder": 6.015
       }
     }
   },
   {
-    "id": "vishap",
+    "id": "Vishap",
     "name": "Vishap",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "fossilizedboneshard",
+        "id": "FossilizedBoneShard",
         "name": "Fossilized Bone Shard",
         "sortOrder": 6.016
       },
       "3_star": {
-        "id": "sturdyboneshard",
+        "id": "SturdyBoneShard",
         "name": "Sturdy Bone Shard",
         "sortOrder": 6.017
       },
       "2_star": {
-        "id": "fragileboneshard",
+        "id": "FragileBoneShard",
         "name": "Fragile Bone Shard",
         "sortOrder": 6.018
       }
     }
   },
   {
-    "id": "ruinsentinel",
+    "id": "RuinSentinel",
     "name": "Ruin Sentinel",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "chaosoculus",
+        "id": "ChaosOculus",
         "name": "Chaos Oculus",
         "sortOrder": 6.019
       },
       "3_star": {
-        "id": "chaosaxis",
+        "id": "ChaosAxis",
         "name": "Chaos Axis",
         "sortOrder": 6.02
       },
       "2_star": {
-        "id": "chaosgear",
+        "id": "ChaosGear",
         "name": "Chaos Gear",
         "sortOrder": 6.021
       }
     }
   },
   {
-    "id": "mirrormaiden",
+    "id": "MirrorMaiden",
     "name": "Mirror Maiden",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "polarizingprism",
+        "id": "PolarizingPrism",
         "name": "Polarizing Prism",
         "sortOrder": 6.022
       },
       "3_star": {
-        "id": "crystalprism",
+        "id": "CrystalPrism",
         "name": "Crystal Prism",
         "sortOrder": 6.023
       },
       "2_star": {
-        "id": "dismalprism",
+        "id": "DismalPrism",
         "name": "Dismal Prism",
         "sortOrder": 6.024
       }
     }
   },
   {
-    "id": "riftwolf",
+    "id": "Riftwolf",
     "name": "Riftwolf",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "concealedtalon",
+        "id": "ConcealedTalon",
         "name": "Concealed Talon",
         "sortOrder": 6.025
       },
       "3_star": {
-        "id": "concealedunguis",
+        "id": "ConcealedUnguis",
         "name": "Concealed Unguis",
         "sortOrder": 6.026
       },
       "2_star": {
-        "id": "concealedclaw",
+        "id": "ConcealedClaw",
         "name": "Concealed Claw",
         "sortOrder": 6.027
       }
     }
   },
   {
-    "id": "theblackserpents",
+    "id": "TheBlackSerpents",
     "name": "The Black Serpents",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "deathlystatuette",
+        "id": "DeathlyStatuette",
         "name": "Deathly Statuette",
         "sortOrder": 6.028
       },
       "3_star": {
-        "id": "darkstatuette",
+        "id": "DarkStatuette",
         "name": "Dark Statuette",
         "sortOrder": 6.029
       },
       "2_star": {
-        "id": "gloomystatuette",
+        "id": "GloomyStatuette",
         "name": "Gloomy Statuette",
         "sortOrder": 6.03
       }
     }
   },
   {
-    "id": "stateshiftedfungus",
+    "id": "StateShiftedFungus",
     "name": "State Shifted Fungus",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "robustfungalnucleus",
+        "id": "RobustFungalNucleus",
         "name": "Robust Fungal Nucleus",
         "sortOrder": 6.031
       },
       "3_star": {
-        "id": "dormantfungalnucleus",
+        "id": "DormantFungalNucleus",
         "name": "Dormant Fungal Nucleus",
         "sortOrder": 6.032
       },
       "2_star": {
-        "id": "inactivatedfungalnucleus",
+        "id": "InactivatedFungalNucleus",
         "name": "Inactivated Fungal Nucleus",
         "sortOrder": 6.033
       }
     }
   },
   {
-    "id": "ruindrake",
+    "id": "RuinDrake",
     "name": "Ruin Drake",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "chaosbolt",
+        "id": "ChaosBolt",
         "name": "Chaos Bolt",
         "sortOrder": 6.034
       },
       "3_star": {
-        "id": "chaosmodule",
+        "id": "ChaosModule",
         "name": "Chaos Module",
         "sortOrder": 6.035
       },
       "2_star": {
-        "id": "chaosstorage",
+        "id": "ChaosStorage",
         "name": "Chaos Storage",
         "sortOrder": 6.036
       }
     }
   },
   {
-    "id": "primalconstruct",
+    "id": "PrimalConstruct",
     "name": "Primal Construct",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "radiantprism",
+        "id": "RadiantPrism",
         "name": "Radiant Prism",
         "sortOrder": 6.037
       },
       "3_star": {
-        "id": "turbidprism",
+        "id": "TurbidPrism",
         "name": "Turbid Prism",
         "sortOrder": 6.038
       },
       "2_star": {
-        "id": "damagedprism",
+        "id": "DamagedPrism",
         "name": "Damaged Prism",
         "sortOrder": 6.039
       }
     }
   },
   {
-    "id": "consecratedbeast",
+    "id": "ConsecratedBeast",
     "name": "Consecrated Beast",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "markedshell",
+        "id": "MarkedShell",
         "name": "Marked Shell",
         "sortOrder": 6.04
       },
       "3_star": {
-        "id": "sturdyshell",
+        "id": "SturdyShell",
         "name": "Sturdy Shell",
         "sortOrder": 6.041
       },
       "2_star": {
-        "id": "desiccatedshell",
+        "id": "DesiccatedShell",
         "name": "Desiccated Shell",
         "sortOrder": 6.042
       }
     }
   },
   {
-    "id": "hilichurlrogue",
+    "id": "HilichurlRogue",
     "name": "Hilichurl Rogue",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "wanderersbloomingflower",
+        "id": "WanderersBloomingFlower",
         "name": "Wanderer's Blooming Flower",
         "sortOrder": 6.043
       },
       "3_star": {
-        "id": "treasuredflower",
+        "id": "TreasuredFlower",
         "name": "Treasured Flower",
         "sortOrder": 6.044
       },
       "2_star": {
-        "id": "afloweryettobloom",
+        "id": "AFlowerYettoBloom",
         "name": "A Flower Yetto Bloom",
         "sortOrder": 6.045
       }
     }
   },
   {
-    "id": "taintedhydrophantasm",
+    "id": "TaintedHydroPhantasm",
     "name": "Tainted Hydro Phantasm",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "newborntaintedhydrophantasm",
+        "id": "NewbornTaintedHydroPhantasm",
         "name": "Newborn Tainted Hydro Phantasm",
         "sortOrder": 6.046
       },
       "3_star": {
-        "id": "scoopoftaintedwater",
+        "id": "ScoopOfTaintedWater",
         "name": "Scoop of Tainted Water",
         "sortOrder": 6.047
       },
       "2_star": {
-        "id": "dropoftaintedwater",
+        "id": "DropOfTaintedWater",
         "name": "Drop of Tainted Water",
         "sortOrder": 6.048
       }
     }
   },
   {
-    "id": "breacherprimus",
+    "id": "BreacherPrimus",
     "name": "Breacher Primus",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "alienlifecore",
+        "id": "AlienLifeCore",
         "name": "Alien Life Core",
         "sortOrder": 6.049
       },
       "3_star": {
-        "id": "foreignsynapse",
+        "id": "ForeignSynapse",
         "name": "Foreign Synapse",
         "sortOrder": 6.05
       },
       "2_star": {
-        "id": "riftcore",
+        "id": "RiftCore",
         "name": "Rift Core",
         "sortOrder": 6.051
       }
     }
   },
   {
-    "id": "fatuioperative",
+    "id": "FatuiOperative",
     "name": "Fatui Operative",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "operativesconstancy",
+        "id": "OperativesConstancy",
         "name": "Operative's Constancy",
         "sortOrder": 6.052
       },
       "3_star": {
-        "id": "operativesstandardpocketwatch",
+        "id": "OperativesStandardPocketWatch",
         "name": "Operative's Standard Pocket Watch",
         "sortOrder": 6.053
       },
       "2_star": {
-        "id": "oldoperativespocketwatch",
+        "id": "OldOperativesPocketWatch",
         "name": "Old Operative's Pocket Watch",
         "sortOrder": 6.054
       }
     }
   },
   {
-    "id": "xuanwenbeast",
+    "id": "XuanwenBeast",
     "name": "Xuanwen Beast",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "chasmlightfin",
+        "id": "ChasmlightFin",
         "name": "Chasmlight Fin",
         "sortOrder": 6.055
       },
       "3_star": {
-        "id": "lunarfin",
+        "id": "LunarFin",
         "name": "Lunar Fin",
         "sortOrder": 6.056
       },
       "2_star": {
-        "id": "featheryfin",
+        "id": "FeatheryFin",
         "name": "Feathery Fin",
         "sortOrder": 6.057
       }
     }
   },
   {
-    "id": "praetoriangolem",
+    "id": "PraetorianGolem",
     "name": "Praetorian Golem",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "stillsmolderinghilt",
+        "id": "StillSmolderingHilt",
         "name": "Still Smoldering Hilt",
         "sortOrder": 6.058
       },
       "3_star": {
-        "id": "splinteredhilt",
+        "id": "SplinteredHilt",
         "name": "Splintered Hilt",
         "sortOrder": 6.059
       },
       "2_star": {
-        "id": "ruinedhilt",
+        "id": "RuinedHilt",
         "name": "Ruined Hilt",
         "sortOrder": 6.06
       }
     }
   },
   {
-    "id": "wayobmanifestation",
+    "id": "WayobManifestation",
     "name": "Wayob Manifestation",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "sigilofastridingwill",
+        "id": "SigilOfAStridingWill",
         "name": "Sigil of a Striding Will",
         "sortOrder": 6.061
       },
       "3_star": {
-        "id": "locusofaclearwill",
+        "id": "LocusOfAClearWill",
         "name": "Locus of a Clear Will",
         "sortOrder": 6.062
       },
       "2_star": {
-        "id": "shardofashatteredwill",
+        "id": "ShardOfAShatteredWill",
         "name": "Shard of a Shattered Will",
         "sortOrder": 6.063
       }
     }
   },
   {
-    "id": "avataroflava",
+    "id": "AvatarOfLava",
     "name": "Avatar of Lava",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "ignitedseeingeye",
+        "id": "IgnitedSeeingEye",
         "name": "Ignited Seeing Eye",
         "sortOrder": 6.064
       },
       "3_star": {
-        "id": "ignitedseedoflife",
+        "id": "IgnitedSeedOfLife",
         "name": "Ignited Seed of Life",
         "sortOrder": 6.065
       },
       "2_star": {
-        "id": "ignitedstone",
+        "id": "IgnitedStone",
         "name": "Ignited Stone",
         "sortOrder": 6.066
       }
     }
   },
   {
-    "id": "secretsourceautomatonhunterseeker",
+    "id": "SecretSourceAutomatonHunterseeker",
     "name": "Secret Source Automaton: Hunter-Seeker",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "heartofthesecretsource",
+        "id": "HeartOfTheSecretSource",
         "name": "Heart of the Secret Source",
         "sortOrder": 6.067
       },
       "3_star": {
-        "id": "sheathofthesecretsource",
+        "id": "SheathOfTheSecretSource",
         "name": "Sheath of the Secret Source",
         "sortOrder": 6.068
       },
       "2_star": {
-        "id": "axisofthesecretsource",
+        "id": "AxisOfTheSecretSource",
         "name": "Axis of the Secret Source",
         "sortOrder": 6.069
       }
     }
   },
   {
-    "id": "tenebrousmimesis",
+    "id": "TenebrousMimesis",
     "name": "Tenebrous Mimesis",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "illusoryleafcoil",
+        "id": "IllusoryLeafcoil",
         "name": "Illusory Leafcoil",
         "sortOrder": 6.07
       },
       "3_star": {
-        "id": "bewilderingbroadleaf",
+        "id": "BewilderingBroadleaf",
         "name": "Bewildering Broadleaf",
         "sortOrder": 6.071
       },
       "2_star": {
-        "id": "refractivebud",
+        "id": "RefractiveBud",
         "name": "Refractive Bud",
         "sortOrder": 6.072
       }
     }
   },
   {
-    "id": "furnaceshellmountainweasel",
+    "id": "FurnaceShellMountainWeasel",
     "name": "Furnace Shell Mountain Weasel",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "blazingprismshell",
+        "id": "BlazingPrismshell",
         "name": "Blazing Prismshell",
         "sortOrder": 6.073
       },
       "3_star": {
-        "id": "warmbackshell",
+        "id": "WarmBackShell",
         "name": "Warm Back Shell",
         "sortOrder": 6.074
       },
       "2_star": {
-        "id": "coldcrackedshellshard",
+        "id": "ColdCrackedShellshard",
         "name": "Cold Cracked Shellshard",
         "sortOrder": 6.075
       }
     }
   },
   {
-    "id": "frostnightscion",
+    "id": "FrostnightScion",
     "name": "Frostnight Scion",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "frostnightsglory",
+        "id": "FrostnightsGlory",
         "name": "Frostnight's Glory",
         "sortOrder": 6.076
       },
       "3_star": {
-        "id": "frostnightsglow",
+        "id": "FrostnightsGlow",
         "name": "Frostnight's Glow",
         "sortOrder": 6.077
       },
       "2_star": {
-        "id": "frostnightsglimmer",
+        "id": "FrostnightsGlimmer",
         "name": "Frostnight's Glimmer",
         "sortOrder": 6.078
       }
     }
   },
   {
-    "id": "radiantbeast",
+    "id": "RadiantBeast",
     "name": "Radiant Beast",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "radiantexoskeleton",
+        "id": "RadiantExoskeleton",
         "name": "Radiant Exoskeleton",
         "sortOrder": 6.079
       },
       "3_star": {
-        "id": "glowingremains",
+        "id": "GlowingRemains",
         "name": "Glowing Remains",
         "sortOrder": 6.08
       },
       "2_star": {
-        "id": "lightlessbone",
+        "id": "LightlessBone",
         "name": "Lightless Bone",
         "sortOrder": 6.081
       }
     }
   },
   {
-    "id": "wastelandwildhunt",
+    "id": "WastelandWildHunt",
     "name": "Wasteland Wild Hunt",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "mistshroudhelmet",
+        "id": "MistshroudHelmet",
         "name": "Mistshroud Helmet",
         "sortOrder": 6.082
       },
       "3_star": {
-        "id": "mistshroudplate",
+        "id": "MistshroudPlate",
         "name": "Mistshroud Plate",
         "sortOrder": 6.083
       },
       "2_star": {
-        "id": "mistshroudmanifestation",
+        "id": "MistshroudManifestation",
         "name": "Mistshroud Manifestation",
         "sortOrder": 6.084
       }
     }
   },
   {
-    "id": "fisherofhiddendepths",
+    "id": "FisherOfHiddenDepths",
     "name": "Fisher of Hidden Depths",
     "type": "elite_enemy",
     "tiers": {
       "4_star": {
-        "id": "hookedbeakofthedeepshadow",
+        "id": "HookedBeakOfTheDeepShadow",
         "name": "Hooked Beak of the Deep Shadow",
         "sortOrder": 6.085
       },
       "3_star": {
-        "id": "aberrantcoreofthedeepshadow",
+        "id": "AberrantCoreOfTheDeepShadow",
         "name": "Aberrant Core of the Deep Shadow",
         "sortOrder": 6.086
       },
       "2_star": {
-        "id": "fracturedeyeofthedeepshadow",
+        "id": "FracturedEyeOfTheDeepShadow",
         "name": "Fractured Eye of the Deep Shadow",
         "sortOrder": 6.087
       }

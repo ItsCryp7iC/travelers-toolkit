@@ -1,223 +1,223 @@
 [
   {
-    "id": "brilliantdiamond",
+    "id": "BrilliantDiamond",
     "name": "Brilliant Diamond",
     "color": "#E8E3D5",
     "element": "All",
     "tiers": {
       "4_star": {
-        "id": "brilliantdiamond_gemstone",
+        "id": "BrilliantDiamondGemstone",
         "name": "Brilliant Diamond Gemstone",
         "sortOrder": 9.001
       },
       "3_star": {
-        "id": "brilliantdiamond_chunk",
+        "id": "BrilliantDiamondChunk",
         "name": "Brilliant Diamond Chunk",
         "sortOrder": 9.002
       },
       "2_star": {
-        "id": "brilliantdiamond_fragment",
+        "id": "BrilliantDiamondFragment",
         "name": "Brilliant Diamond Fragment",
         "sortOrder": 9.003
       },
       "1_star": {
-        "id": "brilliantdiamond_sliver",
+        "id": "BrilliantDiamondSliver",
         "name": "Brilliant Diamond Sliver",
         "sortOrder": 9.004
       }
     }
   },
   {
-    "id": "agnidusagate",
+    "id": "AgnidusAgate",
     "name": "Agnidus Agate",
     "color": "#F97316",
     "element": "Pyro",
     "tiers": {
       "4_star": {
-        "id": "agnidusagate_gemstone",
+        "id": "AgnidusAgateGemstone",
         "name": "Agnidus Agate Gemstone",
         "sortOrder": 9.005
       },
       "3_star": {
-        "id": "agnidusagate_chunk",
+        "id": "AgnidusAgateChunk",
         "name": "Agnidus Agate Chunk",
         "sortOrder": 9.006
       },
       "2_star": {
-        "id": "agnidusagate_fragment",
+        "id": "AgnidusAgateFragment",
         "name": "Agnidus Agate Fragment",
         "sortOrder": 9.007
       },
       "1_star": {
-        "id": "agnidusagate_sliver",
+        "id": "AgnidusAgateSliver",
         "name": "Agnidus Agate Sliver",
         "sortOrder": 9.008
       }
     }
   },
   {
-    "id": "varunadalazurite",
+    "id": "VarunadaLazurite",
     "name": "Varunada Lazurite",
     "color": "#60A5FA",
     "element": "Hydro",
     "tiers": {
       "4_star": {
-        "id": "varunadalazurite_gemstone",
+        "id": "VarunadaLazuriteGemstone",
         "name": "Varunada Lazurite Gemstone",
         "sortOrder": 9.009
       },
       "3_star": {
-        "id": "varunadalazurite_chunk",
+        "id": "VarunadaLazuriteChunk",
         "name": "Varunada Lazurite Chunk",
-        "sortOrder": 9.010
+        "sortOrder": 9.01
       },
       "2_star": {
-        "id": "varunadalazurite_fragment",
+        "id": "VarunadaLazuriteFragment",
         "name": "Varunada Lazurite Fragment",
         "sortOrder": 9.011
       },
       "1_star": {
-        "id": "varunadalazurite_sliver",
+        "id": "VarunadaLazuriteSliver",
         "name": "Varunada Lazurite Sliver",
         "sortOrder": 9.012
       }
     }
   },
   {
-    "id": "nagadusemerald",
+    "id": "NagadusEmerald",
     "name": "Nagadus Emerald",
     "color": "#4ADE80",
     "element": "Dendro",
     "tiers": {
       "4_star": {
-        "id": "nagadusemerald_gemstone",
+        "id": "NagadusEmeraldGemstone",
         "name": "Nagadus Emerald Gemstone",
         "sortOrder": 9.013
       },
       "3_star": {
-        "id": "nagadusemerald_chunk",
+        "id": "NagadusEmeraldChunk",
         "name": "Nagadus Emerald Chunk",
         "sortOrder": 9.014
       },
       "2_star": {
-        "id": "nagadusemerald_fragment",
+        "id": "NagadusEmeraldFragment",
         "name": "Nagadus Emerald Fragment",
         "sortOrder": 9.015
       },
       "1_star": {
-        "id": "nagadusemerald_sliver",
+        "id": "NagadusEmeraldSliver",
         "name": "Nagadus Emerald Sliver",
         "sortOrder": 9.016
       }
     }
   },
   {
-    "id": "vajradaamethyst",
+    "id": "VajradaAmethyst",
     "name": "Vajrada Amethyst",
     "color": "#A855F7",
     "element": "Electro",
     "tiers": {
       "4_star": {
-        "id": "vajradaamethyst_gemstone",
+        "id": "VajradaAmethystGemstone",
         "name": "Vajrada Amethyst Gemstone",
         "sortOrder": 9.017
       },
       "3_star": {
-        "id": "vajradaamethyst_chunk",
+        "id": "VajradaAmethystChunk",
         "name": "Vajrada Amethyst Chunk",
         "sortOrder": 9.018
       },
       "2_star": {
-        "id": "vajradaamethyst_fragment",
+        "id": "VajradaAmethystFragment",
         "name": "Vajrada Amethyst Fragment",
         "sortOrder": 9.019
       },
       "1_star": {
-        "id": "vajradaamethyst_sliver",
+        "id": "VajradaAmethystSliver",
         "name": "Vajrada Amethyst Sliver",
-        "sortOrder": 9.020
+        "sortOrder": 9.02
       }
     }
   },
   {
-    "id": "vayudaturquoise",
+    "id": "VayudaTurquoise",
     "name": "Vayuda Turquoise",
     "color": "#4EC9B0",
     "element": "Anemo",
     "tiers": {
       "4_star": {
-        "id": "vayudaturquoise_gemstone",
+        "id": "VayudaTurquoiseGemstone",
         "name": "Vayuda Turquoise Gemstone",
         "sortOrder": 9.021
       },
       "3_star": {
-        "id": "vayudaturquoise_chunk",
+        "id": "VayudaTurquoiseChunk",
         "name": "Vayuda Turquoise Chunk",
         "sortOrder": 9.022
       },
       "2_star": {
-        "id": "vayudaturquoise_fragment",
+        "id": "VayudaTurquoiseFragment",
         "name": "Vayuda Turquoise Fragment",
         "sortOrder": 9.023
       },
       "1_star": {
-        "id": "vayudaturquoise_sliver",
+        "id": "VayudaTurquoiseSliver",
         "name": "Vayuda Turquoise Sliver",
         "sortOrder": 9.024
       }
     }
   },
   {
-    "id": "shivadajade",
+    "id": "ShivadaJade",
     "name": "Shivada Jade",
     "color": "#BAE6FD",
     "element": "Cryo",
     "tiers": {
       "4_star": {
-        "id": "shivadajade_gemstone",
+        "id": "ShivadaJadeGemstone",
         "name": "Shivada Jade Gemstone",
         "sortOrder": 9.025
       },
       "3_star": {
-        "id": "shivadajade_chunk",
+        "id": "ShivadaJadeChunk",
         "name": "Shivada Jade Chunk",
         "sortOrder": 9.026
       },
       "2_star": {
-        "id": "shivadajade_fragment",
+        "id": "ShivadaJadeFragment",
         "name": "Shivada Jade Fragment",
         "sortOrder": 9.027
       },
       "1_star": {
-        "id": "shivadajade_sliver",
+        "id": "ShivadaJadeSliver",
         "name": "Shivada Jade Sliver",
         "sortOrder": 9.028
       }
     }
   },
   {
-    "id": "prithivatopaz",
+    "id": "PrithivaTopaz",
     "name": "Prithiva Topaz",
     "color": "#FAB632",
     "element": "Geo",
     "tiers": {
       "4_star": {
-        "id": "prithivatopaz_gemstone",
+        "id": "PrithivaTopazGemstone",
         "name": "Prithiva Topaz Gemstone",
         "sortOrder": 9.029
       },
       "3_star": {
-        "id": "prithivatopaz_chunk",
+        "id": "PrithivaTopazChunk",
         "name": "Prithiva Topaz Chunk",
-        "sortOrder": 9.030
+        "sortOrder": 9.03
       },
       "2_star": {
-        "id": "prithivatopaz_fragment",
+        "id": "PrithivaTopazFragment",
         "name": "Prithiva Topaz Fragment",
         "sortOrder": 9.031
       },
       "1_star": {
-        "id": "prithivatopaz_sliver",
+        "id": "PrithivaTopazSliver",
         "name": "Prithiva Topaz Sliver",
         "sortOrder": 9.032
       }

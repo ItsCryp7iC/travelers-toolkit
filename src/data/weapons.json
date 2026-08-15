@@ -1,6 +1,6 @@
 [
   {
-    "id": "dullblade",
+    "id": "DullBlade",
     "name": "Dull Blade",
     "rarity": "★",
     "type": "Sword",
@@ -12,7 +12,7 @@
     "release_order": 1.101
   },
   {
-    "id": "wastergreatsword",
+    "id": "WasterGreatsword",
     "name": "Waster Greatsword",
     "rarity": "★",
     "type": "Claymore",
@@ -24,7 +24,7 @@
     "release_order": 1.201
   },
   {
-    "id": "beginnersprotector",
+    "id": "BeginnersProtector",
     "name": "Beginner's Protector",
     "rarity": "★",
     "type": "Polearm",
@@ -36,7 +36,7 @@
     "release_order": 1.301
   },
   {
-    "id": "apprenticesnotes",
+    "id": "ApprenticesNotes",
     "name": "Apprentice's Notes",
     "rarity": "★",
     "type": "Catalyst",
@@ -48,7 +48,7 @@
     "release_order": 1.401
   },
   {
-    "id": "huntersbow",
+    "id": "HuntersBow",
     "name": "Hunter's Bow",
     "rarity": "★",
     "type": "Bow",
@@ -60,7 +60,7 @@
     "release_order": 1.501
   },
   {
-    "id": "silversword",
+    "id": "SilverSword",
     "name": "Silver Sword",
     "rarity": "★★",
     "type": "Sword",
@@ -72,7 +72,7 @@
     "release_order": 2.101
   },
   {
-    "id": "oldmercspal",
+    "id": "OldMercsPal",
     "name": "Old Merc's Pal",
     "rarity": "★★",
     "type": "Claymore",
@@ -84,7 +84,7 @@
     "release_order": 2.201
   },
   {
-    "id": "ironpoint",
+    "id": "IronPoint",
     "name": "Iron Point",
     "rarity": "★★",
     "type": "Polearm",
@@ -96,7 +96,7 @@
     "release_order": 2.301
   },
   {
-    "id": "pocketgrimoire",
+    "id": "PocketGrimoire",
     "name": "Pocket Grimoire",
     "rarity": "★★",
     "type": "Catalyst",
@@ -108,7 +108,7 @@
     "release_order": 2.401
   },
   {
-    "id": "seasonedhuntersbow",
+    "id": "SeasonedHuntersBow",
     "name": "Seasoned Hunters Bow",
     "rarity": "★★",
     "type": "Bow",
@@ -120,7 +120,7 @@
     "release_order": 2.501
   },
   {
-    "id": "coolsteel",
+    "id": "CoolSteel",
     "name": "Cool Steel",
     "rarity": "★★★",
     "type": "Sword",
@@ -132,7 +132,7 @@
     "release_order": 3.101
   },
   {
-    "id": "harbingerofdawn",
+    "id": "HarbingerofDawn",
     "name": "Harbingerof Dawn",
     "rarity": "★★★",
     "type": "Sword",
@@ -144,7 +144,7 @@
     "release_order": 3.102
   },
   {
-    "id": "travelershandysword",
+    "id": "TravelersHandySword",
     "name": "Traveler's Handy Sword",
     "rarity": "★★★",
     "type": "Sword",
@@ -156,7 +156,7 @@
     "release_order": 3.103
   },
   {
-    "id": "darkironsword",
+    "id": "DarkIronSword",
     "name": "Dark Iron Sword",
     "rarity": "★★★",
     "type": "Sword",
@@ -168,7 +168,7 @@
     "release_order": 3.104
   },
   {
-    "id": "filletblade",
+    "id": "FilletBlade",
     "name": "Fillet Blade",
     "rarity": "★★★",
     "type": "Sword",
@@ -180,7 +180,7 @@
     "release_order": 3.105
   },
   {
-    "id": "skyridersword",
+    "id": "SkyriderSword",
     "name": "Skyrider Sword",
     "rarity": "★★★",
     "type": "Sword",
@@ -192,7 +192,7 @@
     "release_order": 3.106
   },
   {
-    "id": "ferrousshadow",
+    "id": "FerrousShadow",
     "name": "Ferrous Shadow",
     "rarity": "★★★",
     "type": "Claymore",
@@ -204,7 +204,7 @@
     "release_order": 3.201
   },
   {
-    "id": "bloodtaintedgreatsword",
+    "id": "BloodtaintedGreatsword",
     "name": "Bloodtainted Greatsword",
     "rarity": "★★★",
     "type": "Claymore",
@@ -216,7 +216,7 @@
     "release_order": 3.202
   },
   {
-    "id": "whiteirongreatsword",
+    "id": "WhiteIronGreatsword",
     "name": "White Iron Greatsword",
     "rarity": "★★★",
     "type": "Claymore",
@@ -228,7 +228,7 @@
     "release_order": 3.203
   },
   {
-    "id": "debateclub",
+    "id": "DebateClub",
     "name": "Debate Club",
     "rarity": "★★★",
     "type": "Claymore",
@@ -240,7 +240,7 @@
     "release_order": 3.204
   },
   {
-    "id": "skyridergreatsword",
+    "id": "SkyriderGreatsword",
     "name": "Skyrider Greatsword",
     "rarity": "★★★",
     "type": "Claymore",
@@ -252,7 +252,7 @@
     "release_order": 3.205
   },
   {
-    "id": "whitetassel",
+    "id": "WhiteTassel",
     "name": "White Tassel",
     "rarity": "★★★",
     "type": "Polearm",
@@ -264,7 +264,7 @@
     "release_order": 3.301
   },
   {
-    "id": "halberd",
+    "id": "Halberd",
     "name": "Halberd",
     "rarity": "★★★",
     "type": "Polearm",
@@ -276,7 +276,7 @@
     "release_order": 3.302
   },
   {
-    "id": "blacktassel",
+    "id": "BlackTassel",
     "name": "Black Tassel",
     "rarity": "★★★",
     "type": "Polearm",
@@ -288,7 +288,7 @@
     "release_order": 3.303
   },
   {
-    "id": "magicguide",
+    "id": "MagicGuide",
     "name": "Magic Guide",
     "rarity": "★★★",
     "type": "Catalyst",
@@ -300,7 +300,7 @@
     "release_order": 3.401
   },
   {
-    "id": "thrillingtalesofdragonslayers",
+    "id": "ThrillingTalesofDragonSlayers",
     "name": "Thrilling Talesof Dragon Slayers",
     "rarity": "★★★",
     "type": "Catalyst",
@@ -312,7 +312,7 @@
     "release_order": 3.402
   },
   {
-    "id": "otherworldlystory",
+    "id": "OtherworldlyStory",
     "name": "Otherworldly Story",
     "rarity": "★★★",
     "type": "Catalyst",
@@ -324,7 +324,7 @@
     "release_order": 3.403
   },
   {
-    "id": "emeraldorb",
+    "id": "EmeraldOrb",
     "name": "Emerald Orb",
     "rarity": "★★★",
     "type": "Catalyst",
@@ -336,7 +336,7 @@
     "release_order": 3.404
   },
   {
-    "id": "twinnephrite",
+    "id": "TwinNephrite",
     "name": "Twin Nephrite",
     "rarity": "★★★",
     "type": "Catalyst",
@@ -348,7 +348,7 @@
     "release_order": 3.405
   },
   {
-    "id": "ravenbow",
+    "id": "RavenBow",
     "name": "Raven Bow",
     "rarity": "★★★",
     "type": "Bow",
@@ -360,7 +360,7 @@
     "release_order": 3.501
   },
   {
-    "id": "sharpshootersoath",
+    "id": "SharpshootersOath",
     "name": "Sharpshooter's Oath",
     "rarity": "★★★",
     "type": "Bow",
@@ -372,7 +372,7 @@
     "release_order": 3.502
   },
   {
-    "id": "recurvebow",
+    "id": "RecurveBow",
     "name": "Recurve Bow",
     "rarity": "★★★",
     "type": "Bow",
@@ -384,7 +384,7 @@
     "release_order": 3.503
   },
   {
-    "id": "slingshot",
+    "id": "Slingshot",
     "name": "Slingshot",
     "rarity": "★★★",
     "type": "Bow",
@@ -396,7 +396,7 @@
     "release_order": 3.504
   },
   {
-    "id": "messenger",
+    "id": "Messenger",
     "name": "Messenger",
     "rarity": "★★★",
     "type": "Bow",
@@ -408,7 +408,7 @@
     "release_order": 3.505
   },
   {
-    "id": "favoniussword",
+    "id": "FavoniusSword",
     "name": "Favonius Sword",
     "rarity": "★★★★",
     "type": "Sword",
@@ -420,7 +420,7 @@
     "release_order": 4.101
   },
   {
-    "id": "theflute",
+    "id": "TheFlute",
     "name": "The Flute",
     "rarity": "★★★★",
     "type": "Sword",
@@ -432,7 +432,7 @@
     "release_order": 4.102
   },
   {
-    "id": "sacrificialsword",
+    "id": "SacrificialSword",
     "name": "Sacrificial Sword",
     "rarity": "★★★★",
     "type": "Sword",
@@ -444,7 +444,7 @@
     "release_order": 4.103
   },
   {
-    "id": "royallongsword",
+    "id": "RoyalLongsword",
     "name": "Royal Longsword",
     "rarity": "★★★★",
     "type": "Sword",
@@ -456,7 +456,7 @@
     "release_order": 4.104
   },
   {
-    "id": "lionsroar",
+    "id": "LionsRoar",
     "name": "Lion's Roar",
     "rarity": "★★★★",
     "type": "Sword",
@@ -468,7 +468,7 @@
     "release_order": 4.105
   },
   {
-    "id": "prototyperancour",
+    "id": "PrototypeRancour",
     "name": "Prototype Rancour",
     "rarity": "★★★★",
     "type": "Sword",
@@ -480,7 +480,7 @@
     "release_order": 4.106
   },
   {
-    "id": "ironsting",
+    "id": "IronSting",
     "name": "Iron Sting",
     "rarity": "★★★★",
     "type": "Sword",
@@ -492,7 +492,7 @@
     "release_order": 4.107
   },
   {
-    "id": "blackclifflongsword",
+    "id": "BlackcliffLongsword",
     "name": "Blackcliff Longsword",
     "rarity": "★★★★",
     "type": "Sword",
@@ -504,7 +504,7 @@
     "release_order": 4.108
   },
   {
-    "id": "theblacksword",
+    "id": "TheBlackSword",
     "name": "The Black Sword",
     "rarity": "★★★★",
     "type": "Sword",
@@ -516,7 +516,7 @@
     "release_order": 4.109
   },
   {
-    "id": "swordofdescension",
+    "id": "SwordofDescension",
     "name": "Swordof Descension",
     "rarity": "★★★★",
     "type": "Sword",
@@ -528,7 +528,7 @@
     "release_order": 4.11
   },
   {
-    "id": "festeringdesire",
+    "id": "FesteringDesire",
     "name": "Festering Desire",
     "rarity": "★★★★",
     "type": "Sword",
@@ -540,7 +540,7 @@
     "release_order": 4.111
   },
   {
-    "id": "thealleyflash",
+    "id": "TheAlleyFlash",
     "name": "The Alley Flash",
     "rarity": "★★★★",
     "type": "Sword",
@@ -552,7 +552,7 @@
     "release_order": 4.112
   },
   {
-    "id": "amenomakageuchi",
+    "id": "AmenomaKageuchi",
     "name": "Amenoma Kageuchi",
     "rarity": "★★★★",
     "type": "Sword",
@@ -564,7 +564,7 @@
     "release_order": 4.113
   },
   {
-    "id": "cinnabarspindle",
+    "id": "CinnabarSpindle",
     "name": "Cinnabar Spindle",
     "rarity": "★★★★",
     "type": "Sword",
@@ -576,7 +576,7 @@
     "release_order": 4.114
   },
   {
-    "id": "kagotsurubeisshin",
+    "id": "KagotsurubeIsshin",
     "name": "Kagotsurube Isshin",
     "rarity": "★★★★",
     "type": "Sword",
@@ -588,7 +588,7 @@
     "release_order": 4.115
   },
   {
-    "id": "sapwoodblade",
+    "id": "SapwoodBlade",
     "name": "Sapwood Blade",
     "rarity": "★★★★",
     "type": "Sword",
@@ -600,7 +600,7 @@
     "release_order": 4.116
   },
   {
-    "id": "xiphosmoonlight",
+    "id": "XiphosMoonlight",
     "name": "Xiphos' Moonlight",
     "rarity": "★★★★",
     "type": "Sword",
@@ -612,7 +612,7 @@
     "release_order": 4.117
   },
   {
-    "id": "toukaboushigure",
+    "id": "ToukabouShigure",
     "name": "Toukabou Shigure",
     "rarity": "★★★★",
     "type": "Sword",
@@ -624,7 +624,7 @@
     "release_order": 4.118
   },
   {
-    "id": "wolffang",
+    "id": "WolfFang",
     "name": "Wolf Fang",
     "rarity": "★★★★",
     "type": "Sword",
@@ -636,7 +636,7 @@
     "release_order": 4.119
   },
   {
-    "id": "finaleofthedeep",
+    "id": "FinaleoftheDeep",
     "name": "Finaleofthe Deep",
     "rarity": "★★★★",
     "type": "Sword",
@@ -648,7 +648,7 @@
     "release_order": 4.12
   },
   {
-    "id": "fleuvecendreferryman",
+    "id": "FleuveCendreFerryman",
     "name": "Fleuve Cendre Ferryman",
     "rarity": "★★★★",
     "type": "Sword",
@@ -660,7 +660,7 @@
     "release_order": 4.121
   },
   {
-    "id": "thedockhandsassistant",
+    "id": "TheDockhandsAssistant",
     "name": "The Dockhand's Assistant",
     "rarity": "★★★★",
     "type": "Sword",
@@ -672,7 +672,7 @@
     "release_order": 4.122
   },
   {
-    "id": "swordofnarzissenkreuz",
+    "id": "SwordofNarzissenkreuz",
     "name": "Swordof Narzissenkreuz",
     "rarity": "★★★★",
     "type": "Sword",
@@ -684,7 +684,7 @@
     "release_order": 4.123
   },
   {
-    "id": "fluteofezpitzal",
+    "id": "FluteofEzpitzal",
     "name": "Fluteof Ezpitzal",
     "rarity": "★★★★",
     "type": "Sword",
@@ -696,7 +696,7 @@
     "release_order": 4.124
   },
   {
-    "id": "sturdybone",
+    "id": "SturdyBone",
     "name": "Sturdy Bone",
     "rarity": "★★★★",
     "type": "Sword",
@@ -708,7 +708,7 @@
     "release_order": 4.125
   },
   {
-    "id": "moonweaversdawn",
+    "id": "MoonweaversDawn",
     "name": "Moonweavers Dawn",
     "rarity": "★★★★",
     "type": "Sword",
@@ -720,7 +720,7 @@
     "release_order": 4.126
   },
   {
-    "id": "calamityofeshu",
+    "id": "CalamityofEshu",
     "name": "Calamityof Eshu",
     "rarity": "★★★★",
     "type": "Sword",
@@ -732,7 +732,7 @@
     "release_order": 4.126
   },
   {
-    "id": "serenityscall",
+    "id": "SerenitysCall",
     "name": "Serenity's Call",
     "rarity": "★★★★",
     "type": "Sword",
@@ -744,7 +744,7 @@
     "release_order": 4.127
   },
   {
-    "id": "favoniusgreatsword",
+    "id": "FavoniusGreatsword",
     "name": "Favonius Greatsword",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -756,7 +756,7 @@
     "release_order": 4.201
   },
   {
-    "id": "thebell",
+    "id": "TheBell",
     "name": "The Bell",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -768,7 +768,7 @@
     "release_order": 4.202
   },
   {
-    "id": "sacrificialgreatsword",
+    "id": "SacrificialGreatsword",
     "name": "Sacrificial Greatsword",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -780,7 +780,7 @@
     "release_order": 4.203
   },
   {
-    "id": "royalgreatsword",
+    "id": "RoyalGreatsword",
     "name": "Royal Greatsword",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -792,7 +792,7 @@
     "release_order": 4.204
   },
   {
-    "id": "rainslasher",
+    "id": "Rainslasher",
     "name": "Rainslasher",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -804,7 +804,7 @@
     "release_order": 4.205
   },
   {
-    "id": "prototypearchaic",
+    "id": "PrototypeArchaic",
     "name": "Prototype Archaic",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -816,7 +816,7 @@
     "release_order": 4.206
   },
   {
-    "id": "whiteblind",
+    "id": "Whiteblind",
     "name": "Whiteblind",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -828,7 +828,7 @@
     "release_order": 4.207
   },
   {
-    "id": "blackcliffslasher",
+    "id": "BlackcliffSlasher",
     "name": "Blackcliff Slasher",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -840,7 +840,7 @@
     "release_order": 4.208
   },
   {
-    "id": "serpentspine",
+    "id": "SerpentSpine",
     "name": "Serpent Spine",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -852,7 +852,7 @@
     "release_order": 4.209
   },
   {
-    "id": "snowtombedstarsilver",
+    "id": "SnowTombedStarsilver",
     "name": "Snow Tombed Starsilver",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -864,7 +864,7 @@
     "release_order": 4.21
   },
   {
-    "id": "lithicblade",
+    "id": "LithicBlade",
     "name": "Lithic Blade",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -876,7 +876,7 @@
     "release_order": 4.211
   },
   {
-    "id": "katsuragikirinagamasa",
+    "id": "KatsuragikiriNagamasa",
     "name": "Katsuragikiri Nagamasa",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -888,7 +888,7 @@
     "release_order": 4.212
   },
   {
-    "id": "luxurioussealord",
+    "id": "LuxuriousSeaLord",
     "name": "Luxurious Sea Lord",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -900,7 +900,7 @@
     "release_order": 4.213
   },
   {
-    "id": "akuoumaru",
+    "id": "Akuoumaru",
     "name": "Akuoumaru",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -912,7 +912,7 @@
     "release_order": 4.214
   },
   {
-    "id": "forestregalia",
+    "id": "ForestRegalia",
     "name": "Forest Regalia",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -924,7 +924,7 @@
     "release_order": 4.215
   },
   {
-    "id": "makhairaaquamarine",
+    "id": "MakhairaAquamarine",
     "name": "Makhaira Aquamarine",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -936,7 +936,7 @@
     "release_order": 4.216
   },
   {
-    "id": "mailedflower",
+    "id": "MailedFlower",
     "name": "Mailed Flower",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -948,7 +948,7 @@
     "release_order": 4.217
   },
   {
-    "id": "talkingstick",
+    "id": "TalkingStick",
     "name": "Talking Stick",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -960,7 +960,7 @@
     "release_order": 4.218
   },
   {
-    "id": "tidalshadow",
+    "id": "TidalShadow",
     "name": "Tidal Shadow",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -972,7 +972,7 @@
     "release_order": 4.219
   },
   {
-    "id": "portablepowersaw",
+    "id": "PortablePowerSaw",
     "name": "Portable Power Saw",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -984,7 +984,7 @@
     "release_order": 4.22
   },
   {
-    "id": "ultimateoverlordsmegamagicsword",
+    "id": "UltimateOverlordsMegaMagicSword",
     "name": "Ultimate Overlord's Mega Magic Sword",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -996,7 +996,7 @@
     "release_order": 4.221
   },
   {
-    "id": "earthshaker",
+    "id": "EarthShaker",
     "name": "Earth Shaker",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -1008,7 +1008,7 @@
     "release_order": 4.222
   },
   {
-    "id": "fruitfulhook",
+    "id": "FruitfulHook",
     "name": "Fruitful Hook",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -1020,7 +1020,7 @@
     "release_order": 4.223
   },
   {
-    "id": "flameforgedinsight",
+    "id": "FlameForgedInsight",
     "name": "Flame Forged Insight",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -1032,7 +1032,7 @@
     "release_order": 4.224
   },
   {
-    "id": "masterkey",
+    "id": "MasterKey",
     "name": "Master Key",
     "rarity": "★★★★",
     "type": "Claymore",
@@ -1044,7 +1044,7 @@
     "release_order": 4.225
   },
   {
-    "id": "dragonsbane",
+    "id": "DragonsBane",
     "name": "Dragon's Bane",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1056,7 +1056,7 @@
     "release_order": 4.301
   },
   {
-    "id": "prototypestarglitter",
+    "id": "PrototypeStarglitter",
     "name": "Prototype Starglitter",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1068,7 +1068,7 @@
     "release_order": 4.302
   },
   {
-    "id": "crescentpike",
+    "id": "CrescentPike",
     "name": "Crescent Pike",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1080,7 +1080,7 @@
     "release_order": 4.303
   },
   {
-    "id": "blackcliffpole",
+    "id": "BlackcliffPole",
     "name": "Blackcliff Pole",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1092,7 +1092,7 @@
     "release_order": 4.304
   },
   {
-    "id": "deathmatch",
+    "id": "Deathmatch",
     "name": "Deathmatch",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1104,7 +1104,7 @@
     "release_order": 4.305
   },
   {
-    "id": "favoniuslance",
+    "id": "FavoniusLance",
     "name": "Favonius Lance",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1116,7 +1116,7 @@
     "release_order": 4.306
   },
   {
-    "id": "royalspear",
+    "id": "RoyalSpear",
     "name": "Royal Spear",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1128,7 +1128,7 @@
     "release_order": 4.307
   },
   {
-    "id": "dragonspinespear",
+    "id": "DragonspineSpear",
     "name": "Dragonspine Spear",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1140,7 +1140,7 @@
     "release_order": 4.308
   },
   {
-    "id": "lithicspear",
+    "id": "LithicSpear",
     "name": "Lithic Spear",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1152,7 +1152,7 @@
     "release_order": 4.309
   },
   {
-    "id": "kitaincrossspear",
+    "id": "KitainCrossSpear",
     "name": "Kitain Cross Spear",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1164,7 +1164,7 @@
     "release_order": 4.31
   },
   {
-    "id": "thecatch",
+    "id": "TheCatch",
     "name": "The Catch",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1176,7 +1176,7 @@
     "release_order": 4.311
   },
   {
-    "id": "wavebreakersfin",
+    "id": "WavebreakersFin",
     "name": "Wavebreaker's Fin",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1188,7 +1188,7 @@
     "release_order": 4.312
   },
   {
-    "id": "moonpiercer",
+    "id": "Moonpiercer",
     "name": "Moonpiercer",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1200,7 +1200,7 @@
     "release_order": 4.313
   },
   {
-    "id": "missivewindspear",
+    "id": "MissiveWindspear",
     "name": "Missive Windspear",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1212,7 +1212,7 @@
     "release_order": 4.314
   },
   {
-    "id": "rightfulreward",
+    "id": "RightfulReward",
     "name": "Rightful Reward",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1224,7 +1224,7 @@
     "release_order": 4.315
   },
   {
-    "id": "balladofthefjords",
+    "id": "BalladoftheFjords",
     "name": "Balladofthe Fjords",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1236,7 +1236,7 @@
     "release_order": 4.316
   },
   {
-    "id": "prospectorsdrill",
+    "id": "ProspectorsDrill",
     "name": "Prospector's Drill",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1248,7 +1248,7 @@
     "release_order": 4.317
   },
   {
-    "id": "dialoguesofthedesertsages",
+    "id": "DialoguesoftheDesertSages",
     "name": "Dialoguesofthe Desert Sages",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1260,7 +1260,7 @@
     "release_order": 4.318
   },
   {
-    "id": "footprintoftherainbow",
+    "id": "FootprintoftheRainbow",
     "name": "Footprintofthe Rainbow",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1272,7 +1272,7 @@
     "release_order": 4.319
   },
   {
-    "id": "mountainbracingbolt",
+    "id": "MountainBracingBolt",
     "name": "Mountain Bracing Bolt",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1284,7 +1284,7 @@
     "release_order": 4.32
   },
   {
-    "id": "tamayurateinoohanashi",
+    "id": "TamayurateinoOhanashi",
     "name": "Tamayurateino Ohanashi",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1296,7 +1296,7 @@
     "release_order": 4.321
   },
   {
-    "id": "prospectorsshovel",
+    "id": "ProspectorsShovel",
     "name": "Prospector's Shovel",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1308,7 +1308,7 @@
     "release_order": 4.322
   },
   {
-    "id": "sacrificersstaff",
+    "id": "SacrificersStaff",
     "name": "Sacrificers Staff",
     "rarity": "★★★★",
     "type": "Polearm",
@@ -1320,7 +1320,7 @@
     "release_order": 4.323
   },
   {
-    "id": "favoniuscodex",
+    "id": "FavoniusCodex",
     "name": "Favonius Codex",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1332,7 +1332,7 @@
     "release_order": 4.401
   },
   {
-    "id": "thewidsith",
+    "id": "TheWidsith",
     "name": "The Widsith",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1344,7 +1344,7 @@
     "release_order": 4.402
   },
   {
-    "id": "sacrificialfragments",
+    "id": "SacrificialFragments",
     "name": "Sacrificial Fragments",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1356,7 +1356,7 @@
     "release_order": 4.403
   },
   {
-    "id": "royalgrimoire",
+    "id": "RoyalGrimoire",
     "name": "Royal Grimoire",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1368,7 +1368,7 @@
     "release_order": 4.404
   },
   {
-    "id": "solarpearl",
+    "id": "SolarPearl",
     "name": "Solar Pearl",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1380,7 +1380,7 @@
     "release_order": 4.405
   },
   {
-    "id": "prototypeamber",
+    "id": "PrototypeAmber",
     "name": "Prototype Amber",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1392,7 +1392,7 @@
     "release_order": 4.406
   },
   {
-    "id": "mappamare",
+    "id": "MappaMare",
     "name": "Mappa Mare",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1404,7 +1404,7 @@
     "release_order": 4.407
   },
   {
-    "id": "blackcliffagate",
+    "id": "BlackcliffAgate",
     "name": "Blackcliff Agate",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1416,7 +1416,7 @@
     "release_order": 4.408
   },
   {
-    "id": "eyeofperception",
+    "id": "EyeofPerception",
     "name": "Eyeof Perception",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1428,7 +1428,7 @@
     "release_order": 4.409
   },
   {
-    "id": "frostbearer",
+    "id": "Frostbearer",
     "name": "Frostbearer",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1440,7 +1440,7 @@
     "release_order": 4.41
   },
   {
-    "id": "wineandsong",
+    "id": "WineandSong",
     "name": "Wineand Song",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1452,7 +1452,7 @@
     "release_order": 4.411
   },
   {
-    "id": "dodocotales",
+    "id": "DodocoTales",
     "name": "Dodoco Tales",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1464,7 +1464,7 @@
     "release_order": 4.412
   },
   {
-    "id": "hakushinring",
+    "id": "HakushinRing",
     "name": "Hakushin Ring",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1476,7 +1476,7 @@
     "release_order": 4.413
   },
   {
-    "id": "oathsworneye",
+    "id": "OathswornEye",
     "name": "Oathsworn Eye",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1488,7 +1488,7 @@
     "release_order": 4.414
   },
   {
-    "id": "fruitoffulfillment",
+    "id": "FruitofFulfillment",
     "name": "Fruitof Fulfillment",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1500,7 +1500,7 @@
     "release_order": 4.415
   },
   {
-    "id": "wanderingevenstar",
+    "id": "WanderingEvenstar",
     "name": "Wandering Evenstar",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1512,7 +1512,7 @@
     "release_order": 4.416
   },
   {
-    "id": "sacrificialjade",
+    "id": "SacrificialJade",
     "name": "Sacrificial Jade",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1524,7 +1524,7 @@
     "release_order": 4.417
   },
   {
-    "id": "flowingpurity",
+    "id": "FlowingPurity",
     "name": "Flowing Purity",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1536,7 +1536,7 @@
     "release_order": 4.418
   },
   {
-    "id": "balladoftheboundlessblue",
+    "id": "BalladoftheBoundlessBlue",
     "name": "Balladofthe Boundless Blue",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1548,7 +1548,7 @@
     "release_order": 4.419
   },
   {
-    "id": "ashgravendrinkinghorn",
+    "id": "AshGravenDrinkingHorn",
     "name": "Ash Graven Drinking Horn",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1560,7 +1560,7 @@
     "release_order": 4.42
   },
   {
-    "id": "ringofyaxche",
+    "id": "RingofYaxche",
     "name": "Ringof Yaxche",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1572,7 +1572,7 @@
     "release_order": 4.421
   },
   {
-    "id": "waveridingwhirl",
+    "id": "WaveridingWhirl",
     "name": "Waveriding Whirl",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1584,7 +1584,7 @@
     "release_order": 4.422
   },
   {
-    "id": "etherlightspindlelute",
+    "id": "EtherlightSpindlelute",
     "name": "Etherlight Spindlelute",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1596,7 +1596,7 @@
     "release_order": 4.423
   },
   {
-    "id": "blackmarrowlantern",
+    "id": "BlackmarrowLantern",
     "name": "Blackmarrow Lantern",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1608,7 +1608,7 @@
     "release_order": 4.424
   },
   {
-    "id": "dawningfrost",
+    "id": "DawningFrost",
     "name": "Dawning Frost",
     "rarity": "★★★★",
     "type": "Catalyst",
@@ -1620,7 +1620,7 @@
     "release_order": 4.425
   },
   {
-    "id": "favoniuswarbow",
+    "id": "FavoniusWarbow",
     "name": "Favonius Warbow",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1632,7 +1632,7 @@
     "release_order": 4.501
   },
   {
-    "id": "thestringless",
+    "id": "TheStringless",
     "name": "The Stringless",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1644,7 +1644,7 @@
     "release_order": 4.502
   },
   {
-    "id": "sacrificialbow",
+    "id": "SacrificialBow",
     "name": "Sacrificial Bow",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1656,7 +1656,7 @@
     "release_order": 4.503
   },
   {
-    "id": "royalbow",
+    "id": "RoyalBow",
     "name": "Royal Bow",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1668,7 +1668,7 @@
     "release_order": 4.504
   },
   {
-    "id": "rust",
+    "id": "Rust",
     "name": "Rust",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1680,7 +1680,7 @@
     "release_order": 4.505
   },
   {
-    "id": "prototypecrescent",
+    "id": "PrototypeCrescent",
     "name": "Prototype Crescent",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1692,7 +1692,7 @@
     "release_order": 4.506
   },
   {
-    "id": "compoundbow",
+    "id": "CompoundBow",
     "name": "Compound Bow",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1704,7 +1704,7 @@
     "release_order": 4.507
   },
   {
-    "id": "blackcliffwarbow",
+    "id": "BlackcliffWarbow",
     "name": "Blackcliff Warbow",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1716,7 +1716,7 @@
     "release_order": 4.508
   },
   {
-    "id": "theviridescenthunt",
+    "id": "TheViridescentHunt",
     "name": "The Viridescent Hunt",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1728,7 +1728,7 @@
     "release_order": 4.509
   },
   {
-    "id": "alleyhunter",
+    "id": "AlleyHunter",
     "name": "Alley Hunter",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1740,7 +1740,7 @@
     "release_order": 4.51
   },
   {
-    "id": "windblumeode",
+    "id": "WindblumeOde",
     "name": "Windblume Ode",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1752,7 +1752,7 @@
     "release_order": 4.511
   },
   {
-    "id": "mitternachtswaltz",
+    "id": "MitternachtsWaltz",
     "name": "Mitternachts Waltz",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1764,7 +1764,7 @@
     "release_order": 4.512
   },
   {
-    "id": "hamayumi",
+    "id": "Hamayumi",
     "name": "Hamayumi",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1776,7 +1776,7 @@
     "release_order": 4.513
   },
   {
-    "id": "predator",
+    "id": "Predator",
     "name": "Predator",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1788,7 +1788,7 @@
     "release_order": 4.514
   },
   {
-    "id": "mouunsmoon",
+    "id": "MouunsMoon",
     "name": "Mouuns Moon",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1800,7 +1800,7 @@
     "release_order": 4.515
   },
   {
-    "id": "fadingtwilight",
+    "id": "FadingTwilight",
     "name": "Fading Twilight",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1812,7 +1812,7 @@
     "release_order": 4.516
   },
   {
-    "id": "kingssquire",
+    "id": "KingsSquire",
     "name": "King's Squire",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1824,7 +1824,7 @@
     "release_order": 4.517
   },
   {
-    "id": "endoftheline",
+    "id": "EndoftheLine",
     "name": "Endofthe Line",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1836,7 +1836,7 @@
     "release_order": 4.518
   },
   {
-    "id": "ibispiercer",
+    "id": "IbisPiercer",
     "name": "Ibis Piercer",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1848,7 +1848,7 @@
     "release_order": 4.519
   },
   {
-    "id": "scionoftheblazingsun",
+    "id": "ScionoftheBlazingSun",
     "name": "Scionofthe Blazing Sun",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1860,7 +1860,7 @@
     "release_order": 4.52
   },
   {
-    "id": "songofstillness",
+    "id": "SongofStillness",
     "name": "Songof Stillness",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1872,7 +1872,7 @@
     "release_order": 4.521
   },
   {
-    "id": "rangegauge",
+    "id": "RangeGauge",
     "name": "Range Gauge",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1884,7 +1884,7 @@
     "release_order": 4.522
   },
   {
-    "id": "cloudforged",
+    "id": "Cloudforged",
     "name": "Cloudforged",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1896,7 +1896,7 @@
     "release_order": 4.523
   },
   {
-    "id": "chainbreaker",
+    "id": "ChainBreaker",
     "name": "Chain Breaker",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1908,7 +1908,7 @@
     "release_order": 4.524
   },
   {
-    "id": "flowerwreathedfeathers",
+    "id": "FlowerWreathedFeathers",
     "name": "Flower Wreathed Feathers",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1920,7 +1920,7 @@
     "release_order": 4.525
   },
   {
-    "id": "sequenceofsolitude",
+    "id": "SequenceofSolitude",
     "name": "Sequenceof Solitude",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1932,7 +1932,7 @@
     "release_order": 4.526
   },
   {
-    "id": "snarehook",
+    "id": "SnareHook",
     "name": "Snare Hook",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1944,7 +1944,7 @@
     "release_order": 4.527
   },
   {
-    "id": "rainbowserpentsrainbow",
+    "id": "RainbowSerpentsRainBow",
     "name": "Rainbow Serpents Rain Bow",
     "rarity": "★★★★",
     "type": "Bow",
@@ -1956,7 +1956,7 @@
     "release_order": 4.528
   },
   {
-    "id": "aquilafavonia",
+    "id": "AquilaFavonia",
     "name": "Aquila Favonia",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -1968,7 +1968,7 @@
     "release_order": 5.101
   },
   {
-    "id": "skywardblade",
+    "id": "SkywardBlade",
     "name": "Skyward Blade",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -1980,7 +1980,7 @@
     "release_order": 5.102
   },
   {
-    "id": "summitshaper",
+    "id": "SummitShaper",
     "name": "Summit Shaper",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -1992,7 +1992,7 @@
     "release_order": 5.103
   },
   {
-    "id": "primordialjadecutter",
+    "id": "PrimordialJadeCutter",
     "name": "Primordial Jade Cutter",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2004,7 +2004,7 @@
     "release_order": 5.104
   },
   {
-    "id": "freedomsworn",
+    "id": "FreedomSworn",
     "name": "Freedom Sworn",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2016,7 +2016,7 @@
     "release_order": 5.105
   },
   {
-    "id": "mistsplitterreforged",
+    "id": "MistsplitterReforged",
     "name": "Mistsplitter Reforged",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2028,7 +2028,7 @@
     "release_order": 5.106
   },
   {
-    "id": "harangeppakufutsu",
+    "id": "HaranGeppakuFutsu",
     "name": "Haran Geppaku Futsu",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2040,7 +2040,7 @@
     "release_order": 5.107
   },
   {
-    "id": "keyofkhajnisut",
+    "id": "KeyofKhajNisut",
     "name": "Keyof Khaj Nisut",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2052,7 +2052,7 @@
     "release_order": 5.108
   },
   {
-    "id": "lightoffoliarincision",
+    "id": "LightofFoliarIncision",
     "name": "Lightof Foliar Incision",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2064,7 +2064,7 @@
     "release_order": 5.109
   },
   {
-    "id": "splendoroftranquilwaters",
+    "id": "SplendorofTranquilWaters",
     "name": "Splendorof Tranquil Waters",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2076,7 +2076,7 @@
     "release_order": 5.11
   },
   {
-    "id": "urakumisugiri",
+    "id": "UrakuMisugiri",
     "name": "Uraku Misugiri",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2088,7 +2088,7 @@
     "release_order": 5.111
   },
   {
-    "id": "absolution",
+    "id": "Absolution",
     "name": "Absolution",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2100,7 +2100,7 @@
     "release_order": 5.112
   },
   {
-    "id": "peakpatrolsong",
+    "id": "PeakPatrolSong",
     "name": "Peak Patrol Song",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2112,7 +2112,7 @@
     "release_order": 5.113
   },
   {
-    "id": "azurelight",
+    "id": "Azurelight",
     "name": "Azurelight",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2124,7 +2124,7 @@
     "release_order": 5.114
   },
   {
-    "id": "athameartis",
+    "id": "AthameArtis",
     "name": "Athame Artis",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2136,7 +2136,7 @@
     "release_order": 5.115
   },
   {
-    "id": "lightbearingmoonshard",
+    "id": "LightbearingMoonshard",
     "name": "Lightbearing Moonshard",
     "rarity": "★★★★★",
     "type": "Sword",
@@ -2148,7 +2148,7 @@
     "release_order": 5.116
   },
   {
-    "id": "skywardpride",
+    "id": "SkywardPride",
     "name": "Skyward Pride",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2160,7 +2160,7 @@
     "release_order": 5.201
   },
   {
-    "id": "wolfsgravestone",
+    "id": "WolfsGravestone",
     "name": "Wolf's Gravestone",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2172,7 +2172,7 @@
     "release_order": 5.202
   },
   {
-    "id": "theunforged",
+    "id": "TheUnforged",
     "name": "The Unforged",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2184,7 +2184,7 @@
     "release_order": 5.203
   },
   {
-    "id": "songofbrokenpines",
+    "id": "SongofBrokenPines",
     "name": "Songof Broken Pines",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2196,7 +2196,7 @@
     "release_order": 5.204
   },
   {
-    "id": "redhornstonethresher",
+    "id": "RedhornStonethresher",
     "name": "Redhorn Stonethresher",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2208,7 +2208,7 @@
     "release_order": 5.205
   },
   {
-    "id": "beaconofthereedsea",
+    "id": "BeaconoftheReedSea",
     "name": "Beaconofthe Reed Sea",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2220,7 +2220,7 @@
     "release_order": 5.206
   },
   {
-    "id": "verdict",
+    "id": "Verdict",
     "name": "Verdict",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2232,7 +2232,7 @@
     "release_order": 5.207
   },
   {
-    "id": "fangofthemountainking",
+    "id": "FangoftheMountainKing",
     "name": "Fangofthe Mountain King",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2244,7 +2244,7 @@
     "release_order": 5.208
   },
   {
-    "id": "athousandblazingsuns",
+    "id": "AThousandBlazingSuns",
     "name": "A Thousand Blazing Suns",
     "rarity": "★★★★★",
     "type": "Claymore",
@@ -2256,7 +2256,7 @@
     "release_order": 5.209
   },
   {
-    "id": "primordialjadewingedspear",
+    "id": "PrimordialJadeWingedSpear",
     "name": "Primordial Jade Winged Spear",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2268,7 +2268,7 @@
     "release_order": 5.301
   },
   {
-    "id": "skywardspine",
+    "id": "SkywardSpine",
     "name": "Skyward Spine",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2280,7 +2280,7 @@
     "release_order": 5.302
   },
   {
-    "id": "vortexvanquisher",
+    "id": "VortexVanquisher",
     "name": "Vortex Vanquisher",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2292,7 +2292,7 @@
     "release_order": 5.303
   },
   {
-    "id": "staffofhoma",
+    "id": "StaffofHoma",
     "name": "Staffof Homa",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2304,7 +2304,7 @@
     "release_order": 5.304
   },
   {
-    "id": "engulfinglightning",
+    "id": "EngulfingLightning",
     "name": "Engulfing Lightning",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2316,7 +2316,7 @@
     "release_order": 5.305
   },
   {
-    "id": "calamityqueller",
+    "id": "CalamityQueller",
     "name": "Calamity Queller",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2328,7 +2328,7 @@
     "release_order": 5.306
   },
   {
-    "id": "staffofthescarletsands",
+    "id": "StaffoftheScarletSands",
     "name": "Staffofthe Scarlet Sands",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2340,7 +2340,7 @@
     "release_order": 5.307
   },
   {
-    "id": "crimsonmoonssemblance",
+    "id": "CrimsonMoonsSemblance",
     "name": "Crimson Moon's Semblance",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2352,7 +2352,7 @@
     "release_order": 5.308
   },
   {
-    "id": "lumidouceelegy",
+    "id": "LumidouceElegy",
     "name": "Lumidouce Elegy",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2364,7 +2364,7 @@
     "release_order": 5.309
   },
   {
-    "id": "symphonistofscents",
+    "id": "SymphonistofScents",
     "name": "Symphonistof Scents",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2376,7 +2376,7 @@
     "release_order": 5.31
   },
   {
-    "id": "fracturedhalo",
+    "id": "FracturedHalo",
     "name": "Fractured Halo",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2388,7 +2388,7 @@
     "release_order": 5.311
   },
   {
-    "id": "bloodsoakedruins",
+    "id": "BloodsoakedRuins",
     "name": "Bloodsoaked Ruins",
     "rarity": "★★★★★",
     "type": "Polearm",
@@ -2400,7 +2400,7 @@
     "release_order": 5.312
   },
   {
-    "id": "skywardatlas",
+    "id": "SkywardAtlas",
     "name": "Skyward Atlas",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2412,7 +2412,7 @@
     "release_order": 5.401
   },
   {
-    "id": "lostprayertothesacredwinds",
+    "id": "LostPrayertotheSacredWinds",
     "name": "Lost Prayertothe Sacred Winds",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2424,7 +2424,7 @@
     "release_order": 5.402
   },
   {
-    "id": "memoryofdust",
+    "id": "MemoryofDust",
     "name": "Memoryof Dust",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2436,7 +2436,7 @@
     "release_order": 5.403
   },
   {
-    "id": "everlastingmoonglow",
+    "id": "EverlastingMoonglow",
     "name": "Everlasting Moonglow",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2448,7 +2448,7 @@
     "release_order": 5.404
   },
   {
-    "id": "kagurasverity",
+    "id": "KagurasVerity",
     "name": "Kagura's Verity",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2460,7 +2460,7 @@
     "release_order": 5.405
   },
   {
-    "id": "athousandfloatingdreams",
+    "id": "AThousandFloatingDreams",
     "name": "A Thousand Floating Dreams",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2472,7 +2472,7 @@
     "release_order": 5.406
   },
   {
-    "id": "tulaytullahsremembrance",
+    "id": "TulaytullahsRemembrance",
     "name": "Tulaytullah's Remembrance",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2484,7 +2484,7 @@
     "release_order": 5.407
   },
   {
-    "id": "jadefallssplendor",
+    "id": "JadefallsSplendor",
     "name": "Jadefall's Splendor",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2496,7 +2496,7 @@
     "release_order": 5.408
   },
   {
-    "id": "cashflowsupervision",
+    "id": "CashflowSupervision",
     "name": "Cashflow Supervision",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2508,7 +2508,7 @@
     "release_order": 5.409
   },
   {
-    "id": "tomeoftheeternalflow",
+    "id": "TomeoftheEternalFlow",
     "name": "Tomeofthe Eternal Flow",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2520,7 +2520,7 @@
     "release_order": 5.41
   },
   {
-    "id": "cranesechoingcall",
+    "id": "CranesEchoingCall",
     "name": "Crane's Echoing Call",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2532,7 +2532,7 @@
     "release_order": 5.411
   },
   {
-    "id": "surfsup",
+    "id": "SurfsUp",
     "name": "Surf's Up",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2544,7 +2544,7 @@
     "release_order": 5.412
   },
   {
-    "id": "starcallerswatch",
+    "id": "StarcallersWatch",
     "name": "Starcaller's Watch",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2556,7 +2556,7 @@
     "release_order": 5.413
   },
   {
-    "id": "sunnymorningsleepin",
+    "id": "SunnyMorningSleepIn",
     "name": "Sunny Morning Sleep In",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2568,7 +2568,7 @@
     "release_order": 5.414
   },
   {
-    "id": "vividnotions",
+    "id": "VividNotions",
     "name": "Vivid Notions",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2580,7 +2580,7 @@
     "release_order": 5.415
   },
   {
-    "id": "nightweaverslookingglass",
+    "id": "NightweaversLookingGlass",
     "name": "Nightweaver's Looking Glass",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2592,7 +2592,7 @@
     "release_order": 5.416
   },
   {
-    "id": "reliquaryoftruth",
+    "id": "ReliquaryofTruth",
     "name": "Reliquaryof Truth",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2604,7 +2604,7 @@
     "release_order": 5.417
   },
   {
-    "id": "nocturnescurtaincall",
+    "id": "NocturnesCurtainCall",
     "name": "Nocturne's Curtain Call",
     "rarity": "★★★★★",
     "type": "Catalyst",
@@ -2616,7 +2616,7 @@
     "release_order": 5.418
   },
   {
-    "id": "skywardharp",
+    "id": "SkywardHarp",
     "name": "Skyward Harp",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2628,7 +2628,7 @@
     "release_order": 5.501
   },
   {
-    "id": "amosbow",
+    "id": "AmosBow",
     "name": "Amos' Bow",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2640,7 +2640,7 @@
     "release_order": 5.502
   },
   {
-    "id": "elegyfortheend",
+    "id": "ElegyfortheEnd",
     "name": "Elegyforthe End",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2652,7 +2652,7 @@
     "release_order": 5.503
   },
   {
-    "id": "thunderingpulse",
+    "id": "ThunderingPulse",
     "name": "Thundering Pulse",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2664,7 +2664,7 @@
     "release_order": 5.504
   },
   {
-    "id": "polarstar",
+    "id": "PolarStar",
     "name": "Polar Star",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2676,7 +2676,7 @@
     "release_order": 5.505
   },
   {
-    "id": "aquasimulacra",
+    "id": "AquaSimulacra",
     "name": "Aqua Simulacra",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2688,7 +2688,7 @@
     "release_order": 5.506
   },
   {
-    "id": "hunterspath",
+    "id": "HuntersPath",
     "name": "Hunter's Path",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2700,7 +2700,7 @@
     "release_order": 5.507
   },
   {
-    "id": "thefirstgreatmagic",
+    "id": "TheFirstGreatMagic",
     "name": "The First Great Magic",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2712,7 +2712,7 @@
     "release_order": 5.508
   },
   {
-    "id": "silvershowerheartstrings",
+    "id": "SilvershowerHeartstrings",
     "name": "Silvershower Heartstrings",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2724,7 +2724,7 @@
     "release_order": 5.509
   },
   {
-    "id": "astralvulturescrimsonplumage",
+    "id": "AstralVulturesCrimsonPlumage",
     "name": "Astral Vulture's Crimson Plumage",
     "rarity": "★★★★★",
     "type": "Bow",
@@ -2736,7 +2736,7 @@
     "release_order": 5.51
   },
   {
-    "id": "thedaybreakchronicles",
+    "id": "TheDaybreakChronicles",
     "name": "The Daybreak Chronicles",
     "rarity": "★★★★★",
     "type": "Bow",

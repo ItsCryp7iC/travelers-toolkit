@@ -1,1857 +1,1857 @@
 [
   {
-    "id": "traveleranemo",
+    "id": "TravelerAnemo",
     "name": "Traveler Anemo",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Anemo",
     "materials": {
       "world_boss_material_id": null,
-      "weekly_boss_material_id": "dvalinssigh",
+      "weekly_boss_material_id": "DvalinsSigh",
       "talent_material_family_id": null,
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "brilliantdiamond"
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "BrilliantDiamond"
     },
     "release_order": 0.01
   },
   {
-    "id": "travelergeo",
+    "id": "TravelerGeo",
     "name": "Traveler Geo",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Geo",
     "materials": {
       "world_boss_material_id": null,
-      "weekly_boss_material_id": "tailofboreas",
+      "weekly_boss_material_id": "TailOfBoreas",
       "talent_material_family_id": null,
-      "enemy_material_family_id": "hilichurlshooter",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "brilliantdiamond"
+      "enemy_material_family_id": "HilichurlShooter",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "BrilliantDiamond"
     },
     "release_order": 0.02
   },
   {
-    "id": "travelerelectro",
+    "id": "TravelerElectro",
     "name": "Traveler Electro",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Electro",
     "materials": {
       "world_boss_material_id": null,
-      "weekly_boss_material_id": "dragonlordscrown",
+      "weekly_boss_material_id": "DragonLordsCrown",
       "talent_material_family_id": null,
-      "enemy_material_family_id": "nobushi",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "brilliantdiamond"
+      "enemy_material_family_id": "Nobushi",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "BrilliantDiamond"
     },
     "release_order": 0.03
   },
   {
-    "id": "travelerdendro",
+    "id": "TravelerDendro",
     "name": "Traveler Dendro",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Dendro",
     "materials": {
       "world_boss_material_id": null,
-      "weekly_boss_material_id": "mudraofthemaleficgeneral",
+      "weekly_boss_material_id": "MudraOfTheMaleficGeneral",
       "talent_material_family_id": null,
-      "enemy_material_family_id": "fungus",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "brilliantdiamond"
+      "enemy_material_family_id": "Fungus",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "BrilliantDiamond"
     },
     "release_order": 0.04
   },
   {
-    "id": "travelerhydro",
+    "id": "TravelerHydro",
     "name": "Traveler Hydro",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Hydro",
     "materials": {
       "world_boss_material_id": null,
-      "weekly_boss_material_id": "worldspanfern",
+      "weekly_boss_material_id": "WorldspanFern",
       "talent_material_family_id": null,
-      "enemy_material_family_id": "fontemeraberrant",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "brilliantdiamond"
+      "enemy_material_family_id": "FontemerAberrant",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "BrilliantDiamond"
     },
     "release_order": 0.05
   },
   {
-    "id": "travelerpyro",
+    "id": "TravelerPyro",
     "name": "Traveler Pyro",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Pyro",
     "materials": {
       "world_boss_material_id": null,
-      "weekly_boss_material_id": "themeaningofaeons",
+      "weekly_boss_material_id": "TheMeaningOfAeons",
       "talent_material_family_id": null,
-      "enemy_material_family_id": "natlansaurian",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "brilliantdiamond"
+      "enemy_material_family_id": "NatlanSaurian",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "BrilliantDiamond"
     },
     "release_order": 0.06
   },
   {
-    "id": "amber",
+    "id": "Amber",
     "name": "Amber",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "everflameseed",
-      "weekly_boss_material_id": "dvalinssigh",
-      "talent_material_family_id": "freedom",
-      "enemy_material_family_id": "hilichurlshooter",
-      "local_specialty_id": "smalllampgrass",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EverflameSeed",
+      "weekly_boss_material_id": "DvalinsSigh",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "HilichurlShooter",
+      "local_specialty_id": "SmallLampGrass",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 1
   },
   {
-    "id": "kaeya",
+    "id": "Kaeya",
     "name": "Kaeya",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "hoarfrostcore",
-      "weekly_boss_material_id": "spiritlocketofboreas",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "callalily",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "HoarfrostCore",
+      "weekly_boss_material_id": "SpiritLocketOfBoreas",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "CallaLily",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 2
   },
   {
-    "id": "lisa",
+    "id": "Lisa",
     "name": "Lisa",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "lightningprism",
-      "weekly_boss_material_id": "dvalinsclaw",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "valberry",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "LightningPrism",
+      "weekly_boss_material_id": "DvalinsClaw",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "Valberry",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 3
   },
   {
-    "id": "barbara",
+    "id": "Barbara",
     "name": "Barbara",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "cleansingheart",
-      "weekly_boss_material_id": "ringofboreas",
-      "talent_material_family_id": "freedom",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "philanemomushroom",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "CleansingHeart",
+      "weekly_boss_material_id": "RingOfBoreas",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "PhilanemoMushroom",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 4
   },
   {
-    "id": "razor",
+    "id": "Razor",
     "name": "Razor",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "lightningprism",
-      "weekly_boss_material_id": "dvalinsclaw",
-      "talent_material_family_id": "resistance",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "wolfhook",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "LightningPrism",
+      "weekly_boss_material_id": "DvalinsClaw",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "Wolfhook",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 5
   },
   {
-    "id": "xiangling",
+    "id": "Xiangling",
     "name": "Xiangling",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "everflameseed",
-      "weekly_boss_material_id": "dvalinsclaw",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "jueyunchili",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EverflameSeed",
+      "weekly_boss_material_id": "DvalinsClaw",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "JueyunChili",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 6
   },
   {
-    "id": "beidou",
+    "id": "Beidou",
     "name": "Beidou",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "lightningprism",
-      "weekly_boss_material_id": "dvalinssigh",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "noctilucousjade",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "LightningPrism",
+      "weekly_boss_material_id": "DvalinsSigh",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "NoctilucousJade",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 7
   },
   {
-    "id": "xingqiu",
+    "id": "Xingqiu",
     "name": "Xingqiu",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "cleansingheart",
-      "weekly_boss_material_id": "tailofboreas",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "silkflower",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "CleansingHeart",
+      "weekly_boss_material_id": "TailOfBoreas",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "SilkFlower",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 8
   },
   {
-    "id": "ningguang",
+    "id": "Ningguang",
     "name": "Ningguang",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "basaltpillar",
-      "weekly_boss_material_id": "spiritlocketofboreas",
-      "talent_material_family_id": "prosperity",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "glazelily",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "BasaltPillar",
+      "weekly_boss_material_id": "SpiritLocketOfBoreas",
+      "talent_material_family_id": "Prosperity",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "GlazeLily",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 9
   },
   {
-    "id": "fischl",
+    "id": "Fischl",
     "name": "Fischl",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "lightningprism",
-      "weekly_boss_material_id": "spiritlocketofboreas",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "hilichurlshooter",
-      "local_specialty_id": "smalllampgrass",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "LightningPrism",
+      "weekly_boss_material_id": "SpiritLocketOfBoreas",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "HilichurlShooter",
+      "local_specialty_id": "SmallLampGrass",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 10
   },
   {
-    "id": "bennett",
+    "id": "Bennett",
     "name": "Bennett",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "everflameseed",
-      "weekly_boss_material_id": "dvalinsplume",
-      "talent_material_family_id": "resistance",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EverflameSeed",
+      "weekly_boss_material_id": "DvalinsPlume",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 11
   },
   {
-    "id": "noelle",
+    "id": "Noelle",
     "name": "Noelle",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "basaltpillar",
-      "weekly_boss_material_id": "dvalinsclaw",
-      "talent_material_family_id": "resistance",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "valberry",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "BasaltPillar",
+      "weekly_boss_material_id": "DvalinsClaw",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "Valberry",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 12
   },
   {
-    "id": "chongyun",
+    "id": "Chongyun",
     "name": "Chongyun",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "hoarfrostcore",
-      "weekly_boss_material_id": "dvalinssigh",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "corlapis",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "HoarfrostCore",
+      "weekly_boss_material_id": "DvalinsSigh",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "CorLapis",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 13
   },
   {
-    "id": "sucrose",
+    "id": "Sucrose",
     "name": "Sucrose",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "hurricaneseed",
-      "weekly_boss_material_id": "spiritlocketofboreas",
-      "talent_material_family_id": "freedom",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "windwheelaster",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "HurricaneSeed",
+      "weekly_boss_material_id": "SpiritLocketOfBoreas",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "WindwheelAster",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 14
   },
   {
-    "id": "jean",
+    "id": "Jean",
     "name": "Jean",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "hurricaneseed",
-      "weekly_boss_material_id": "dvalinsplume",
-      "talent_material_family_id": "resistance",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "dandelionseed",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "HurricaneSeed",
+      "weekly_boss_material_id": "DvalinsPlume",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "DandelionSeed",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 15
   },
   {
-    "id": "diluc",
+    "id": "Diluc",
     "name": "Diluc",
     "rarity": "★★★★★",
     "weapon_type": "Claymore",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "everflameseed",
-      "weekly_boss_material_id": "dvalinsplume",
-      "talent_material_family_id": "resistance",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "smalllampgrass",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EverflameSeed",
+      "weekly_boss_material_id": "DvalinsPlume",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "SmallLampGrass",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 16
   },
   {
-    "id": "qiqi",
+    "id": "Qiqi",
     "name": "Qiqi",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "hoarfrostcore",
-      "weekly_boss_material_id": "tailofboreas",
-      "talent_material_family_id": "prosperity",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "violetgrass",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "HoarfrostCore",
+      "weekly_boss_material_id": "TailOfBoreas",
+      "talent_material_family_id": "Prosperity",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "Violetgrass",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 17
   },
   {
-    "id": "mona",
+    "id": "Mona",
     "name": "Mona",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "cleansingheart",
-      "weekly_boss_material_id": "ringofboreas",
-      "talent_material_family_id": "resistance",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "philanemomushroom",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "CleansingHeart",
+      "weekly_boss_material_id": "RingOfBoreas",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "PhilanemoMushroom",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 18
   },
   {
-    "id": "keqing",
+    "id": "Keqing",
     "name": "Keqing",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "lightningprism",
-      "weekly_boss_material_id": "ringofboreas",
-      "talent_material_family_id": "prosperity",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "corlapis",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "LightningPrism",
+      "weekly_boss_material_id": "RingOfBoreas",
+      "talent_material_family_id": "Prosperity",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "CorLapis",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 19
   },
   {
-    "id": "venti",
+    "id": "Venti",
     "name": "Venti",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "hurricaneseed",
-      "weekly_boss_material_id": "tailofboreas",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "cecilia",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "HurricaneSeed",
+      "weekly_boss_material_id": "TailOfBoreas",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "Cecilia",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 20
   },
   {
-    "id": "klee",
+    "id": "Klee",
     "name": "Klee",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "everflameseed",
-      "weekly_boss_material_id": "ringofboreas",
-      "talent_material_family_id": "freedom",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "philanemomushroom",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EverflameSeed",
+      "weekly_boss_material_id": "RingOfBoreas",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "PhilanemoMushroom",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 21
   },
   {
-    "id": "diona",
+    "id": "Diona",
     "name": "Diona",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "hoarfrostcore",
-      "weekly_boss_material_id": "shardofafoullegacy",
-      "talent_material_family_id": "freedom",
-      "enemy_material_family_id": "hilichurlshooter",
-      "local_specialty_id": "callalily",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "HoarfrostCore",
+      "weekly_boss_material_id": "ShardOfAFoulLegacy",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "HilichurlShooter",
+      "local_specialty_id": "CallaLily",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 22
   },
   {
-    "id": "tartaglia",
+    "id": "Tartaglia",
     "name": "Tartaglia",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "cleansingheart",
-      "weekly_boss_material_id": "shardofafoullegacy",
-      "talent_material_family_id": "freedom",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "starconch",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "CleansingHeart",
+      "weekly_boss_material_id": "ShardOfAFoulLegacy",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "Starconch",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 23
   },
   {
-    "id": "xinyan",
+    "id": "Xinyan",
     "name": "Xinyan",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "everflameseed",
-      "weekly_boss_material_id": "tuskofmonoceroscaeli",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "violetgrass",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EverflameSeed",
+      "weekly_boss_material_id": "TuskOfMonocerosCaeli",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "Violetgrass",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 24
   },
   {
-    "id": "zhongli",
+    "id": "Zhongli",
     "name": "Zhongli",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "basaltpillar",
-      "weekly_boss_material_id": "tuskofmonoceroscaeli",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "corlapis",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "BasaltPillar",
+      "weekly_boss_material_id": "TuskOfMonocerosCaeli",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "CorLapis",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 25
   },
   {
-    "id": "albedo",
+    "id": "Albedo",
     "name": "Albedo",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "basaltpillar",
-      "weekly_boss_material_id": "tuskofmonoceroscaeli",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "cecilia",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "BasaltPillar",
+      "weekly_boss_material_id": "TuskOfMonocerosCaeli",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "Cecilia",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 26
   },
   {
-    "id": "ganyu",
+    "id": "Ganyu",
     "name": "Ganyu",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "hoarfrostcore",
-      "weekly_boss_material_id": "shadowofthewarrior",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "qingxin",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "HoarfrostCore",
+      "weekly_boss_material_id": "ShadowOfTheWarrior",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "Qingxin",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 27
   },
   {
-    "id": "xiao",
+    "id": "Xiao",
     "name": "Xiao",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "juvenilejade",
-      "weekly_boss_material_id": "shadowofthewarrior",
-      "talent_material_family_id": "prosperity",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "qingxin",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "JuvenileJade",
+      "weekly_boss_material_id": "ShadowOfTheWarrior",
+      "talent_material_family_id": "Prosperity",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "Qingxin",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 28
   },
   {
-    "id": "hutao",
+    "id": "HuTao",
     "name": "Hu Tao",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "juvenilejade",
-      "weekly_boss_material_id": "shardofafoullegacy",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "silkflower",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "JuvenileJade",
+      "weekly_boss_material_id": "ShardOfAFoulLegacy",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "SilkFlower",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 29
   },
   {
-    "id": "rosaria",
+    "id": "Rosaria",
     "name": "Rosaria",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "hoarfrostcore",
-      "weekly_boss_material_id": "shadowofthewarrior",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "valberry",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "HoarfrostCore",
+      "weekly_boss_material_id": "ShadowOfTheWarrior",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "Valberry",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 30
   },
   {
-    "id": "yanfei",
+    "id": "Yanfei",
     "name": "Yanfei",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "juvenilejade",
-      "weekly_boss_material_id": "bloodjadebranch",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "noctilucousjade",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "JuvenileJade",
+      "weekly_boss_material_id": "BloodjadeBranch",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "NoctilucousJade",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 31
   },
   {
-    "id": "eula",
+    "id": "Eula",
     "name": "Eula",
     "rarity": "★★★★★",
     "weapon_type": "Claymore",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "crystallinebloom",
-      "weekly_boss_material_id": "dragonlordscrown",
-      "talent_material_family_id": "resistance",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "dandelionseed",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "CrystallineBloom",
+      "weekly_boss_material_id": "DragonLordsCrown",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "DandelionSeed",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 32
   },
   {
-    "id": "kaedeharakazuha",
+    "id": "KaedeharaKazuha",
     "name": "Kaedehara Kazuha",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "marionettecore",
-      "weekly_boss_material_id": "gildedscale",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "seaganoderma",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "MarionetteCore",
+      "weekly_boss_material_id": "GildedScale",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "SeaGanoderma",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 33
   },
   {
-    "id": "kamisatoayaka",
+    "id": "KamisatoAyaka",
     "name": "Kamisato Ayaka",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "perpetualheart",
-      "weekly_boss_material_id": "bloodjadebranch",
-      "talent_material_family_id": "elegance",
-      "enemy_material_family_id": "nobushi",
-      "local_specialty_id": "sakurabloom",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "PerpetualHeart",
+      "weekly_boss_material_id": "BloodjadeBranch",
+      "talent_material_family_id": "Elegance",
+      "enemy_material_family_id": "Nobushi",
+      "local_specialty_id": "SakuraBloom",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 34
   },
   {
-    "id": "sayu",
+    "id": "Sayu",
     "name": "Sayu",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "marionettecore",
-      "weekly_boss_material_id": "gildedscale",
-      "talent_material_family_id": "light",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "crystalmarrow",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "MarionetteCore",
+      "weekly_boss_material_id": "GildedScale",
+      "talent_material_family_id": "Light",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "CrystalMarrow",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 35
   },
   {
-    "id": "yoimiya",
+    "id": "Yoimiya",
     "name": "Yoimiya",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "smolderingpearl",
-      "weekly_boss_material_id": "dragonlordscrown",
-      "talent_material_family_id": "transience",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "nakuweed",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "SmolderingPearl",
+      "weekly_boss_material_id": "DragonLordsCrown",
+      "talent_material_family_id": "Transience",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "NakuWeed",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 36
   },
   {
-    "id": "aloy",
+    "id": "Aloy",
     "name": "Aloy",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "crystallinebloom",
-      "weekly_boss_material_id": "moltenmoment",
-      "talent_material_family_id": "freedom",
-      "enemy_material_family_id": "specters",
-      "local_specialty_id": "crystalmarrow",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "CrystallineBloom",
+      "weekly_boss_material_id": "MoltenMoment",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "Specters",
+      "local_specialty_id": "CrystalMarrow",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 37
   },
   {
-    "id": "kujousara",
+    "id": "KujouSara",
     "name": "Kujou Sara",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "stormbeads",
-      "weekly_boss_material_id": "ashenheart",
-      "talent_material_family_id": "elegance",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "dendrobium",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "StormBeads",
+      "weekly_boss_material_id": "AshenHeart",
+      "talent_material_family_id": "Elegance",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "Dendrobium",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 38
   },
   {
-    "id": "raidenshogun",
+    "id": "RaidenShogun",
     "name": "Raiden Shogun",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "stormbeads",
-      "weekly_boss_material_id": "moltenmoment",
-      "talent_material_family_id": "light",
-      "enemy_material_family_id": "nobushi",
-      "local_specialty_id": "amakumofruit",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "StormBeads",
+      "weekly_boss_material_id": "MoltenMoment",
+      "talent_material_family_id": "Light",
+      "enemy_material_family_id": "Nobushi",
+      "local_specialty_id": "AmakumoFruit",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 39
   },
   {
-    "id": "sangonomiyakokomi",
+    "id": "SangonomiyaKokomi",
     "name": "Sangonomiya Kokomi",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "dewofrepudiation",
-      "weekly_boss_material_id": "hellfirebutterfly",
-      "talent_material_family_id": "transience",
-      "enemy_material_family_id": "specters",
-      "local_specialty_id": "sangopearl",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "DewOfRepudiation",
+      "weekly_boss_material_id": "HellfireButterfly",
+      "talent_material_family_id": "Transience",
+      "enemy_material_family_id": "Specters",
+      "local_specialty_id": "SangoPearl",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 40
   },
   {
-    "id": "thoma",
+    "id": "Thoma",
     "name": "Thoma",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "smolderingpearl",
-      "weekly_boss_material_id": "hellfirebutterfly",
-      "talent_material_family_id": "transience",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "fluorescentfungus",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "SmolderingPearl",
+      "weekly_boss_material_id": "HellfireButterfly",
+      "talent_material_family_id": "Transience",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "FluorescentFungus",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 41
   },
   {
-    "id": "gorou",
+    "id": "Gorou",
     "name": "Gorou",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "perpetualheart",
-      "weekly_boss_material_id": "moltenmoment",
-      "talent_material_family_id": "light",
-      "enemy_material_family_id": "specters",
-      "local_specialty_id": "sangopearl",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "PerpetualHeart",
+      "weekly_boss_material_id": "MoltenMoment",
+      "talent_material_family_id": "Light",
+      "enemy_material_family_id": "Specters",
+      "local_specialty_id": "SangoPearl",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 42
   },
   {
-    "id": "aratakiitto",
+    "id": "AratakiItto",
     "name": "Arataki Itto",
     "rarity": "★★★★★",
     "weapon_type": "Claymore",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "riftbornregalia",
-      "weekly_boss_material_id": "ashenheart",
-      "talent_material_family_id": "elegance",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "onikabuto",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "RiftbornRegalia",
+      "weekly_boss_material_id": "AshenHeart",
+      "talent_material_family_id": "Elegance",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "Onikabuto",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 43
   },
   {
-    "id": "yunjin",
+    "id": "YunJin",
     "name": "Yun Jin",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "riftbornregalia",
-      "weekly_boss_material_id": "ashenheart",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "hilichurl",
-      "local_specialty_id": "glazelily",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "RiftbornRegalia",
+      "weekly_boss_material_id": "AshenHeart",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "Hilichurl",
+      "local_specialty_id": "GlazeLily",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 44
   },
   {
-    "id": "shenhe",
+    "id": "Shenhe",
     "name": "Shenhe",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "dragonheirsfalsefin",
-      "weekly_boss_material_id": "hellfirebutterfly",
-      "talent_material_family_id": "prosperity",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "qingxin",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "DragonheirsFalseFin",
+      "weekly_boss_material_id": "HellfireButterfly",
+      "talent_material_family_id": "Prosperity",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "Qingxin",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 45
   },
   {
-    "id": "yaemiko",
+    "id": "YaeMiko",
     "name": "Yae Miko",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "dragonheirsfalsefin",
-      "weekly_boss_material_id": "themeaningofaeons",
-      "talent_material_family_id": "light",
-      "enemy_material_family_id": "nobushi",
-      "local_specialty_id": "seaganoderma",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "DragonheirsFalseFin",
+      "weekly_boss_material_id": "TheMeaningOfAeons",
+      "talent_material_family_id": "Light",
+      "enemy_material_family_id": "Nobushi",
+      "local_specialty_id": "SeaGanoderma",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 46
   },
   {
-    "id": "kamisatoayato",
+    "id": "KamisatoAyato",
     "name": "Kamisato Ayato",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "dewofrepudiation",
-      "weekly_boss_material_id": "mudraofthemaleficgeneral",
-      "talent_material_family_id": "elegance",
-      "enemy_material_family_id": "nobushi",
-      "local_specialty_id": "sakurabloom",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "DewOfRepudiation",
+      "weekly_boss_material_id": "MudraOfTheMaleficGeneral",
+      "talent_material_family_id": "Elegance",
+      "enemy_material_family_id": "Nobushi",
+      "local_specialty_id": "SakuraBloom",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 47
   },
   {
-    "id": "yelan",
+    "id": "Yelan",
     "name": "Yelan",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "runicfang",
-      "weekly_boss_material_id": "gildedscale",
-      "talent_material_family_id": "prosperity",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "starconch",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "RunicFang",
+      "weekly_boss_material_id": "GildedScale",
+      "talent_material_family_id": "Prosperity",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "Starconch",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 48
   },
   {
-    "id": "kukishinobu",
+    "id": "KukiShinobu",
     "name": "Kuki Shinobu",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "runicfang",
-      "weekly_boss_material_id": "tearsofthecalamitousgod",
-      "talent_material_family_id": "elegance",
-      "enemy_material_family_id": "specters",
-      "local_specialty_id": "nakuweed",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "RunicFang",
+      "weekly_boss_material_id": "TearsOfTheCalamitousGod",
+      "talent_material_family_id": "Elegance",
+      "enemy_material_family_id": "Specters",
+      "local_specialty_id": "NakuWeed",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 49
   },
   {
-    "id": "shikanoinheizou",
+    "id": "ShikanoinHeizou",
     "name": "Shikanoin Heizou",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "runicfang",
-      "weekly_boss_material_id": "themeaningofaeons",
-      "talent_material_family_id": "transience",
-      "enemy_material_family_id": "treasurehoarder",
-      "local_specialty_id": "onikabuto",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "RunicFang",
+      "weekly_boss_material_id": "TheMeaningOfAeons",
+      "talent_material_family_id": "Transience",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "Onikabuto",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 50
   },
   {
-    "id": "collei",
+    "id": "Collei",
     "name": "Collei",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "majestichookedbeak",
-      "weekly_boss_material_id": "tearsofthecalamitousgod",
-      "talent_material_family_id": "praxis",
-      "enemy_material_family_id": "hilichurlshooter",
-      "local_specialty_id": "rukkhashavamushrooms",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "MajesticHookedBeak",
+      "weekly_boss_material_id": "TearsOfTheCalamitousGod",
+      "talent_material_family_id": "Praxis",
+      "enemy_material_family_id": "HilichurlShooter",
+      "local_specialty_id": "RukkhashavaMushrooms",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 51
   },
   {
-    "id": "tighnari",
+    "id": "Tighnari",
     "name": "Tighnari",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "majestichookedbeak",
-      "weekly_boss_material_id": "themeaningofaeons",
-      "talent_material_family_id": "admonition",
-      "enemy_material_family_id": "fungus",
-      "local_specialty_id": "nilotpalalotus",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "MajesticHookedBeak",
+      "weekly_boss_material_id": "TheMeaningOfAeons",
+      "talent_material_family_id": "Admonition",
+      "enemy_material_family_id": "Fungus",
+      "local_specialty_id": "NilotpalaLotus",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 52
   },
   {
-    "id": "dori",
+    "id": "Dori",
     "name": "Dori",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "thunderclapfruitcore",
-      "weekly_boss_material_id": "bloodjadebranch",
-      "talent_material_family_id": "ingenuity",
-      "enemy_material_family_id": "theeremites",
-      "local_specialty_id": "kalpalatalotus",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "ThunderclapFruitcore",
+      "weekly_boss_material_id": "BloodjadeBranch",
+      "talent_material_family_id": "Ingenuity",
+      "enemy_material_family_id": "TheEremites",
+      "local_specialty_id": "KalpalataLotus",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 53
   },
   {
-    "id": "candace",
+    "id": "Candace",
     "name": "Candace",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "lightguidingtetrahedron",
-      "weekly_boss_material_id": "tearsofthecalamitousgod",
-      "talent_material_family_id": "admonition",
-      "enemy_material_family_id": "theeremites",
-      "local_specialty_id": "hennaberry",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "LightGuidingTetrahedron",
+      "weekly_boss_material_id": "TearsOfTheCalamitousGod",
+      "talent_material_family_id": "Admonition",
+      "enemy_material_family_id": "TheEremites",
+      "local_specialty_id": "HennaBerry",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 54
   },
   {
-    "id": "cyno",
+    "id": "Cyno",
     "name": "Cyno",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "thunderclapfruitcore",
-      "weekly_boss_material_id": "mudraofthemaleficgeneral",
-      "talent_material_family_id": "admonition",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "scarab",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "ThunderclapFruitcore",
+      "weekly_boss_material_id": "MudraOfTheMaleficGeneral",
+      "talent_material_family_id": "Admonition",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "Scarab",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 55
   },
   {
-    "id": "nilou",
+    "id": "Nilou",
     "name": "Nilou",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "perpetualcaliber",
-      "weekly_boss_material_id": "tearsofthecalamitousgod",
-      "talent_material_family_id": "praxis",
-      "enemy_material_family_id": "fungus",
-      "local_specialty_id": "padisarah",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "PerpetualCaliber",
+      "weekly_boss_material_id": "TearsOfTheCalamitousGod",
+      "talent_material_family_id": "Praxis",
+      "enemy_material_family_id": "Fungus",
+      "local_specialty_id": "Padisarah",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 56
   },
   {
-    "id": "nahida",
+    "id": "Nahida",
     "name": "Nahida",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "quelledcreeper",
-      "weekly_boss_material_id": "puppetstrings",
-      "talent_material_family_id": "ingenuity",
-      "enemy_material_family_id": "fungus",
-      "local_specialty_id": "kalpalatalotus",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "QuelledCreeper",
+      "weekly_boss_material_id": "PuppetStrings",
+      "talent_material_family_id": "Ingenuity",
+      "enemy_material_family_id": "Fungus",
+      "local_specialty_id": "KalpalataLotus",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 57
   },
   {
-    "id": "layla",
+    "id": "Layla",
     "name": "Layla",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "perpetualcaliber",
-      "weekly_boss_material_id": "mirrorofmushin",
-      "talent_material_family_id": "ingenuity",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "nilotpalalotus",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "PerpetualCaliber",
+      "weekly_boss_material_id": "MirrorOfMushin",
+      "talent_material_family_id": "Ingenuity",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "NilotpalaLotus",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 58
   },
   {
-    "id": "faruzan",
+    "id": "Faruzan",
     "name": "Faruzan",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "lightguidingtetrahedron",
-      "weekly_boss_material_id": "puppetstrings",
-      "talent_material_family_id": "admonition",
-      "enemy_material_family_id": "theeremites",
-      "local_specialty_id": "hennaberry",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "LightGuidingTetrahedron",
+      "weekly_boss_material_id": "PuppetStrings",
+      "talent_material_family_id": "Admonition",
+      "enemy_material_family_id": "TheEremites",
+      "local_specialty_id": "HennaBerry",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 59
   },
   {
-    "id": "wanderer",
+    "id": "Wanderer",
     "name": "Wanderer",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "perpetualcaliber",
-      "weekly_boss_material_id": "dakasbell",
-      "talent_material_family_id": "praxis",
-      "enemy_material_family_id": "nobushi",
-      "local_specialty_id": "rukkhashavamushrooms",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "PerpetualCaliber",
+      "weekly_boss_material_id": "DakasBell",
+      "talent_material_family_id": "Praxis",
+      "enemy_material_family_id": "Nobushi",
+      "local_specialty_id": "RukkhashavaMushrooms",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 60
   },
   {
-    "id": "yaoyao",
+    "id": "Yaoyao",
     "name": "Yaoyao",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "quelledcreeper",
-      "weekly_boss_material_id": "dakasbell",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "jueyunchili",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "QuelledCreeper",
+      "weekly_boss_material_id": "DakasBell",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "JueyunChili",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 61
   },
   {
-    "id": "alhaitham",
+    "id": "Alhaitham",
     "name": "Alhaitham",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "pseudostamens",
-      "weekly_boss_material_id": "mirrorofmushin",
-      "talent_material_family_id": "ingenuity",
-      "enemy_material_family_id": "theeremites",
-      "local_specialty_id": "sandgreasepupa",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "PseudoStamens",
+      "weekly_boss_material_id": "MirrorOfMushin",
+      "talent_material_family_id": "Ingenuity",
+      "enemy_material_family_id": "TheEremites",
+      "local_specialty_id": "SandGreasePupa",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 62
   },
   {
-    "id": "dehya",
+    "id": "Dehya",
     "name": "Dehya",
     "rarity": "★★★★★",
     "weapon_type": "Claymore",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "lightguidingtetrahedron",
-      "weekly_boss_material_id": "puppetstrings",
-      "talent_material_family_id": "praxis",
-      "enemy_material_family_id": "theeremites",
-      "local_specialty_id": "sandgreasepupa",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "LightGuidingTetrahedron",
+      "weekly_boss_material_id": "PuppetStrings",
+      "talent_material_family_id": "Praxis",
+      "enemy_material_family_id": "TheEremites",
+      "local_specialty_id": "SandGreasePupa",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 63
   },
   {
-    "id": "mika",
+    "id": "Mika",
     "name": "Mika",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "pseudostamens",
-      "weekly_boss_material_id": "mirrorofmushin",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "wolfhook",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "PseudoStamens",
+      "weekly_boss_material_id": "MirrorOfMushin",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "Wolfhook",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 64
   },
   {
-    "id": "kaveh",
+    "id": "Kaveh",
     "name": "Kaveh",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "quelledcreeper",
-      "weekly_boss_material_id": "primordialgreenbloom",
-      "talent_material_family_id": "ingenuity",
-      "enemy_material_family_id": "fungus",
-      "local_specialty_id": "mourningflower",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "QuelledCreeper",
+      "weekly_boss_material_id": "PrimordialGreenbloom",
+      "talent_material_family_id": "Ingenuity",
+      "enemy_material_family_id": "Fungus",
+      "local_specialty_id": "MourningFlower",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 65
   },
   {
-    "id": "baizhu",
+    "id": "Baizhu",
     "name": "Baizhu",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "evergloomring",
-      "weekly_boss_material_id": "worldspanfern",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "fungus",
-      "local_specialty_id": "violetgrass",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "EvergloomRing",
+      "weekly_boss_material_id": "WorldspanFern",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "Fungus",
+      "local_specialty_id": "Violetgrass",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 66
   },
   {
-    "id": "kirara",
+    "id": "Kirara",
     "name": "Kirara",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "evergloomring",
-      "weekly_boss_material_id": "everamber",
-      "talent_material_family_id": "transience",
-      "enemy_material_family_id": "specters",
-      "local_specialty_id": "amakumofruit",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "EvergloomRing",
+      "weekly_boss_material_id": "Everamber",
+      "talent_material_family_id": "Transience",
+      "enemy_material_family_id": "Specters",
+      "local_specialty_id": "AmakumoFruit",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 67
   },
   {
-    "id": "lynette",
+    "id": "Lynette",
     "name": "Lynette",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "artificedspareclockworkcomponentcoppelia",
-      "weekly_boss_material_id": "everamber",
-      "talent_material_family_id": "order",
-      "enemy_material_family_id": "clockworkmeka",
-      "local_specialty_id": "lumidoucebell",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "ArtificedSpareClockworkComponentCoppelia",
+      "weekly_boss_material_id": "Everamber",
+      "talent_material_family_id": "Order",
+      "enemy_material_family_id": "ClockworkMeka",
+      "local_specialty_id": "LumidouceBell",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 68
   },
   {
-    "id": "lyney",
+    "id": "Lyney",
     "name": "Lyney",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "emperorsresolution",
-      "weekly_boss_material_id": "primordialgreenbloom",
-      "talent_material_family_id": "equity",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "rainbowrose",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EmperorsResolution",
+      "weekly_boss_material_id": "PrimordialGreenbloom",
+      "talent_material_family_id": "Equity",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "RainbowRose",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 69
   },
   {
-    "id": "freminet",
+    "id": "Freminet",
     "name": "Freminet",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "artificedspareclockworkcomponentcoppelius",
-      "weekly_boss_material_id": "worldspanfern",
-      "talent_material_family_id": "justice",
-      "enemy_material_family_id": "fontemeraberrant",
-      "local_specialty_id": "romaritimeflower",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "ArtificedSpareClockworkComponentCoppelius",
+      "weekly_boss_material_id": "WorldspanFern",
+      "talent_material_family_id": "Justice",
+      "enemy_material_family_id": "FontemerAberrant",
+      "local_specialty_id": "RomaritimeFlower",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 70
   },
   {
-    "id": "neuvillette",
+    "id": "Neuvillette",
     "name": "Neuvillette",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "fontemerunihorn",
-      "weekly_boss_material_id": "everamber",
-      "talent_material_family_id": "equity",
-      "enemy_material_family_id": "fontemeraberrant",
-      "local_specialty_id": "lumitoile",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "FontemerUnihorn",
+      "weekly_boss_material_id": "Everamber",
+      "talent_material_family_id": "Equity",
+      "enemy_material_family_id": "FontemerAberrant",
+      "local_specialty_id": "Lumitoile",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 71
   },
   {
-    "id": "wriothesley",
+    "id": "Wriothesley",
     "name": "Wriothesley",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "tourbillondevice",
-      "weekly_boss_material_id": "primordialgreenbloom",
-      "talent_material_family_id": "order",
-      "enemy_material_family_id": "clockworkmeka",
-      "local_specialty_id": "subdetectionunit",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "TourbillonDevice",
+      "weekly_boss_material_id": "PrimordialGreenbloom",
+      "talent_material_family_id": "Order",
+      "enemy_material_family_id": "ClockworkMeka",
+      "local_specialty_id": "SubdetectionUnit",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 72
   },
   {
-    "id": "charlotte",
+    "id": "Charlotte",
     "name": "Charlotte",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "tourbillondevice",
-      "weekly_boss_material_id": "lightlesssilkstring",
-      "talent_material_family_id": "justice",
-      "enemy_material_family_id": "clockworkmeka",
-      "local_specialty_id": "berylconch",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "TourbillonDevice",
+      "weekly_boss_material_id": "LightlessSilkString",
+      "talent_material_family_id": "Justice",
+      "enemy_material_family_id": "ClockworkMeka",
+      "local_specialty_id": "BerylConch",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 73
   },
   {
-    "id": "furina",
+    "id": "Furina",
     "name": "Furina",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "waterthatfailedtotranscend",
-      "weekly_boss_material_id": "lightlessmass",
-      "talent_material_family_id": "justice",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "lakelightlily",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "WaterThatFailedToTranscend",
+      "weekly_boss_material_id": "LightlessMass",
+      "talent_material_family_id": "Justice",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "LakelightLily",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 74
   },
   {
-    "id": "navia",
+    "id": "Navia",
     "name": "Navia",
     "rarity": "★★★★★",
     "weapon_type": "Claymore",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "artificedspareclockworkcomponentcoppelius",
-      "weekly_boss_material_id": "lightlesssilkstring",
-      "talent_material_family_id": "equity",
-      "enemy_material_family_id": "fontemeraberrant",
-      "local_specialty_id": "springofthefirstdewdrop",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "ArtificedSpareClockworkComponentCoppelius",
+      "weekly_boss_material_id": "LightlessSilkString",
+      "talent_material_family_id": "Equity",
+      "enemy_material_family_id": "FontemerAberrant",
+      "local_specialty_id": "SpringoftheFirstDewdrop",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 75
   },
   {
-    "id": "chevreuse",
+    "id": "Chevreuse",
     "name": "Chevreuse",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "fontemerunihorn",
-      "weekly_boss_material_id": "lightlesseyeofthemaelstrom",
-      "talent_material_family_id": "order",
-      "enemy_material_family_id": "clockworkmeka",
-      "local_specialty_id": "lumidoucebell",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "FontemerUnihorn",
+      "weekly_boss_material_id": "LightlessEyeOfTheMaelstrom",
+      "talent_material_family_id": "Order",
+      "enemy_material_family_id": "ClockworkMeka",
+      "local_specialty_id": "LumidouceBell",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 76
   },
   {
-    "id": "gaming",
+    "id": "Gaming",
     "name": "Gaming",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "emperorsresolution",
-      "weekly_boss_material_id": "lightlessmass",
-      "talent_material_family_id": "prosperity",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "starconch",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "EmperorsResolution",
+      "weekly_boss_material_id": "LightlessMass",
+      "talent_material_family_id": "Prosperity",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "Starconch",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 77
   },
   {
-    "id": "xianyun",
+    "id": "Xianyun",
     "name": "Xianyun",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "cloudseamscale",
-      "weekly_boss_material_id": "lightlesseyeofthemaelstrom",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "samachurl",
-      "local_specialty_id": "clearwaterjade",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "CloudseamScale",
+      "weekly_boss_material_id": "LightlessEyeOfTheMaelstrom",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "Samachurl",
+      "local_specialty_id": "ClearwaterJade",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 78
   },
   {
-    "id": "chiori",
+    "id": "Chiori",
     "name": "Chiori",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "artificedspareclockworkcomponentcoppelia",
-      "weekly_boss_material_id": "lightlesssilkstring",
-      "talent_material_family_id": "light",
-      "enemy_material_family_id": "specters",
-      "local_specialty_id": "hennaberry",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "ArtificedSpareClockworkComponentCoppelia",
+      "weekly_boss_material_id": "LightlessSilkString",
+      "talent_material_family_id": "Light",
+      "enemy_material_family_id": "Specters",
+      "local_specialty_id": "HennaBerry",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 79
   },
   {
-    "id": "arlecchino",
+    "id": "Arlecchino",
     "name": "Arlecchino",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "fragmentofagoldenmelody",
-      "weekly_boss_material_id": "fadingcandle",
-      "talent_material_family_id": "order",
-      "enemy_material_family_id": "fatuiskirmisher",
-      "local_specialty_id": "rainbowrose",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "FragmentOfAGoldenMelody",
+      "weekly_boss_material_id": "FadingCandle",
+      "talent_material_family_id": "Order",
+      "enemy_material_family_id": "FatuiSkirmisher",
+      "local_specialty_id": "RainbowRose",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 80
   },
   {
-    "id": "sethos",
+    "id": "Sethos",
     "name": "Sethos",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "cloudseamscale",
-      "weekly_boss_material_id": "dakasbell",
-      "talent_material_family_id": "praxis",
-      "enemy_material_family_id": "theeremites",
-      "local_specialty_id": "trishiraite",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "CloudseamScale",
+      "weekly_boss_material_id": "DakasBell",
+      "talent_material_family_id": "Praxis",
+      "enemy_material_family_id": "TheEremites",
+      "local_specialty_id": "Trishiraite",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 81
   },
   {
-    "id": "clorinde",
+    "id": "Clorinde",
     "name": "Clorinde",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "fontemerunihorn",
-      "weekly_boss_material_id": "everamber",
-      "talent_material_family_id": "justice",
-      "enemy_material_family_id": "fontemeraberrant",
-      "local_specialty_id": "lumitoile",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "FontemerUnihorn",
+      "weekly_boss_material_id": "Everamber",
+      "talent_material_family_id": "Justice",
+      "enemy_material_family_id": "FontemerAberrant",
+      "local_specialty_id": "Lumitoile",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 82
   },
   {
-    "id": "sigewinne",
+    "id": "Sigewinne",
     "name": "Sigewinne",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "waterthatfailedtotranscend",
-      "weekly_boss_material_id": "lightlesseyeofthemaelstrom",
-      "talent_material_family_id": "equity",
-      "enemy_material_family_id": "fontemeraberrant",
-      "local_specialty_id": "romaritimeflower",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "WaterThatFailedToTranscend",
+      "weekly_boss_material_id": "LightlessEyeOfTheMaelstrom",
+      "talent_material_family_id": "Equity",
+      "enemy_material_family_id": "FontemerAberrant",
+      "local_specialty_id": "RomaritimeFlower",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 83
   },
   {
-    "id": "emilie",
+    "id": "Emilie",
     "name": "Emilie",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "fragmentofagoldenmelody",
-      "weekly_boss_material_id": "silkenfeather",
-      "talent_material_family_id": "order",
-      "enemy_material_family_id": "clockworkmeka",
-      "local_specialty_id": "lakelightlily",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "FragmentOfAGoldenMelody",
+      "weekly_boss_material_id": "SilkenFeather",
+      "talent_material_family_id": "Order",
+      "enemy_material_family_id": "ClockworkMeka",
+      "local_specialty_id": "LakelightLily",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 84
   },
   {
-    "id": "kachina",
+    "id": "Kachina",
     "name": "Kachina",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "overripeflamegranate",
-      "weekly_boss_material_id": "fadingcandle",
-      "talent_material_family_id": "conflict",
-      "enemy_material_family_id": "natlansaurian",
-      "local_specialty_id": "quenepaberry",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "OverripeFlamegranate",
+      "weekly_boss_material_id": "FadingCandle",
+      "talent_material_family_id": "Conflict",
+      "enemy_material_family_id": "NatlanSaurian",
+      "local_specialty_id": "QuenepaBerry",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 85
   },
   {
-    "id": "mualani",
+    "id": "Mualani",
     "name": "Mualani",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "markofthebindingblessing",
-      "weekly_boss_material_id": "lightlessmass",
-      "talent_material_family_id": "contention",
-      "enemy_material_family_id": "natlansaurian",
-      "local_specialty_id": "sprayfeathergill",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "MarkOfTheBindingBlessing",
+      "weekly_boss_material_id": "LightlessMass",
+      "talent_material_family_id": "Contention",
+      "enemy_material_family_id": "NatlanSaurian",
+      "local_specialty_id": "SprayfeatherGill",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 86
   },
   {
-    "id": "kinich",
+    "id": "Kinich",
     "name": "Kinich",
     "rarity": "★★★★★",
     "weapon_type": "Claymore",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "overripeflamegranate",
-      "weekly_boss_material_id": "denialandjudgment",
-      "talent_material_family_id": "kindling",
-      "enemy_material_family_id": "sauroformtribalwarriors",
-      "local_specialty_id": "saurianclawsucculent",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "OverripeFlamegranate",
+      "weekly_boss_material_id": "DenialandJudgment",
+      "talent_material_family_id": "Kindling",
+      "enemy_material_family_id": "SauroformTribalWarriors",
+      "local_specialty_id": "SaurianClawSucculent",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 87
   },
   {
-    "id": "xilonen",
+    "id": "Xilonen",
     "name": "Xilonen",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "goldinscribedsecretsourcecore",
-      "weekly_boss_material_id": "mirrorofmushin",
-      "talent_material_family_id": "kindling",
-      "enemy_material_family_id": "natlansaurian",
-      "local_specialty_id": "brilliantchrysanthemum",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "GoldInscribedSecretSourceCore",
+      "weekly_boss_material_id": "MirrorOfMushin",
+      "talent_material_family_id": "Kindling",
+      "enemy_material_family_id": "NatlanSaurian",
+      "local_specialty_id": "BrilliantChrysanthemum",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 88
   },
   {
-    "id": "ororon",
+    "id": "Ororon",
     "name": "Ororon",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "markofthebindingblessing",
-      "weekly_boss_material_id": "lightlesssilkstring",
-      "talent_material_family_id": "kindling",
-      "enemy_material_family_id": "sauroformtribalwarriors",
-      "local_specialty_id": "glowinghornshroom",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "MarkOfTheBindingBlessing",
+      "weekly_boss_material_id": "LightlessSilkString",
+      "talent_material_family_id": "Kindling",
+      "enemy_material_family_id": "SauroformTribalWarriors",
+      "local_specialty_id": "GlowingHornshroom",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 89
   },
   {
-    "id": "chasca",
+    "id": "Chasca",
     "name": "Chasca",
     "rarity": "★★★★★",
     "weapon_type": "Bow",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "ensnaringgaze",
-      "weekly_boss_material_id": "silkenfeather",
-      "talent_material_family_id": "conflict",
-      "enemy_material_family_id": "sauroformtribalwarriors",
-      "local_specialty_id": "witheringpurpurbloom",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "EnsnaringGaze",
+      "weekly_boss_material_id": "SilkenFeather",
+      "talent_material_family_id": "Conflict",
+      "enemy_material_family_id": "SauroformTribalWarriors",
+      "local_specialty_id": "WitheringPurpurbloom",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 90
   },
   {
-    "id": "citlali",
+    "id": "Citlali",
     "name": "Citlali",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "talismanoftheenigmaticland",
-      "weekly_boss_material_id": "denialandjudgment",
-      "talent_material_family_id": "kindling",
-      "enemy_material_family_id": "sauroformtribalwarriors",
-      "local_specialty_id": "quenepaberry",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "TalismanOfTheEnigmaticLand",
+      "weekly_boss_material_id": "DenialandJudgment",
+      "talent_material_family_id": "Kindling",
+      "enemy_material_family_id": "SauroformTribalWarriors",
+      "local_specialty_id": "QuenepaBerry",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 91
   },
   {
-    "id": "mavuika",
+    "id": "Mavuika",
     "name": "Mavuika",
     "rarity": "★★★★★",
     "weapon_type": "Claymore",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "goldinscribedsecretsourcecore",
-      "weekly_boss_material_id": "erodedhorn",
-      "talent_material_family_id": "contention",
-      "enemy_material_family_id": "natlansaurian",
-      "local_specialty_id": "witheringpurpurbloom",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "GoldInscribedSecretSourceCore",
+      "weekly_boss_material_id": "ErodedHorn",
+      "talent_material_family_id": "Contention",
+      "enemy_material_family_id": "NatlanSaurian",
+      "local_specialty_id": "WitheringPurpurbloom",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 92
   },
   {
-    "id": "lanyan",
+    "id": "LanYan",
     "name": "Lan Yan",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "goldinscribedsecretsourcecore",
-      "weekly_boss_material_id": "erodedsunfire",
-      "talent_material_family_id": "diligence",
-      "enemy_material_family_id": "whopperflower",
-      "local_specialty_id": "clearwaterjade",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "GoldInscribedSecretSourceCore",
+      "weekly_boss_material_id": "ErodedSunfire",
+      "talent_material_family_id": "Diligence",
+      "enemy_material_family_id": "Whopperflower",
+      "local_specialty_id": "ClearwaterJade",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 93
   },
   {
-    "id": "yumemizukimizuki",
+    "id": "YumemizukiMizuki",
     "name": "Yumemizuki Mizuki",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "talismanoftheenigmaticland",
-      "weekly_boss_material_id": "fadingcandle",
-      "talent_material_family_id": "transience",
-      "enemy_material_family_id": "nobushi",
-      "local_specialty_id": "seaganoderma",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "TalismanOfTheEnigmaticLand",
+      "weekly_boss_material_id": "FadingCandle",
+      "talent_material_family_id": "Transience",
+      "enemy_material_family_id": "Nobushi",
+      "local_specialty_id": "SeaGanoderma",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 94
   },
   {
-    "id": "iansan",
+    "id": "Iansan",
     "name": "Iansan",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "ensnaringgaze",
-      "weekly_boss_material_id": "denialandjudgment",
-      "talent_material_family_id": "contention",
-      "enemy_material_family_id": "sauroformtribalwarriors",
-      "local_specialty_id": "dracolite",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "EnsnaringGaze",
+      "weekly_boss_material_id": "DenialandJudgment",
+      "talent_material_family_id": "Contention",
+      "enemy_material_family_id": "SauroformTribalWarriors",
+      "local_specialty_id": "Dracolite",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 95
   },
   {
-    "id": "varesa",
+    "id": "Varesa",
     "name": "Varesa",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "sparklessstatuecore",
-      "weekly_boss_material_id": "erodedscalefeather",
-      "talent_material_family_id": "conflict",
-      "enemy_material_family_id": "natlansaurian",
-      "local_specialty_id": "skysplitgembloom",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "SparklessStatueCore",
+      "weekly_boss_material_id": "ErodedScaleFeather",
+      "talent_material_family_id": "Conflict",
+      "enemy_material_family_id": "NatlanSaurian",
+      "local_specialty_id": "SkysplitGembloom",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 96
   },
   {
-    "id": "ifa",
+    "id": "Ifa",
     "name": "Ifa",
     "rarity": "★★★★",
     "weapon_type": "Catalyst",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "sparklessstatuecore",
-      "weekly_boss_material_id": "ascendedsamplerook",
-      "talent_material_family_id": "conflict",
-      "enemy_material_family_id": "natlansaurian",
-      "local_specialty_id": "saurianclawsucculent",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "SparklessStatueCore",
+      "weekly_boss_material_id": "AscendedSampleRook",
+      "talent_material_family_id": "Conflict",
+      "enemy_material_family_id": "NatlanSaurian",
+      "local_specialty_id": "SaurianClawSucculent",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 97
   },
   {
-    "id": "escoffier",
+    "id": "Escoffier",
     "name": "Escoffier",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "secretsourceairflowaccumulator",
-      "weekly_boss_material_id": "erodedhorn",
-      "talent_material_family_id": "justice",
-      "enemy_material_family_id": "clockworkmeka",
-      "local_specialty_id": "berylconch",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "SecretSourceAirflowAccumulator",
+      "weekly_boss_material_id": "ErodedHorn",
+      "talent_material_family_id": "Justice",
+      "enemy_material_family_id": "ClockworkMeka",
+      "local_specialty_id": "BerylConch",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 98
   },
   {
-    "id": "dahlia",
+    "id": "Dahlia",
     "name": "Dahlia",
     "rarity": "★★★★",
     "weapon_type": "Sword",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "secretsourceairflowaccumulator",
-      "weekly_boss_material_id": "erodedscalefeather",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "hilichurlshooter",
-      "local_specialty_id": "callalily",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "SecretSourceAirflowAccumulator",
+      "weekly_boss_material_id": "ErodedScaleFeather",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "HilichurlShooter",
+      "local_specialty_id": "CallaLily",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 99
   },
   {
-    "id": "skirk",
+    "id": "Skirk",
     "name": "Skirk",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Cryo",
     "materials": {
-      "world_boss_material_id": "ensnaringgaze",
-      "weekly_boss_material_id": "ascendedsampleknight",
-      "talent_material_family_id": "contention",
-      "enemy_material_family_id": "clockworkmeka",
-      "local_specialty_id": "skysplitgembloom",
-      "gem_family_id": "shivadajade"
+      "world_boss_material_id": "EnsnaringGaze",
+      "weekly_boss_material_id": "AscendedSampleKnight",
+      "talent_material_family_id": "Contention",
+      "enemy_material_family_id": "ClockworkMeka",
+      "local_specialty_id": "SkysplitGembloom",
+      "gem_family_id": "ShivadaJade"
     },
     "release_order": 100
   },
   {
-    "id": "ineffa",
+    "id": "Ineffa",
     "name": "Ineffa",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "secretsourceairflowaccumulator",
-      "weekly_boss_material_id": "erodedsunfire",
-      "talent_material_family_id": "conflict",
-      "enemy_material_family_id": "sauroformtribalwarriors",
-      "local_specialty_id": "glowinghornshroom",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "SecretSourceAirflowAccumulator",
+      "weekly_boss_material_id": "ErodedSunfire",
+      "talent_material_family_id": "Conflict",
+      "enemy_material_family_id": "SauroformTribalWarriors",
+      "local_specialty_id": "GlowingHornshroom",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 101
   },
   {
-    "id": "aino",
+    "id": "Aino",
     "name": "Aino",
     "rarity": "★★★★",
     "weapon_type": "Claymore",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "precisionkuuvahkistampingdie",
-      "weekly_boss_material_id": "silkenfeather",
-      "talent_material_family_id": "elysium",
-      "enemy_material_family_id": "landcruisers",
-      "local_specialty_id": "portablebearing",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "PrecisionKuuvahkiStampingDie",
+      "weekly_boss_material_id": "SilkenFeather",
+      "talent_material_family_id": "Elysium",
+      "enemy_material_family_id": "Landcruisers",
+      "local_specialty_id": "PortableBearing",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 102
   },
   {
-    "id": "lauma",
+    "id": "Lauma",
     "name": "Lauma",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "lightbearingscalefeather",
-      "weekly_boss_material_id": "erodedscalefeather",
-      "talent_material_family_id": "moonlight",
-      "enemy_material_family_id": "fatuioprichniki",
-      "local_specialty_id": "moonfallsilver",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "LightbearingScaleFeather",
+      "weekly_boss_material_id": "ErodedScaleFeather",
+      "talent_material_family_id": "Moonlight",
+      "enemy_material_family_id": "FatuiOprichniki",
+      "local_specialty_id": "MoonfallSilver",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 103
   },
   {
-    "id": "flins",
+    "id": "Flins",
     "name": "Flins",
     "rarity": "★★★★★",
     "weapon_type": "Polearm",
     "element": "Electro",
     "materials": {
-      "world_boss_material_id": "precisionkuuvahkistampingdie",
-      "weekly_boss_material_id": "ascendedsamplequeen",
-      "talent_material_family_id": "vagrancy",
-      "enemy_material_family_id": "landcruisers",
-      "local_specialty_id": "frostlampflower",
-      "gem_family_id": "vajradaamethyst"
+      "world_boss_material_id": "PrecisionKuuvahkiStampingDie",
+      "weekly_boss_material_id": "AscendedSampleQueen",
+      "talent_material_family_id": "Vagrancy",
+      "enemy_material_family_id": "Landcruisers",
+      "local_specialty_id": "FrostlampFlower",
+      "gem_family_id": "VajradaAmethyst"
     },
     "release_order": 104
   },
   {
-    "id": "nefer",
+    "id": "Nefer",
     "name": "Nefer",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Dendro",
     "materials": {
-      "world_boss_material_id": "radiantantler",
-      "weekly_boss_material_id": "ascendedsamplerook",
-      "talent_material_family_id": "elysium",
-      "enemy_material_family_id": "fatuioprichniki",
-      "local_specialty_id": "moonfallsilver",
-      "gem_family_id": "nagadusemerald"
+      "world_boss_material_id": "RadiantAntler",
+      "weekly_boss_material_id": "AscendedSampleRook",
+      "talent_material_family_id": "Elysium",
+      "enemy_material_family_id": "FatuiOprichniki",
+      "local_specialty_id": "MoonfallSilver",
+      "gem_family_id": "NagadusEmerald"
     },
     "release_order": 105
   },
   {
-    "id": "jahoda",
+    "id": "Jahoda",
     "name": "Jahoda",
     "rarity": "★★★★",
     "weapon_type": "Bow",
     "element": "Anemo",
     "materials": {
-      "world_boss_material_id": "lightbearingscalefeather",
-      "weekly_boss_material_id": "ascendedsampleknight",
-      "talent_material_family_id": "vagrancy",
-      "enemy_material_family_id": "landcruisers",
-      "local_specialty_id": "portablebearing",
-      "gem_family_id": "vayudaturquoise"
+      "world_boss_material_id": "LightbearingScaleFeather",
+      "weekly_boss_material_id": "AscendedSampleKnight",
+      "talent_material_family_id": "Vagrancy",
+      "enemy_material_family_id": "Landcruisers",
+      "local_specialty_id": "PortableBearing",
+      "gem_family_id": "VayudaTurquoise"
     },
     "release_order": 106
   },
   {
-    "id": "durin",
+    "id": "Durin",
     "name": "Durin",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Pyro",
     "materials": {
-      "world_boss_material_id": "cyclicmilitarykuuvahkicore",
-      "weekly_boss_material_id": "erodedsunfire",
-      "talent_material_family_id": "ballad",
-      "enemy_material_family_id": "fatuioprichniki",
-      "local_specialty_id": "frostlampflower",
-      "gem_family_id": "agnidusagate"
+      "world_boss_material_id": "CyclicMilitaryKuuvahkiCore",
+      "weekly_boss_material_id": "ErodedSunfire",
+      "talent_material_family_id": "Ballad",
+      "enemy_material_family_id": "FatuiOprichniki",
+      "local_specialty_id": "FrostlampFlower",
+      "gem_family_id": "AgnidusAgate"
     },
     "release_order": 107
   },
   {
-    "id": "columbina",
+    "id": "Columbina",
     "name": "Columbina",
     "rarity": "★★★★★",
     "weapon_type": "Catalyst",
     "element": "Hydro",
     "materials": {
-      "world_boss_material_id": "radiantantler",
-      "weekly_boss_material_id": "maskofthevirtuousdoctor",
-      "talent_material_family_id": "moonlight",
-      "enemy_material_family_id": "slime",
-      "local_specialty_id": "wintericelea",
-      "gem_family_id": "varunadalazurite"
+      "world_boss_material_id": "RadiantAntler",
+      "weekly_boss_material_id": "MaskOfTheVirtuousDoctor",
+      "talent_material_family_id": "Moonlight",
+      "enemy_material_family_id": "Slime",
+      "local_specialty_id": "WinterIcelea",
+      "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 108
   },
   {
-    "id": "illuga",
+    "id": "Illuga",
     "name": "Illuga",
     "rarity": "★★★★",
     "weapon_type": "Polearm",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "cyclicmilitarykuuvahkicore",
-      "weekly_boss_material_id": "erodedhorn",
-      "talent_material_family_id": "elysium",
-      "enemy_material_family_id": "landcruisers",
-      "local_specialty_id": "pineamber",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "CyclicMilitaryKuuvahkiCore",
+      "weekly_boss_material_id": "ErodedHorn",
+      "talent_material_family_id": "Elysium",
+      "enemy_material_family_id": "Landcruisers",
+      "local_specialty_id": "PineAmber",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 109
   },
   {
-    "id": "zibai",
+    "id": "Zibai",
     "name": "Zibai",
     "rarity": "★★★★★",
     "weapon_type": "Sword",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "remnantofthedreadwing",
-      "weekly_boss_material_id": "ascendedsamplequeen",
-      "talent_material_family_id": "gold",
-      "enemy_material_family_id": "fatuioprichniki",
-      "local_specialty_id": "glazelily",
-      "gem_family_id": "prithivatopaz"
+      "world_boss_material_id": "RemnantoftheDreadwing",
+      "weekly_boss_material_id": "AscendedSampleQueen",
+      "talent_material_family_id": "Gold",
+      "enemy_material_family_id": "FatuiOprichniki",
+      "local_specialty_id": "GlazeLily",
+      "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 110
   }

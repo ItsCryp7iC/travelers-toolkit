@@ -1,336 +1,336 @@
 [
   {
-    "id": "wolfhook",
+    "id": "Wolfhook",
     "name": "Wolfhook",
     "region": "Mondstadt",
     "sortOrder": 8.001
   },
   {
-    "id": "valberry",
+    "id": "Valberry",
     "name": "Valberry",
     "region": "Mondstadt",
     "sortOrder": 8.002
   },
   {
-    "id": "cecilia",
+    "id": "Cecilia",
     "name": "Cecilia",
     "region": "Mondstadt",
     "sortOrder": 8.003
   },
   {
-    "id": "windwheelaster",
+    "id": "WindwheelAster",
     "name": "Windwheel Aster",
     "region": "Mondstadt",
     "sortOrder": 8.004
   },
   {
-    "id": "philanemomushroom",
+    "id": "PhilanemoMushroom",
     "name": "Philanemo Mushroom",
     "region": "Mondstadt",
     "sortOrder": 8.005
   },
   {
-    "id": "smalllampgrass",
+    "id": "SmallLampGrass",
     "name": "Small Lamp Grass",
     "region": "Mondstadt",
     "sortOrder": 8.006
   },
   {
-    "id": "callalily",
+    "id": "CallaLily",
     "name": "Calla Lily",
     "region": "Mondstadt",
     "sortOrder": 8.007
   },
   {
-    "id": "dandelionseed",
+    "id": "DandelionSeed",
     "name": "Dandelion Seed",
     "region": "Mondstadt",
     "sortOrder": 8.008
   },
   {
-    "id": "jueyunchili",
+    "id": "JueyunChili",
     "name": "Jueyun Chili",
     "region": "Liyue",
     "sortOrder": 8.009
   },
   {
-    "id": "noctilucousjade",
+    "id": "NoctilucousJade",
     "name": "Noctilucous Jade",
     "region": "Liyue",
     "sortOrder": 8.01
   },
   {
-    "id": "silkflower",
+    "id": "SilkFlower",
     "name": "Silk Flower",
     "region": "Liyue",
     "sortOrder": 8.011
   },
   {
-    "id": "glazelily",
+    "id": "GlazeLily",
     "name": "Glaze Lily",
     "region": "Liyue",
     "sortOrder": 8.012
   },
   {
-    "id": "qingxin",
+    "id": "Qingxin",
     "name": "Qingxin",
     "region": "Liyue",
     "sortOrder": 8.013
   },
   {
-    "id": "starconch",
+    "id": "Starconch",
     "name": "Starconch",
     "region": "Liyue",
     "sortOrder": 8.014
   },
   {
-    "id": "violetgrass",
+    "id": "Violetgrass",
     "name": "Violetgrass",
     "region": "Liyue",
     "sortOrder": 8.015
   },
   {
-    "id": "corlapis",
+    "id": "CorLapis",
     "name": "Cor Lapis",
     "region": "Liyue",
     "sortOrder": 8.016
   },
   {
-    "id": "clearwaterjade",
+    "id": "ClearwaterJade",
     "name": "Clearwater Jade",
     "region": "Liyue",
     "sortOrder": 8.017
   },
   {
-    "id": "onikabuto",
+    "id": "Onikabuto",
     "name": "Onikabuto",
     "region": "Inazuma",
     "sortOrder": 8.018
   },
   {
-    "id": "sakurabloom",
+    "id": "SakuraBloom",
     "name": "Sakura Bloom",
     "region": "Inazuma",
     "sortOrder": 8.019
   },
   {
-    "id": "crystalmarrow",
+    "id": "CrystalMarrow",
     "name": "Crystal Marrow",
     "region": "Inazuma",
     "sortOrder": 8.02
   },
   {
-    "id": "dendrobium",
+    "id": "Dendrobium",
     "name": "Dendrobium",
     "region": "Inazuma",
     "sortOrder": 8.021
   },
   {
-    "id": "nakuweed",
+    "id": "NakuWeed",
     "name": "Naku Weed",
     "region": "Inazuma",
     "sortOrder": 8.022
   },
   {
-    "id": "seaganoderma",
+    "id": "SeaGanoderma",
     "name": "Sea Ganoderma",
     "region": "Inazuma",
     "sortOrder": 8.023
   },
   {
-    "id": "sangopearl",
+    "id": "SangoPearl",
     "name": "Sango Pearl",
     "region": "Inazuma",
     "sortOrder": 8.024
   },
   {
-    "id": "amakumofruit",
+    "id": "AmakumoFruit",
     "name": "Amakumo Fruit",
     "region": "Inazuma",
     "sortOrder": 8.025
   },
   {
-    "id": "fluorescentfungus",
+    "id": "FluorescentFungus",
     "name": "Fluorescent Fungus",
     "region": "Inazuma",
     "sortOrder": 8.026
   },
   {
-    "id": "rukkhashavamushrooms",
+    "id": "RukkhashavaMushrooms",
     "name": "Rukkhashava Mushrooms",
     "region": "Sumeru",
     "sortOrder": 8.027
   },
   {
-    "id": "padisarah",
+    "id": "Padisarah",
     "name": "Padisarah",
     "region": "Sumeru",
     "sortOrder": 8.028
   },
   {
-    "id": "nilotpalalotus",
+    "id": "NilotpalaLotus",
     "name": "Nilotpala Lotus",
     "region": "Sumeru",
     "sortOrder": 8.029
   },
   {
-    "id": "kalpalatalotus",
+    "id": "KalpalataLotus",
     "name": "Kalpalata Lotus",
     "region": "Sumeru",
     "sortOrder": 8.03
   },
   {
-    "id": "hennaberry",
+    "id": "HennaBerry",
     "name": "Henna Berry",
     "region": "Sumeru",
     "sortOrder": 8.031
   },
   {
-    "id": "sandgreasepupa",
+    "id": "SandGreasePupa",
     "name": "Sand Grease Pupa",
     "region": "Sumeru",
     "sortOrder": 8.032
   },
   {
-    "id": "mourningflower",
+    "id": "MourningFlower",
     "name": "Mourning Flower",
     "region": "Sumeru",
     "sortOrder": 8.033
   },
   {
-    "id": "trishiraite",
+    "id": "Trishiraite",
     "name": "Trishiraite",
     "region": "Sumeru",
     "sortOrder": 8.034
   },
   {
-    "id": "scarab",
+    "id": "Scarab",
     "name": "Scarab",
     "region": "Sumeru",
     "sortOrder": 8.035
   },
   {
-    "id": "berylconch",
+    "id": "BerylConch",
     "name": "Beryl Conch",
     "region": "Fontaine",
     "sortOrder": 8.036
   },
   {
-    "id": "romaritimeflower",
+    "id": "RomaritimeFlower",
     "name": "Romaritime Flower",
     "region": "Fontaine",
     "sortOrder": 8.037
   },
   {
-    "id": "lumidoucebell",
+    "id": "LumidouceBell",
     "name": "Lumidouce Bell",
     "region": "Fontaine",
     "sortOrder": 8.038
   },
   {
-    "id": "rainbowrose",
+    "id": "RainbowRose",
     "name": "Rainbow Rose",
     "region": "Fontaine",
     "sortOrder": 8.039
   },
   {
-    "id": "lumitoile",
+    "id": "Lumitoile",
     "name": "Lumitoile",
     "region": "Fontaine",
     "sortOrder": 8.04
   },
   {
-    "id": "lakelightlily",
+    "id": "LakelightLily",
     "name": "Lakelight Lily",
     "region": "Fontaine",
     "sortOrder": 8.041
   },
   {
-    "id": "subdetectionunit",
+    "id": "SubdetectionUnit",
     "name": "Subdetection Unit",
     "region": "Fontaine",
     "sortOrder": 8.042
   },
   {
-    "id": "springofthefirstdewdrop",
+    "id": "SpringoftheFirstDewdrop",
     "name": "Springofthe First Dewdrop",
     "region": "Fontaine",
     "sortOrder": 8.043
   },
   {
-    "id": "sprayfeathergill",
+    "id": "SprayfeatherGill",
     "name": "Sprayfeather Gill",
     "region": "Fontaine",
     "sortOrder": 8.044
   },
   {
-    "id": "brilliantchrysanthemum",
+    "id": "BrilliantChrysanthemum",
     "name": "Brilliant Chrysanthemum",
     "region": "Fontaine",
     "sortOrder": 8.045
   },
   {
-    "id": "quenepaberry",
+    "id": "QuenepaBerry",
     "name": "Quenepa Berry",
     "region": "Natlan",
     "sortOrder": 8.046
   },
   {
-    "id": "saurianclawsucculent",
+    "id": "SaurianClawSucculent",
     "name": "Saurian Claw Succulent",
     "region": "Natlan",
     "sortOrder": 8.047
   },
   {
-    "id": "glowinghornshroom",
+    "id": "GlowingHornshroom",
     "name": "Glowing Hornshroom",
     "region": "Natlan",
     "sortOrder": 8.048
   },
   {
-    "id": "witheringpurpurbloom",
+    "id": "WitheringPurpurbloom",
     "name": "Withering Purpurbloom",
     "region": "Natlan",
     "sortOrder": 8.049
   },
   {
-    "id": "skysplitgembloom",
+    "id": "SkysplitGembloom",
     "name": "Skysplit Gembloom",
     "region": "Natlan",
     "sortOrder": 8.05
   },
   {
-    "id": "dracolite",
+    "id": "Dracolite",
     "name": "Dracolite",
     "region": "Natlan",
     "sortOrder": 8.051
   },
   {
-    "id": "portablebearing",
+    "id": "PortableBearing",
     "name": "Portable Bearing",
     "region": "Nod-Krai",
     "sortOrder": 8.052
   },
   {
-    "id": "frostlampflower",
+    "id": "FrostlampFlower",
     "name": "Frostlamp Flower",
     "region": "Nod-Krai",
     "sortOrder": 8.053
   },
   {
-    "id": "moonfallsilver",
+    "id": "MoonfallSilver",
     "name": "Moonfall Silver",
     "region": "Nod-Krai",
     "sortOrder": 8.054
   },
   {
-    "id": "wintericelea",
+    "id": "WinterIcelea",
     "name": "Winter Icelea",
     "region": "Nod-Krai",
     "sortOrder": 8.055
   },
   {
-    "id": "pineamber",
+    "id": "PineAmber",
     "name": "Pine Amber",
     "region": "Nod-Krai",
     "sortOrder": 8.056
