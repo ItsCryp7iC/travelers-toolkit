@@ -188,7 +188,7 @@ export default function Characters() {
             onClick={() => setAddModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md"
           >
-            + Add Character
+            + Batch Add Characters
           </button>
         </div>
       </div>
