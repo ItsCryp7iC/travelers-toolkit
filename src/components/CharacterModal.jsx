@@ -394,8 +394,8 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
         </button>
       )}
 
-      <div className="modal-panel" id="char-modal-panel">
-        <div key={name} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col h-full`}>
+      <div className="modal-panel flex flex-col max-h-[90vh] overflow-hidden" id="char-modal-panel">
+        <div key={name} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col flex-1 h-full min-h-0`}>
         {/* ── Header ─────────────────────────────────────── */}
         <div className="modal-header" style={{ background: elConfig.avatarGradient }}>
           <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse at 20% 50%, ${elColor}, transparent 60%)` }} />
@@ -439,7 +439,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
         </div>
 
         {/* ── Body ───────────────────────────────────────── */}
-        <div className="modal-body">
+        <div className="modal-body flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent">
 
           {/* ── Character Progression Range ──────────────────────── */}
           <section className="mb-6">

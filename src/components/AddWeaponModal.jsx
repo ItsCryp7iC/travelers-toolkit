@@ -231,7 +231,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         ref={modalRef}
         className="w-full max-w-2xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up overflow-hidden"
       >
-        <div key={currentIndex !== undefined ? currentIndex : (selectedWeapon?.name || 'select')} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col h-full overflow-hidden`}>
+        <div key={currentIndex !== undefined ? currentIndex : (selectedWeapon?.name || 'select')} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col flex-1 h-full min-h-0`}>
         {/* Header */}
         {step === 1 ? (
           <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0">
@@ -301,8 +301,8 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
+            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {filteredWeapons.map((wp) => {
                   const wpCfg = WEAPON_TYPES[wp.type] || { emoji: '✨' }
                   const rColor = RARITY_COLORS[wp.rarity] || '#C8A96E'
@@ -333,10 +333,10 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
           </>
         )}
 
-        {/* ── STEP 2: Configure ── */}
+        {/* ── STEP 2: Configure Weapon ── */}
         {step === 2 && selectedWeapon && (
           <>
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent flex flex-col gap-6">
               {/* Level sliders */}
               <div className="space-y-4">
                 {(() => {
@@ -429,7 +429,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                 )}
               </div>
             </div>
-
+            
             {/* Footer */}
             <div className="px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3 shrink-0">
               <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
