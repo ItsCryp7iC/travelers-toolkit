@@ -64,28 +64,12 @@
     "sortOrder": 2.008
   },
   {
-    "id": "RunicFang",
-    "name": "Runic Fang",
-    "type": "normal_boss",
-    "boss_name": "Ruin Serpent",
-    "region": "Liyue",
-    "sortOrder": 2.009
-  },
-  {
-    "id": "CloudseamScale",
-    "name": "Cloudseam Scale",
-    "type": "normal_boss",
-    "boss_name": "Solitary Suanni",
-    "region": "Liyue",
-    "sortOrder": 2.01
-  },
-  {
     "id": "MarionetteCore",
     "name": "Marionette Core",
     "type": "normal_boss",
     "boss_name": "Maguu Kenki",
     "region": "Inazuma",
-    "sortOrder": 2.011
+    "sortOrder": 2.009
   },
   {
     "id": "PerpetualHeart",
@@ -93,7 +77,7 @@
     "type": "normal_boss",
     "boss_name": "Perpetual Mechanical Array",
     "region": "Inazuma",
-    "sortOrder": 2.012
+    "sortOrder": 2.01
   },
   {
     "id": "SmolderingPearl",
@@ -101,7 +85,7 @@
     "type": "normal_boss",
     "boss_name": "Pyro Hypostasis",
     "region": "Inazuma",
-    "sortOrder": 2.013
+    "sortOrder": 2.011
   },
   {
     "id": "DewOfRepudiation",
@@ -109,7 +93,7 @@
     "type": "normal_boss",
     "boss_name": "Hydro Hypostasis",
     "region": "Inazuma",
-    "sortOrder": 2.014
+    "sortOrder": 2.012
   },
   {
     "id": "StormBeads",
@@ -117,7 +101,7 @@
     "type": "normal_boss",
     "boss_name": "Thunder Manifestation",
     "region": "Inazuma",
-    "sortOrder": 2.015
+    "sortOrder": 2.013
   },
   {
     "id": "RiftbornRegalia",
@@ -125,7 +109,7 @@
     "type": "normal_boss",
     "boss_name": "Golden Wolflord",
     "region": "Inazuma",
-    "sortOrder": 2.016
+    "sortOrder": 2.014
   },
   {
     "id": "DragonheirsFalseFin",
@@ -133,7 +117,15 @@
     "type": "normal_boss",
     "boss_name": "Coral Defenders",
     "region": "Inazuma",
-    "sortOrder": 2.017
+    "sortOrder": 2.015
+  },
+  {
+    "id": "RunicFang",
+    "name": "Runic Fang",
+    "type": "normal_boss",
+    "boss_name": "Ruin Serpent",
+    "region": "Liyue",
+    "sortOrder": 2.016
   },
   {
     "id": "MajesticHookedBeak",
@@ -141,7 +133,7 @@
     "type": "normal_boss",
     "boss_name": "Jadeplume Terrorshroom",
     "region": "Sumeru",
-    "sortOrder": 2.018
+    "sortOrder": 2.017
   },
   {
     "id": "ThunderclapFruitcore",
@@ -149,7 +141,7 @@
     "type": "normal_boss",
     "boss_name": "Electro Regisvine",
     "region": "Sumeru",
-    "sortOrder": 2.019
+    "sortOrder": 2.018
   },
   {
     "id": "PerpetualCaliber",
@@ -157,7 +149,7 @@
     "type": "normal_boss",
     "boss_name": "Aeonblight Drake",
     "region": "Sumeru",
-    "sortOrder": 2.02
+    "sortOrder": 2.019
   },
   {
     "id": "LightGuidingTetrahedron",
@@ -165,7 +157,7 @@
     "type": "normal_boss",
     "boss_name": "Algorithm of Semi-Intransient Matrix of Overseer Network",
     "region": "Sumeru",
-    "sortOrder": 2.021
+    "sortOrder": 2.02
   },
   {
     "id": "QuelledCreeper",
@@ -173,7 +165,7 @@
     "type": "normal_boss",
     "boss_name": "Dendro Hypostasis",
     "region": "Sumeru",
-    "sortOrder": 2.022
+    "sortOrder": 2.021
   },
   {
     "id": "PseudoStamens",
@@ -181,7 +173,7 @@
     "type": "normal_boss",
     "boss_name": "Setekh Wenut",
     "region": "Sumeru",
-    "sortOrder": 2.023
+    "sortOrder": 2.022
   },
   {
     "id": "EvergloomRing",
@@ -189,7 +181,7 @@
     "type": "normal_boss",
     "boss_name": "Iniquitous Baptist",
     "region": "Sumeru",
-    "sortOrder": 2.024
+    "sortOrder": 2.023
   },
   {
     "id": "ArtificedSpareClockworkComponentCoppelia",
@@ -197,7 +189,7 @@
     "type": "normal_boss",
     "boss_name": "Icewind Suite",
     "region": "Fontaine",
-    "sortOrder": 2.025
+    "sortOrder": 2.024
   },
   {
     "id": "ArtificedSpareClockworkComponentCoppelius",
@@ -205,7 +197,7 @@
     "type": "normal_boss",
     "boss_name": "Icewind Suite",
     "region": "Fontaine",
-    "sortOrder": 2.026
+    "sortOrder": 2.025
   },
   {
     "id": "EmperorsResolution",
@@ -213,7 +205,7 @@
     "type": "normal_boss",
     "boss_name": "Emperor of Fire and Iron",
     "region": "Fontaine",
-    "sortOrder": 2.027
+    "sortOrder": 2.026
   },
   {
     "id": "FontemerUnihorn",
@@ -221,7 +213,7 @@
     "type": "normal_boss",
     "boss_name": "Millennial Pearl Seahorse",
     "region": "Fontaine",
-    "sortOrder": 2.028
+    "sortOrder": 2.027
   },
   {
     "id": "TourbillonDevice",
@@ -229,7 +221,7 @@
     "type": "normal_boss",
     "boss_name": "Prototype Cal. Breguet",
     "region": "Fontaine",
-    "sortOrder": 2.029
+    "sortOrder": 2.028
   },
   {
     "id": "WaterThatFailedToTranscend",
@@ -237,6 +229,14 @@
     "type": "normal_boss",
     "boss_name": "Hydro Tulpa",
     "region": "Fontaine",
+    "sortOrder": 2.029
+  },
+  {
+    "id": "CloudseamScale",
+    "name": "Cloudseam Scale",
+    "type": "normal_boss",
+    "boss_name": "Solitary Suanni",
+    "region": "Liyue",
     "sortOrder": 2.03
   },
   {
