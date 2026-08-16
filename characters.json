@@ -1129,7 +1129,7 @@
             "weekly_boss": "LightlessSilkString",
             "talent_book": "Equity",
             "mob_material": "FontemerAberrant",
-            "local_specialty": "SpringoftheFirstDewdrop",
+            "local_specialty": "SpringOfTheFirstDewdrop",
             "gemstone": "PrithivaTopaz"
         }
     },
@@ -1294,7 +1294,7 @@
         "element": "Dendro",
         "materials": {
             "world_boss": "OverripeFlamegranate",
-            "weekly_boss": "DenialandJudgment",
+            "weekly_boss": "DenialAndJudgment",
             "talent_book": "Kindling",
             "mob_material": "SauroformTribalWarriors",
             "local_specialty": "SaurianClawSucculent",
@@ -1350,7 +1350,7 @@
         "element": "Cryo",
         "materials": {
             "world_boss": "TalismanoftheEnigmaticLand",
-            "weekly_boss": "DenialandJudgment",
+            "weekly_boss": "DenialAndJudgment",
             "talent_book": "Kindling",
             "mob_material": "SauroformTribalWarriors",
             "local_specialty": "QuenepaBerry",
@@ -1406,7 +1406,7 @@
         "element": "Electro",
         "materials": {
             "world_boss": "EnsnaringGaze",
-            "weekly_boss": "DenialandJudgment",
+            "weekly_boss": "DenialAndJudgment",
             "talent_book": "Contention",
             "mob_material": "SauroformTribalWarriors",
             "local_specialty": "Dracolite",
@@ -1615,7 +1615,7 @@
         "weapon_type": "Sword",
         "element": "Geo",
         "materials": {
-            "world_boss": "RemnantoftheDreadwing",
+            "world_boss": "RemnantOfTheDreadwing",
             "weekly_boss": "AscendedSampleQueen",
             "talent_book": "Gold",
             "mob_material": "FatuiOprichniki",

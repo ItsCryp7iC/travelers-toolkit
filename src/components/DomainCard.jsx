@@ -15,30 +15,30 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
 
   const getSafeImgId = (id) => {
     if (!id) return '';
-    
+
     // 1. Decode URI to catch %E2%80%94 (em-dash), then strip apostrophes and replace dashes with spaces
     let strId = decodeURIComponent(id.toString());
     strId = strId.replace(/['’]/g, '').replace(/[-—]/g, ' ');
-  
+
     // 2. Intercept Talent Books (continuous strings)
     const talentMatch = strId.match(/^(philosophiesof|guideto|teachingsof)(.+)$/i);
     if (talentMatch) {
       const prefix = talentMatch[1].toLowerCase();
       const suffix = talentMatch[2];
-      
+
       let formattedPrefix = '';
       if (prefix === 'philosophiesof') formattedPrefix = 'Philosophiesof';
       else if (prefix === 'guideto') formattedPrefix = 'Guideto';
       else if (prefix === 'teachingsof') formattedPrefix = 'Teachingsof';
-      
+
       const formattedSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
       return `${formattedPrefix}${formattedSuffix}`;
     }
-  
+
     // 3. True Title Case (spaces removed)
     const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for', 'from'];
-    return strId
-      .split(/[\s_]+/) 
+    let finalId = strId
+      .split(/[\s_]+/)
       .map((word, index) => {
         if (!word) return '';
         const lowerWord = word.toLowerCase();
@@ -49,6 +49,9 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
         return word.charAt(0).toUpperCase() + word.slice(1);
       })
       .join('');
+
+    if (finalId === 'CrownofInsight') return 'CrownOfInsight';
+    return finalId;
   };
 
   const chars = neededBy?.filter(e => e.type === 'character') || [];
@@ -60,7 +63,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
     <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors overflow-hidden relative group">
       {/* Glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity pointer-events-none" style={{ background: accent }} />
-      
+
       {/* Header */}
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
         <span className="text-xs">{familyObj.type === 'weekly_boss' ? '👑' : familyObj.type === 'world_boss' ? '🐉' : familyObj.type === 'elite_mob' ? '🛡️' : familyObj.type === 'gemstones' ? '💎' : '🏛️'}</span>
@@ -74,10 +77,10 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
         {familyData.tiers.map(tier => {
           let required = globalCosts[tier.id] || 0;
           if (items[tier.id]) {
-             required = items[tier.id].item.required || items[tier.id].item.toFarm || globalCosts[tier.id];
+            required = items[tier.id].item.required || items[tier.id].item.toFarm || globalCosts[tier.id];
           }
           const owned = inventory[tier.id] || 0;
-          
+
           if (required === 0 && owned === 0 && familyObj.type !== 'currency') return null;
 
           const percent = required > 0 ? Math.min(100, (owned / required) * 100) : (owned > 0 ? 100 : 0);
@@ -88,11 +91,11 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
-                  <img 
+                  <img
                     src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${itemFolder}/${getSafeImgId(tier.name)}.png`}
-                    alt={tier.name} 
-                    className="w-8 h-8 object-contain drop-shadow-md" 
-                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
+                    alt={tier.name}
+                    className="w-8 h-8 object-contain drop-shadow-md"
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                   />
                   <span className="hidden text-xl">📦</span>
                   <span className="text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
@@ -123,7 +126,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
               <div className="flex flex-wrap gap-1">
                 {chars.map((entity, i) => (
                   <div key={`char-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
-                    <img 
+                    <img
                       src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/characters/${getSafeImgId(entity.name)}.png`}
                       alt={entity.name}
                       title={entity.name}
@@ -135,12 +138,12 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 ))}
               </div>
             )}
-            
+
             {weaps.length > 0 && (
               <div className={`flex flex-wrap gap-1 ${chars.length > 0 ? 'mt-2' : ''}`}>
                 {weaps.map((entity, i) => (
                   <div key={`weap-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
-                    <img 
+                    <img
                       src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/weapons/${getSafeImgId(entity.name)}.png`}
                       alt={entity.name}
                       title={entity.name}

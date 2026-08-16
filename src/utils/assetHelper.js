@@ -84,6 +84,10 @@ export function getMaterialIcon(materialName, category) {
   if (!materialName) return '';
 
   let fileName = toPascalCase(materialName);
+  // Explicit filename mappings for CDN assets that differ from in-game label
+  if (fileName.toLowerCase() === 'crownofinsight') {
+    fileName = 'CrownOfInsight';
+  }
 
   const experienceItems = ['HerosWit', 'AdventurersExperience', 'WanderersAdvice', 'MysticEnhancementOre', 'FineEnhancementOre', 'EnhancementOre'];
   const othersItems = ['Mora', 'CrownOfInsight', 'MasterlessStellaFortuna', 'DreamSolvent', 'FragileResin', 'TheCornerstoneOfStarsAndFlames'];

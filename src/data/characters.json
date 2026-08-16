@@ -1290,7 +1290,7 @@
       "weekly_boss_material_id": "LightlessSilkString",
       "talent_material_family_id": "Equity",
       "enemy_material_family_id": "FontemerAberrant",
-      "local_specialty_id": "SpringoftheFirstDewdrop",
+      "local_specialty_id": "SpringOfTheFirstDewdrop",
       "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 75
@@ -1479,7 +1479,7 @@
     "element": "Dendro",
     "materials": {
       "world_boss_material_id": "OverripeFlamegranate",
-      "weekly_boss_material_id": "DenialandJudgment",
+      "weekly_boss_material_id": "DenialAndJudgment",
       "talent_material_family_id": "Kindling",
       "enemy_material_family_id": "SauroformTribalWarriors",
       "local_specialty_id": "SaurianClawSucculent",
@@ -1543,7 +1543,7 @@
     "element": "Cryo",
     "materials": {
       "world_boss_material_id": "TalismanOfTheEnigmaticLand",
-      "weekly_boss_material_id": "DenialandJudgment",
+      "weekly_boss_material_id": "DenialAndJudgment",
       "talent_material_family_id": "Kindling",
       "enemy_material_family_id": "SauroformTribalWarriors",
       "local_specialty_id": "QuenepaBerry",
@@ -1607,7 +1607,7 @@
     "element": "Electro",
     "materials": {
       "world_boss_material_id": "EnsnaringGaze",
-      "weekly_boss_material_id": "DenialandJudgment",
+      "weekly_boss_material_id": "DenialAndJudgment",
       "talent_material_family_id": "Contention",
       "enemy_material_family_id": "SauroformTribalWarriors",
       "local_specialty_id": "Dracolite",
@@ -1846,7 +1846,7 @@
     "weapon_type": "Sword",
     "element": "Geo",
     "materials": {
-      "world_boss_material_id": "RemnantoftheDreadwing",
+      "world_boss_material_id": "RemnantOfTheDreadwing",
       "weekly_boss_material_id": "AscendedSampleQueen",
       "talent_material_family_id": "Gold",
       "enemy_material_family_id": "FatuiOprichniki",

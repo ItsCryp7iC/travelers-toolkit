@@ -40,25 +40,25 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
   const breakdown = []
 
   for (const [charName, entry] of Object.entries(roster)) {
-    const fromLevel = entry.level           ?? 1
-    const fromAsc   = entry.ascension       ?? 0
-    const toLevel   = entry.targetLevel     ?? 90
-    const toAsc     = entry.targetAscension ?? 6
+    const fromLevel = entry.level ?? 1
+    const fromAsc = entry.ascension ?? 0
+    const toLevel = entry.targetLevel ?? 90
+    const toAsc = entry.targetAscension ?? 6
 
     const ascNoop = fromAsc === toAsc && fromLevel >= toLevel
 
     const talentState = {
-      normalFrom: entry.talents?.normal         ?? 1,
-      normalTo:   entry.targetTalents?.normal   ?? 1,
-      skillFrom:  entry.talents?.skill          ?? 1,
-      skillTo:    entry.targetTalents?.skill    ?? 1,
-      burstFrom:  entry.talents?.burst          ?? 1,
-      burstTo:    entry.targetTalents?.burst    ?? 1,
+      normalFrom: entry.talents?.normal ?? 1,
+      normalTo: entry.targetTalents?.normal ?? 1,
+      skillFrom: entry.talents?.skill ?? 1,
+      skillTo: entry.targetTalents?.skill ?? 1,
+      burstFrom: entry.talents?.burst ?? 1,
+      burstTo: entry.targetTalents?.burst ?? 1,
     }
     const talentNoop =
       talentState.normalTo <= talentState.normalFrom &&
-      talentState.skillTo  <= talentState.skillFrom  &&
-      talentState.burstTo  <= talentState.burstFrom
+      talentState.skillTo <= talentState.skillFrom &&
+      talentState.burstTo <= talentState.burstFrom
 
     if (ascNoop && talentNoop) continue
 
@@ -78,7 +78,7 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     }
 
     const totalCosts = {}
-    
+
     const processCosts = (costObj, isWeapon = false) => {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
@@ -110,12 +110,12 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     const wToAsc = weapon.targetAscension ?? 6
 
     if (wFromAsc === wToAsc && wFromLv >= wToLv) continue
-    
+
     const wData = WEAPON_MAP[weapon.weaponName]
     if (!wData) continue
 
     const weaponCosts = calculateWeaponCost(wData, wFromLv, wToLv, wFromAsc, wToAsc, false, roster)
-    
+
     const totalCosts = {}
     const processWeaponCosts = (costObj) => {
       if (!costObj) return
@@ -130,9 +130,9 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
         }
       })
     }
-    
+
     processWeaponCosts(weaponCosts)
-    
+
     if (Object.values(totalCosts).some(val => val > 0)) {
       breakdown.push({ name: weapon.weaponName, isWeapon: true, entry: weapon, totalCosts })
     }
@@ -157,11 +157,11 @@ export function computeToFarm(totals, inventory) {
     .map(([name, required]) => {
       const owned = inv[name] || 0
       const toFarm = Math.max(0, required - owned)
-      return { 
-        name, 
-        required, 
-        owned, 
-        toFarm, 
+      return {
+        name,
+        required,
+        owned,
+        toFarm,
         category: categories[name] || 'unknown',
         rarity: rarities[name] || 3
       }
@@ -214,44 +214,44 @@ export const GEM_TIER_LABELS = ['Sliver ★', 'Fragment ★★', 'Chunk ★★�
 export const WORLD_BOSS_MATS = [
   'ArtificedSpareClockworkComponentCoppelia',
   'ArtificedSpareClockworkComponentCoppelius',
-  'BasaltPillar','CleansingHeart','CloudseamScale','CrystallineBloom',
-  'CyclicMilitaryKuuvahkiCore','DewofRepudiation','DragonheirsFalseFin',
-  'EmperorsResolution','EnsnaringGaze','EverflameSeed','EvergloomRing',
-  'FontemerUnihorn','FragmentofaGoldenMelody','GoldInscribedSecretSourceCore',
-  'HoarfrostCore','HurricaneSeed','JuvenileJade','LightGuidingTetrahedron',
-  'LightbearingScaleFeather','LightningPrism','MajesticHookedBeak',
-  'MarionetteCore','MarkoftheBindingBlessing','OverripeFlamegranate',
-  'PerpetualCaliber','PerpetualHeart','PrecisionKuuvahkiStampingDie',
-  'PseudoStamens','QuelledCreeper','RadiantAntler','RemnantoftheDreadwing',
-  'RiftbornRegalia','RunicFang','SecretSourceAirflowAccumulator',
-  'SmolderingPearl','SparklessStatueCore','StormBeads',
-  'TalismanoftheEnigmaticLand','ThunderclapFruitcore','TourbillonDevice',
+  'BasaltPillar', 'CleansingHeart', 'CloudseamScale', 'CrystallineBloom',
+  'CyclicMilitaryKuuvahkiCore', 'DewofRepudiation', 'DragonheirsFalseFin',
+  'EmperorsResolution', 'EnsnaringGaze', 'EverflameSeed', 'EvergloomRing',
+  'FontemerUnihorn', 'FragmentofaGoldenMelody', 'GoldInscribedSecretSourceCore',
+  'HoarfrostCore', 'HurricaneSeed', 'JuvenileJade', 'LightGuidingTetrahedron',
+  'LightbearingScaleFeather', 'LightningPrism', 'MajesticHookedBeak',
+  'MarionetteCore', 'MarkoftheBindingBlessing', 'OverripeFlamegranate',
+  'PerpetualCaliber', 'PerpetualHeart', 'PrecisionKuuvahkiStampingDie',
+  'PseudoStamens', 'QuelledCreeper', 'RadiantAntler', 'RemnantOfTheDreadwing',
+  'RiftbornRegalia', 'RunicFang', 'SecretSourceAirflowAccumulator',
+  'SmolderingPearl', 'SparklessStatueCore', 'StormBeads',
+  'TalismanoftheEnigmaticLand', 'ThunderclapFruitcore', 'TourbillonDevice',
   'WaterThatFailedToTranscend',
 ]
 
 export const LOCAL_SPECIALTY_MATS = [
-  'AmakumoFruit','BerylConch','BrilliantChrysanthemum','CallaLily',
-  'Cecilia','ClearwaterJade','CorLapis','CrystalMarrow','DandelionSeed',
-  'Dendrobium','Dracolite','FluorescentFungus','FrostlampFlower',
-  'GlazeLily','GlowingHornshroom','HennaBerry','JueyunChili',
-  'KalpalataLotus','LakelightLily','LumidouceBell','Lumitoile',
-  'MoonfallSilver','MourningFlower','NakuWeed','NilotpalaLotus',
-  'NoctilucousJade','Onikabuto','Padisarah','PhilanemoMushroom',
-  'PineAmber','PortableBearing','Qingxin','QuenepaBerry','RainbowRose',
-  'RomaritimeFlower','RukkhashavaMushrooms','SakuraBloom','SandGreasePupa',
-  'SangoPearl','SaurianClawSucculent','Scarab','SeaGanoderma',
-  'SilkFlower','SkysplitGembloom','SmallLampGrass','SprayfeatherGill',
-  'SpringoftheFirstDewdrop','Starconch','SubdetectionUnit','Trishiraite',
-  'Valberry','Violetgrass','WindwheelAster','WinterIcelea',
-  'WitheringPurpurbloom','Wolfhook',
+  'AmakumoFruit', 'BerylConch', 'BrilliantChrysanthemum', 'CallaLily',
+  'Cecilia', 'ClearwaterJade', 'CorLapis', 'CrystalMarrow', 'DandelionSeed',
+  'Dendrobium', 'Dracolite', 'FluorescentFungus', 'FrostlampFlower',
+  'GlazeLily', 'GlowingHornshroom', 'HennaBerry', 'JueyunChili',
+  'KalpalataLotus', 'LakelightLily', 'LumidouceBell', 'Lumitoile',
+  'MoonfallSilver', 'MourningFlower', 'NakuWeed', 'NilotpalaLotus',
+  'NoctilucousJade', 'Onikabuto', 'Padisarah', 'PhilanemoMushroom',
+  'PineAmber', 'PortableBearing', 'Qingxin', 'QuenepaBerry', 'RainbowRose',
+  'RomaritimeFlower', 'RukkhashavaMushrooms', 'SakuraBloom', 'SandGreasePupa',
+  'SangoPearl', 'SaurianClawSucculent', 'Scarab', 'SeaGanoderma',
+  'SilkFlower', 'SkysplitGembloom', 'SmallLampGrass', 'SprayfeatherGill',
+  'SpringOfTheFirstDewdrop', 'Starconch', 'SubdetectionUnit', 'Trishiraite',
+  'Valberry', 'Violetgrass', 'WindwheelAster', 'WinterIcelea',
+  'WitheringPurpurbloom', 'Wolfhook',
 ]
 
 // Mob base names (each generates 3 keys: base, base (Uncommon), base (Rare))
 export const MOB_BASES = [
-  'ClockworkMeka','Fatui','FatuiOprichniki','FontemerAberrant',
-  'Fungi','Hilichurl','HilichurlShooter','Landcruisers',
-  'NatlanSaurian','Nobushi','Samachurl','SauroformTribalWarriors',
-  'Slime','Specters','TheEremites','TreasureHoarder','Whopperflower',
+  'ClockworkMeka', 'Fatui', 'FatuiOprichniki', 'FontemerAberrant',
+  'Fungi', 'Hilichurl', 'HilichurlShooter', 'Landcruisers',
+  'NatlanSaurian', 'Nobushi', 'Samachurl', 'SauroformTribalWarriors',
+  'Slime', 'Specters', 'TheEremites', 'TreasureHoarder', 'Whopperflower',
 ]
 
 /** Expand a mob base into 3 keyed tier names */
