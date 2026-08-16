@@ -89,7 +89,7 @@ export default function BatchAddWeaponModal({ onClose }) {
 
   // Step 1 state
   const [step, setStep] = useState(1) // 1=Select, 2=Configure
-  const [selectedWeapons, setSelectedWeapons] = useState([])
+  const [selectedQuantities, setSelectedQuantities] = useState({})
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('All')
   const [rarityFilter, setRarityFilter] = useState('All')
@@ -135,34 +135,58 @@ export default function BatchAddWeaponModal({ onClose }) {
     })
   }, [search, typeFilter, rarityFilter])
 
-  const toggleWeapon = (weapon) => {
-    setSelectedWeapons(prev => {
-      const isSelected = prev.some(w => w.name === weapon.name)
-      if (isSelected) {
-        return prev.filter(w => w.name !== weapon.name)
-      } else {
-        return [...prev, weapon]
+  const handleQuantityChange = (weaponName, delta) => {
+    setSelectedQuantities(prev => {
+      const current = prev[weaponName] || 0;
+      const next = Math.max(0, current + delta);
+      if (next === 0) {
+        const { [weaponName]: _, ...rest } = prev;
+        return rest;
       }
-    })
-  }
+      return { ...prev, [weaponName]: next };
+    });
+  };
 
   const toggleSelectAll = () => {
-    const allFilteredSelected = filteredWeapons.every(fw => selectedWeapons.some(sw => sw.name === fw.name))
+    const allFilteredSelected = filteredWeapons.every(fw => selectedQuantities[fw.name] > 0)
     if (allFilteredSelected) {
       // Deselect all filtered
       const filteredNames = new Set(filteredWeapons.map(w => w.name))
-      setSelectedWeapons(prev => prev.filter(sw => !filteredNames.has(sw.name)))
-    } else {
-      // Select all filtered
-      const newSelections = [...selectedWeapons]
-      filteredWeapons.forEach(fw => {
-        if (!newSelections.some(sw => sw.name === fw.name)) {
-          newSelections.push(fw)
-        }
+      setSelectedQuantities(prev => {
+        const next = { ...prev }
+        filteredNames.forEach(name => delete next[name])
+        return next
       })
-      setSelectedWeapons(newSelections)
+    } else {
+      // Select 1 of each filtered if not already selected
+      setSelectedQuantities(prev => {
+        const next = { ...prev }
+        filteredWeapons.forEach(fw => {
+          if (!next[fw.name]) next[fw.name] = 1
+        })
+        return next
+      })
     }
   }
+
+  // Expand quantities for Step 2
+  const expandedSelectedWeapons = useMemo(() => {
+    const expanded = [];
+    Object.entries(selectedQuantities).forEach(([weaponName, qty]) => {
+      const weaponData = weaponsData.find(w => w.name === weaponName);
+      if (weaponData) {
+        for (let i = 0; i < qty; i++) {
+          expanded.push({
+            ...weaponData,
+            uniqueId: `${weaponName}-${i}`
+          });
+        }
+      }
+    });
+    return expanded;
+  }, [selectedQuantities]);
+  
+  const totalSelectedCount = expandedSelectedWeapons.length;
 
   const getCompatibleChars = (weaponType) => {
     return Object.keys(roster)
@@ -171,10 +195,10 @@ export default function BatchAddWeaponModal({ onClose }) {
   }
 
   const handleConfirm = () => {
-    if (selectedWeapons.length === 0) return
+    if (totalSelectedCount === 0) return
 
-    selectedWeapons.forEach((weapon) => {
-      const charAssigned = assignments[weapon.name] || null
+    expandedSelectedWeapons.forEach((weapon) => {
+      const charAssigned = assignments[weapon.uniqueId] || null
       const newId = addTrackedWeapon(weapon.name, charAssigned)
       if (newId) {
         updateTrackedWeapon(newId, {
@@ -202,7 +226,7 @@ export default function BatchAddWeaponModal({ onClose }) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)] rounded-t-2xl">
           <div className="flex items-center gap-3">
             <h2 className="font-cinzel font-bold text-lg text-[var(--text)]">
-              {step === 1 ? 'Select Weapons' : `${selectedWeapons.length} Weapons Selected`}
+              {step === 1 ? 'Select Weapons' : `${totalSelectedCount} Weapons Selected`}
             </h2>
           </div>
           <div className="flex items-center gap-2">
@@ -243,7 +267,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                   onClick={toggleSelectAll}
                   className="genshin-btn-ghost text-xs px-4 py-2 border border-[var(--border)]"
                 >
-                  {filteredWeapons.every(fw => selectedWeapons.some(sw => sw.name === fw.name)) ? 'Deselect All' : 'Select All Filtered'}
+                  {filteredWeapons.every(fw => selectedQuantities[fw.name] > 0) ? 'Deselect All' : 'Select All Filtered'}
                 </button>
               </div>
             </div>
@@ -253,24 +277,28 @@ export default function BatchAddWeaponModal({ onClose }) {
                 {filteredWeapons.map((wp) => {
                   const wpCfg = WEAPON_TYPES[wp.type] || { emoji: '✨' }
                   const rColor = RARITY_COLORS[wp.rarity] || '#C8A96E'
-                  const isSelected = selectedWeapons.some(sw => sw.name === wp.name)
+                  const isSelected = selectedQuantities[wp.name] > 0
                   
                   return (
                     <button
                       key={wp.name}
-                      onClick={() => toggleWeapon(wp)}
+                      onClick={() => !isSelected && handleQuantityChange(wp.name, 1)}
                       className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left group relative overflow-hidden ${
                         isSelected 
                           ? 'border-[var(--gold)] bg-[rgba(200,169,110,0.1)] shadow-[0_0_10px_rgba(200,169,110,0.15)]' 
                           : 'border-[var(--border)] bg-[var(--surface)] hover:border-white/20 hover:bg-[var(--elevated)]'
                       }`}
                     >
-                      {/* Checkbox Overlay */}
-                      <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border flex items-center justify-center transition-colors z-20 ${
-                        isSelected ? 'bg-[var(--gold)] border-[var(--gold)] text-black' : 'border-[var(--muted)] bg-black/40'
-                      }`}>
-                        {isSelected && <span className="text-[10px] leading-none">✓</span>}
-                      </div>
+                      {/* Checkbox / Quantity Overlay */}
+                      {isSelected ? (
+                        <div className="absolute bottom-2 right-2 flex items-center bg-black/80 rounded-md border border-[var(--gold)] z-20" onClick={(e) => e.stopPropagation()}>
+                          <button onClick={() => handleQuantityChange(wp.name, -1)} className="px-2 py-0.5 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-l-md">-</button>
+                          <span className="px-1.5 text-xs text-[var(--gold)] font-cinzel font-bold">{selectedQuantities[wp.name]}</span>
+                          <button onClick={() => handleQuantityChange(wp.name, 1)} className="px-2 py-0.5 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-r-md">+</button>
+                        </div>
+                      ) : (
+                        <div className="absolute bottom-2 right-2 w-4 h-4 rounded-full border border-[var(--muted)] bg-black/40 flex items-center justify-center transition-colors z-20" />
+                      )}
 
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xl shadow relative overflow-hidden ${getRarityBg(wp.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
                         <GenshinImage 
@@ -294,20 +322,20 @@ export default function BatchAddWeaponModal({ onClose }) {
             {/* Step 1 Footer */}
             <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface)] flex justify-between items-center shrink-0 rounded-b-2xl">
               <span className="text-sm font-semibold text-[var(--muted)]">
-                {selectedWeapons.length} selected
+                {totalSelectedCount} selected
               </span>
               <div className="flex gap-3">
                 <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
                 <button
                   onClick={() => setStep(2)}
-                  disabled={selectedWeapons.length === 0}
+                  disabled={totalSelectedCount === 0}
                   className={`px-5 py-2 rounded-xl text-sm font-bold transition-opacity shadow-md ${
-                    selectedWeapons.length > 0 
+                    totalSelectedCount > 0 
                       ? 'bg-[var(--gold)] text-[var(--bg)] hover:opacity-90' 
                       : 'bg-[var(--elevated)] text-[var(--muted)] cursor-not-allowed border border-[var(--border)]'
                   }`}
                 >
-                  Next: Configure ({selectedWeapons.length})
+                  Next: Configure ({totalSelectedCount})
                 </button>
               </div>
             </div>
@@ -325,7 +353,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                   <h3 className="font-cinzel font-bold text-[var(--text)] text-lg">Global Baseline Configuration</h3>
                 </div>
                 <p className="text-[var(--muted)] text-xs mb-6 max-w-2xl">
-                  These settings will be applied as the default starting and target levels for all {selectedWeapons.length} weapons in this batch.
+                  These settings will be applied as the default starting and target levels for all {totalSelectedCount} weapons in this batch.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
@@ -398,13 +426,13 @@ export default function BatchAddWeaponModal({ onClose }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border)]">
-                      {selectedWeapons.map((wp) => {
+                      {expandedSelectedWeapons.map((wp) => {
                         const compatibleChars = getCompatibleChars(wp.type);
-                        const assignedValue = assignments[wp.name] || '';
+                        const assignedValue = assignments[wp.uniqueId] || '';
                         const rColor = RARITY_COLORS[wp.rarity] || '#C8A96E';
                         
                         return (
-                          <tr key={wp.name} className="hover:bg-[var(--elevated)] transition-colors">
+                          <tr key={wp.uniqueId} className="hover:bg-[var(--elevated)] transition-colors">
                             <td className="px-4 py-3 text-center">
                               <div className={`w-10 h-10 mx-auto rounded-lg shadow flex items-center justify-center relative overflow-hidden ${getRarityBg(wp.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
                                 <GenshinImage 
@@ -428,7 +456,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                                 <CustomSelect
                                   placeholder="— Unassigned (Standalone) —"
                                   value={assignedValue}
-                                  onChange={(newVal) => setAssignments(prev => ({ ...prev, [wp.name]: newVal }))}
+                                  onChange={(newVal) => setAssignments(prev => ({ ...prev, [wp.uniqueId]: newVal }))}
                                   options={[
                                     { id: '', name: '— Unassigned (Standalone) —', icon: null, rarity: 0 },
                                     ...compatibleChars.map((c) => {
