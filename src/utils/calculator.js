@@ -605,3 +605,15 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
 
   return result;
 }
+
+export const toggleMilestoneAscension = (level, currentAscension) => {
+  if (level === 20) return currentAscension === 0 ? 1 : 0;
+  if (level === 40) return currentAscension === 1 ? 2 : 1;
+  if (level === 50) return currentAscension === 2 ? 3 : 2;
+  if (level === 60) return currentAscension === 3 ? 4 : 3;
+  if (level === 70) return currentAscension === 4 ? 5 : 4;
+  if (level === 80) return currentAscension === 5 ? 6 : 5;
+  return currentAscension; 
+};
+
+export const isMilestone = (level) => [20, 40, 50, 60, 70, 80].includes(Number(level));

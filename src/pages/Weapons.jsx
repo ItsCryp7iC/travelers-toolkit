@@ -8,11 +8,12 @@ import charactersData from '../data/characters.json'
 import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getInitials, getStars, getRarityClass, getRarityBg } from '../utils/gameData'
 import { ELEMENTS } from '../utils/gameData'
-import { calculateWeaponCost, formatNumber, buildWeaponAscMatKey, buildWeaponEliteKey, buildMobNames, formatMaterialName } from '../utils/calculator'
+import { calculateWeaponCost, formatNumber, buildWeaponAscMatKey, buildWeaponEliteKey, buildMobNames, formatMaterialName, toggleMilestoneAscension, isMilestone } from '../utils/calculator'
 import { resolveWeaponMaterials } from '../utils/dataManager'
 import GenshinImage from '../components/GenshinImage'
 import { getWeaponIcon, getCharacterAvatar, getMaterialIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 import MatQuantity from '../components/MatQuantity'
+import InlineNumberInput from '../components/InlineNumberInput'
 
 const ALL_TYPES    = ['All', ...Object.keys(WEAPON_TYPES)]
 const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★', '⚪ 1★']
@@ -430,26 +431,72 @@ export default function Weapons() {
                           {/* State */}
                           <td className="px-3 py-2">
                               <div className="flex items-center justify-center gap-1">
-                                <span className="font-mono text-[11px] text-[var(--text)]">{wp.level ?? 1}</span>
+                                <InlineNumberInput
+                                  value={wp.level ?? 1}
+                                  min={1} max={90}
+                                  onChangeSubmit={(val) => updateTrackedWeapon(wp.id, { level: val })}
+                                  className="font-mono text-[11px] text-[var(--text)]"
+                                />
                                 {isAscended(wp.level ?? 1, wp.ascension ?? 0) && (wp.level ?? 1) < 90 && (
                                   <img 
                                     src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
                                     alt="Ascended" 
-                                    className="w-3 h-3 opacity-80 object-contain"
+                                    className={`w-3 h-3 object-contain ml-1 select-none transition-colors ${isMilestone(wp.level ?? 1) ? 'cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-100' : 'cursor-default text-white/30 opacity-80'}`}
                                     title="Ascended"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (isMilestone(wp.level ?? 1)) {
+                                        updateTrackedWeapon(wp.id, { ascension: toggleMilestoneAscension(wp.level ?? 1, wp.ascension ?? 0) });
+                                      }
+                                    }}
+                                  />
+                                )}
+                                {!isAscended(wp.level ?? 1, wp.ascension ?? 0) && isMilestone(wp.level ?? 1) && (
+                                  <img 
+                                    src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                    alt="Unascended" 
+                                    className="w-3 h-3 object-contain ml-1 select-none transition-colors cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-50 grayscale"
+                                    title="Unascended"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      updateTrackedWeapon(wp.id, { ascension: toggleMilestoneAscension(wp.level ?? 1, wp.ascension ?? 0) });
+                                    }}
                                   />
                                 )}
                               </div>
                             </td>
                             <td className="px-3 py-2 border-r border-[var(--border)]">
                               <div className="flex items-center justify-center gap-1">
-                                <span className="font-mono text-[11px] text-[var(--gold)]">{wp.targetLevel ?? 90}</span>
+                                <InlineNumberInput
+                                  value={wp.targetLevel ?? 90}
+                                  min={1} max={90}
+                                  onChangeSubmit={(val) => updateTrackedWeapon(wp.id, { targetLevel: val })}
+                                  className="font-mono text-[11px] text-[var(--gold)]"
+                                />
                                 {isAscended(wp.targetLevel ?? 90, wp.targetAscension ?? 6) && (wp.targetLevel ?? 90) < 90 && (
                                   <img 
                                     src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
                                     alt="Ascended" 
-                                    className="w-3 h-3 opacity-80 object-contain"
+                                    className={`w-3 h-3 object-contain ml-1 select-none transition-colors ${isMilestone(wp.targetLevel ?? 90) ? 'cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-100' : 'cursor-default text-white/30 opacity-80'}`}
                                     title="Ascended"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (isMilestone(wp.targetLevel ?? 90)) {
+                                        updateTrackedWeapon(wp.id, { targetAscension: toggleMilestoneAscension(wp.targetLevel ?? 90, wp.targetAscension ?? 6) });
+                                      }
+                                    }}
+                                  />
+                                )}
+                                {!isAscended(wp.targetLevel ?? 90, wp.targetAscension ?? 6) && isMilestone(wp.targetLevel ?? 90) && (
+                                  <img 
+                                    src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                    alt="Unascended" 
+                                    className="w-3 h-3 object-contain ml-1 select-none transition-colors cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-50 grayscale"
+                                    title="Unascended"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      updateTrackedWeapon(wp.id, { targetAscension: toggleMilestoneAscension(wp.targetLevel ?? 90, wp.targetAscension ?? 6) });
+                                    }}
                                   />
                                 )}
                               </div>

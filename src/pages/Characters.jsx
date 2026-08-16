@@ -10,9 +10,10 @@ import useStore from '../store/useStore'
 import { resolveCharacterMaterials } from '../utils/dataManager'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import { getCharacterAvatar, getElementIcon, getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
-import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, formatNumber, buildMobNames, buildBookKey } from '../utils/calculator'
+import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, formatNumber, buildMobNames, buildBookKey, toggleMilestoneAscension, isMilestone } from '../utils/calculator'
 import GenshinImage from '../components/GenshinImage'
 import MatQuantity from '../components/MatQuantity'
+import InlineNumberInput from '../components/InlineNumberInput'
 
 const ALL_ELEMENTS = ['All', 'Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo']
 const ALL_WEAPONS  = ['All', 'Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
@@ -32,6 +33,7 @@ const isAscended = (level, ascension) => {
 export default function Characters() {
   const roster         = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
+  const updateCharacter = useStore((s) => s.updateCharacter)
   const removeCharacter = useStore((s) => s.removeCharacter)
   const batchRemoveCharacters = useStore((s) => s.batchRemoveCharacters)
   const bulkUpdateCharacters = useStore((s) => s.bulkUpdateCharacters)
@@ -509,38 +511,128 @@ export default function Characters() {
                           {/* Current State */}
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-1">
-                              <span className="font-mono text-[11px] text-[var(--text)]">{entry?.level ?? 1}</span>
+                              <InlineNumberInput
+                                value={entry?.level ?? 1}
+                                min={1}
+                                max={90}
+                                onChangeSubmit={(val) => updateCharacter(char.name, { level: val })}
+                                className="font-mono text-[11px] text-[var(--text)]"
+                              />
                               {isAscended(entry?.level ?? 1, entry?.ascension ?? 0) && (entry?.level ?? 1) < 90 && (
                                 <img 
                                   src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
                                   alt="Ascended" 
-                                  className="w-3 h-3 opacity-80 object-contain"
+                                  className={`w-3 h-3 object-contain ml-1 select-none transition-colors ${isMilestone(entry?.level ?? 1) ? 'cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-100' : 'cursor-default text-white/30 opacity-80'}`}
                                   title="Ascended"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (isMilestone(entry?.level ?? 1)) {
+                                      updateCharacter(char.name, { ascension: toggleMilestoneAscension(entry?.level ?? 1, entry?.ascension ?? 0) });
+                                    }
+                                  }}
+                                />
+                              )}
+                              {!isAscended(entry?.level ?? 1, entry?.ascension ?? 0) && isMilestone(entry?.level ?? 1) && (
+                                <img 
+                                  src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                  alt="Unascended" 
+                                  className="w-3 h-3 object-contain ml-1 select-none transition-colors cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-50 grayscale"
+                                  title="Unascended"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    updateCharacter(char.name, { ascension: toggleMilestoneAscension(entry?.level ?? 1, entry?.ascension ?? 0) });
+                                  }}
                                 />
                               )}
                             </div>
                           </td>
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--muted)]">{entry?.talents?.normal ?? 1}</td>
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--muted)]">{entry?.talents?.skill ?? 1}</td>
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--muted)] border-r border-[var(--border)]">{entry?.talents?.burst ?? 1}</td>
+                          <td className="px-3 py-2 text-center">
+                            <InlineNumberInput
+                              value={entry?.talents?.normal ?? 1}
+                              min={1} max={10}
+                              onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, normal: val } })}
+                              className="font-mono text-[11px] text-[var(--muted)]"
+                            />
+                          </td>
+                          <td className="px-3 py-2 text-center">
+                            <InlineNumberInput
+                              value={entry?.talents?.skill ?? 1}
+                              min={1} max={10}
+                              onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, skill: val } })}
+                              className="font-mono text-[11px] text-[var(--muted)]"
+                            />
+                          </td>
+                          <td className="px-3 py-2 text-center border-r border-[var(--border)]">
+                            <InlineNumberInput
+                              value={entry?.talents?.burst ?? 1}
+                              min={1} max={10}
+                              onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, burst: val } })}
+                              className="font-mono text-[11px] text-[var(--muted)]"
+                            />
+                          </td>
                           
                           {/* Target State */}
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-1">
-                              <span className="font-mono text-[11px] text-[var(--gold)]">{entry?.targetLevel ?? 90}</span>
+                              <InlineNumberInput
+                                value={entry?.targetLevel ?? 90}
+                                min={1}
+                                max={90}
+                                onChangeSubmit={(val) => updateCharacter(char.name, { targetLevel: val })}
+                                className="font-mono text-[11px] text-[var(--gold)]"
+                              />
                               {isAscended(entry?.targetLevel ?? 90, entry?.targetAscension ?? 6) && (entry?.targetLevel ?? 90) < 90 && (
                                 <img 
                                   src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
                                   alt="Ascended" 
-                                  className="w-3 h-3 opacity-80 object-contain"
+                                  className={`w-3 h-3 object-contain ml-1 select-none transition-colors ${isMilestone(entry?.targetLevel ?? 90) ? 'cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-100' : 'cursor-default text-white/30 opacity-80'}`}
                                   title="Ascended"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (isMilestone(entry?.targetLevel ?? 90)) {
+                                      updateCharacter(char.name, { targetAscension: toggleMilestoneAscension(entry?.targetLevel ?? 90, entry?.targetAscension ?? 6) });
+                                    }
+                                  }}
+                                />
+                              )}
+                              {!isAscended(entry?.targetLevel ?? 90, entry?.targetAscension ?? 6) && isMilestone(entry?.targetLevel ?? 90) && (
+                                <img 
+                                  src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png" 
+                                  alt="Unascended" 
+                                  className="w-3 h-3 object-contain ml-1 select-none transition-colors cursor-pointer text-white hover:text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)] opacity-50 grayscale"
+                                  title="Unascended"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    updateCharacter(char.name, { targetAscension: toggleMilestoneAscension(entry?.targetLevel ?? 90, entry?.targetAscension ?? 6) });
+                                  }}
                                 />
                               )}
                             </div>
                           </td>
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)]">{entry?.targetTalents?.normal ?? 1}</td>
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)]">{entry?.targetTalents?.skill ?? 1}</td>
-                          <td className="px-3 py-2 text-center font-mono text-[11px] text-[var(--gold)] border-r border-[var(--border)]">{entry?.targetTalents?.burst ?? 1}</td>
+                          <td className="px-3 py-2 text-center">
+                            <InlineNumberInput
+                              value={entry?.targetTalents?.normal ?? 1}
+                              min={1} max={10}
+                              onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, normal: val } })}
+                              className="font-mono text-[11px] text-[var(--gold)]"
+                            />
+                          </td>
+                          <td className="px-3 py-2 text-center">
+                            <InlineNumberInput
+                              value={entry?.targetTalents?.skill ?? 1}
+                              min={1} max={10}
+                              onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, skill: val } })}
+                              className="font-mono text-[11px] text-[var(--gold)]"
+                            />
+                          </td>
+                          <td className="px-3 py-2 text-center border-r border-[var(--border)]">
+                            <InlineNumberInput
+                              value={entry?.targetTalents?.burst ?? 1}
+                              min={1} max={10}
+                              onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, burst: val } })}
+                              className="font-mono text-[11px] text-[var(--gold)]"
+                            />
+                          </td>
 
                           {/* Ascension Math */}
                           <td className="px-3 py-2"><MatQuantity val={asc?.heros_wit} icon="📘" color="text-[#60A5FA]" nameKey="Hero's Wit" category="Experience" /></td>
