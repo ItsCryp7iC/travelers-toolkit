@@ -43,10 +43,11 @@ export default function Characters() {
   const [sortOrder,     setSortOrder]     = useState('Release')
   const [viewMode,      setViewMode]      = useState('table') // 'table' | 'card'
 
-  const [addModalOpen,  setAddModalOpen]  = useState(false)
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
   const [bulkModalOpen, setBulkModalOpen] = useState(false)
-  const [editingChar,   setEditingChar]   = useState(null)
+  const [editingChar, setEditingChar] = useState(null)
   const [selectedNames, setSelectedNames] = useState([])
+  const [slideDirection, setSlideDirection] = useState('next')
 
   // Build full character objects for rostered characters, calculate their maths
   const rostered = useMemo(() => {
@@ -199,7 +200,7 @@ export default function Characters() {
           )}
           <button
             id="add-character-btn"
-            onClick={() => setAddModalOpen(true)}
+            onClick={() => setIsBatchModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md"
           >
             + Batch Add Characters
@@ -631,8 +632,31 @@ export default function Characters() {
       )}
 
       {/* ── Modals ── */}
-      {addModalOpen && <AddCharacterModal onClose={() => setAddModalOpen(false)} onSelect={(char) => { setAddModalOpen(false); setEditingChar(char); }} />}
-      {editingChar && <CharacterModal character={editingChar} onClose={() => setEditingChar(null)} />}
+      {isBatchModalOpen && <AddCharacterModal onClose={() => setIsBatchModalOpen(false)} onSelect={(char) => { setIsBatchModalOpen(false); setEditingChar(char); }} />}
+      {editingChar && (() => {
+        const editingCharIndex = filtered.findIndex((c) => c.name === editingChar.name);
+        return (
+          <CharacterModal
+            character={editingChar}
+            onClose={() => setEditingChar(null)}
+            onNext={() => {
+              if (editingCharIndex >= 0 && editingCharIndex < filtered.length - 1) {
+                setSlideDirection('next');
+                setEditingChar(filtered[editingCharIndex + 1]);
+              }
+            }}
+            onPrev={() => {
+              if (editingCharIndex > 0) {
+                setSlideDirection('prev');
+                setEditingChar(filtered[editingCharIndex - 1]);
+              }
+            }}
+            hasNext={editingCharIndex >= 0 && editingCharIndex < filtered.length - 1}
+            hasPrev={editingCharIndex > 0}
+            slideDirection={slideDirection}
+          />
+        );
+      })()}
     </div>
   )
 }

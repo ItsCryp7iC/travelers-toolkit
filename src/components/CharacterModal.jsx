@@ -189,7 +189,7 @@ function MaterialGroup({ icon, title, items, elementColor }) {
 }
 
 // ─── Main Modal ────────────────────────────────────────────────────────────
-export default function CharacterModal({ character, onClose }) {
+export default function CharacterModal({ character, onClose, onNext, onPrev, hasNext, hasPrev, slideDirection = 'next' }) {
   const { name, rarity, element, weapon_type, materials } = character
 
   const rosterEntry = useStore((s) => s.roster[name])
@@ -350,10 +350,14 @@ export default function CharacterModal({ character, onClose }) {
 
   // ── Keyboard / scroll lock ────────────────────────────────────────────────
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose() }
+    const handler = (e) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowRight' && hasNext && onNext) onNext()
+      if (e.key === 'ArrowLeft' && hasPrev && onPrev) onPrev()
+    }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
+  }, [onClose, onNext, onPrev, hasNext, hasPrev])
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = '' }
@@ -366,12 +370,32 @@ export default function CharacterModal({ character, onClose }) {
   return createPortal(
     <div
       id="char-modal-overlay"
-      className="modal-overlay"
+      className="modal-overlay relative"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
       role="dialog" aria-modal="true"
       aria-label={`${displayName} character details`}
     >
+      {hasPrev && onPrev && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onPrev(); }}
+          className="fixed left-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-r hover:from-white/10 hover:to-transparent group border-none outline-none"
+          aria-label="Previous character"
+        >
+          <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:-translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+      )}
+      {hasNext && onNext && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNext(); }}
+          className="fixed right-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-l hover:from-white/10 hover:to-transparent group border-none outline-none"
+          aria-label="Next character"
+        >
+          <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      )}
+
       <div className="modal-panel" id="char-modal-panel">
+        <div key={name} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col h-full`}>
         {/* ── Header ─────────────────────────────────────── */}
         <div className="modal-header" style={{ background: elConfig.avatarGradient }}>
           <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse at 20% 50%, ${elColor}, transparent 60%)` }} />
@@ -659,6 +683,7 @@ export default function CharacterModal({ character, onClose }) {
               </button>
             )}
           </div>
+        </div>
         </div>
       </div>
     </div>,

@@ -59,6 +59,7 @@ export default function Weapons() {
   const [bulkModalOpen, setBulkModalOpen] = useState(false)
   const [editingWeapon, setEditingWeapon] = useState(null)
   const [selectedIds, setSelectedIds] = useState([])
+  const [slideDirection, setSlideDirection] = useState('next')
 
   // Enrich tracked weapons with their static metadata and costs
   const enriched = useMemo(() => {
@@ -584,7 +585,31 @@ export default function Weapons() {
 
       {/* ── Modals ── */}
       {isBatchModalOpen && <BatchAddWeaponModal onClose={() => setIsBatchModalOpen(false)} />}
-      {editingWeapon && <AddWeaponModal existingWeapon={editingWeapon} onClose={() => setEditingWeapon(null)} />}
+      {editingWeapon && (() => {
+        const editingWeaponIndex = filtered.findIndex((w) => w === editingWeapon);
+        return (
+          <AddWeaponModal
+            existingWeapon={editingWeapon}
+            onClose={() => setEditingWeapon(null)}
+            onNext={() => {
+              if (editingWeaponIndex >= 0 && editingWeaponIndex < filtered.length - 1) {
+                setSlideDirection('next');
+                setEditingWeapon(filtered[editingWeaponIndex + 1]);
+              }
+            }}
+            onPrev={() => {
+              if (editingWeaponIndex > 0) {
+                setSlideDirection('prev');
+                setEditingWeapon(filtered[editingWeaponIndex - 1]);
+              }
+            }}
+            hasNext={editingWeaponIndex >= 0 && editingWeaponIndex < filtered.length - 1}
+            hasPrev={editingWeaponIndex > 0}
+            slideDirection={slideDirection}
+            currentIndex={editingWeaponIndex}
+          />
+        );
+      })()}
     </div>
   )
 }

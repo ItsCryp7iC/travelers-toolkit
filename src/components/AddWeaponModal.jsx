@@ -81,7 +81,7 @@ const ALL_RARITIES  = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★'
 const LEVEL_MAX     = 90
 const ASC_MAX       = 6
 
-export default function AddWeaponModal({ onClose, existingWeapon = null, initialWeapon = null }) {
+export default function AddWeaponModal({ onClose, existingWeapon = null, initialWeapon = null, onNext, onPrev, hasNext, hasPrev, slideDirection = 'next', currentIndex }) {
   const roster         = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
@@ -103,16 +103,32 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
   const [targetAscension, setTargetAscension] = useState(existingWeapon ? (existingWeapon.targetAscension ?? 6) : 6)
   const [assignedTo,     setAssignedTo]     = useState(existingWeapon ? (existingWeapon.assignedTo || '') : '')
 
+  // Sync state when navigating between duplicate weapons
+  useEffect(() => {
+    if (existingWeapon) {
+      setSelectedWeapon(existingWeapon.data)
+      setLevel(existingWeapon.level || 1)
+      setAscension(existingWeapon.ascension || 0)
+      setTargetLevel(existingWeapon.targetLevel || 90)
+      setTargetAscension(existingWeapon.targetAscension ?? 6)
+      setAssignedTo(existingWeapon.assignedTo || '')
+    }
+  }, [existingWeapon, currentIndex])
+
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = '' }
   }, [])
 
   useEffect(() => {
-    const handleKey = (e) => { if (e.key === 'Escape') onClose() }
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowRight' && hasNext && onNext) onNext()
+      if (e.key === 'ArrowLeft' && hasPrev && onPrev) onPrev()
+    }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [onClose])
+  }, [onClose, onNext, onPrev, hasNext, hasPrev])
 
   const filteredWeapons = useMemo(() => {
     let list = [...weaponsData]
@@ -189,13 +205,33 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
   return createPortal(
     <div
-      className="modal-overlay"
+      className="modal-overlay relative"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
+      {hasPrev && onPrev && step === 2 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onPrev(); }}
+          className="fixed left-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-r hover:from-white/10 hover:to-transparent group border-none outline-none"
+          aria-label="Previous weapon"
+        >
+          <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:-translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+      )}
+      {hasNext && onNext && step === 2 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNext(); }}
+          className="fixed right-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-l hover:from-white/10 hover:to-transparent group border-none outline-none"
+          aria-label="Next weapon"
+        >
+          <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      )}
+
       <div
         ref={modalRef}
-        className="w-full max-w-2xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up"
+        className="w-full max-w-2xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up overflow-hidden"
       >
+        <div key={currentIndex !== undefined ? currentIndex : (selectedWeapon?.name || 'select')} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col h-full overflow-hidden`}>
         {/* Header */}
         {step === 1 ? (
           <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0">
@@ -406,6 +442,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
             </div>
           </>
         )}
+        </div>
       </div>
     </div>,
     document.body

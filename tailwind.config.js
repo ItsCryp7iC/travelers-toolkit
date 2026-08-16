@@ -41,6 +41,7 @@ export default {
         'fade-in':    'fadeIn 0.4s ease-out',
         'slide-up':   'slideUp 0.4s ease-out',
         'pulse-glow': 'pulseGlow 2s infinite',
+        'swipeIn':    'swipeIn 0.25s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
@@ -54,6 +55,10 @@ export default {
         pulseGlow: {
           '0%, 100%': { boxShadow: '0 0 8px rgba(200,169,110,0.3)' },
           '50%':       { boxShadow: '0 0 24px rgba(200,169,110,0.7)' },
+        },
+        swipeIn: {
+          '0%': { opacity: '0', transform: 'translateX(20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
       },
       backdropBlur: {

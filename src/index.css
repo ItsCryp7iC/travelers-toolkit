@@ -884,3 +884,18 @@ body {
   align-items: center;
   gap: 6px;
 }
+
+@keyframes swipeInNext {
+  0% { opacity: 0; transform: translateX(30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes swipeInPrev {
+  0% { opacity: 0; transform: translateX(-30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.animate-swipe-next {
+  animation: swipeInNext 0.25s ease-out forwards;
+}
+.animate-swipe-prev {
+  animation: swipeInPrev 0.25s ease-out forwards;
+}
