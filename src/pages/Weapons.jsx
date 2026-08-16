@@ -388,7 +388,7 @@ export default function Weapons() {
                                 />
                               </div>
                             </td>
-                            <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-[40px] z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{wp.sl_no}</td>
+                            <td className="px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-[40px] z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]">{idx + 1}</td>
                             <td className="px-4 py-2 sticky left-[88px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px]">
                               <div className="flex items-center gap-3">
                                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 shadow relative overflow-hidden ${getRarityBg(wp.data?.rarity)}`}>
