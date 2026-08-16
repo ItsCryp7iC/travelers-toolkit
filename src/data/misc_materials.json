@@ -14,17 +14,17 @@
     "sortOrder": 1.002
   },
   {
-    "id": "AdventurerExp",
-    "name": "Adventurer Exp",
+    "id": "AdventurersExperience",
+    "name": "Adventurer's Experience",
     "category": "Experience",
-    "rarity": 2,
+    "rarity": 3,
     "sortOrder": 1.003
   },
   {
     "id": "WanderersAdvice",
     "name": "Wanderer's Advice",
     "category": "Experience",
-    "rarity": 1,
+    "rarity": 2,
     "sortOrder": 1.004
   },
   {
@@ -75,5 +75,12 @@
     "category": "Experience",
     "rarity": 4,
     "sortOrder": 1.011
+  },
+  {
+    "id": "TheCornerstoneOfStarsAndFlames",
+    "name": "The Cornerstone of Stars and Flames",
+    "category": "Experience",
+    "rarity": 5,
+    "sortOrder": 1.012
   }
 ]

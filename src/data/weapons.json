@@ -132,8 +132,8 @@
     "release_order": 3.101
   },
   {
-    "id": "HarbingerofDawn",
-    "name": "Harbingerof Dawn",
+    "id": "HarbingerOfDawn",
+    "name": "Harbinger of Dawn",
     "rarity": "★★★",
     "type": "Sword",
     "materials": {
@@ -300,8 +300,8 @@
     "release_order": 3.401
   },
   {
-    "id": "ThrillingTalesofDragonSlayers",
-    "name": "Thrilling Talesof Dragon Slayers",
+    "id": "ThrillingTalesOfDragonSlayers",
+    "name": "Thrilling Tales of Dragon Slayers",
     "rarity": "★★★",
     "type": "Catalyst",
     "materials": {
@@ -516,8 +516,8 @@
     "release_order": 4.109
   },
   {
-    "id": "SwordofDescension",
-    "name": "Swordof Descension",
+    "id": "SwordOfDescension",
+    "name": "Sword of Descension",
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
@@ -636,8 +636,8 @@
     "release_order": 4.119
   },
   {
-    "id": "FinaleoftheDeep",
-    "name": "Finaleofthe Deep",
+    "id": "FinaleOfTheDeep",
+    "name": "Finale of the Deep",
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
@@ -672,8 +672,8 @@
     "release_order": 4.122
   },
   {
-    "id": "SwordofNarzissenkreuz",
-    "name": "Swordof Narzissenkreuz",
+    "id": "SwordOfNarzissenkreuz",
+    "name": "Sword of Narzissenkreuz",
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
@@ -684,8 +684,8 @@
     "release_order": 4.123
   },
   {
-    "id": "FluteofEzpitzal",
-    "name": "Fluteof Ezpitzal",
+    "id": "FluteOfEzpitzal",
+    "name": "Flute of Ezpitzal",
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
@@ -720,8 +720,8 @@
     "release_order": 4.126
   },
   {
-    "id": "CalamityofEshu",
-    "name": "Calamityof Eshu",
+    "id": "CalamityOfEshu",
+    "name": "Calamity of Eshu",
     "rarity": "★★★★",
     "type": "Sword",
     "materials": {
@@ -1224,8 +1224,8 @@
     "release_order": 4.315
   },
   {
-    "id": "BalladoftheFjords",
-    "name": "Balladofthe Fjords",
+    "id": "BalladOfTheFjords",
+    "name": "Ballad of the Fjords",
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
@@ -1248,8 +1248,8 @@
     "release_order": 4.317
   },
   {
-    "id": "DialoguesoftheDesertSages",
-    "name": "Dialoguesofthe Desert Sages",
+    "id": "DialoguesOfTheDesertSages",
+    "name": "Dialogues of the Desert Sages",
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
@@ -1260,8 +1260,8 @@
     "release_order": 4.318
   },
   {
-    "id": "FootprintoftheRainbow",
-    "name": "Footprintofthe Rainbow",
+    "id": "FootprintOfTheRainbow",
+    "name": "Footprint of the Rainbow",
     "rarity": "★★★★",
     "type": "Polearm",
     "materials": {
@@ -1416,8 +1416,8 @@
     "release_order": 4.408
   },
   {
-    "id": "EyeofPerception",
-    "name": "Eyeof Perception",
+    "id": "EyeOfPerception",
+    "name": "Eye of Perception",
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
@@ -1488,8 +1488,8 @@
     "release_order": 4.414
   },
   {
-    "id": "FruitofFulfillment",
-    "name": "Fruitof Fulfillment",
+    "id": "FruitOfFulfillment",
+    "name": "Fruit of Fulfillment",
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
@@ -1536,8 +1536,8 @@
     "release_order": 4.418
   },
   {
-    "id": "BalladoftheBoundlessBlue",
-    "name": "Balladofthe Boundless Blue",
+    "id": "BalladOfTheBoundlessBlue",
+    "name": "Ballad of the Boundless Blue",
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
@@ -1560,8 +1560,8 @@
     "release_order": 4.42
   },
   {
-    "id": "RingofYaxche",
-    "name": "Ringof Yaxche",
+    "id": "RingOfYaxche",
+    "name": "Ring of Yaxche",
     "rarity": "★★★★",
     "type": "Catalyst",
     "materials": {
@@ -1824,8 +1824,8 @@
     "release_order": 4.517
   },
   {
-    "id": "EndoftheLine",
-    "name": "Endofthe Line",
+    "id": "EndOfTheLine",
+    "name": "End of the Line",
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
@@ -1848,8 +1848,8 @@
     "release_order": 4.519
   },
   {
-    "id": "ScionoftheBlazingSun",
-    "name": "Scionofthe Blazing Sun",
+    "id": "ScionOfTheBlazingSun",
+    "name": "Scion of the Blazing Sun",
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
@@ -1860,8 +1860,8 @@
     "release_order": 4.52
   },
   {
-    "id": "SongofStillness",
-    "name": "Songof Stillness",
+    "id": "SongOfStillness",
+    "name": "Song of Stillness",
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
@@ -1920,8 +1920,8 @@
     "release_order": 4.525
   },
   {
-    "id": "SequenceofSolitude",
-    "name": "Sequenceof Solitude",
+    "id": "SequenceOfSolitude",
+    "name": "Sequence of Solitude",
     "rarity": "★★★★",
     "type": "Bow",
     "materials": {
@@ -2040,8 +2040,8 @@
     "release_order": 5.107
   },
   {
-    "id": "KeyofKhajNisut",
-    "name": "Keyof Khaj Nisut",
+    "id": "KeyOfKhajNisut",
+    "name": "Key of Khaj Nisut",
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
@@ -2052,8 +2052,8 @@
     "release_order": 5.108
   },
   {
-    "id": "LightofFoliarIncision",
-    "name": "Lightof Foliar Incision",
+    "id": "LightOfFoliarIncision",
+    "name": "Light of Foliar Incision",
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
@@ -2064,8 +2064,8 @@
     "release_order": 5.109
   },
   {
-    "id": "SplendorofTranquilWaters",
-    "name": "Splendorof Tranquil Waters",
+    "id": "SplendorOfTranquilWaters",
+    "name": "Splendor of Tranquil Waters",
     "rarity": "★★★★★",
     "type": "Sword",
     "materials": {
@@ -2184,8 +2184,8 @@
     "release_order": 5.203
   },
   {
-    "id": "SongofBrokenPines",
-    "name": "Songof Broken Pines",
+    "id": "SongOfBrokenPines",
+    "name": "Song of Broken Pines",
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
@@ -2208,8 +2208,8 @@
     "release_order": 5.205
   },
   {
-    "id": "BeaconoftheReedSea",
-    "name": "Beaconofthe Reed Sea",
+    "id": "BeaconOfTheReedSea",
+    "name": "Beacon of the Reed Sea",
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
@@ -2232,8 +2232,8 @@
     "release_order": 5.207
   },
   {
-    "id": "FangoftheMountainKing",
-    "name": "Fangofthe Mountain King",
+    "id": "FangOfTheMountainKing",
+    "name": "Fang of the Mountain King",
     "rarity": "★★★★★",
     "type": "Claymore",
     "materials": {
@@ -2292,8 +2292,8 @@
     "release_order": 5.303
   },
   {
-    "id": "StaffofHoma",
-    "name": "Staffof Homa",
+    "id": "StaffOfHoma",
+    "name": "Staff of Homa",
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
@@ -2328,8 +2328,8 @@
     "release_order": 5.306
   },
   {
-    "id": "StaffoftheScarletSands",
-    "name": "Staffofthe Scarlet Sands",
+    "id": "StaffOfTheScarletSands",
+    "name": "Staff of the Scarlet Sands",
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
@@ -2364,8 +2364,8 @@
     "release_order": 5.309
   },
   {
-    "id": "SymphonistofScents",
-    "name": "Symphonistof Scents",
+    "id": "SymphonistOfScents",
+    "name": "Symphonist of Scents",
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
@@ -2424,8 +2424,8 @@
     "release_order": 5.402
   },
   {
-    "id": "MemoryofDust",
-    "name": "Memoryof Dust",
+    "id": "MemoryOfDust",
+    "name": "Memory of Dust",
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
@@ -2508,8 +2508,8 @@
     "release_order": 5.409
   },
   {
-    "id": "TomeoftheEternalFlow",
-    "name": "Tomeofthe Eternal Flow",
+    "id": "TomeOfTheEternalFlow",
+    "name": "Tome of the Eternal Flow",
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
@@ -2592,8 +2592,8 @@
     "release_order": 5.416
   },
   {
-    "id": "ReliquaryofTruth",
-    "name": "Reliquaryof Truth",
+    "id": "ReliquaryOfTruth",
+    "name": "Reliquary of Truth",
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {

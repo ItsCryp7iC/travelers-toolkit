@@ -46,75 +46,72 @@ export function getWeaponTypeIcon(type) {
   return `${BASE_URL}/billets/${toPascalCase(type)}.png`
 }
 
-const CATEGORY_MAP = {
-  'Normal Boss Material': 'normal_boss_materials',
-  'Weekly Boss Material': 'weekly_boss_materials',
-  'Common Enhancement Material': 'common_enhancement_materials',
-  'Talent Material': 'talent_materials',
-  'Local Specialty': 'local_specialties',
-  'Character Ascension Gem': 'character_ascension_gems',
-  'Weapon Ascension Material': 'weapon_ascension_materials',
-  'Elite Enhancement Material': 'elite_enhancement_materials',
-  'Experience': 'experience',
-  'Currency': 'others',
-  'Ores': 'experience',
+import normalBoss from '../data/normal_boss.json';
+import weeklyBoss from '../data/weekly_boss.json';
+import commonEnemy from '../data/common_enemy.json';
+import eliteEnemy from '../data/elite_enemy.json';
+import localSpecialty from '../data/local_specialty.json';
+import talentMaterials from '../data/talent_materials.json';
+import weaponAscension from '../data/weapon_ascension.json';
+import characterGems from '../data/character_gems.json';
+
+let categoryMapCache = null;
+function getResolvedCategory(fileName) {
+  if (!categoryMapCache) {
+    categoryMapCache = {};
+    const mapTiers = (data, catName) => {
+      data.forEach(item => {
+        if (item.tiers) {
+          Object.values(item.tiers).forEach(t => categoryMapCache[toPascalCase(t.name)] = catName);
+        } else {
+          categoryMapCache[toPascalCase(item.name)] = catName;
+        }
+      });
+    };
+    mapTiers(normalBoss, 'Normal Boss Drops');
+    mapTiers(weeklyBoss, 'Weekly Boss Drops');
+    mapTiers(commonEnemy, 'Common Enemy Drops');
+    mapTiers(eliteEnemy, 'Elite Enemy Drops');
+    mapTiers(talentMaterials, 'Talent Materials');
+    mapTiers(weaponAscension, 'Weapon Ascension Mats');
+    mapTiers(localSpecialty, 'Local Specialties');
+    mapTiers(characterGems, 'Character Ascension Gems');
+  }
+  return categoryMapCache[fileName];
 }
 
 export function getMaterialIcon(materialName, category) {
-  if (!materialName) return ''
-  
-  let fileName = materialName.replace(/[^a-zA-Z0-9]/g, '');
-  
-  // Sanitize IDs for Normal Boss Materials to convert snake_case to Smart PascalCase
-  if (category === 'Normal Boss Material') {
-    const minorWords = new Set(['of', 'the', 'a', 'an', 'and', 'in', 'on', 'for', 'to', 'with']);
-    
-    fileName = String(materialName)
-      // Replace em-dashes, en-dashes, and standard dashes with a space to separate words
-      .replace(/[\u2014\u2013-]/g, ' ')
-      // Remove all other non-alphanumeric characters (keeps spaces and underscores)
-      .replace(/[^a-zA-Z0-9_ ]/g, '')
-      // Split by any combination of spaces or underscores
-      .split(/[\s_]+/)
-      .filter(word => word.length > 0)
-      .map((word, index) => {
-        const lower = word.toLowerCase();
-        // Keep minor words lowercase unless it's the very first word
-        if (index > 0 && minorWords.has(lower)) {
-          return lower;
-        }
-        // Capitalize everything else
-        return lower.charAt(0).toUpperCase() + lower.slice(1);
-      })
-      .join('');
-  }
-  
-  // Explicit filename mappings for CDN assets that differ from in-game label
-  if (materialName === 'Adventurer Exp') {
-    fileName = 'AdventurersExperience';
-  }
+  if (!materialName) return '';
 
-  let folder = CATEGORY_MAP[category] || 'misc'
-  if (materialName === 'Crown of Insight' || fileName === 'CrownofInsight') {
-    folder = 'others'
-  }
-  if (materialName === 'Masterless Stella Fortuna' || fileName === 'MasterlessStellaFortuna' || materialName === 'masterless_stella_fortuna') {
-    folder = 'others'
-  }
-  if (materialName === 'Dream Solvent' || fileName === 'DreamSolvent') {
-    folder = 'others' // CDN puts Dream Solvent in 'others'
-  }
-  if (materialName === 'Fragile Resin' || fileName === 'FragileResin') {
-    folder = 'others'
-  }
+  let fileName = toPascalCase(materialName);
 
-  const experienceItems = [
-    "Hero's Wit", "Adventurer's Experience", "Adventurer Exp", "Wanderer's Advice",
-    "Mystic Enhancement Ore", "Fine Enhancement Ore", "Enhancement Ore"
-  ];
-  if (experienceItems.includes(materialName)) {
+  const experienceItems = ['HerosWit', 'AdventurersExperience', 'WanderersAdvice', 'MysticEnhancementOre', 'FineEnhancementOre', 'EnhancementOre'];
+  const othersItems = ['Mora', 'CrownOfInsight', 'MasterlessStellaFortuna', 'DreamSolvent', 'FragileResin', 'TheCornerstoneOfStarsAndFlames'];
+
+  let folder = 'others';
+  const resolvedCategory = getResolvedCategory(fileName) || category;
+
+  if (experienceItems.includes(fileName) || experienceItems.includes(toPascalCase(materialName))) {
     folder = 'experience';
+  } else if (othersItems.includes(fileName) || othersItems.includes(toPascalCase(materialName))) {
+    folder = 'others';
+  } else if (resolvedCategory === 'Normal Boss Drops' || resolvedCategory === 'Normal Boss Material') {
+    folder = 'normal_boss_materials';
+  } else if (resolvedCategory === 'Weekly Boss Drops' || resolvedCategory === 'Weekly Boss Material') {
+    folder = 'weekly_boss_materials';
+  } else if (resolvedCategory === 'Common Enemy Drops' || resolvedCategory === 'Common Enhancement Material') {
+    folder = 'common_enhancement_materials';
+  } else if (resolvedCategory === 'Elite Enemy Drops' || resolvedCategory === 'Elite Enhancement Material') {
+    folder = 'elite_enhancement_materials';
+  } else if (resolvedCategory === 'Talent Materials' || resolvedCategory === 'Talent Material') {
+    folder = 'talent_materials';
+  } else if (resolvedCategory === 'Weapon Ascension Mats' || resolvedCategory === 'Weapon Ascension Material') {
+    folder = 'weapon_ascension_materials';
+  } else if (resolvedCategory === 'Local Specialties' || resolvedCategory === 'Local Specialty') {
+    folder = 'local_specialties';
+  } else if (resolvedCategory === 'Character Ascension Gems' || resolvedCategory === 'Character Ascension Gem') {
+    folder = 'character_ascension_gems';
   }
 
-  return `${BASE_URL}/${folder}/${fileName}.png`
+  return `${BASE_URL}/${folder}/${fileName}.png`;
 }

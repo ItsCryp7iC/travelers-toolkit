@@ -5,7 +5,8 @@ import GenshinImage from './GenshinImage';
 
 export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
   const [activeTab, setActiveTab] = useState('characters');
-  const [materialSubTab, setMaterialSubTab] = useState('Currency & Exp');
+  const [activeMatTab, setActiveMatTab] = useState('Currency & Exp');
+  const [activeSubTab, setActiveSubTab] = useState('');
   
   // State initialization
   const [characters, setCharacters] = useState([]);
@@ -29,33 +30,54 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     const mats = Object.entries(parsedData.materials || {}).map(([key, quantity]) => {
       const dbItem = inventoryMap[key];
       let group = 'Other';
+      let subGroup = '';
       let category = '';
       if (dbItem) {
-        category = dbItem.category;
-        if (dbItem.category === 'Currency' || dbItem.category === 'Experience') group = 'Currency & Exp';
-        else if (dbItem.category === 'Boss Drops') group = 'Boss Drops';
-        else if (dbItem.category === 'Talent Materials') group = 'Talent Mats';
-        else if (dbItem.category === 'Enemy Drops') group = 'Enemy Drops';
-        else if (dbItem.category === 'Weapon Ascension Material') group = 'Weapon Asc Mats';
-        else if (dbItem.category === 'Local Specialty') group = 'Local Specialties';
-        else if (dbItem.category === 'Character Ascension Gem') group = 'Character Gems';
+        const cat = dbItem.category;
+        const subCat = dbItem.subCategory;
+        
+        if (cat === 'Currency' || cat === 'Experience' || cat === 'Ores') {
+          group = 'Currency & Exp';
+        } else if (cat === 'Boss Drops') {
+          group = 'Boss Drops';
+          if (subCat === 'Normal Boss') subGroup = 'Normal Boss Drops';
+          else if (subCat === 'Weekly Boss') subGroup = 'Weekly Boss Drops';
+        } else if (cat === 'Enemy Drops') {
+          group = 'Enemy Drops';
+          if (subCat === 'Common Enhancement Material') subGroup = 'Common Enemy Drops';
+          else if (subCat === 'Elite Enhancement Material') subGroup = 'Elite Enemy Drops';
+        } else if (cat === 'Talent Materials') {
+          group = 'Talent Mats';
+        } else if (cat === 'Weapon Ascension Material') {
+          group = 'Weapon Asc Mats';
+        } else if (cat === 'Local Specialty') {
+          group = 'Local Specialties';
+        } else if (cat === 'Character Ascension Gem') {
+          group = 'Character Gems';
+        }
       }
-      return { key, quantity, checked: true, group, label: dbItem?.label || key, category };
+      return { key, quantity, checked: group !== 'Other', group, subGroup, label: dbItem?.label || key, category: dbItem?.category || '' };
     });
     setMaterials(mats);
   }, [parsedData]);
 
   // Derived state for material tabs
   const materialGroups = [
-    'Currency & Exp', 'Boss Drops', 'Talent Mats', 
-    'Enemy Drops', 'Weapon Asc Mats', 'Local Specialties', 'Character Gems', 'Other'
-  ].filter(group => materials.some(m => m.group === group));
+    'Currency & Exp', 'Boss Drops', 'Enemy Drops', 'Talent Mats', 'Weapon Asc Mats', 'Local Specialties', 'Character Gems', 'Other'
+  ];
   
   useEffect(() => {
-    if (materialGroups.length > 0 && !materialGroups.includes(materialSubTab)) {
-      setMaterialSubTab(materialGroups[0]);
+    if (materialGroups.length > 0 && !materialGroups.includes(activeMatTab)) {
+      setActiveMatTab(materialGroups[0]);
     }
-  }, [materials, materialGroups, materialSubTab]);
+  }, [materials, materialGroups, activeMatTab]);
+
+  // Handle activeMatTab changes to automatically set sub-tabs
+  useEffect(() => {
+    if (activeMatTab === 'Boss Drops') setActiveSubTab('Normal Boss Drops');
+    else if (activeMatTab === 'Enemy Drops') setActiveSubTab('Common Enemy Drops');
+    else setActiveSubTab('');
+  }, [activeMatTab]);
 
   // Handlers for inputs
   const updateChar = (index, field, value) => {
@@ -111,7 +133,11 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     onConfirm(finalData);
   };
 
-  const activeMaterials = materials.filter(m => m.group === materialSubTab);
+  const activeMaterials = materials.filter(m => {
+    if (m.group !== activeMatTab) return false;
+    if (activeSubTab && m.subGroup !== activeSubTab) return false;
+    return true;
+  });
 
   const renderWeaponCard = (w, index, globalIndex) => (
     <div key={globalIndex} className={`flex flex-col gap-3 p-3 rounded-xl border transition-all ${w.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
@@ -253,18 +279,47 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           {/* Materials Tab */}
           {activeTab === 'materials' && (
             <div className="flex flex-col h-full gap-5">
-              {/* Sub-tabs for Material Categories */}
+              {/* Primary Material Categories */}
               <div className="flex flex-wrap gap-2 mb-2">
                 {materialGroups.map(group => (
                   <button 
                     key={group}
-                    className={`px-3 py-1.5 text-xs rounded-full border transition-all shadow-sm ${materialSubTab === group ? 'bg-primary text-black border-primary font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-primary hover:text-white'}`}
-                    onClick={() => setMaterialSubTab(group)}
+                    className={`px-3 py-1.5 text-xs rounded-full border transition-all shadow-sm ${activeMatTab === group ? 'bg-primary text-black border-primary font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-primary hover:text-white'}`}
+                    onClick={() => setActiveMatTab(group)}
                   >
                     {group}
                   </button>
                 ))}
               </div>
+
+              {/* Nested Sub-tabs */}
+              {activeMatTab === 'Boss Drops' && (
+                <div className="flex flex-wrap gap-2 mb-2 ml-4">
+                  {['Normal Boss Drops', 'Weekly Boss Drops'].map(sub => (
+                    <button 
+                      key={sub}
+                      className={`px-3 py-1 text-[10px] rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
+                      onClick={() => setActiveSubTab(sub)}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {activeMatTab === 'Enemy Drops' && (
+                <div className="flex flex-wrap gap-2 mb-2 ml-4">
+                  {['Common Enemy Drops', 'Elite Enemy Drops'].map(sub => (
+                    <button 
+                      key={sub}
+                      className={`px-3 py-1 text-[10px] rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
+                      onClick={() => setActiveSubTab(sub)}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* Materials List */}
               <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
