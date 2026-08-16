@@ -4,8 +4,10 @@ import { createPortal } from 'react-dom';
 export default function CustomSelect({ options, value, onChange, placeholder }) {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyles, setDropdownStyles] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef(null);
   const dropdownRef = useRef(null);
+  const inputRef = useRef(null);
 
   const selectedOption = options.find((opt) => opt.id === value) || null;
 
@@ -42,10 +44,14 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
       updatePosition();
       window.addEventListener('resize', updatePosition);
       window.addEventListener('scroll', updatePosition, true);
+      // Auto-focus input when opened
+      if (inputRef.current) setTimeout(() => inputRef.current.focus(), 50);
       return () => {
         window.removeEventListener('resize', updatePosition);
         window.removeEventListener('scroll', updatePosition, true);
       };
+    } else {
+      setSearchQuery('');
     }
   }, [isOpen]);
 
@@ -57,6 +63,11 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
     }
     return parseInt(rarity) || 0;
   };
+
+  const filteredOptions = options.filter(opt => 
+    opt.id === '' || // always show "Unassigned" option if present
+    (opt.name || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="relative w-full" ref={containerRef}>
@@ -88,54 +99,71 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
         <div 
           ref={dropdownRef}
           style={dropdownStyles}
-          className="max-h-60 overflow-y-auto bg-gray-900 border border-gray-700 rounded-md shadow-2xl custom-scrollbar"
+          className="max-h-80 flex flex-col bg-gray-900 border border-gray-700 rounded-md shadow-2xl overflow-hidden"
         >
-          {options.map((option) => {
-            const stars = getStarCount(option.rarity);
-            return (
-              <div 
-                key={option.id} 
-                className={`flex items-center justify-between p-2 hover:bg-white/10 cursor-pointer transition-colors border-b border-gray-800 last:border-0 ${value === option.id ? 'bg-white/5' : ''}`}
-                onClick={() => {
-                  onChange(option.id);
-                  setIsOpen(false);
-                }}
-              >
-                {/* Left Side */}
-                <div className="flex items-center gap-3 flex-1">
-                  {/* Icon & Rarity Column */}
-                  {option.icon ? (
-                    <div className="flex flex-col items-center w-10">
-                      <img src={option.icon} alt={option.name} className="w-8 h-8 object-contain rounded" />
-                      {/* Render stars */}
-                      {stars > 0 && (
-                        <div className="text-[8px] text-yellow-400 tracking-tighter mt-1 leading-none text-center w-full">
-                          {'★'.repeat(stars)}
+          <div className="sticky top-0 z-10 p-2 bg-gray-900 border-b border-gray-800">
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full bg-[#161B22] border border-gray-700 rounded px-3 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+            />
+          </div>
+          <div className="overflow-y-auto custom-scrollbar flex-1">
+            {filteredOptions.length === 0 ? (
+              <div className="p-4 text-center text-sm text-gray-500">No results found.</div>
+            ) : (
+              filteredOptions.map((option) => {
+                const stars = getStarCount(option.rarity);
+                return (
+                  <div 
+                    key={option.id} 
+                    className={`flex items-center justify-between p-2 hover:bg-white/10 cursor-pointer transition-colors border-b border-gray-800 last:border-0 ${value === option.id ? 'bg-white/5' : ''}`}
+                    onClick={() => {
+                      onChange(option.id);
+                      setIsOpen(false);
+                    }}
+                  >
+                    {/* Left Side */}
+                    <div className="flex items-center gap-3 flex-1">
+                      {/* Icon & Rarity Column */}
+                      {option.icon ? (
+                        <div className="flex flex-col items-center w-10">
+                          <img src={option.icon} alt={option.name} className="w-8 h-8 object-contain rounded" />
+                          {/* Render stars */}
+                          {stars > 0 && (
+                            <div className="text-[8px] text-yellow-400 tracking-tighter mt-1 leading-none text-center w-full">
+                              {'★'.repeat(stars)}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="w-10 flex justify-center items-center">
+                          <div className="w-8 h-8 bg-black/20 rounded border border-gray-700"></div>
                         </div>
                       )}
+                      
+                      {/* Name & Extra Info */}
+                      <div className="flex flex-col justify-center">
+                        <span className="text-sm text-gray-200">{option.name}</span>
+                        {option.subtitle && <span className="text-xs text-gray-500">{option.subtitle}</span>}
+                      </div>
                     </div>
-                  ) : (
-                    <div className="w-10 flex justify-center items-center">
-                      <div className="w-8 h-8 bg-black/20 rounded border border-gray-700"></div>
-                    </div>
-                  )}
-                  
-                  {/* Name & Extra Info */}
-                  <div className="flex flex-col justify-center">
-                    <span className="text-sm text-gray-200">{option.name}</span>
-                    {option.subtitle && <span className="text-xs text-gray-500">{option.subtitle}</span>}
-                  </div>
-                </div>
 
-                {/* Right Side: Secondary Icon */}
-                {option.secondaryIcon && (
-                  <div className="flex-shrink-0 ml-3">
-                    <img src={option.secondaryIcon} alt="Secondary" className="w-8 h-8 object-contain rounded opacity-80" />
+                    {/* Right Side: Secondary Icon */}
+                    {option.secondaryIcon && (
+                      <div className="flex-shrink-0 ml-3">
+                        <img src={option.secondaryIcon} alt="Secondary" className="w-8 h-8 object-contain rounded opacity-80" />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })
+            )}
+          </div>
         </div>,
         document.body
       )}
