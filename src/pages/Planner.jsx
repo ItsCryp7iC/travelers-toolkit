@@ -81,9 +81,10 @@ export function ItemCard({ item, accent }) {
             ×{item.toFarm}
           </span>
         </div>
-        <div className="flex justify-between text-[9px] text-[var(--muted)] mb-1">
-          <span>Have: <b style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{item.owned}</b></span>
+        <div className="flex items-center gap-3 text-[9px] text-[var(--muted)] mb-1">
           <span>Need: <b className="text-[var(--text)]">{item.required}</b></span>
+          <span>Have: <b style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{item.owned}</b></span>
+          <span>To Farm: <b style={{ color: item.toFarm > 0 ? accent || 'var(--gold)' : 'var(--muted)' }}>{item.toFarm}</b></span>
         </div>
         <ProgressBar owned={item.owned} required={item.required} accent={accent} />
       </div>
