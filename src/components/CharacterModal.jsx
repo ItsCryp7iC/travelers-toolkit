@@ -394,7 +394,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
         </button>
       )}
 
-      <div className="modal-panel flex flex-col max-h-[90vh] overflow-hidden" id="char-modal-panel">
+      <div className="modal-panel w-full max-w-[1000px] flex flex-col max-h-[90vh] overflow-hidden" id="char-modal-panel">
         <div key={name} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col flex-1 h-full min-h-0`}>
         {/* ── Header ─────────────────────────────────────── */}
         <div className="modal-header" style={{ background: elConfig.avatarGradient }}>

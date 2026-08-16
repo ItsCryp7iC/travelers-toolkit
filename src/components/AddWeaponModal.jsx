@@ -229,7 +229,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
       <div
         ref={modalRef}
-        className="w-full max-w-2xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up overflow-hidden"
+        className="w-full max-w-[1000px] bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up overflow-hidden"
       >
         <div key={currentIndex !== undefined ? currentIndex : (selectedWeapon?.name || 'select')} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col flex-1 h-full min-h-0`}>
         {/* Header */}
