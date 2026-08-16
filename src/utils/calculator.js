@@ -131,28 +131,124 @@ function calculateDifference(startObj, targetObj, isDescending = true) {
   return result;
 }
 
-export function calculateProgressionCost(character, fromLv, toLv) {
-  if (!costsData?.character_levels) return {};
-  const sLv = extractLevel(fromLv);
-  const tLv = extractLevel(toLv);
-  
-  const lookupSLv = Math.min(sLv, 90);
-  const lookupTLv = Math.min(tLv, 90);
-  
-  const sObj = costsData.character_levels.find(x => x.level === lookupSLv) || costsData.character_levels[0];
-  const tObj = costsData.character_levels.find(x => x.level === lookupTLv) || costsData.character_levels[costsData.character_levels.length - 1];
-  
-  const result = calculateDifference(sObj, tObj, true);
-  
-  let stellaFortuna = 0;
-  if (sLv < 95 && tLv >= 95) stellaFortuna += 1;
-  if (sLv < 100 && tLv === 100) stellaFortuna += 2;
-  
-  if (stellaFortuna > 0) {
-    result['masterless_stella_fortuna'] = stellaFortuna;
+/**
+ * Milestone levels where an ascension gating exists.
+ * At these levels, being "ascended" means lookup should use level+1
+ * (the ascension materials are encoded in the gap between these rows).
+ * 
+ * EFFECTIVE LEVEL RULE (applied independently to both sides):
+ *   effectiveLookupLevel = rawLevel + (1 if ascended past this milestone)
+ * 
+ * costs.json is a DESCENDING cumulative-remaining table:
+ *   row[80] = total cost remaining from L80 pre-ascension to L90
+ *   row[81] = total cost remaining from L80 post-ascension to L90
+ *   row[80] - row[81] = exactly the phase-6 ascension cost
+ */
+const MILESTONE_TO_DEFAULT_ASC = { 20: 1, 40: 2, 50: 3, 60: 4, 70: 5, 80: 6 };
+
+/**
+ * Compute the effective lookup level for costs.json.
+ * If rawLevel is a milestone AND the character has already ascended past it,
+ * we use rawLevel+1 (the "post-ascension" row), otherwise rawLevel.
+ * @param {number} rawLevel  - raw level number
+ * @param {number} ascension - current ascension phase (0-6)
+ */
+function effectiveLookupLevel(rawLevel, ascension) {
+  const lv = Math.min(rawLevel, 90);
+  const ascAtMilestone = MILESTONE_TO_DEFAULT_ASC[lv];
+  // If this level IS a milestone and ascension >= what's needed to have passed it → use lv+1
+  if (ascAtMilestone !== undefined && ascension >= ascAtMilestone) {
+    return Math.min(lv + 1, 90);
   }
-  
+  return lv;
+}
+
+export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc) {
+  if (!costsData?.character_levels) return {};
+
+  // Extract levels — accept both positional args and character object properties
+  const rawFromLv  = extractLevel(character?.currentLevel  ?? character?.level              ?? fromLv ?? 1);
+  const rawToLv    = extractLevel(character?.targetLevel    ?? character?.target?.level      ?? toLv   ?? 90);
+  const rawFromAsc = character?.currentAscension ?? character?.ascension ?? character?.current?.ascension ?? fromAsc ?? 0;
+  const rawToAsc   = character?.targetAscension  ?? character?.target?.ascension             ?? toAsc  ?? 6;
+
+  // Compute effective lookup levels — this is the key to ascension-phase awareness
+  const eLvFrom = effectiveLookupLevel(rawFromLv, rawFromAsc);
+  const eLvTo   = effectiveLookupLevel(rawToLv,   rawToAsc);
+
+  // No-op guard: if effective positions are identical, nothing to do
+  if (eLvFrom >= eLvTo) return {};
+
+  const fromObj = costsData.character_levels.find(x => x.level === eLvFrom) || costsData.character_levels[0];
+  const toObj   = costsData.character_levels.find(x => x.level === eLvTo)   || costsData.character_levels[costsData.character_levels.length - 1];
+
+  const result = calculateDifference(fromObj, toObj, true);
+
+  // ── Same-level ascension correction ────────────────────────────────────────
+  // The effective-level trick (eLvFrom=80, eLvTo=81) makes costs.json return
+  // the correct ascension MATERIALS, but the cumulative mora and heros_wit
+  // deltas between those two rows also include one level-step's worth of XP
+  // cost (80→81) which does NOT apply when the raw level hasn't changed.
+  //
+  // Fix: if the player's raw level is unchanged, strip heros_wit entirely and
+  // replace mora with pure ascension mora read directly from ASCENSION_PHASES
+  // (which is always correct regardless of cumulative table encoding).
+  if (rawFromLv === rawToLv) {
+    delete result.heros_wit;
+
+    let rarityNum = 5;
+    if (character?.rarity) {
+      rarityNum = typeof character.rarity === 'string'
+        ? (character.rarity.match(/★/g) || []).length || parseInt(character.rarity) || 5
+        : character.rarity;
+    }
+    const ascArray = rarityNum === 4 ? ASCENSION_PHASES_4STAR : ASCENSION_PHASES_5STAR;
+
+    // Sum mora for only the ascension phases being crossed, ignoring XP mora
+    let pureAscMora = 0;
+    for (let i = rawFromAsc; i < rawToAsc; i++) {
+      pureAscMora += ascArray[i]?.mora ?? 0;
+    }
+
+    if (pureAscMora > 0) {
+      result.mora = pureAscMora;
+    } else {
+      delete result.mora;
+    }
+  }
+
+  // Stella Fortuna for constellation unlocks at 95 and 100
+  let stellaFortuna = 0;
+  if (rawFromLv < 95 && rawToLv >= 95) stellaFortuna += 1;
+  if (rawFromLv < 100 && rawToLv === 100) stellaFortuna += 2;
+  if (stellaFortuna > 0) result['masterless_stella_fortuna'] = stellaFortuna;
+
   return result;
+}
+
+// ─── Regression tests ──────────────────────────────────────────────────────
+// Run once at module load in dev to catch silent regressions.
+if (import.meta.env?.DEV && costsData?.character_levels) {
+  // Test 1: same level, different ascension phase → must be nonzero
+  // Razor: L80 A5 (not ascended) → L80 A6 (ascended)
+  const t1 = calculateProgressionCost(null, 80, 80, 5, 6);
+  if (!t1 || Object.keys(t1).length === 0) {
+    console.error('[Calculator REGRESSION] L80 A5 → L80 A6 returned empty — same-level ascension diff broken!', t1);
+  } else {
+    console.assert(t1.boss_material > 0, '[Calculator REGRESSION] L80 A5→A6: boss_material should be > 0, got', t1.boss_material);
+    console.assert(t1.local_specialty > 0, '[Calculator REGRESSION] L80 A5→A6: local_specialty should be > 0, got', t1.local_specialty);
+    console.assert(t1.mora > 0, '[Calculator REGRESSION] L80 A5→A6: mora should be > 0, got', t1.mora);
+  }
+
+  // Test 2: same level AND same ascension → must be zero (Barbara case)
+  const t2 = calculateProgressionCost(null, 80, 80, 6, 6);
+  if (t2 && Object.keys(t2).length > 0) {
+    console.error('[Calculator REGRESSION] L80 A6 → L80 A6 returned nonzero — should be empty!', t2);
+  }
+
+  // Test 3: sanity direction — L1 A0 → L90 A6 must have positive mora
+  const t3 = calculateProgressionCost(null, 1, 90, 0, 6);
+  console.assert((t3.mora ?? 0) > 0, '[Calculator REGRESSION] L1→L90 full: mora should be > 0, got', t3.mora);
 }
 
 /**

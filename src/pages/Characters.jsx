@@ -66,8 +66,8 @@ export default function Characters() {
         const fromAsc = entry.ascension ?? 0
         const toLevel = entry.targetLevel ?? 90
         const toAsc = entry.targetAscension ?? 6
-        
-        const ascCosts = calculateProgressionCost(data, fromLevel, toLevel)
+
+        const ascCosts = calculateProgressionCost(data, fromLevel, toLevel, fromAsc, toAsc)
         
         // Talent Math
         const talents = entry.talents || { normal: 1, skill: 1, burst: 1 }

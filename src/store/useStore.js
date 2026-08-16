@@ -61,7 +61,7 @@ const useStore = create(
           
           const charData = charactersData.find(c => c.name === char.name);
           if (charData) {
-             const ascCosts = calculateProgressionCost(charData, newRoster[char.name].level || 1, newRoster[char.name].targetLevel || 90);
+             const ascCosts = calculateProgressionCost(charData, newRoster[char.name].level || 1, newRoster[char.name].targetLevel || 90, newRoster[char.name].ascension ?? 0, newRoster[char.name].targetAscension ?? 6);
              const talentCosts = calculateAllTalentsCost(charData, {
                 auto: { current: newRoster[char.name].talents?.normal || 1, target: newRoster[char.name].targetTalents?.normal || 10 },
                 skill: { current: newRoster[char.name].talents?.skill || 1, target: newRoster[char.name].targetTalents?.skill || 10 },
@@ -220,7 +220,7 @@ const useStore = create(
           const charEntry = { ...state.roster[name], ...patch }
           const charData = charactersData.find(c => c.name === name)
           if (charData) {
-            const ascCosts = calculateProgressionCost(charData, charEntry.level || 1, charEntry.targetLevel || 90)
+            const ascCosts = calculateProgressionCost(charData, charEntry.level || 1, charEntry.targetLevel || 90, charEntry.ascension ?? 0, charEntry.targetAscension ?? 6)
             const talentCosts = calculateAllTalentsCost(charData, {
               auto: { current: charEntry.talents?.normal || 1, target: charEntry.targetTalents?.normal || 10 },
               skill: { current: charEntry.talents?.skill || 1, target: charEntry.targetTalents?.skill || 10 },
@@ -247,7 +247,7 @@ const useStore = create(
               // Recalculate costs per user request
               const charData = charactersData.find(c => c.name === name)
               if (charData) {
-                const ascCosts = calculateProgressionCost(charData, updatedEntry.level || 1, updatedEntry.targetLevel || 90)
+                const ascCosts = calculateProgressionCost(charData, updatedEntry.level || 1, updatedEntry.targetLevel || 90, updatedEntry.ascension ?? 0, updatedEntry.targetAscension ?? 6)
                 const talentCosts = calculateAllTalentsCost(charData, {
                   auto: { current: updatedEntry.talents?.normal || 1, target: updatedEntry.targetTalents?.normal || 10 },
                   skill: { current: updatedEntry.talents?.skill || 1, target: updatedEntry.targetTalents?.skill || 10 },
