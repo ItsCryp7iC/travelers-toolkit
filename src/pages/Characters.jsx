@@ -33,6 +33,7 @@ export default function Characters() {
   const roster         = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const removeCharacter = useStore((s) => s.removeCharacter)
+  const batchRemoveCharacters = useStore((s) => s.batchRemoveCharacters)
   const bulkUpdateCharacters = useStore((s) => s.bulkUpdateCharacters)
 
   const [search,        setSearch]        = useState('')
@@ -149,7 +150,7 @@ export default function Characters() {
       />
 
       {/* ── Page Header ── */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+      <div className="sticky top-16 z-40 bg-[var(--bg)]/80 backdrop-blur-xl pb-4 pt-2 mb-6 border-b border-[var(--border)] shadow-sm flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">⚔️</span>
@@ -176,12 +177,25 @@ export default function Characters() {
             </button>
           </div>
           {selectedNames.length > 0 && (
-            <button
-              onClick={() => setBulkModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[var(--bg)] transition-colors shadow-md"
-            >
-              Bulk Edit ({selectedNames.length})
-            </button>
+            <>
+              <button
+                onClick={() => {
+                  if (window.confirm(`Are you sure you want to delete these ${selectedNames.length} characters?`)) {
+                    batchRemoveCharacters(selectedNames);
+                    setSelectedNames([]);
+                  }
+                }}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 hover:text-red-300 transition-colors shadow-md animate-fade-in"
+              >
+                Delete Selected ({selectedNames.length})
+              </button>
+              <button
+                onClick={() => setBulkModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[var(--bg)] transition-colors shadow-md animate-fade-in"
+              >
+                Bulk Edit ({selectedNames.length})
+              </button>
+            </>
           )}
           <button
             id="add-character-btn"

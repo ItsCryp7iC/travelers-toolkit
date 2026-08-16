@@ -203,6 +203,18 @@ const useStore = create(
           return { roster: next, trackedWeapons: updatedWeapons }
         }),
 
+      batchRemoveCharacters: (names) =>
+        set((state) => {
+          const next = { ...state.roster }
+          names.forEach(name => delete next[name])
+          
+          // Unassign any weapon that was pointing to any of these characters
+          const updatedWeapons = state.trackedWeapons.map((w) =>
+            names.includes(w.assignedTo) ? { ...w, assignedTo: null } : w
+          )
+          return { roster: next, trackedWeapons: updatedWeapons }
+        }),
+
       updateCharacter: (name, patch) =>
         set((state) => {
           const charEntry = { ...state.roster[name], ...patch }
@@ -305,6 +317,26 @@ const useStore = create(
           }
           return {
             trackedWeapons: state.trackedWeapons.filter((w) => w.id !== id),
+            roster: updatedRoster,
+          }
+        }),
+
+      batchRemoveWeapons: (ids) =>
+        set((state) => {
+          let updatedRoster = { ...state.roster }
+          
+          ids.forEach(id => {
+            const weapon = state.trackedWeapons.find(w => w.id === id)
+            if (weapon?.assignedTo && updatedRoster[weapon.assignedTo]) {
+              updatedRoster[weapon.assignedTo] = {
+                ...updatedRoster[weapon.assignedTo],
+                equippedWeaponId: null,
+              }
+            }
+          })
+          
+          return {
+            trackedWeapons: state.trackedWeapons.filter((w) => !ids.includes(w.id)),
             roster: updatedRoster,
           }
         }),
