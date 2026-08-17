@@ -14,22 +14,22 @@ function formatTime(totalSeconds) {
 }
 
 export default function ResinTracker({ syncData }) {
-  const storeResinCount     = useStore((s) => s.resinCount)
+  const storeResinCount = useStore((s) => s.resinCount)
   const storeResinTimestamp = useStore((s) => s.resinTimestamp)
-  const setResin       = useStore((s) => s.setResin)
+  const setResin = useStore((s) => s.setResin)
 
-  const [currentResin,  setCurrentResin]  = useState(storeResinCount)
+  const [currentResin, setCurrentResin] = useState(storeResinCount)
   const [secondsToNext, setSecondsToNext] = useState(0)
   const [secondsToFull, setSecondsToFull] = useState(0)
 
   useEffect(() => {
     const update = () => {
       const now = Date.now()
-      
+
       if (syncData && syncData.targetFullTime) {
         const targetFullTime = syncData.targetFullTime
         const max = syncData.max || RESIN_CAP
-        
+
         if (now >= targetFullTime) {
           setCurrentResin(max)
           setSecondsToNext(0)
@@ -38,7 +38,7 @@ export default function ResinTracker({ syncData }) {
           const remainingSec = Math.floor((targetFullTime - now) / 1000)
           const deficit = Math.ceil(remainingSec / REGEN_RATE_SEC)
           const calc = Math.max(0, max - deficit)
-          
+
           setCurrentResin(calc)
           setSecondsToFull(remainingSec)
           setSecondsToNext(remainingSec % REGEN_RATE_SEC === 0 ? REGEN_RATE_SEC : remainingSec % REGEN_RATE_SEC)
@@ -73,7 +73,7 @@ export default function ResinTracker({ syncData }) {
       {/* Icon + Count */}
       <div className="flex items-center gap-4 relative z-10 w-full md:w-auto">
         <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 bg-[var(--elevated)] border-2" style={{ borderColor: isCapped ? '#FFD700' : 'rgba(200,169,110,0.4)' }}>
-          <span className="text-2xl" style={{ textShadow: isCapped ? '0 0 12px rgba(255,215,0,0.5)' : 'none' }}>🌙</span>
+          <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/others/FragileResin.png" className="w-12 h-12 object-contain" alt="Resin" style={{ filter: isCapped ? 'drop-shadow(0 0 8px rgba(255,215,0,0.6))' : 'none' }} />
         </div>
         <div className="flex-1">
           <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Original Resin</p>

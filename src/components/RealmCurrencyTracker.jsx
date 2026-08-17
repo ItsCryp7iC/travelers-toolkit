@@ -22,13 +22,13 @@ export default function RealmCurrencyTracker({ syncData }) {
       const targetFullTime = syncData.targetFullTime
       const max = syncData.max || 2400
       setMaxCurrency(max)
-      
+
       if (now >= targetFullTime) {
         setCurrentCurrency(max)
         setSecondsToFull(0)
       } else {
         const remainingSec = Math.floor((targetFullTime - now) / 1000)
-        
+
         setCurrentCurrency(syncData.current || 0)
         setSecondsToFull(remainingSec)
       }
@@ -53,7 +53,7 @@ export default function RealmCurrencyTracker({ syncData }) {
       {/* Icon + Count */}
       <div className="flex items-center gap-4 relative z-10 w-full md:w-auto">
         <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 bg-[var(--elevated)] border-2" style={{ borderColor: isCapped ? '#4EC9B0' : 'rgba(78,201,176,0.4)' }}>
-          <span className="text-2xl" style={{ textShadow: isCapped ? '0 0 12px rgba(78,201,176,0.5)' : 'none' }}>🫖</span>
+          <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/others/RealmCurrency.png" className="w-12 h-12 object-contain" alt="Realm Currency" style={{ filter: isCapped ? 'drop-shadow(0 0 8px rgba(78,201,176,0.6))' : 'none' }} />
         </div>
         <div className="flex-1">
           <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Realm Currency</p>

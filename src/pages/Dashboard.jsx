@@ -64,7 +64,7 @@ export default function Dashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ltuid, ltoken })
       })
-      
+
       if (!res.ok) {
         if (res.status === 401) {
           localStorage.removeItem('hoyolab_ltuid')
@@ -77,9 +77,9 @@ export default function Dashboard() {
         const text = await res.text()
         throw new Error(text)
       }
-      
+
       const data = await res.json()
-      
+
       const now = Date.now()
       if (data.resin) {
         data.resin.targetFullTime = now + (data.resin.recovery_time_seconds * 1000)
@@ -87,7 +87,7 @@ export default function Dashboard() {
       if (data.realm_currency) {
         data.realm_currency.targetFullTime = now + (data.realm_currency.recovery_time_seconds * 1000)
       }
-      
+
       setSyncPayload(data)
       setIsCookieModalOpen(false) // Close modal if it was open on success
     } catch (err) {
@@ -103,14 +103,14 @@ export default function Dashboard() {
   const handleSyncNotes = async (isAuto = false) => {
     const ltuid = localStorage.getItem('hoyolab_ltuid')
     const ltoken = localStorage.getItem('hoyolab_ltoken')
-    
+
     if (!ltuid || !ltoken) {
       if (!isAuto) {
         setIsCookieModalOpen(true)
       }
       return
     }
-    
+
     await performSync(ltuid, ltoken, isAuto)
   }
 
@@ -234,26 +234,26 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-4 py-2 border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 rounded-lg text-sm font-semibold transition-colors shadow-sm disabled:opacity-50"
           >
             <span className="text-lg">🔄</span>
-            {isSyncing ? 'Syncing...' : 'Sync Live Resin'}
+            {isSyncing ? 'Syncing...' : 'Sync Resin & Realm Currency'}
           </button>
 
           {activeTab === 'characters' ? (
-          <button
-            onClick={handleAddAllCharacters}
-            className="flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
-          >
-            <span className="text-lg">✦</span>
-            Add All Available Characters
-          </button>
-        ) : (
-          <button
-            onClick={() => setShowBatchWeaponModal(true)}
-            className="flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
-          >
-            <span className="text-lg">✦</span>
-            Batch Add Weapons
-          </button>
-        )}
+            <button
+              onClick={handleAddAllCharacters}
+              className="flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+            >
+              <span className="text-lg">✦</span>
+              Add All Available Characters
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowBatchWeaponModal(true)}
+              className="flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
+            >
+              <span className="text-lg">✦</span>
+              Batch Add Weapons
+            </button>
+          )}
         </div>
       </div>
 
@@ -475,7 +475,7 @@ export default function Dashboard() {
       )}
 
       {isCookieModalOpen && (
-        <CookiePromptModal 
+        <CookiePromptModal
           onClose={() => setIsCookieModalOpen(false)}
           onSaveAndSync={performSync}
         />
