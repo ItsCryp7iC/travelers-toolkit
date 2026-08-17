@@ -58,8 +58,8 @@ export default function RealmCurrencyTracker({ syncData }) {
         <div className="flex-1">
           <p className="text-xs uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Realm Currency</p>
           <div className="flex items-baseline gap-1">
-            <span className="font-cinzel font-bold text-3xl leading-none" style={{ color: isCapped ? '#4EC9B0' : 'var(--text)' }}>{currentCurrency}</span>
-            <span className="font-cinzel font-bold text-lg text-[var(--muted)]">/ {maxCurrency}</span>
+            <span className="font-bold text-3xl leading-none" style={{ color: isCapped ? '#4EC9B0' : 'var(--text)' }}>{currentCurrency}</span>
+            <span className="font-bold text-lg text-[var(--muted)]">/ {maxCurrency}</span>
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function RealmCurrencyTracker({ syncData }) {
         <div className="flex justify-between items-end mb-1.5">
           {isCapped
             ? <p className="text-xs text-[#4EC9B0] font-semibold">Fully replenished!</p>
-            : <p className="text-xs text-[var(--muted)]">Full in <span className="font-mono text-[var(--text)]">{formatTime(secondsToFull)}</span></p>
+            : <p className="text-xs text-[var(--muted)]">Full in <span className="text-[var(--text)]">{formatTime(secondsToFull)}</span></p>
           }
         </div>
         <div className="h-2 w-full bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)]">

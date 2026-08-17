@@ -57,7 +57,7 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, minOverr
           {label}
         </label>
         <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold font-cinzel leading-none" style={{ color: elementColor }}>
+          <span className="text-xl font-bold leading-none" style={{ color: elementColor }}>
             {value}
           </span>
           <span className="text-xs text-[var(--muted)]">/ {max}</span>
@@ -87,7 +87,7 @@ function TalentSlider({ value, onChange, label, elementColor, minOverride = 1 })
           {label}
         </label>
         <div className="flex items-baseline gap-1">
-          <span className="text-sm font-bold font-cinzel leading-none" style={{ color: elementColor }}>
+          <span className="text-sm font-bold leading-none" style={{ color: elementColor }}>
             {value}
           </span>
           <span className="text-xs text-[var(--muted)]">/ {max}</span>
@@ -218,7 +218,7 @@ export default function AddCharacterModal({ onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)] rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <h2 className="font-cinzel font-bold text-lg text-[var(--text)]">
+            <h2 className="font-bold text-lg text-[var(--text)]">
               {step === 1 ? 'Add Character to Roster' : `${selectedCharacters.length} Characters Selected`}
             </h2>
           </div>
@@ -263,7 +263,7 @@ export default function AddCharacterModal({ onClose }) {
               {filteredCharacters.length === 0 && !search && elementFilter === 'All' ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                   <span className="text-4xl mb-3">🎉</span>
-                  <p className="font-cinzel font-semibold text-[var(--text)]">All characters are in your roster!</p>
+                  <p className="font-semibold text-[var(--text)]">All characters are in your roster!</p>
                 </div>
               ) : (
                 <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))' }}>
@@ -295,14 +295,14 @@ export default function AddCharacterModal({ onClose }) {
                             alt={char.name}
                             className="w-full h-full object-cover absolute inset-0 z-10"
                             fallback={
-                              <span className="relative z-10 font-cinzel text-xl" style={{ color: elCfg.color, textShadow: `0 0 12px ${elCfg.color}` }}>
+                              <span className="relative z-10 text-xl" style={{ color: elCfg.color, textShadow: `0 0 12px ${elCfg.color}` }}>
                                 {getInitials(char.name)}
                               </span>
                             }
                           />
                         </div>
                         <div className="min-w-0 w-full">
-                          <p className={`font-cinzel text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(char.name)}</p>
+                          <p className={`text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(char.name)}</p>
                           <p className={`text-xs ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
                           <div className="flex justify-center gap-1 mt-1">
                             <span className="text-xs">{elCfg.emoji}</span>
@@ -347,7 +347,7 @@ export default function AddCharacterModal({ onClose }) {
               <div className="bg-[var(--surface)] p-5 rounded-2xl border border-[var(--border)]">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-xl">⚙️</span>
-                  <h3 className="font-cinzel font-bold text-[var(--text)] text-lg">Global Baseline Configuration</h3>
+                  <h3 className="font-bold text-[var(--text)] text-lg">Global Baseline Configuration</h3>
                 </div>
                 <p className="text-[var(--muted)] text-xs mb-6 max-w-2xl">
                   These settings will be applied as the default starting and target states for all {selectedCharacters.length} characters in this batch.
@@ -438,7 +438,7 @@ export default function AddCharacterModal({ onClose }) {
 
               {/* Itemized Table */}
               <div>
-                <h3 className="font-cinzel font-bold text-[var(--text)] text-lg mb-4 flex items-center gap-2">
+                <h3 className="font-bold text-[var(--text)] text-lg mb-4 flex items-center gap-2">
                   <span className="text-xl">📋</span>
                   Characters to Add
                 </h3>
@@ -468,7 +468,7 @@ export default function AddCharacterModal({ onClose }) {
                               </div>
                             </td>
                             <td className="px-4 py-3">
-                              <p className="font-cinzel font-semibold text-[var(--text)] text-sm">{formatName(char.name)}</p>
+                              <p className="font-semibold text-[var(--text)] text-sm">{formatName(char.name)}</p>
                               <div className="flex gap-2 items-center mt-1 text-xs">
                                 <span className={getRarityClass(char.rarity)}>{getStars(char.rarity)}</span>
                                 <span className="text-[var(--muted)] flex items-center gap-1">{wpCfg?.emoji} {char.weapon_type}</span>

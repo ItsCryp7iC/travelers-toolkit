@@ -31,7 +31,7 @@ export default function MatQuantity({ val, color = 'text-[var(--text)]', align =
       ) : (
         iconFallback
       )}
-      <span className={`font-mono text-xs font-bold ${color}`}>{displayVal}</span>
+      <span className={`text-xs font-bold ${color}`}>{displayVal}</span>
     </div>
   )
 }

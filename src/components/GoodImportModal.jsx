@@ -176,7 +176,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         {/* Header */}
         <div className="modal-header shrink-0 flex justify-between items-center p-5 border-b border-[var(--border)]">
           <div>
-            <h2 className="font-cinzel text-xl font-bold text-primary flex items-center gap-2">
+            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
               <span>📷</span> Review GOOD Import
             </h2>
             <p className="text-xs text-[var(--color-text-muted)] mt-1">Select the items you want to import and modify any incorrect values.</p>
@@ -189,7 +189,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           {['characters', 'weapons', 'materials'].map(tab => (
             <button
               key={tab}
-              className={`flex-1 py-3 text-sm font-cinzel font-bold uppercase transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary bg-[var(--surface)]' : 'text-[var(--color-text-muted)] hover:text-white'}`}
+              className={`flex-1 py-3 text-sm font-bold uppercase transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary bg-[var(--surface)]' : 'text-[var(--color-text-muted)] hover:text-white'}`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -254,7 +254,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
             <div className="flex flex-col gap-6">
               {/* Equipped Weapons */}
               <div>
-                <h3 className="text-sm font-cinzel font-bold text-[var(--gold)] mb-3 border-b border-[var(--border)] pb-1 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-[var(--gold)] mb-3 border-b border-[var(--border)] pb-1 flex items-center gap-2">
                   Equipped Weapons
                 </h3>
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
@@ -265,7 +265,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
 
               {/* Unequipped Weapons */}
               <div>
-                <h3 className="text-sm font-cinzel font-bold text-[var(--color-text-muted)] mb-3 border-b border-[var(--border)] pb-1 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-[var(--color-text-muted)] mb-3 border-b border-[var(--border)] pb-1 flex items-center gap-2">
                   Unequipped Weapons
                 </h3>
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
@@ -350,7 +350,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                         <input 
                           type="number" 
                           min="0"
-                          className="w-16 bg-transparent text-right text-sm text-white outline-none font-mono font-bold"
+                          className="w-16 bg-transparent text-right text-sm text-white outline-none font-bold"
                           value={mat.quantity}
                           onChange={e => updateMaterial(globalIndex, e.target.value)}
                         />

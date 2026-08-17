@@ -57,7 +57,7 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, minOverr
           {label}
         </label>
         <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold font-cinzel leading-none" style={{ color: elementColor }}>
+          <span className="text-xl font-bold leading-none" style={{ color: elementColor }}>
             {value}
           </span>
           <span className="text-xs text-[var(--muted)]">/ {max}</span>
@@ -225,7 +225,7 @@ export default function BatchAddWeaponModal({ onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)] rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <h2 className="font-cinzel font-bold text-lg text-[var(--text)]">
+            <h2 className="font-bold text-lg text-[var(--text)]">
               {step === 1 ? 'Select Weapons' : `${totalSelectedCount} Weapons Selected`}
             </h2>
           </div>
@@ -293,7 +293,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                       {isSelected ? (
                         <div className="absolute bottom-2 right-2 flex items-center bg-black/80 rounded-md border border-[var(--gold)] z-20" onClick={(e) => e.stopPropagation()}>
                           <button onClick={() => handleQuantityChange(wp.name, -1)} className="px-2 py-0.5 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-l-md">-</button>
-                          <span className="px-1.5 text-xs text-[var(--gold)] font-cinzel font-bold">{selectedQuantities[wp.name]}</span>
+                          <span className="px-1.5 text-xs text-[var(--gold)] font-bold">{selectedQuantities[wp.name]}</span>
                           <button onClick={() => handleQuantityChange(wp.name, 1)} className="px-2 py-0.5 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-r-md">+</button>
                         </div>
                       ) : (
@@ -305,11 +305,11 @@ export default function BatchAddWeaponModal({ onClose }) {
                           src={getWeaponIcon(wp.name)} 
                           alt={wp.name} 
                           className="w-full h-full object-contain absolute inset-0 z-10 p-1" 
-                          fallback={<span className="relative z-10 font-cinzel">{wpCfg.emoji}</span>} 
+                          fallback={<span className="relative z-10 ">{wpCfg.emoji}</span>} 
                         />
                       </div>
                       <div className="min-w-0 pr-4">
-                        <p className={`font-cinzel text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(wp.name)}</p>
+                        <p className={`text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(wp.name)}</p>
                         <p className={`text-xs ${getRarityClass(wp.rarity)}`}>{getStars(wp.rarity)}</p>
                         <p className="text-xs text-[var(--muted)]">{wp.type}</p>
                       </div>
@@ -350,7 +350,7 @@ export default function BatchAddWeaponModal({ onClose }) {
               <div className="bg-[var(--surface)] p-5 rounded-2xl border border-[var(--border)]">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-xl">⚙️</span>
-                  <h3 className="font-cinzel font-bold text-[var(--text)] text-lg">Global Baseline Configuration</h3>
+                  <h3 className="font-bold text-[var(--text)] text-lg">Global Baseline Configuration</h3>
                 </div>
                 <p className="text-[var(--muted)] text-xs mb-6 max-w-2xl">
                   These settings will be applied as the default starting and target levels for all {totalSelectedCount} weapons in this batch.
@@ -411,7 +411,7 @@ export default function BatchAddWeaponModal({ onClose }) {
 
               {/* Itemized Table */}
               <div>
-                <h3 className="font-cinzel font-bold text-[var(--text)] text-lg mb-4 flex items-center gap-2">
+                <h3 className="font-bold text-[var(--text)] text-lg mb-4 flex items-center gap-2">
                   <span className="text-xl">📋</span>
                   Character Assignments
                 </h3>
@@ -443,7 +443,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                               </div>
                             </td>
                             <td className="px-4 py-3">
-                              <p className="font-cinzel font-semibold text-[var(--text)] text-sm">{formatName(wp.name)}</p>
+                              <p className="font-semibold text-[var(--text)] text-sm">{formatName(wp.name)}</p>
                               <div className="flex gap-2 items-center mt-1 text-xs">
                                 <span className={getRarityClass(wp.rarity)}>{getStars(wp.rarity)}</span>
                                 <span className="text-[var(--muted)]">{wp.type}</span>

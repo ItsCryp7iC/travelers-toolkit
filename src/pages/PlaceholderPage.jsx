@@ -12,7 +12,7 @@ export default function PlaceholderPage({ title, icon, description }) {
       >
         {icon}
       </div>
-      <h1 className="font-cinzel font-bold text-2xl text-[var(--text)] mb-3">{title}</h1>
+      <h1 className="font-bold text-2xl text-[var(--text)] mb-3">{title}</h1>
       <p className="text-[var(--muted)] text-sm max-w-sm">
         {description || 'This section is coming soon. Stay tuned, Traveler!'}
       </p>

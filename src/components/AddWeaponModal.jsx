@@ -57,7 +57,7 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, minOverr
           {label}
         </label>
         <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold font-cinzel leading-none" style={{ color: elementColor }}>
+          <span className="text-xl font-bold leading-none" style={{ color: elementColor }}>
             {value}
           </span>
           <span className="text-xs text-[var(--muted)]">/ {max}</span>
@@ -236,7 +236,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         {step === 1 ? (
           <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0">
             <div className="flex items-center gap-3">
-              <h2 className="font-cinzel font-bold text-lg text-[var(--text)]">Select a Weapon</h2>
+              <h2 className="font-bold text-lg text-[var(--text)]">Select a Weapon</h2>
             </div>
             <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors">✕</button>
           </div>
@@ -254,7 +254,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                     <GenshinImage src={getWeaponIcon(selectedWeapon.name)} alt={selectedWeapon.name} className="w-16 h-16 object-contain absolute inset-0 z-10 m-auto" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-white mb-2 font-cinzel">{formatName(selectedWeapon.name)}</h2>
+                    <h2 className="text-2xl font-bold text-white mb-2 ">{formatName(selectedWeapon.name)}</h2>
                     <div className="flex gap-2 text-sm flex-wrap">
                       <span className="px-3 py-1 bg-black/30 rounded-full text-gray-200 text-sm flex items-center gap-1.5 shadow-inner backdrop-blur-sm">
                         <img 
@@ -317,11 +317,11 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                           src={getWeaponIcon(wp.name)} 
                           alt={wp.name} 
                           className="w-full h-full object-contain absolute inset-0 z-10 p-1" 
-                          fallback={<span className="relative z-10 font-cinzel">{wpCfg.emoji}</span>} 
+                          fallback={<span className="relative z-10 ">{wpCfg.emoji}</span>} 
                         />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.name)}</p>
+                        <p className="text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.name)}</p>
                         <p className={`text-xs ${getRarityClass(wp.rarity)}`}>{getStars(wp.rarity)}</p>
                         <p className="text-xs text-[var(--muted)]">{wp.type}</p>
                       </div>

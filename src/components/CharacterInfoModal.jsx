@@ -69,11 +69,11 @@ export default function CharacterInfoModal({ character, onClose }) {
                 src={getCharacterAvatar(name)} 
                 alt={name} 
                 className="w-full h-full object-cover absolute inset-0 z-10" 
-                fallback={<span className="font-cinzel text-4xl relative z-10">{getInitials(name)}</span>} 
+                fallback={<span className="text-4xl relative z-10">{getInitials(name)}</span>} 
               />
             </div>
             <div>
-              <h2 className="font-cinzel font-bold text-2xl text-white drop-shadow-md mb-1">{displayName}</h2>
+              <h2 className="font-bold text-2xl text-white drop-shadow-md mb-1">{displayName}</h2>
               <div className="flex gap-2 items-center flex-wrap">
                 <span className={`text-sm tracking-wide ${getRarityClass(rarity)} drop-shadow-md`}>{getStars(rarity)}</span>
                 <span className="text-white/80 text-sm px-3 py-1 rounded-full bg-black/30 border border-white/20 flex items-center gap-1.5">
@@ -98,7 +98,7 @@ export default function CharacterInfoModal({ character, onClose }) {
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           
           <div>
-            <h3 className="font-cinzel font-bold text-lg mb-4 text-[var(--gold)] flex items-center gap-2">
+            <h3 className="font-bold text-lg mb-4 text-[var(--gold)] flex items-center gap-2">
               <span className="text-[var(--muted)] text-sm">🎒</span> Progression Materials
             </h3>
             

@@ -41,8 +41,8 @@ export default {
         'xl': ['1.3rem', { lineHeight: '1.75rem' }],
       },
       fontFamily: {
+        sans: ['GenshinFont', 'sans-serif'],
         cinzel: ['Cinzel', 'serif'],
-        inter:  ['Inter', 'sans-serif'],
       },
       animation: {
         'fade-in':    'fadeIn 0.4s ease-out',

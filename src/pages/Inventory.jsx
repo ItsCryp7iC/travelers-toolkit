@@ -131,7 +131,7 @@ function QuickStats() {
           <div className="stat-icon" style={{ background: `${accent}18` }}>{icon}</div>
           <div>
             <p className="text-[var(--muted)] text-xs mb-0.5">{label}</p>
-            <p className="font-cinzel font-bold text-lg leading-none" style={{ color: accent }}>
+            <p className="font-bold text-lg leading-none" style={{ color: accent }}>
               {value}
             </p>
           </div>
@@ -195,7 +195,7 @@ export default function Inventory() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
           <span className="text-2xl">📦</span>
-          <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">
+          <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">
             Inventory
           </h1>
         </div>

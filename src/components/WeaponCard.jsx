@@ -45,7 +45,7 @@ export default function WeaponCard({ weapon, onClick }) {
           className="w-full h-full object-contain absolute inset-0 z-10 rounded-t-[14px] p-2"
           fallback={
             <span
-              className="relative z-10 select-none font-cinzel text-4xl"
+              className="relative z-10 select-none text-4xl"
               style={{
                 color: rarityColor,
                 textShadow: `0 0 24px ${rarityColor}`,
@@ -72,7 +72,7 @@ export default function WeaponCard({ weapon, onClick }) {
       <div className="char-card-body pb-4">
         {/* Name */}
         <h3
-          className="font-cinzel font-semibold text-[var(--text)] leading-tight mb-2 truncate"
+          className="font-semibold text-[var(--text)] leading-tight mb-2 truncate"
           style={{ fontSize: displayName.length > 14 ? '11px' : '13px' }}
           title={displayName}
         >

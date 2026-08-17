@@ -103,9 +103,9 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs flex-shrink-0">
-                  <span className="text-[var(--muted)]">Need: <span className="font-cinzel font-bold text-[var(--text)]">{required}</span></span>
-                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-cinzel font-bold">{owned}</span></span>
-                  <span className="text-[var(--muted)]">To Farm: <span className="font-cinzel font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
+                  <span className="text-[var(--muted)]">Need: <span className="font-bold text-[var(--text)]">{required}</span></span>
+                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-bold">{owned}</span></span>
+                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">

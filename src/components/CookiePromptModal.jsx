@@ -32,7 +32,7 @@ export default function CookiePromptModal({ onClose, onSaveAndSync }) {
 
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl">🍪</span>
-          <h2 className="font-cinzel text-xl font-bold text-primary">HoYoLAB Authentication</h2>
+          <h2 className="text-xl font-bold text-primary">HoYoLAB Authentication</h2>
         </div>
 
         <p className="text-sm text-[var(--color-text-muted)] mb-6">

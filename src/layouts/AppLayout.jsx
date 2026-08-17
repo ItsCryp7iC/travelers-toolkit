@@ -97,10 +97,10 @@ export default function AppLayout() {
           <div className="flex items-center gap-3">
             <img src="/logo.svg" alt="Site Logo" className="w-12 h-12 object-contain drop-shadow-md" />
             <div>
-              <h1 className="font-cinzel font-bold text-xl leading-tight text-[var(--text)]">
+              <h1 className="font-bold text-xl leading-tight text-[var(--text)]">
                 Traveler's
               </h1>
-              <p className="font-cinzel font-bold text-xl leading-tight text-primary">
+              <p className="font-bold text-xl leading-tight text-primary">
                 Toolkit
               </p>
             </div>
@@ -235,7 +235,7 @@ export default function AppLayout() {
               My Roster
             </p>
             <div className="flex items-end gap-2">
-              <span className="font-cinzel text-2xl font-bold text-primary">
+              <span className="text-2xl font-bold text-primary">
                 {rosterCount}
               </span>
               <span className="text-[var(--muted)] text-xs mb-0.5">
@@ -281,14 +281,14 @@ export default function AppLayout() {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)]">
               <span className="text-xs">⚔️</span>
               <span className="text-xs text-[var(--muted)]">Roster:</span>
-              <span className="text-xs font-semibold text-primary font-cinzel">{rosterCount}</span>
+              <span className="text-xs font-semibold text-primary ">{rosterCount}</span>
             </div>
           </div>
 
           {/* Avatar */}
           <div
             id="user-avatar"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold font-cinzel cursor-pointer transition-all hover:scale-105 flex-shrink-0"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold cursor-pointer transition-all hover:scale-105 flex-shrink-0"
             style={{
               background: 'linear-gradient(135deg, #C8A96E, #7A5C2E)',
               color: '#0D0F1A',

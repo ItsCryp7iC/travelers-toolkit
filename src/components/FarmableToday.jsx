@@ -89,9 +89,9 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs flex-shrink-0">
-                  <span className="text-[var(--muted)]">Need: <span className="font-cinzel font-bold text-[var(--text)]">{required}</span></span>
-                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-cinzel font-bold">{owned}</span></span>
-                  <span className="text-[var(--muted)]">To Farm: <span className="font-cinzel font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
+                  <span className="text-[var(--muted)]">Need: <span className="font-bold text-[var(--text)]">{required}</span></span>
+                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-bold">{owned}</span></span>
+                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
@@ -166,9 +166,9 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs flex-shrink-0">
-                  <span className="text-[var(--muted)]">Need: <span className="font-cinzel font-bold text-[var(--text)]">{required}</span></span>
-                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-cinzel font-bold">{owned}</span></span>
-                  <span className="text-[var(--muted)]">To Farm: <span className="font-cinzel font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
+                  <span className="text-[var(--muted)]">Need: <span className="font-bold text-[var(--text)]">{required}</span></span>
+                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-bold">{owned}</span></span>
+                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
@@ -526,7 +526,7 @@ export default function FarmableToday() {
             📅
           </div>
           <div>
-            <h3 className="font-cinzel font-bold text-sm text-[var(--text)]">
+            <h3 className="font-bold text-sm text-[var(--text)]">
               Daily Action Plan
             </h3>
             <p className="text-xs tracking-widest font-semibold mt-0.5" style={{ color: dayColor }}>
@@ -535,7 +535,7 @@ export default function FarmableToday() {
           </div>
         </div>
         <div className="text-right">
-          <p className="font-cinzel font-bold text-lg leading-none" style={{ color: farmableCount > 0 ? dayColor : '#4ADE80' }}>
+          <p className="font-bold text-lg leading-none" style={{ color: farmableCount > 0 ? dayColor : '#4ADE80' }}>
             {farmableCount}
           </p>
           <p className="text-xs text-[var(--muted)] uppercase tracking-wider">tasks</p>

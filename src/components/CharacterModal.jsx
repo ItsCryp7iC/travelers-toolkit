@@ -69,7 +69,7 @@ export function LevelSlider({ value, onChange, ascension, label, elementColor, i
     <div>
       <div className="flex justify-between items-center mb-2">
         <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">{label}</p>
-        <span className="font-cinzel font-bold text-lg leading-none" style={{ color: elementColor }}>{value}</span>
+        <span className="font-bold text-lg leading-none" style={{ color: elementColor }}>{value}</span>
       </div>
       <div className="relative py-1">
         <input
@@ -101,7 +101,7 @@ export function TalentStepper({ value, onChange, min = 1, max = 10, elementColor
       >−</button>
       <div
         id={id}
-        className="w-8 h-7 rounded-lg border flex items-center justify-center font-cinzel font-bold text-sm select-none"
+        className="w-8 h-7 rounded-lg border flex items-center justify-center font-bold text-sm select-none"
         style={{ background: `${elementColor}15`, borderColor: `${elementColor}50`, color: elementColor }}
       >
         {value}
@@ -161,7 +161,7 @@ function CostRow({ icon, label, value, accent, large }) {
         <span className="text-base w-6 text-center">{icon}</span>
         <span className="text-xs text-[var(--muted)]">{label}</span>
       </div>
-      <span className={`font-cinzel font-bold ${large ? 'text-base' : 'text-sm'}`} style={{ color: accent || 'var(--text)' }}>
+      <span className={`font-bold ${large ? 'text-base' : 'text-sm'}`} style={{ color: accent || 'var(--text)' }}>
         {value}
       </span>
     </div>
@@ -180,7 +180,7 @@ function MaterialGroup({ icon, title, items, elementColor }) {
         {Object.entries(items).map(([mat, qty]) => (
           <div key={mat} className="flex items-center justify-between px-3 py-2 bg-[var(--surface)] border-b border-[var(--border)] last:border-0">
             <span className="text-xs text-[var(--text)]">{formatMaterialName(mat)}</span>
-            <span className="font-cinzel font-bold text-sm" style={{ color: elementColor }}>×{qty}</span>
+            <span className="font-bold text-sm" style={{ color: elementColor }}>×{qty}</span>
           </div>
         ))}
       </div>
@@ -400,7 +400,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
         <div className="modal-header" style={{ background: elConfig.avatarGradient }}>
           <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse at 20% 50%, ${elColor}, transparent 60%)` }} />
           <div className="relative flex items-center gap-5 p-6 pb-5">
-            <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-cinzel font-bold text-3xl flex-shrink-0 border-2 relative overflow-hidden"
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-bold text-3xl flex-shrink-0 border-2 relative overflow-hidden"
               style={{ background: `${elColor}22`, borderColor: `${elColor}60`, color: elColor, textShadow: `0 0 20px ${elColor}` }}>
               <GenshinImage
                 src={getCharacterAvatar(name)}
@@ -411,7 +411,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
             </div>
             <div className="flex-1 min-w-0">
               <span className={`text-sm ${rarityClass}`}>{stars}</span>
-              <h2 className="font-cinzel font-bold text-2xl text-[var(--text)] leading-tight mt-0.5 truncate">{displayName}</h2>
+              <h2 className="font-bold text-2xl text-[var(--text)] leading-tight mt-0.5 truncate">{displayName}</h2>
               <div className="flex flex-wrap gap-2 mt-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border"
                   style={{ background: elConfig.colorDim, borderColor: `${elColor}60`, color: elColor }}>
@@ -469,16 +469,16 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
                   src={getCharacterAvatar(name)}
                   alt={name}
                   className="w-full h-full object-cover absolute inset-0 z-10"
-                  fallback={<span className="font-cinzel text-xl relative z-10" style={{ color: elConfig.color }}>{name.substring(0, 1).toUpperCase()}</span>}
+                  fallback={<span className="text-xl relative z-10" style={{ color: elConfig.color }}>{name.substring(0, 1).toUpperCase()}</span>}
                 />
               </div>
-              <span className="font-cinzel font-bold text-sm" style={{ color: elColor }}>A{fromAsc} Lv{fromLevel}</span>
+              <span className="font-bold text-sm" style={{ color: elColor }}>A{fromAsc} Lv{fromLevel}</span>
               <div className="flex-1 flex items-center gap-1">
                 <div className="flex-1 h-px" style={{ background: `${elColor}40` }} />
                 <span className="text-xs text-[var(--muted)] px-1">to</span>
                 <div className="flex-1 h-px" style={{ background: `${elColor}40` }} />
               </div>
-              <span className="font-cinzel font-bold text-sm" style={{ color: elColor }}>A{safeToAsc} Lv{safeToLevel}</span>
+              <span className="font-bold text-sm" style={{ color: elColor }}>A{safeToAsc} Lv{safeToLevel}</span>
             </div>
           </section>
 
@@ -668,7 +668,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
           <div className="flex gap-3 pt-2 pb-1">
             <button
               id="modal-save-btn" onClick={handleSave}
-              className="flex-1 py-3 rounded-xl font-cinzel font-bold text-sm transition-all duration-200"
+              className="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-200"
               style={{ background: `linear-gradient(135deg, ${elColor}, ${elColor}99)`, color: '#0D0F1A', boxShadow: `0 4px 20px ${elColor}40` }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 6px 28px ${elColor}60`; e.currentTarget.style.transform = 'translateY(-1px)' }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `0 4px 20px ${elColor}40`; e.currentTarget.style.transform = '' }}

@@ -78,8 +78,8 @@ export default function ResinTracker({ syncData }) {
         <div className="flex-1">
           <p className="text-xs uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Original Resin</p>
           <div className="flex items-baseline gap-1">
-            <span className="font-cinzel font-bold text-3xl leading-none" style={{ color: isCapped ? '#FFD700' : 'var(--text)' }}>{currentResin}</span>
-            <span className="font-cinzel font-bold text-lg text-[var(--muted)]">/ {syncData?.max || RESIN_CAP}</span>
+            <span className="font-bold text-3xl leading-none" style={{ color: isCapped ? '#FFD700' : 'var(--text)' }}>{currentResin}</span>
+            <span className="font-bold text-lg text-[var(--muted)]">/ {syncData?.max || RESIN_CAP}</span>
           </div>
         </div>
       </div>
@@ -89,9 +89,9 @@ export default function ResinTracker({ syncData }) {
         <div className="flex justify-between items-end mb-1.5">
           {isCapped
             ? <p className="text-xs text-[#FFD700] font-semibold">Fully replenished!</p>
-            : <p className="text-xs text-[var(--muted)]">Next in <span className="font-mono text-[var(--gold)]">{formatTime(secondsToNext)}</span></p>
+            : <p className="text-xs text-[var(--muted)]">Next in <span className="text-[var(--gold)]">{formatTime(secondsToNext)}</span></p>
           }
-          {!isCapped && <p className="text-xs text-[var(--muted)]">Full in <span className="font-mono text-[var(--text)]">{formatTime(secondsToFull)}</span></p>}
+          {!isCapped && <p className="text-xs text-[var(--muted)]">Full in <span className="text-[var(--text)]">{formatTime(secondsToFull)}</span></p>}
         </div>
         <div className="h-2 w-full bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)]">
           <div className="h-full rounded-full transition-all duration-1000 ease-linear" style={{ width: `${pct}%`, background: isCapped ? '#FFD700' : 'var(--gold)', boxShadow: isCapped ? '0 0 10px #FFD700' : 'none' }} />

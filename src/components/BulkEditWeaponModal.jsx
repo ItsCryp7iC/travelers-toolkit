@@ -102,7 +102,7 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border)] shrink-0 bg-[var(--surface)]">
           <div className="flex items-center gap-3">
-            <h2 className="font-cinzel font-bold text-xl text-[var(--text)]">
+            <h2 className="font-bold text-xl text-[var(--text)]">
               Bulk Edit Weapons
             </h2>
           </div>

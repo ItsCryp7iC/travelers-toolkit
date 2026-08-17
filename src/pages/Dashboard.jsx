@@ -34,7 +34,7 @@ function StatCard({ icon, label, value, accent }) {
       <div>
         <p className="text-[var(--muted)] text-xs mb-0.5">{label}</p>
         <p
-          className="font-cinzel font-bold text-xl leading-none"
+          className="font-bold text-xl leading-none"
           style={{ color: accent || 'var(--gold)' }}
         >
           {value}
@@ -218,7 +218,7 @@ export default function Dashboard() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">🌍</span>
-            <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">
+            <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">
               Dashboard
             </h1>
           </div>
@@ -447,7 +447,7 @@ export default function Dashboard() {
       ) : (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <span className="text-5xl mb-4">🔍</span>
-          <h3 className="font-cinzel font-semibold text-[var(--text)] text-lg mb-2">
+          <h3 className="font-semibold text-[var(--text)] text-lg mb-2">
             No {activeTab} found
           </h3>
           <p className="text-[var(--muted)] text-sm max-w-xs">

@@ -37,7 +37,7 @@ const MatCell = ({ qty, color = 'text-[var(--text)]', nameKey, category, classNa
     <td className={`px-3 py-1 text-center ${className}`}>
       <div className="flex items-center justify-center gap-2">
         <GenshinImage src={getMaterialIcon(nameKey, category)} alt={nameKey} className="w-8 h-8 object-contain shrink-0" fallback={iconFallback} />
-        <span className={`font-mono text-xs font-bold ${color}`}>{qty}</span>
+        <span className={`text-xs font-bold ${color}`}>{qty}</span>
       </div>
     </td>
   )
@@ -148,7 +148,7 @@ export default function Weapons() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">🗡️</span>
-            <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">My Armory</h1>
+            <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">My Armory</h1>
           </div>
           <p className="text-[var(--muted)] text-sm ml-11">
             {trackedWeapons.length} weapon{trackedWeapons.length !== 1 ? 's' : ''} tracked
@@ -205,7 +205,7 @@ export default function Weapons() {
       {trackedWeapons.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-32 text-center">
           <span className="text-6xl mb-5">🗡️</span>
-          <h3 className="font-cinzel font-semibold text-[var(--text)] text-xl mb-2">Your armory is empty</h3>
+          <h3 className="font-semibold text-[var(--text)] text-xl mb-2">Your armory is empty</h3>
           <p className="text-[var(--muted)] text-sm max-w-xs mb-6">Add weapons to track their progression and assign them to your roster characters.</p>
           <button onClick={() => setIsBatchModalOpen(true)} className="genshin-btn-ghost">+ Batch Add Weapons</button>
         </div>
@@ -398,11 +398,11 @@ export default function Weapons() {
                                     src={getWeaponIcon(wp.weaponName)} 
                                     alt={wp.weaponName} 
                                     className="w-8 h-8 object-contain absolute inset-0 m-auto z-10" 
-                                    fallback={<span className="font-cinzel text-sm relative z-10 text-white">{wpCfg?.emoji}</span>} 
+                                    fallback={<span className="text-sm relative z-10 text-white">{wpCfg?.emoji}</span>} 
                                   />
                                 </div>
                                 <div className="truncate">
-                                  <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.weaponName)}</p>
+                                  <p className="text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.weaponName)}</p>
                                   <p className={`text-xs ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity || 1)}</p>
                                 </div>
                               </div>
@@ -418,7 +418,7 @@ export default function Weapons() {
                                     src={getCharacterAvatar(assignedChar.name)} 
                                     alt={assignedChar.name} 
                                     className="w-full h-full object-cover absolute inset-0 z-10" 
-                                    fallback={<span className="font-cinzel text-xs relative z-10" style={{ color: elCfg.color }}>{getInitials(assignedChar.name)}</span>} 
+                                    fallback={<span className="text-xs relative z-10" style={{ color: elCfg.color }}>{getInitials(assignedChar.name)}</span>} 
                                   />
                                 </div>
                                 <span className="text-xs text-[var(--text)] truncate min-w-0">{formatName(assignedChar.name)}</span>
@@ -435,7 +435,7 @@ export default function Weapons() {
                                   value={wp.level ?? 1}
                                   min={1} max={90}
                                   onChangeSubmit={(val) => updateTrackedWeapon(wp.id, { level: val })}
-                                  className="font-mono text-xs text-[var(--text)]"
+                                  className="text-xs text-[var(--text)]"
                                 />
                                 {isAscended(wp.level ?? 1, wp.ascension ?? 0) && (wp.level ?? 1) < 90 && (
                                   <img 
@@ -471,7 +471,7 @@ export default function Weapons() {
                                   value={wp.targetLevel ?? 90}
                                   min={1} max={90}
                                   onChangeSubmit={(val) => updateTrackedWeapon(wp.id, { targetLevel: val })}
-                                  className="font-mono text-xs text-[var(--gold)]"
+                                  className="text-xs text-[var(--gold)]"
                                 />
                                 {isAscended(wp.targetLevel ?? 90, wp.targetAscension ?? 6) && (wp.targetLevel ?? 90) < 90 && (
                                   <img 
@@ -526,7 +526,7 @@ export default function Weapons() {
                               {costs?.fine_ore > 0 ? (
                                 <>
                                   <img src={getMaterialIcon('Fine Enhancement Ore')} alt="Fine Ore" className="w-8 h-8 object-contain shrink-0" />
-                                  <span className="text-xs font-mono font-bold text-[#60A5FA]">{costs.fine_ore}</span>
+                                  <span className="text-xs font-bold text-[#60A5FA]">{costs.fine_ore}</span>
                                 </>
                               ) : (
                                 <span className="text-[var(--muted)] opacity-50">-</span>
@@ -539,7 +539,7 @@ export default function Weapons() {
                               {costs?.normal_ore > 0 ? (
                                 <>
                                   <img src={getMaterialIcon('Enhancement Ore')} alt="Normal Ore" className="w-8 h-8 object-contain shrink-0" />
-                                  <span className="text-xs font-mono font-bold text-[#9CA3AF]">{costs.normal_ore}</span>
+                                  <span className="text-xs font-bold text-[#9CA3AF]">{costs.normal_ore}</span>
                                 </>
                               ) : (
                                 <span className="text-[var(--muted)] opacity-50">-</span>
@@ -549,7 +549,7 @@ export default function Weapons() {
 
                           <td className="px-3 py-2 text-center">
                             {costs?.wasted_exp > 0 ? (
-                              <span className="text-orange-400 font-mono text-xs">+{costs.wasted_exp}</span>
+                              <span className="text-orange-400 text-xs">+{costs.wasted_exp}</span>
                             ) : (
                               <span className="text-[var(--muted)] opacity-50">-</span>
                             )}
@@ -571,7 +571,7 @@ export default function Weapons() {
                               
                               {/* 2. Number Container */}
                               <div className="w-16 text-right pr-1">
-                                <span className="text-xs font-mono font-bold text-[#C8A96E]">{formatNumber(costs?.total_mora)}</span>
+                                <span className="text-xs font-bold text-[#C8A96E]">{formatNumber(costs?.total_mora)}</span>
                               </div>
                               
                               {/* 3. Mora Icon */}

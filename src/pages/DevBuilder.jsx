@@ -97,7 +97,7 @@ function TextInput({ value, onChange, placeholder, listId }) {
       placeholder={placeholder}
       list={listId}
       autoComplete="off"
-      className="w-full bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-sm rounded-xl px-3 py-2.5 outline-none focus:border-[var(--gold)] transition-colors placeholder:text-[var(--muted)] placeholder:opacity-40 font-mono"
+      className="w-full bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-sm rounded-xl px-3 py-2.5 outline-none focus:border-[var(--gold)] transition-colors placeholder:text-[var(--muted)] placeholder:opacity-40 "
     />
   )
 }
@@ -130,7 +130,7 @@ function ComboInput({ value, onChange, placeholder, listId, suggestions }) {
         placeholder={placeholder}
         list={listId}
         autoComplete="off"
-        className="w-full bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-sm rounded-xl px-3 py-2.5 outline-none focus:border-[var(--gold)] transition-colors placeholder:text-[var(--muted)] placeholder:opacity-40 font-mono"
+        className="w-full bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-sm rounded-xl px-3 py-2.5 outline-none focus:border-[var(--gold)] transition-colors placeholder:text-[var(--muted)] placeholder:opacity-40 "
       />
       <datalist id={listId}>
         {suggestions.map(s => <option key={s} value={s} />)}
@@ -484,11 +484,11 @@ function OutputPanel({ json, mode }) {
           {/* Line numbers */}
           <div className="shrink-0 select-none border-r border-[var(--border)] bg-[var(--bg)] px-3 py-4 text-right">
             {lines.map((_, i) => (
-              <div key={i} className="text-xs font-mono text-[var(--muted)] opacity-40 leading-5">{i + 1}</div>
+              <div key={i} className="text-xs text-[var(--muted)] opacity-40 leading-5">{i + 1}</div>
             ))}
           </div>
           {/* Code */}
-          <pre className="flex-1 p-4 text-xs font-mono leading-5 overflow-x-auto">
+          <pre className="flex-1 p-4 text-xs leading-5 overflow-x-auto">
             <code>
               {lines.map((line, i) => (
                 <div key={i} dangerouslySetInnerHTML={{ __html: syntaxHighlight(line) || '&nbsp;' }} />
@@ -573,7 +573,7 @@ export default function DevBuilder() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">🔧</span>
-            <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">Database Builder</h1>
+            <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">Database Builder</h1>
           </div>
           <p className="text-[var(--muted)] text-sm ml-11">
             Generate correctly-formatted JSON for new characters, weapons &amp; materials

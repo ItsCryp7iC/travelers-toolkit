@@ -132,7 +132,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
         <div className="char-card-body">
           {/* Name */}
           <h3
-            className="font-cinzel font-semibold text-[var(--text)] leading-tight mb-2 truncate"
+            className="font-semibold text-[var(--text)] leading-tight mb-2 truncate"
             style={{ fontSize: displayName.length > 14 ? '11px' : '13px' }}
             title={displayName}
           >

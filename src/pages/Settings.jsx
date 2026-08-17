@@ -204,7 +204,7 @@ export default function Settings() {
       {/* Page Header */}
       <div className="mb-8 flex items-center gap-3">
         <span className="text-3xl">⚙️</span>
-        <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--color-text-main)]">
+        <h1 className="font-bold text-2xl md:text-3xl text-[var(--color-text-main)]">
           Settings
         </h1>
       </div>
@@ -213,7 +213,7 @@ export default function Settings() {
 
         {/* Cloud Backup Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
-          <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
+          <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
             <span>Cloud Backup</span>
             <span className="text-sm">☁️</span>
           </h2>
@@ -294,7 +294,7 @@ export default function Settings() {
         
         {/* Local Data Management Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
-          <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
+          <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
             Local Data Management
           </h2>
           <p className="text-sm text-[var(--color-text-muted)]">
@@ -324,7 +324,7 @@ export default function Settings() {
 
         {/* Inventory Kamera Sync Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
-          <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
+          <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
             <span>Inventory Kamera Sync</span>
             <span className="text-sm">📷</span>
           </h2>
@@ -350,7 +350,7 @@ export default function Settings() {
 
         {/* Planner Preferences Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
-          <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
+          <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
             Planner Preferences
           </h2>
           
@@ -374,7 +374,7 @@ export default function Settings() {
 
         {/* Developer Tools Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
-          <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
+          <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
             Developer Tools
           </h2>
           <div className="flex items-center justify-between">
@@ -399,7 +399,7 @@ export default function Settings() {
 
       {/* HoYoLAB API Configuration Card */}
       <div className="genshin-card p-6 flex flex-col gap-4 mt-6">
-        <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
+        <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
           HoYoLAB API Configuration
         </h2>
         <p className="text-sm text-[var(--color-text-muted)]">

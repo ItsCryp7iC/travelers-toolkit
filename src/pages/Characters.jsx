@@ -157,7 +157,7 @@ export default function Characters() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl">⚔️</span>
-            <h1 className="font-cinzel font-bold text-2xl md:text-3xl text-[var(--text)]">My Roster</h1>
+            <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">My Roster</h1>
           </div>
           <p className="text-[var(--muted)] text-sm ml-11">
             {rostered.length} character{rostered.length !== 1 ? 's' : ''} tracked
@@ -214,7 +214,7 @@ export default function Characters() {
       {rostered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-32 text-center">
           <span className="text-6xl mb-5">⚔️</span>
-          <h3 className="font-cinzel font-semibold text-[var(--text)] text-xl mb-2">Your roster is empty</h3>
+          <h3 className="font-semibold text-[var(--text)] text-xl mb-2">Your roster is empty</h3>
           <p className="text-[var(--muted)] text-sm max-w-xs mb-6">Add characters to start tracking their progression goals and material costs.</p>
           <button onClick={() => setAddModalOpen(true)} className="genshin-btn-ghost">+ Add Character</button>
         </div>
@@ -463,11 +463,11 @@ export default function Characters() {
                                   src={getCharacterAvatar(char.name)} 
                                   alt={char.name} 
                                   className="w-full h-full object-cover absolute inset-0 z-10" 
-                                  fallback={<span className="font-cinzel text-xs relative z-10" style={{ color: elCfg.color }}>{getInitials(char.name)}</span>} 
+                                  fallback={<span className="text-xs relative z-10" style={{ color: elCfg.color }}>{getInitials(char.name)}</span>} 
                                 />
                               </div>
                               <div className="truncate">
-                                <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(char.name)}</p>
+                                <p className="text-xs font-semibold text-[var(--text)] truncate">{formatName(char.name)}</p>
                                 <p className={`text-xs ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
                               </div>
                             </div>
@@ -516,7 +516,7 @@ export default function Characters() {
                                 min={1}
                                 max={90}
                                 onChangeSubmit={(val) => updateCharacter(char.name, { level: val })}
-                                className="font-mono text-xs text-[var(--text)]"
+                                className="text-xs text-[var(--text)]"
                               />
                               {isAscended(entry?.level ?? 1, entry?.ascension ?? 0) && (entry?.level ?? 1) < 90 && (
                                 <img 
@@ -551,7 +551,7 @@ export default function Characters() {
                               value={entry?.talents?.normal ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, normal: val } })}
-                              className="font-mono text-xs text-[var(--muted)]"
+                              className="text-xs text-[var(--muted)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center">
@@ -559,7 +559,7 @@ export default function Characters() {
                               value={entry?.talents?.skill ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, skill: val } })}
-                              className="font-mono text-xs text-[var(--muted)]"
+                              className="text-xs text-[var(--muted)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center border-r border-[var(--border)]">
@@ -567,7 +567,7 @@ export default function Characters() {
                               value={entry?.talents?.burst ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, burst: val } })}
-                              className="font-mono text-xs text-[var(--muted)]"
+                              className="text-xs text-[var(--muted)]"
                             />
                           </td>
                           
@@ -579,7 +579,7 @@ export default function Characters() {
                                 min={1}
                                 max={90}
                                 onChangeSubmit={(val) => updateCharacter(char.name, { targetLevel: val })}
-                                className="font-mono text-xs text-[var(--gold)]"
+                                className="text-xs text-[var(--gold)]"
                               />
                               {isAscended(entry?.targetLevel ?? 90, entry?.targetAscension ?? 6) && (entry?.targetLevel ?? 90) < 90 && (
                                 <img 
@@ -614,7 +614,7 @@ export default function Characters() {
                               value={entry?.targetTalents?.normal ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, normal: val } })}
-                              className="font-mono text-xs text-[var(--gold)]"
+                              className="text-xs text-[var(--gold)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center">
@@ -622,7 +622,7 @@ export default function Characters() {
                               value={entry?.targetTalents?.skill ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, skill: val } })}
-                              className="font-mono text-xs text-[var(--gold)]"
+                              className="text-xs text-[var(--gold)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center border-r border-[var(--border)]">
@@ -630,7 +630,7 @@ export default function Characters() {
                               value={entry?.targetTalents?.burst ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, burst: val } })}
-                              className="font-mono text-xs text-[var(--gold)]"
+                              className="text-xs text-[var(--gold)]"
                             />
                           </td>
 
@@ -657,25 +657,25 @@ export default function Characters() {
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora_na)}</span>
+                              <span className="text-xs font-bold">{formatNumber(tal?.mora_na)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora_skill)}</span>
+                              <span className="text-xs font-bold">{formatNumber(tal?.mora_skill)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora_burst)}</span>
+                              <span className="text-xs font-bold">{formatNumber(tal?.mora_burst)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2 border-r border-[var(--border)]">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora)}</span>
+                              <span className="text-xs font-bold">{formatNumber(tal?.mora)}</span>
                             </div>
                           </td>
                           
@@ -686,7 +686,7 @@ export default function Characters() {
                           <td className="px-3 py-2 border-r border-[var(--border)]">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-xs font-mono font-bold">{formatNumber(grandMora)}</span>
+                              <span className="text-xs font-bold">{formatNumber(grandMora)}</span>
                             </div>
                           </td>
                           

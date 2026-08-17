@@ -139,7 +139,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-[var(--text)] text-sm truncate">{displayName}</h3>
-          <p className="text-xs text-[var(--gold)] font-cinzel tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
+          <p className="text-xs text-[var(--gold)] tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
         </div>
         {weapon.type && (
           <img 
