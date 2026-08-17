@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import CharacterCard from '../components/CharacterCard'
 import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
@@ -56,7 +56,7 @@ export default function Dashboard() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
 
-  const performSync = async (ltuid, ltoken) => {
+  const performSync = async (ltuid, ltoken, isAuto = false) => {
     setIsSyncing(true)
     try {
       const res = await fetch('/api/notes', {
@@ -69,7 +69,9 @@ export default function Dashboard() {
         if (res.status === 401) {
           localStorage.removeItem('hoyolab_ltuid')
           localStorage.removeItem('hoyolab_ltoken')
-          setIsCookieModalOpen(true)
+          if (!isAuto) {
+            setIsCookieModalOpen(true)
+          }
           throw new Error("Authentication failed. Please check your cookies.")
         }
         const text = await res.text()
@@ -90,7 +92,7 @@ export default function Dashboard() {
       setIsCookieModalOpen(false) // Close modal if it was open on success
     } catch (err) {
       console.error(err)
-      if (!isCookieModalOpen) {
+      if (!isCookieModalOpen && !isAuto) {
         alert("Failed to sync Real-Time Notes: " + err.message)
       }
     } finally {
@@ -98,17 +100,23 @@ export default function Dashboard() {
     }
   }
 
-  const handleSyncNotes = async () => {
+  const handleSyncNotes = async (isAuto = false) => {
     const ltuid = localStorage.getItem('hoyolab_ltuid')
     const ltoken = localStorage.getItem('hoyolab_ltoken')
     
     if (!ltuid || !ltoken) {
-      setIsCookieModalOpen(true)
+      if (!isAuto) {
+        setIsCookieModalOpen(true)
+      }
       return
     }
     
-    await performSync(ltuid, ltoken)
+    await performSync(ltuid, ltoken, isAuto)
   }
+
+  useEffect(() => {
+    handleSyncNotes(true)
+  }, [])
 
   const handleAddAllCharacters = () => {
     const missing = charactersData.filter((c) => !roster[c.name])
@@ -221,7 +229,7 @@ export default function Dashboard() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={handleSyncNotes}
+            onClick={() => handleSyncNotes(false)}
             disabled={isSyncing}
             className="flex items-center gap-2 px-4 py-2 border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 rounded-lg text-sm font-semibold transition-colors shadow-sm disabled:opacity-50"
           >
