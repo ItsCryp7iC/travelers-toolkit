@@ -33,6 +33,16 @@ export default function Settings() {
   const [lastSyncedTime, setLastSyncedTime] = useState(null);
   const [cloudBackups, setCloudBackups] = useState([]);
 
+  // HoYoLAB State
+  const [hoyolabLtuid, setHoyolabLtuid] = useState(localStorage.getItem('hoyolab_ltuid') || '');
+  const [hoyolabLtoken, setHoyolabLtoken] = useState(localStorage.getItem('hoyolab_ltoken') || '');
+
+  const handleSaveHoyolab = () => {
+    localStorage.setItem('hoyolab_ltuid', hoyolabLtuid);
+    localStorage.setItem('hoyolab_ltoken', hoyolabLtoken);
+    alert('HoYoLAB credentials saved locally!');
+  };
+
   const loginForSync = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
@@ -385,7 +395,44 @@ export default function Settings() {
             </label>
           </div>
         </div>
+      </div>
 
+      {/* HoYoLAB API Configuration Card */}
+      <div className="genshin-card p-6 flex flex-col gap-4 mt-6">
+        <h2 className="font-cinzel text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
+          HoYoLAB API Configuration
+        </h2>
+        <p className="text-sm text-[var(--color-text-muted)]">
+          Provide your HoYoLAB cookies to enable live sync for Resin and Realm Currency. Your credentials are saved locally in your browser.
+        </p>
+        <div className="flex flex-col gap-3 mt-2">
+          <div>
+            <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltuid_v2 (or ltuid)</label>
+            <input 
+              type="password" 
+              className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+              value={hoyolabLtuid}
+              onChange={(e) => setHoyolabLtuid(e.target.value)}
+              placeholder="Enter ltuid"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltoken_v2 (or ltoken)</label>
+            <input 
+              type="password" 
+              className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+              value={hoyolabLtoken}
+              onChange={(e) => setHoyolabLtoken(e.target.value)}
+              placeholder="Enter ltoken"
+            />
+          </div>
+          <button 
+            className="genshin-btn w-full mt-2" 
+            onClick={handleSaveHoyolab}
+          >
+            Save Credentials
+          </button>
+        </div>
       </div>
 
       {pendingImportData && (

@@ -5,7 +5,9 @@ import AddWeaponModal from '../components/AddWeaponModal'
 import BatchAddWeaponModal from '../components/BatchAddWeaponModal'
 import weaponsData from '../data/weapons.json'
 import ResinTracker from '../components/ResinTracker'
+import RealmCurrencyTracker from '../components/RealmCurrencyTracker'
 import charactersData from '../data/characters.json'
+import CookiePromptModal from '../components/CookiePromptModal'
 import useStore from '../store/useStore'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import GenshinImage from '../components/GenshinImage'
@@ -50,6 +52,63 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('characters');
   const [selectedWeapon, setSelectedWeapon] = useState(null);
   const [showBatchWeaponModal, setShowBatchWeaponModal] = useState(false);
+  const [syncPayload, setSyncPayload] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
+
+  const performSync = async (ltuid, ltoken) => {
+    setIsSyncing(true)
+    try {
+      const res = await fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ltuid, ltoken })
+      })
+      
+      if (!res.ok) {
+        if (res.status === 401) {
+          localStorage.removeItem('hoyolab_ltuid')
+          localStorage.removeItem('hoyolab_ltoken')
+          setIsCookieModalOpen(true)
+          throw new Error("Authentication failed. Please check your cookies.")
+        }
+        const text = await res.text()
+        throw new Error(text)
+      }
+      
+      const data = await res.json()
+      
+      const now = Date.now()
+      if (data.resin) {
+        data.resin.targetFullTime = now + (data.resin.recovery_time_seconds * 1000)
+      }
+      if (data.realm_currency) {
+        data.realm_currency.targetFullTime = now + (data.realm_currency.recovery_time_seconds * 1000)
+      }
+      
+      setSyncPayload(data)
+      setIsCookieModalOpen(false) // Close modal if it was open on success
+    } catch (err) {
+      console.error(err)
+      if (!isCookieModalOpen) {
+        alert("Failed to sync Real-Time Notes: " + err.message)
+      }
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
+  const handleSyncNotes = async () => {
+    const ltuid = localStorage.getItem('hoyolab_ltuid')
+    const ltoken = localStorage.getItem('hoyolab_ltoken')
+    
+    if (!ltuid || !ltoken) {
+      setIsCookieModalOpen(true)
+      return
+    }
+    
+    await performSync(ltuid, ltoken)
+  }
 
   const handleAddAllCharacters = () => {
     const missing = charactersData.filter((c) => !roster[c.name])
@@ -160,7 +219,17 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {activeTab === 'characters' ? (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleSyncNotes}
+            disabled={isSyncing}
+            className="flex items-center gap-2 px-4 py-2 border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 rounded-lg text-sm font-semibold transition-colors shadow-sm disabled:opacity-50"
+          >
+            <span className="text-lg">🔄</span>
+            {isSyncing ? 'Syncing...' : 'Sync Live Resin'}
+          </button>
+
+          {activeTab === 'characters' ? (
           <button
             onClick={handleAddAllCharacters}
             className="flex items-center gap-2 px-4 py-2 border border-primary/50 text-primary hover:bg-primary/10 rounded-lg text-sm font-semibold transition-colors shadow-sm"
@@ -177,11 +246,15 @@ export default function Dashboard() {
             Batch Add Weapons
           </button>
         )}
+        </div>
       </div>
 
-      {/* ── Resin Tracker ────────────────────────────── */}
-      <div className="mb-6">
-        <ResinTracker />
+      {/* ── Trackers ────────────────────────────── */}
+      <div className="mb-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <ResinTracker syncData={syncPayload?.resin} />
+        {syncPayload?.realm_currency && (
+          <RealmCurrencyTracker syncData={syncPayload.realm_currency} />
+        )}
       </div>
 
       {/* ── Tab Toggle ──────────────────────────────── */}
@@ -391,6 +464,13 @@ export default function Dashboard() {
 
       {showBatchWeaponModal && (
         <BatchAddWeaponModal onClose={() => setShowBatchWeaponModal(false)} />
+      )}
+
+      {isCookieModalOpen && (
+        <CookiePromptModal 
+          onClose={() => setIsCookieModalOpen(false)}
+          onSaveAndSync={performSync}
+        />
       )}
     </div>
   )

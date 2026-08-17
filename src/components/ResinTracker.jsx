@@ -13,37 +13,57 @@ function formatTime(totalSeconds) {
   return `${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`
 }
 
-export default function ResinTracker() {
-  const resinCount     = useStore((s) => s.resinCount)
-  const resinTimestamp = useStore((s) => s.resinTimestamp)
+export default function ResinTracker({ syncData }) {
+  const storeResinCount     = useStore((s) => s.resinCount)
+  const storeResinTimestamp = useStore((s) => s.resinTimestamp)
   const setResin       = useStore((s) => s.setResin)
 
-  const [currentResin,  setCurrentResin]  = useState(resinCount)
+  const [currentResin,  setCurrentResin]  = useState(storeResinCount)
   const [secondsToNext, setSecondsToNext] = useState(0)
   const [secondsToFull, setSecondsToFull] = useState(0)
 
   useEffect(() => {
     const update = () => {
       const now = Date.now()
-      const elapsedSec = Math.floor((now - resinTimestamp) / 1000)
-      const regenerated = Math.floor(elapsedSec / REGEN_RATE_SEC)
-      const calc = Math.min(RESIN_CAP, resinCount + regenerated)
-      setCurrentResin(calc)
-      if (calc < RESIN_CAP) {
-        setSecondsToNext(REGEN_RATE_SEC - (elapsedSec % REGEN_RATE_SEC))
-        setSecondsToFull(Math.max(0, ((RESIN_CAP - calc) * REGEN_RATE_SEC) - (elapsedSec % REGEN_RATE_SEC)))
+      
+      if (syncData && syncData.targetFullTime) {
+        const targetFullTime = syncData.targetFullTime
+        const max = syncData.max || RESIN_CAP
+        
+        if (now >= targetFullTime) {
+          setCurrentResin(max)
+          setSecondsToNext(0)
+          setSecondsToFull(0)
+        } else {
+          const remainingSec = Math.floor((targetFullTime - now) / 1000)
+          const deficit = Math.ceil(remainingSec / REGEN_RATE_SEC)
+          const calc = Math.max(0, max - deficit)
+          
+          setCurrentResin(calc)
+          setSecondsToFull(remainingSec)
+          setSecondsToNext(remainingSec % REGEN_RATE_SEC === 0 ? REGEN_RATE_SEC : remainingSec % REGEN_RATE_SEC)
+        }
       } else {
-        setSecondsToNext(0)
-        setSecondsToFull(0)
+        const elapsedSec = Math.floor((now - storeResinTimestamp) / 1000)
+        const regenerated = Math.floor(elapsedSec / REGEN_RATE_SEC)
+        const calc = Math.min(RESIN_CAP, storeResinCount + regenerated)
+        setCurrentResin(calc)
+        if (calc < RESIN_CAP) {
+          setSecondsToNext(REGEN_RATE_SEC - (elapsedSec % REGEN_RATE_SEC))
+          setSecondsToFull(Math.max(0, ((RESIN_CAP - calc) * REGEN_RATE_SEC) - (elapsedSec % REGEN_RATE_SEC)))
+        } else {
+          setSecondsToNext(0)
+          setSecondsToFull(0)
+        }
       }
     }
     update()
     const id = setInterval(update, 1000)
     return () => clearInterval(id)
-  }, [resinCount, resinTimestamp])
+  }, [storeResinCount, storeResinTimestamp, syncData])
 
-  const isCapped = currentResin >= RESIN_CAP
-  const pct = Math.min(100, (currentResin / RESIN_CAP) * 100)
+  const isCapped = currentResin >= (syncData?.max || RESIN_CAP)
+  const pct = Math.min(100, (currentResin / (syncData?.max || RESIN_CAP)) * 100)
 
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row gap-5 items-center shadow-lg">
@@ -59,7 +79,7 @@ export default function ResinTracker() {
           <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Original Resin</p>
           <div className="flex items-baseline gap-1">
             <span className="font-cinzel font-bold text-3xl leading-none" style={{ color: isCapped ? '#FFD700' : 'var(--text)' }}>{currentResin}</span>
-            <span className="font-cinzel font-bold text-lg text-[var(--muted)]">/ {RESIN_CAP}</span>
+            <span className="font-cinzel font-bold text-lg text-[var(--muted)]">/ {syncData?.max || RESIN_CAP}</span>
           </div>
         </div>
       </div>
@@ -79,12 +99,14 @@ export default function ResinTracker() {
       </div>
 
       {/* Quick controls */}
-      <div className="flex items-center gap-2 relative z-10 w-full md:w-auto justify-end flex-wrap">
-        <button onClick={() => setResin(currentResin - 40)} disabled={currentResin < 40} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(239,68,68,0.1)] text-red-400 border border-red-500/20 hover:bg-[rgba(239,68,68,0.2)] disabled:opacity-30 transition-colors">-40</button>
-        <button onClick={() => setResin(currentResin - 20)} disabled={currentResin < 20} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(239,68,68,0.1)] text-red-400 border border-red-500/20 hover:bg-[rgba(239,68,68,0.2)] disabled:opacity-30 transition-colors">-20</button>
-        <div className="w-px h-7 bg-[var(--border)]" />
-        <button onClick={() => setResin(currentResin + 60)} disabled={currentResin >= RESIN_CAP} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(78,201,176,0.1)] text-[#4EC9B0] border border-[#4EC9B0]/20 hover:bg-[rgba(78,201,176,0.2)] disabled:opacity-30 transition-colors" title="Fragile Resin">+60</button>
-      </div>
+      {!syncData && (
+        <div className="flex items-center gap-2 relative z-10 w-full md:w-auto justify-end flex-wrap">
+          <button onClick={() => setResin(currentResin - 40)} disabled={currentResin < 40} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(239,68,68,0.1)] text-red-400 border border-red-500/20 hover:bg-[rgba(239,68,68,0.2)] disabled:opacity-30 transition-colors">-40</button>
+          <button onClick={() => setResin(currentResin - 20)} disabled={currentResin < 20} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(239,68,68,0.1)] text-red-400 border border-red-500/20 hover:bg-[rgba(239,68,68,0.2)] disabled:opacity-30 transition-colors">-20</button>
+          <div className="w-px h-7 bg-[var(--border)]" />
+          <button onClick={() => setResin(currentResin + 60)} disabled={currentResin >= RESIN_CAP} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[rgba(78,201,176,0.1)] text-[#4EC9B0] border border-[#4EC9B0]/20 hover:bg-[rgba(78,201,176,0.2)] disabled:opacity-30 transition-colors" title="Fragile Resin">+60</button>
+        </div>
+      )}
     </div>
   )
 }
