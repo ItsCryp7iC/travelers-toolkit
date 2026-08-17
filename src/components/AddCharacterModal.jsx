@@ -14,7 +14,7 @@ function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 
   
   return (
     <div>
-      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
         {label}
       </p>
       <div className="flex gap-1.5 flex-wrap" role="group" aria-label={label}>
@@ -38,7 +38,7 @@ function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 
           )
         })}
       </div>
-      <p className="text-[10px] text-[var(--muted)] mt-1">
+      <p className="text-xs text-[var(--muted)] mt-1">
         Max Level: <span style={{ color: elementColor }}>Lv{getPhaseMax(value)}</span>
       </p>
     </div>
@@ -53,14 +53,14 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, minOverr
   return (
     <div>
       <div className="flex justify-between items-end mb-2">
-        <label className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">
+        <label className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
           {label}
         </label>
         <div className="flex items-baseline gap-1">
           <span className="text-xl font-bold font-cinzel leading-none" style={{ color: elementColor }}>
             {value}
           </span>
-          <span className="text-[10px] text-[var(--muted)]">/ {max}</span>
+          <span className="text-xs text-[var(--muted)]">/ {max}</span>
         </div>
       </div>
       <input
@@ -83,14 +83,14 @@ function TalentSlider({ value, onChange, label, elementColor, minOverride = 1 })
   return (
     <div className="mb-3">
       <div className="flex justify-between items-end mb-1">
-        <label className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">
+        <label className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
           {label}
         </label>
         <div className="flex items-baseline gap-1">
           <span className="text-sm font-bold font-cinzel leading-none" style={{ color: elementColor }}>
             {value}
           </span>
-          <span className="text-[10px] text-[var(--muted)]">/ {max}</span>
+          <span className="text-xs text-[var(--muted)]">/ {max}</span>
         </div>
       </div>
       <input
@@ -243,7 +243,7 @@ export default function AddCharacterModal({ onClose }) {
                   {allElements.map((el) => {
                     const cfg = ELEMENTS[el]
                     return (
-                      <button key={el} onClick={() => setElementFilter(el)} className={`filter-pill text-[11px] py-1 ${elementFilter === el ? 'active' : ''}`}>
+                      <button key={el} onClick={() => setElementFilter(el)} className={`filter-pill text-xs py-1 ${elementFilter === el ? 'active' : ''}`}>
                         {cfg ? cfg.emoji : '🌐'} {el}
                       </button>
                     )
@@ -286,7 +286,7 @@ export default function AddCharacterModal({ onClose }) {
                         <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border flex items-center justify-center transition-colors z-20 ${
                           isSelected ? 'bg-[var(--gold)] border-[var(--gold)] text-black' : 'border-[var(--muted)] bg-black/40'
                         }`}>
-                          {isSelected && <span className="text-[10px] leading-none">✓</span>}
+                          {isSelected && <span className="text-xs leading-none">✓</span>}
                         </div>
 
                         <div className="w-14 h-14 rounded-xl flex items-center justify-center relative shadow-md overflow-hidden" style={{ background: elCfg.avatarGradient }}>
@@ -302,11 +302,11 @@ export default function AddCharacterModal({ onClose }) {
                           />
                         </div>
                         <div className="min-w-0 w-full">
-                          <p className={`font-cinzel text-[11px] font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(char.name)}</p>
-                          <p className={`text-[10px] ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
+                          <p className={`font-cinzel text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(char.name)}</p>
+                          <p className={`text-xs ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
                           <div className="flex justify-center gap-1 mt-1">
-                            <span className="text-[10px]">{elCfg.emoji}</span>
-                            {wpCfg && <span className="text-[10px]">{wpCfg.emoji}</span>}
+                            <span className="text-xs">{elCfg.emoji}</span>
+                            {wpCfg && <span className="text-xs">{wpCfg.emoji}</span>}
                           </div>
                         </div>
                       </button>
@@ -355,7 +355,7 @@ export default function AddCharacterModal({ onClose }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Current State */}
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
-                    <p className="text-[10px] font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">📍 Current State</p>
+                    <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">📍 Current State</p>
                     <AscensionSelector 
                       value={ascension} 
                       onChange={(a) => { 
@@ -382,7 +382,7 @@ export default function AddCharacterModal({ onClose }) {
                     </div>
                     
                     <div className="mt-6 border-t border-[var(--border)] pt-4">
-                      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-3">Talent Levels</p>
+                      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-3">Talent Levels</p>
                       <div className="grid grid-cols-3 gap-3">
                         <TalentSlider label="Normal" value={talents.normal} elementColor="#C8A96E" onChange={(v) => {
                           setTalents(prev => ({...prev, normal: v}));
@@ -402,7 +402,7 @@ export default function AddCharacterModal({ onClose }) {
 
                   {/* Target State */}
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
-                    <p className="text-[10px] font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">🎯 Target State</p>
+                    <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">🎯 Target State</p>
                     <AscensionSelector 
                       value={targetAscension} 
                       onChange={(a) => { 
@@ -425,7 +425,7 @@ export default function AddCharacterModal({ onClose }) {
                     </div>
 
                     <div className="mt-6 border-t border-[var(--border)] pt-4">
-                      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-3">Target Talents</p>
+                      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-3">Target Talents</p>
                       <div className="grid grid-cols-3 gap-3">
                         <TalentSlider label="Normal" value={targetTalents.normal} elementColor="#C8A96E" minOverride={talents.normal} onChange={(v) => setTargetTalents(prev => ({...prev, normal: v}))} />
                         <TalentSlider label="Skill" value={targetTalents.skill} elementColor="#C8A96E" minOverride={talents.skill} onChange={(v) => setTargetTalents(prev => ({...prev, skill: v}))} />
@@ -445,7 +445,7 @@ export default function AddCharacterModal({ onClose }) {
                 
                 <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)]">
+                    <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)]">
                       <tr>
                         <th className="px-4 py-3 font-semibold w-16 text-center">Icon</th>
                         <th className="px-4 py-3 font-semibold">Character Name</th>
@@ -469,7 +469,7 @@ export default function AddCharacterModal({ onClose }) {
                             </td>
                             <td className="px-4 py-3">
                               <p className="font-cinzel font-semibold text-[var(--text)] text-sm">{formatName(char.name)}</p>
-                              <div className="flex gap-2 items-center mt-1 text-[10px]">
+                              <div className="flex gap-2 items-center mt-1 text-xs">
                                 <span className={getRarityClass(char.rarity)}>{getStars(char.rarity)}</span>
                                 <span className="text-[var(--muted)] flex items-center gap-1">{wpCfg?.emoji} {char.weapon_type}</span>
                               </div>

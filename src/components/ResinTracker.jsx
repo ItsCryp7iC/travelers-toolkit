@@ -76,7 +76,7 @@ export default function ResinTracker({ syncData }) {
           <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/others/FragileResin.png" className="w-12 h-12 object-contain" alt="Resin" style={{ filter: isCapped ? 'drop-shadow(0 0 8px rgba(255,215,0,0.6))' : 'none' }} />
         </div>
         <div className="flex-1">
-          <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Original Resin</p>
+          <p className="text-xs uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Original Resin</p>
           <div className="flex items-baseline gap-1">
             <span className="font-cinzel font-bold text-3xl leading-none" style={{ color: isCapped ? '#FFD700' : 'var(--text)' }}>{currentResin}</span>
             <span className="font-cinzel font-bold text-lg text-[var(--muted)]">/ {syncData?.max || RESIN_CAP}</span>

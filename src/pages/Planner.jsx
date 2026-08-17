@@ -27,7 +27,7 @@ function ProgressBar({ owned, required, accent }) {
         <div className="h-full rounded-full transition-all duration-500"
           style={{ width: `${pct}%`, background: pct >= 100 ? '#4ADE80' : accent || 'var(--gold)' }} />
       </div>
-      <span className="text-[9px] font-bold tabular-nums"
+      <span className="text-xs font-bold tabular-nums"
         style={{ color: pct >= 100 ? '#4ADE80' : 'var(--muted)' }}>
         {pct}%
       </span>
@@ -81,7 +81,7 @@ export function ItemCard({ item, accent }) {
             ×{item.toFarm}
           </span>
         </div>
-        <div className="flex items-center gap-3 text-[9px] text-[var(--muted)] mb-1">
+        <div className="flex items-center gap-3 text-xs text-[var(--muted)] mb-1">
           <span>Need: <b className="text-[var(--text)]">{item.required}</b></span>
           <span>Have: <b style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{item.owned}</b></span>
           <span>To Farm: <b style={{ color: item.toFarm > 0 ? accent || 'var(--gold)' : 'var(--muted)' }}>{item.toFarm}</b></span>
@@ -108,7 +108,7 @@ function ToFarmCategory({ icon, title, items, accent, emptyMsg }) {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <h3 className="planner-section-title">{icon} {title}</h3>
-        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+        <span className="text-xs font-bold px-2 py-0.5 rounded-full"
           style={{ background: `${accent}18`, color: accent, border: `1px solid ${accent}40` }}>
           {items.length} items
         </span>
@@ -141,7 +141,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-[var(--text)] truncate">{displayName}</p>
-          <p className="text-[10px] text-[var(--muted)]">
+          <p className="text-xs text-[var(--muted)]">
             A{entry.ascension ?? 0} Lv{entry.level ?? 1} → A{entry.targetAscension ?? 6} Lv{entry.targetLevel ?? 90}
             {talentState && (
               <span className="ml-2">
@@ -157,7 +157,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
         </div>
         <div className="text-right flex-shrink-0">
           <p className="text-xs font-cinzel font-bold text-[var(--gold)]">{formatNumber(totalMora)}</p>
-          <p className="text-[9px] text-[var(--muted)]">Total Mora</p>
+          <p className="text-xs text-[var(--muted)]">Total Mora</p>
         </div>
         <span className="text-[var(--muted)] text-xs ml-1">{open ? '▲' : '▼'}</span>
       </button>
@@ -167,25 +167,25 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {totalCosts?.heros_wit > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">📚 Hero's Wit</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">📚 Hero's Wit</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.heros_wit}</p>
               </div>
             )}
             {totalCosts?.mystic_ore > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">💠 Mystic Ore</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">💠 Mystic Ore</p>
                 <p className="text-sm font-cinzel font-bold text-[#F472B6]">×{totalCosts.mystic_ore}</p>
               </div>
             )}
             {totalCosts?.crown > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">👑 Crowns</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">👑 Crowns</p>
                 <p className="text-sm font-cinzel font-bold text-[#FBBF24]">×{totalCosts.crown}</p>
               </div>
             )}
             {totalCosts?.masterless_stella_fortuna > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">⭐ Stella Fortuna</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">⭐ Stella Fortuna</p>
                 <p className="text-sm font-cinzel font-bold text-[#FBBF24]">×{totalCosts.masterless_stella_fortuna}</p>
               </div>
             )}
@@ -193,7 +193,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             {/* Gemstones */}
             {['gem_sliver', 'gem_fragment', 'gem_chunk', 'gem_gemstone'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">💎 {formatName(key.replace('gem_', ''))}</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">💎 {formatName(key.replace('gem_', ''))}</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
@@ -201,13 +201,13 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             {/* Boss & Local */}
             {totalCosts?.boss_material > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🐉 Boss Material</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">🐉 Boss Material</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.boss_material}</p>
               </div>
             )}
             {totalCosts?.local_specialty > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🌸 Local Specialty</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">🌸 Local Specialty</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.local_specialty}</p>
               </div>
             )}
@@ -215,7 +215,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             {/* Talent Books */}
             {['2_star_talent_material', '3_star_talent_material', '4_star_talent_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">📖 {key.split('_')[0]}-Star Book</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">📖 {key.split('_')[0]}-Star Book</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
@@ -223,7 +223,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             {/* Weekly Boss */}
             {totalCosts?.weekly_boss_material > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🐺 Weekly Boss</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">🐺 Weekly Boss</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts.weekly_boss_material}</p>
               </div>
             )}
@@ -231,7 +231,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             {/* Weapon Asc Mats */}
             {['2_star_ascension_material', '3_star_ascension_material', '4_star_ascension_material', '5_star_ascension_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🔗 {key.split('_')[0]}-Star Asc. Mat</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">🔗 {key.split('_')[0]}-Star Asc. Mat</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
@@ -239,7 +239,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             {/* Elite Drops */}
             {['2_star_enhancement_material', '3_star_enhancement_material', '4_star_enhancement_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">🛡️ {key.split('_')[0]}-Star Elite Mat</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">🛡️ {key.split('_')[0]}-Star Elite Mat</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
@@ -247,7 +247,7 @@ function BreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponSta
             {/* Mob Drops */}
             {['1_star_enemy_material', '2_star_enemy_material', '3_star_enemy_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
-                <p className="text-[9px] text-[var(--muted)] mb-0.5">⚔️ {key.split('_')[0]}-Star Mob Drop</p>
+                <p className="text-xs text-[var(--muted)] mb-0.5">⚔️ {key.split('_')[0]}-Star Mob Drop</p>
                 <p className="text-sm font-cinzel font-bold text-[var(--text)]">×{totalCosts[key]}</p>
               </div>
             ))}
@@ -269,7 +269,7 @@ function PlannerStat({ icon, label, value, accent, sub }) {
       <p className="font-cinzel font-bold text-xl pl-1 leading-none mt-1" style={{ color: accent || 'var(--gold)' }}>
         {value}
       </p>
-      {sub && <p className="text-[9px] text-[var(--muted)] pl-1">{sub}</p>}
+      {sub && <p className="text-xs text-[var(--muted)] pl-1">{sub}</p>}
     </div>
   )
 }

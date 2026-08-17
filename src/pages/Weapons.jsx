@@ -32,12 +32,12 @@ const isAscended = (level, ascension) => {
 const MatCell = ({ qty, color = 'text-[var(--text)]', nameKey, category, className = '' }) => {
   if (!qty) return <td className={`px-3 py-2 text-center ${className}`}><span className="text-[var(--muted)] opacity-50">-</span></td>
   const fallbackStr = nameKey ? nameKey.substring(0, 2).toUpperCase() : '??'
-  const iconFallback = <span className="text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
+  const iconFallback = <span className="text-xs font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
   return (
     <td className={`px-3 py-1 text-center ${className}`}>
       <div className="flex items-center justify-center gap-2">
         <GenshinImage src={getMaterialIcon(nameKey, category)} alt={nameKey} className="w-8 h-8 object-contain shrink-0" fallback={iconFallback} />
-        <span className={`font-mono text-[11px] font-bold ${color}`}>{qty}</span>
+        <span className={`font-mono text-xs font-bold ${color}`}>{qty}</span>
       </div>
     </td>
   )
@@ -245,7 +245,7 @@ export default function Weapons() {
             
             <div className="flex flex-wrap gap-6">
               <div>
-                <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+                <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
                   Weapon
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -260,7 +260,7 @@ export default function Weapons() {
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+                <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
                   Rarity
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -282,20 +282,20 @@ export default function Weapons() {
                   <thead className="sticky top-0 z-40 bg-[var(--elevated)] shadow-md">
                     {/* Top Header Grouping */}
                     <tr className="bg-[var(--elevated)] border-b border-[var(--border)]">
-                      <th colSpan="5" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
-                      <th colSpan="2" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">State</th>
+                      <th colSpan="5" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
+                      <th colSpan="2" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">State</th>
                       <th rowSpan="2" className="px-4 py-2 text-center border-r border-[var(--border)] align-middle leading-tight bg-[var(--surface)]">
-                        <span className="text-[10px] uppercase tracking-widest text-yellow-500 font-bold">EVENT BONUS</span><br/>
-                        <span className="text-[8px] uppercase tracking-wider text-[var(--muted)]">1.5x EXP</span>
+                        <span className="text-xs uppercase tracking-widest text-yellow-500 font-bold">EVENT BONUS</span><br/>
+                        <span className="text-xs uppercase tracking-wider text-[var(--muted)]">1.5x EXP</span>
                       </th>
-                      <th colSpan="5" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Enhancement</th>
-                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Weapon Ascension Material</th>
-                      <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Elite Enhancement Material</th>
-                      <th colSpan="3" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Common Enhancement Material</th>
+                      <th colSpan="5" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Enhancement</th>
+                      <th colSpan="4" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Weapon Ascension Material</th>
+                      <th colSpan="3" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Elite Enhancement Material</th>
+                      <th colSpan="3" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Common Enhancement Material</th>
                       <th className="px-4 py-2 border-b border-[var(--border)]"></th>
                     </tr>
                     {/* Sub Headers */}
-                    <tr className="border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
+                    <tr className="border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
                       {/* Identity (Sticky) */}
                       <th 
                         className="w-16 px-4 py-2 cursor-pointer sticky left-0 z-20 bg-[var(--surface)] border-r border-gray-700/50"
@@ -403,7 +403,7 @@ export default function Weapons() {
                                 </div>
                                 <div className="truncate">
                                   <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.weaponName)}</p>
-                                  <p className={`text-[10px] ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity || 1)}</p>
+                                  <p className={`text-xs ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity || 1)}</p>
                                 </div>
                               </div>
                             </td>
@@ -418,13 +418,13 @@ export default function Weapons() {
                                     src={getCharacterAvatar(assignedChar.name)} 
                                     alt={assignedChar.name} 
                                     className="w-full h-full object-cover absolute inset-0 z-10" 
-                                    fallback={<span className="font-cinzel text-[10px] relative z-10" style={{ color: elCfg.color }}>{getInitials(assignedChar.name)}</span>} 
+                                    fallback={<span className="font-cinzel text-xs relative z-10" style={{ color: elCfg.color }}>{getInitials(assignedChar.name)}</span>} 
                                   />
                                 </div>
                                 <span className="text-xs text-[var(--text)] truncate min-w-0">{formatName(assignedChar.name)}</span>
                               </div>
                             ) : (
-                              <span className="text-[10px] text-[var(--muted)] italic">Unassigned</span>
+                              <span className="text-xs text-[var(--muted)] italic">Unassigned</span>
                             )}
                           </td>
                           
@@ -435,7 +435,7 @@ export default function Weapons() {
                                   value={wp.level ?? 1}
                                   min={1} max={90}
                                   onChangeSubmit={(val) => updateTrackedWeapon(wp.id, { level: val })}
-                                  className="font-mono text-[11px] text-[var(--text)]"
+                                  className="font-mono text-xs text-[var(--text)]"
                                 />
                                 {isAscended(wp.level ?? 1, wp.ascension ?? 0) && (wp.level ?? 1) < 90 && (
                                   <img 
@@ -471,7 +471,7 @@ export default function Weapons() {
                                   value={wp.targetLevel ?? 90}
                                   min={1} max={90}
                                   onChangeSubmit={(val) => updateTrackedWeapon(wp.id, { targetLevel: val })}
-                                  className="font-mono text-[11px] text-[var(--gold)]"
+                                  className="font-mono text-xs text-[var(--gold)]"
                                 />
                                 {isAscended(wp.targetLevel ?? 90, wp.targetAscension ?? 6) && (wp.targetLevel ?? 90) < 90 && (
                                   <img 
@@ -526,7 +526,7 @@ export default function Weapons() {
                               {costs?.fine_ore > 0 ? (
                                 <>
                                   <img src={getMaterialIcon('Fine Enhancement Ore')} alt="Fine Ore" className="w-8 h-8 object-contain shrink-0" />
-                                  <span className="text-[11px] font-mono font-bold text-[#60A5FA]">{costs.fine_ore}</span>
+                                  <span className="text-xs font-mono font-bold text-[#60A5FA]">{costs.fine_ore}</span>
                                 </>
                               ) : (
                                 <span className="text-[var(--muted)] opacity-50">-</span>
@@ -539,7 +539,7 @@ export default function Weapons() {
                               {costs?.normal_ore > 0 ? (
                                 <>
                                   <img src={getMaterialIcon('Enhancement Ore')} alt="Normal Ore" className="w-8 h-8 object-contain shrink-0" />
-                                  <span className="text-[11px] font-mono font-bold text-[#9CA3AF]">{costs.normal_ore}</span>
+                                  <span className="text-xs font-mono font-bold text-[#9CA3AF]">{costs.normal_ore}</span>
                                 </>
                               ) : (
                                 <span className="text-[var(--muted)] opacity-50">-</span>
@@ -561,7 +561,7 @@ export default function Weapons() {
                               <div className="w-4 flex-shrink-0 text-left relative group">
                                 {costs?.has_ascension_discount && (
                                   <>
-                                    <span className="text-[10px] text-green-400 font-bold cursor-help">✨</span>
+                                    <span className="text-xs text-green-400 font-bold cursor-help">✨</span>
                                     <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block w-max bg-[var(--elevated)] border border-green-700/50 text-green-400 text-xs px-2 py-1 rounded shadow-lg z-10">
                                       50% Ascension Mora reduction active via {costs.discount_source}'s passive!
                                     </div>
@@ -571,7 +571,7 @@ export default function Weapons() {
                               
                               {/* 2. Number Container */}
                               <div className="w-16 text-right pr-1">
-                                <span className="text-[11px] font-mono font-bold text-[#C8A96E]">{formatNumber(costs?.total_mora)}</span>
+                                <span className="text-xs font-mono font-bold text-[#C8A96E]">{formatNumber(costs?.total_mora)}</span>
                               </div>
                               
                               {/* 3. Mora Icon */}
@@ -601,7 +601,7 @@ export default function Weapons() {
                           <td className="px-4 py-2">
                             <button
                               onClick={() => removeTrackedWeapon(wp.id)}
-                              className="text-[10px] text-red-400 hover:text-red-300 px-2 py-1 rounded border border-red-500/20 hover:border-red-500/40 transition-colors"
+                              className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded border border-red-500/20 hover:border-red-500/40 transition-colors"
                             >
                               ✕
                             </button>

@@ -109,7 +109,7 @@ export default function AppLayout() {
 
         {/* Navigation */}
         <nav className="flex-1 py-4" aria-label="Main navigation">
-          <p className="px-5 mb-2 text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">
+          <p className="px-5 mb-2 text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
             Navigation
           </p>
           {navItems.map((item) => {
@@ -124,7 +124,7 @@ export default function AppLayout() {
                       <span className="nav-icon text-base w-5 text-center mr-2">{item.icon}</span>
                       <span>{item.label}</span>
                     </div>
-                    <span className={`text-[10px] text-gray-500 transition-transform ${isPlannerOpen ? 'rotate-180' : ''}`}>▼</span>
+                    <span className={`text-xs text-gray-500 transition-transform ${isPlannerOpen ? 'rotate-180' : ''}`}>▼</span>
                   </div>
                   {isPlannerOpen && (
                     <div className="flex flex-col mt-1 mb-2">
@@ -161,7 +161,7 @@ export default function AppLayout() {
                       <span className="nav-icon text-base w-5 text-center mr-2">{item.icon}</span>
                       <span>{item.label}</span>
                     </div>
-                    <span className={`text-[10px] text-gray-500 transition-transform ${isInventoryOpen ? 'rotate-180' : ''}`}>▼</span>
+                    <span className={`text-xs text-gray-500 transition-transform ${isInventoryOpen ? 'rotate-180' : ''}`}>▼</span>
                   </div>
                   {isInventoryOpen && (
                     <div className="flex flex-col mt-1 mb-2">
@@ -208,7 +208,7 @@ export default function AppLayout() {
         {/* Dev Tools */}
         {showDbBuilder && (
           <nav className="pb-2 border-b border-[var(--border)]" aria-label="Dev navigation">
-            <p className="px-5 mb-2 text-[10px] font-semibold text-primary/60 tracking-widest uppercase">
+            <p className="px-5 mb-2 text-xs font-semibold text-primary/60 tracking-widest uppercase">
               Dev Tools
             </p>
             {devItems.map((item) => (
@@ -231,7 +231,7 @@ export default function AppLayout() {
         {/* Roster Summary */}
         <div className="px-5 py-4 border-t border-[var(--border)]">
           <div className="bg-[var(--elevated)] rounded-xl p-3 border border-[var(--border)]">
-            <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">
+            <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">
               My Roster
             </p>
             <div className="flex items-end gap-2">

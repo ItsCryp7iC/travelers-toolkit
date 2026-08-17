@@ -56,7 +56,7 @@ export default function RealmCurrencyTracker({ syncData }) {
           <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/others/RealmCurrency.png" className="w-12 h-12 object-contain" alt="Realm Currency" style={{ filter: isCapped ? 'drop-shadow(0 0 8px rgba(78,201,176,0.6))' : 'none' }} />
         </div>
         <div className="flex-1">
-          <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Realm Currency</p>
+          <p className="text-xs uppercase tracking-widest text-[var(--muted)] font-semibold mb-0.5">Realm Currency</p>
           <div className="flex items-baseline gap-1">
             <span className="font-cinzel font-bold text-3xl leading-none" style={{ color: isCapped ? '#4EC9B0' : 'var(--text)' }}>{currentCurrency}</span>
             <span className="font-cinzel font-bold text-lg text-[var(--muted)]">/ {maxCurrency}</span>

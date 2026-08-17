@@ -17,7 +17,7 @@ export default function MatQuantity({ val, color = 'text-[var(--text)]', align =
   
   // Create a minimal text fallback (e.g. first 2 letters) in case image fails
   const fallbackStr = nameKey ? nameKey.substring(0, 2).toUpperCase() : '??'
-  const iconFallback = <span className="text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
+  const iconFallback = <span className="text-xs font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
 
   return (
     <div className={`flex items-center gap-2 ${justifyClass}`}>
@@ -31,7 +31,7 @@ export default function MatQuantity({ val, color = 'text-[var(--text)]', align =
       ) : (
         iconFallback
       )}
-      <span className={`font-mono text-[11px] font-bold ${color}`}>{displayVal}</span>
+      <span className={`font-mono text-xs font-bold ${color}`}>{displayVal}</span>
     </div>
   )
 }

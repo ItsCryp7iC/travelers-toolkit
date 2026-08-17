@@ -148,21 +148,21 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold truncate text-white" title={w.weaponName}>{w.weaponName}</p>
-          {w.location && <p className="text-[10px] text-[var(--color-text-muted)] truncate">On: {w.location}</p>}
-          {!w.location && <p className="text-[10px] text-[var(--color-text-muted)]">Unequipped</p>}
+          {w.location && <p className="text-xs text-[var(--color-text-muted)] truncate">On: {w.location}</p>}
+          {!w.location && <p className="text-xs text-[var(--color-text-muted)]">Unequipped</p>}
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2 mt-1 pt-2 border-t border-[var(--border)]">
         <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-          <span className="text-[9px] text-[var(--color-text-muted)] uppercase">Lvl</span>
+          <span className="text-xs text-[var(--color-text-muted)] uppercase">Lvl</span>
           <input type="number" min="1" max="90" value={w.level} onChange={e => updateWeapon(globalIndex, 'level', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
         </div>
         <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-          <span className="text-[9px] text-[var(--color-text-muted)] uppercase">Asc</span>
+          <span className="text-xs text-[var(--color-text-muted)] uppercase">Asc</span>
           <input type="number" min="0" max="6" value={w.ascension} onChange={e => updateWeapon(globalIndex, 'ascension', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
         </div>
         <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-          <span className="text-[9px] text-[var(--color-text-muted)] uppercase">Ref</span>
+          <span className="text-xs text-[var(--color-text-muted)] uppercase">Ref</span>
           <input type="number" min="1" max="5" value={w.refinement} onChange={e => updateWeapon(globalIndex, 'refinement', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
         </div>
       </div>
@@ -220,26 +220,26 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                   {/* Bottom Stats Inputs */}
                   <div className="grid grid-cols-2 gap-2 mt-1 pt-2 border-t border-[var(--border)]">
                     <div className="flex items-center justify-between bg-[var(--surface)] px-2 py-1 rounded">
-                      <span className="text-[10px] text-[var(--color-text-muted)]">Lvl</span>
+                      <span className="text-xs text-[var(--color-text-muted)]">Lvl</span>
                       <input type="number" min="1" max="90" value={char.level} onChange={(e) => updateChar(index, 'level', e.target.value)} className="w-12 bg-transparent text-right text-xs text-white outline-none" />
                     </div>
                     <div className="flex items-center justify-between bg-[var(--surface)] px-2 py-1 rounded">
-                      <span className="text-[10px] text-[var(--color-text-muted)]">Asc</span>
+                      <span className="text-xs text-[var(--color-text-muted)]">Asc</span>
                       <input type="number" min="0" max="6" value={char.ascension} onChange={(e) => updateChar(index, 'ascension', e.target.value)} className="w-12 bg-transparent text-right text-xs text-white outline-none" />
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-3 gap-2 mt-1">
                     <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-                      <span className="text-[9px] text-[var(--color-text-muted)] uppercase">NA</span>
+                      <span className="text-xs text-[var(--color-text-muted)] uppercase">NA</span>
                       <input type="number" min="1" max="10" value={char.talents?.normal || 1} onChange={(e) => updateCharTalent(index, 'normal', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
                     </div>
                     <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-                      <span className="text-[9px] text-[var(--color-text-muted)] uppercase">Skill</span>
+                      <span className="text-xs text-[var(--color-text-muted)] uppercase">Skill</span>
                       <input type="number" min="1" max="10" value={char.talents?.skill || 1} onChange={(e) => updateCharTalent(index, 'skill', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
                     </div>
                     <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-                      <span className="text-[9px] text-[var(--color-text-muted)] uppercase">Burst</span>
+                      <span className="text-xs text-[var(--color-text-muted)] uppercase">Burst</span>
                       <input type="number" min="1" max="10" value={char.talents?.burst || 1} onChange={(e) => updateCharTalent(index, 'burst', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
                     </div>
                   </div>
@@ -298,7 +298,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                   {['Normal Boss Drops', 'Weekly Boss Drops'].map(sub => (
                     <button 
                       key={sub}
-                      className={`px-3 py-1 text-[10px] rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
+                      className={`px-3 py-1 text-xs rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
                       onClick={() => setActiveSubTab(sub)}
                     >
                       {sub}
@@ -312,7 +312,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                   {['Common Enemy Drops', 'Elite Enemy Drops'].map(sub => (
                     <button 
                       key={sub}
-                      className={`px-3 py-1 text-[10px] rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
+                      className={`px-3 py-1 text-xs rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
                       onClick={() => setActiveSubTab(sub)}
                     >
                       {sub}
@@ -346,7 +346,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                       
                       {/* Bottom Side: Quantity Input */}
                       <div className="flex items-center gap-2 bg-[var(--surface)] px-2 py-1.5 rounded border border-[var(--border)] mt-1 justify-between">
-                        <span className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Qty</span>
+                        <span className="text-xs text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Qty</span>
                         <input 
                           type="number" 
                           min="0"

@@ -14,7 +14,7 @@ function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 
   
   return (
     <div>
-      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
         {label}
       </p>
       <div className="flex gap-1.5 flex-wrap" role="group" aria-label={label}>
@@ -38,7 +38,7 @@ function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 
           )
         })}
       </div>
-      <p className="text-[10px] text-[var(--muted)] mt-1">
+      <p className="text-xs text-[var(--muted)] mt-1">
         Max Level: <span style={{ color: elementColor }}>Lv{getPhaseMax(value)}</span>
       </p>
     </div>
@@ -53,14 +53,14 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, minOverr
   return (
     <div>
       <div className="flex justify-between items-end mb-2">
-        <label className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">
+        <label className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
           {label}
         </label>
         <div className="flex items-baseline gap-1">
           <span className="text-xl font-bold font-cinzel leading-none" style={{ color: elementColor }}>
             {value}
           </span>
-          <span className="text-[10px] text-[var(--muted)]">/ {max}</span>
+          <span className="text-xs text-[var(--muted)]">/ {max}</span>
         </div>
       </div>
       <input
@@ -249,14 +249,14 @@ export default function BatchAddWeaponModal({ onClose }) {
                 <div className="flex flex-col gap-2 flex-1">
                   <div className="flex flex-wrap gap-2">
                     {ALL_TYPES.map((t) => (
-                      <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill text-[11px] py-1 ${typeFilter === t ? 'active' : ''}`}>
+                      <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill text-xs py-1 ${typeFilter === t ? 'active' : ''}`}>
                         {WEAPON_TYPES[t]?.emoji || '🌐'} {t}
                       </button>
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {ALL_RARITIES.map((r) => (
-                      <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill text-[11px] py-1 ${rarityFilter === r ? 'active' : ''}`}>
+                      <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill text-xs py-1 ${rarityFilter === r ? 'active' : ''}`}>
                         {r}
                       </button>
                     ))}
@@ -309,9 +309,9 @@ export default function BatchAddWeaponModal({ onClose }) {
                         />
                       </div>
                       <div className="min-w-0 pr-4">
-                        <p className={`font-cinzel text-[11px] font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(wp.name)}</p>
-                        <p className={`text-[10px] ${getRarityClass(wp.rarity)}`}>{getStars(wp.rarity)}</p>
-                        <p className="text-[10px] text-[var(--muted)]">{wp.type}</p>
+                        <p className={`font-cinzel text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(wp.name)}</p>
+                        <p className={`text-xs ${getRarityClass(wp.rarity)}`}>{getStars(wp.rarity)}</p>
+                        <p className="text-xs text-[var(--muted)]">{wp.type}</p>
                       </div>
                     </button>
                   )
@@ -357,7 +357,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
-                    <p className="text-[10px] font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">📍 Current Level</p>
+                    <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">📍 Current Level</p>
                     <AscensionSelector 
                       value={ascension} 
                       onChange={(a) => { 
@@ -384,7 +384,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                     </div>
                   </div>
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
-                    <p className="text-[10px] font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">🎯 Target Level</p>
+                    <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">🎯 Target Level</p>
                     <AscensionSelector 
                       value={targetAscension} 
                       onChange={(a) => { 
@@ -418,7 +418,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                 
                 <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)]">
+                    <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)]">
                       <tr>
                         <th className="px-4 py-3 font-semibold w-16 text-center">Icon</th>
                         <th className="px-4 py-3 font-semibold">Weapon Name</th>
@@ -444,7 +444,7 @@ export default function BatchAddWeaponModal({ onClose }) {
                             </td>
                             <td className="px-4 py-3">
                               <p className="font-cinzel font-semibold text-[var(--text)] text-sm">{formatName(wp.name)}</p>
-                              <div className="flex gap-2 items-center mt-1 text-[10px]">
+                              <div className="flex gap-2 items-center mt-1 text-xs">
                                 <span className={getRarityClass(wp.rarity)}>{getStars(wp.rarity)}</span>
                                 <span className="text-[var(--muted)]">{wp.type}</span>
                               </div>

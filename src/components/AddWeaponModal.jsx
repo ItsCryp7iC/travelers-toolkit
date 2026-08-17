@@ -14,7 +14,7 @@ function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 
   
   return (
     <div>
-      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
         {label}
       </p>
       <div className="flex gap-1.5 flex-wrap" role="group" aria-label={label}>
@@ -38,7 +38,7 @@ function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 
           )
         })}
       </div>
-      <p className="text-[10px] text-[var(--muted)] mt-1">
+      <p className="text-xs text-[var(--muted)] mt-1">
         Max Level: <span style={{ color: elementColor }}>Lv{getPhaseMax(value)}</span>
       </p>
     </div>
@@ -53,14 +53,14 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, minOverr
   return (
     <div>
       <div className="flex justify-between items-end mb-2">
-        <label className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">
+        <label className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
           {label}
         </label>
         <div className="flex items-baseline gap-1">
           <span className="text-xl font-bold font-cinzel leading-none" style={{ color: elementColor }}>
             {value}
           </span>
-          <span className="text-[10px] text-[var(--muted)]">/ {max}</span>
+          <span className="text-xs text-[var(--muted)]">/ {max}</span>
         </div>
       </div>
       <input
@@ -288,14 +288,14 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
               </div>
               <div className="flex flex-wrap gap-2">
                 {ALL_TYPES.map((t) => (
-                  <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill text-[11px] py-1 ${typeFilter === t ? 'active' : ''}`}>
+                  <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill text-xs py-1 ${typeFilter === t ? 'active' : ''}`}>
                     {WEAPON_TYPES[t]?.emoji || '🌐'} {t}
                   </button>
                 ))}
               </div>
               <div className="flex flex-wrap gap-2">
                 {ALL_RARITIES.map((r) => (
-                  <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill text-[11px] py-1 ${rarityFilter === r ? 'active' : ''}`}>
+                  <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill text-xs py-1 ${rarityFilter === r ? 'active' : ''}`}>
                     {r}
                   </button>
                 ))}
@@ -321,9 +321,9 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                         />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-cinzel text-[11px] font-semibold text-[var(--text)] truncate">{formatName(wp.name)}</p>
-                        <p className={`text-[10px] ${getRarityClass(wp.rarity)}`}>{getStars(wp.rarity)}</p>
-                        <p className="text-[10px] text-[var(--muted)]">{wp.type}</p>
+                        <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(wp.name)}</p>
+                        <p className={`text-xs ${getRarityClass(wp.rarity)}`}>{getStars(wp.rarity)}</p>
+                        <p className="text-xs text-[var(--muted)]">{wp.type}</p>
                       </div>
                     </button>
                   )
@@ -344,7 +344,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                   return (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                       <div className="modal-state-panel">
-                        <p className={`text-[10px] font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
+                        <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
                         <AscensionSelector 
                           value={ascension} 
                           onChange={(a) => { 
@@ -371,7 +371,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                         </div>
                       </div>
                       <div className="modal-state-panel">
-                        <p className={`text-[10px] font-bold tracking-widest uppercase mb-4 ${theme.text}`}>🎯 Weapon Target</p>
+                        <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>🎯 Weapon Target</p>
                         <AscensionSelector 
                           value={targetAscension} 
                           onChange={(a) => { 
@@ -400,7 +400,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
               {/* Assign to character */}
               <div>
-                <h3 className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-semibold mb-2">Assign to Character (optional)</h3>
+                <h3 className="text-xs uppercase tracking-widest text-[var(--muted)] font-semibold mb-2">Assign to Character (optional)</h3>
                 {compatibleChars.length === 0 ? (
                   <p className="text-sm text-[var(--muted)] italic">No rostered characters use {selectedWeapon.type}s.</p>
                 ) : (

@@ -34,7 +34,7 @@ export default function CharacterInfoModal({ character, onClose }) {
       <div className="flex items-center gap-3 p-3 rounded-lg border bg-[var(--surface)] border-[var(--border)]">
         <span className="text-xl flex-shrink-0">{icon}</span>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] text-[var(--muted)] font-semibold tracking-widest uppercase mb-0.5">{label}</p>
+          <p className="text-xs text-[var(--muted)] font-semibold tracking-widest uppercase mb-0.5">{label}</p>
           <p className="text-sm font-semibold text-[var(--text)] truncate">{formatMaterialName(value)}</p>
         </div>
       </div>

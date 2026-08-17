@@ -79,9 +79,9 @@ const MAT_DEFAULTS = {
 function Field({ label, hint, children }) {
   return (
     <div className="mb-4">
-      <label className="block text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1.5">
+      <label className="block text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-1.5">
         {label}
-        {hint && <span className="ml-2 text-[9px] text-[var(--muted)] opacity-50 normal-case tracking-normal font-normal">({hint})</span>}
+        {hint && <span className="ml-2 text-xs text-[var(--muted)] opacity-50 normal-case tracking-normal font-normal">({hint})</span>}
       </label>
       {children}
     </div>
@@ -144,9 +144,9 @@ function ComboInput({ value, onChange, placeholder, listId, suggestions }) {
 function MatHeader() {
   return (
     <div className="border-t border-[var(--border)] pt-4 mt-1 mb-2">
-      <p className="text-[10px] font-semibold text-[var(--gold)] tracking-widest uppercase mb-1 flex items-center gap-2">
+      <p className="text-xs font-semibold text-[var(--gold)] tracking-widest uppercase mb-1 flex items-center gap-2">
         <span>💎</span> Materials
-        <span className="text-[9px] text-[var(--muted)] font-normal tracking-normal normal-case">(type or pick from existing)</span>
+        <span className="text-xs text-[var(--muted)] font-normal tracking-normal normal-case">(type or pick from existing)</span>
       </p>
     </div>
   )
@@ -285,7 +285,7 @@ function MaterialForm({ subCat, data, onSubCatChange, onChange }) {
     <div>
       {/* Info banner */}
       <div className="mb-4 p-3 rounded-xl border border-[#60A5FA]/20 bg-[#60A5FA]/5">
-        <p className="text-[10px] text-[#60A5FA]/80 leading-relaxed">
+        <p className="text-xs text-[#60A5FA]/80 leading-relaxed">
           <span className="font-semibold">ℹ️ New Material</span> — document a new material so you can
           reference it in the Character / Weapon forms. The output records the names as PascalCase keys.
         </p>
@@ -454,8 +454,8 @@ function OutputPanel({ json, mode }) {
     ? 'Use this name exactly when filling in Character / Weapon material fields above.'
     : (
       <>
-        Paste inside the root <code className="text-[#A78BFA] bg-[var(--bg)] px-1 rounded text-[9px]">[ … ]</code> array in{' '}
-        <code className="text-[#60A5FA] bg-[var(--bg)] px-1 rounded text-[9px]">
+        Paste inside the root <code className="text-[#A78BFA] bg-[var(--bg)] px-1 rounded text-xs">[ … ]</code> array in{' '}
+        <code className="text-[#60A5FA] bg-[var(--bg)] px-1 rounded text-xs">
           {mode === 'character' ? 'src/data/characters.json' : 'src/data/weapons.json'}
         </code>. Remember the trailing comma on the previous entry.
       </>
@@ -464,7 +464,7 @@ function OutputPanel({ json, mode }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase flex items-center gap-2">
+        <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase flex items-center gap-2">
           <span>📄</span> Generated JSON
         </p>
         <button
@@ -484,7 +484,7 @@ function OutputPanel({ json, mode }) {
           {/* Line numbers */}
           <div className="shrink-0 select-none border-r border-[var(--border)] bg-[var(--bg)] px-3 py-4 text-right">
             {lines.map((_, i) => (
-              <div key={i} className="text-[10px] font-mono text-[var(--muted)] opacity-40 leading-5">{i + 1}</div>
+              <div key={i} className="text-xs font-mono text-[var(--muted)] opacity-40 leading-5">{i + 1}</div>
             ))}
           </div>
           {/* Code */}
@@ -499,7 +499,7 @@ function OutputPanel({ json, mode }) {
       </div>
 
       <div className="mt-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--elevated)]">
-        <p className="text-[10px] text-[var(--muted)] leading-relaxed">
+        <p className="text-xs text-[var(--muted)] leading-relaxed">
           <span className="text-[var(--gold)] font-semibold">📌 Tip:</span> {tipText}
         </p>
       </div>
@@ -610,7 +610,7 @@ export default function DevBuilder() {
 
         {/* Form panel */}
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
-          <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-5 flex items-center gap-2">
+          <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-5 flex items-center gap-2">
             <span>✏️</span> {formLabel} Details
           </p>
 

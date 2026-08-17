@@ -354,7 +354,7 @@ export default function Dashboard() {
         {/* Element filters */}
         {activeTab === 'characters' && (
           <div className="mb-3">
-            <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+            <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
               Element
             </p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by element">
@@ -383,7 +383,7 @@ export default function Dashboard() {
         {/* Weapon + Rarity filters */}
         <div className="flex flex-wrap gap-6">
           <div>
-            <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+            <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
               Weapon
             </p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by weapon type">
@@ -405,7 +405,7 @@ export default function Dashboard() {
           </div>
 
           <div>
-            <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+            <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
               Rarity
             </p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by rarity">

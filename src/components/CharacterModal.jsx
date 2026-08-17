@@ -21,7 +21,7 @@ export function AscensionSelector({ value, onChange, label, elementColor, isChar
 
   return (
     <div>
-      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
         {label}
       </p>
       <div className="flex gap-1.5 flex-wrap" role="group" aria-label={label}>
@@ -41,7 +41,7 @@ export function AscensionSelector({ value, onChange, label, elementColor, isChar
           </button>
         ))}
       </div>
-      <p className="text-[10px] text-[var(--muted)] mt-1">
+      <p className="text-xs text-[var(--muted)] mt-1">
         Max Level: <span style={{ color: elementColor }}>Lv{getPhaseMax(value)}</span>
       </p>
     </div>
@@ -68,7 +68,7 @@ export function LevelSlider({ value, onChange, ascension, label, elementColor, i
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase">{label}</p>
+        <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">{label}</p>
         <span className="font-cinzel font-bold text-lg leading-none" style={{ color: elementColor }}>{value}</span>
       </div>
       <div className="relative py-1">
@@ -79,7 +79,7 @@ export function LevelSlider({ value, onChange, ascension, label, elementColor, i
           style={{ '--slider-color': elementColor, '--pct': `${pct}%` }}
           aria-label={`${label} level`}
         />
-        <div className="flex justify-between text-[10px] text-[var(--muted)] mt-1">
+        <div className="flex justify-between text-xs text-[var(--muted)] mt-1">
           <span>{min}</span><span>{max}</span>
         </div>
       </div>
@@ -128,7 +128,7 @@ export function TalentRow({ icon, label, fromVal, toVal, onFromChange, onToChang
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         <div className="text-center">
-          <p className="text-[8px] text-[var(--muted)] mb-1 tracking-wider">CURRENT</p>
+          <p className="text-xs text-[var(--muted)] mb-1 tracking-wider">CURRENT</p>
           <TalentStepper
             value={fromVal} onChange={onFromChange}
             elementColor="#9CA3AF"
@@ -137,11 +137,11 @@ export function TalentRow({ icon, label, fromVal, toVal, onFromChange, onToChang
         </div>
         <div className="flex flex-col items-center gap-0.5 px-1">
           <div className="h-px w-6" style={{ background: `${elementColor}40` }} />
-          <span className="text-[9px] text-[var(--muted)]">→</span>
+          <span className="text-xs text-[var(--muted)]">→</span>
           <div className="h-px w-6" style={{ background: `${elementColor}40` }} />
         </div>
         <div className="text-center">
-          <p className="text-[8px] text-[var(--muted)] mb-1 tracking-wider">TARGET</p>
+          <p className="text-xs text-[var(--muted)] mb-1 tracking-wider">TARGET</p>
           <TalentStepper
             value={safeToVal} onChange={(v) => onToChange(Math.max(v, fromVal))}
             elementColor={elementColor}
@@ -173,7 +173,7 @@ function MaterialGroup({ icon, title, items, elementColor }) {
   if (!items || Object.keys(items).length === 0) return null
   return (
     <div className="mb-4">
-      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2 flex items-center gap-1.5">
+      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2 flex items-center gap-1.5">
         <span>{icon}</span> {title}
       </p>
       <div className="space-y-0 rounded-xl overflow-hidden border border-[var(--border)]">
@@ -446,14 +446,14 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
             <h3 className="modal-section-title">⚙️ Character Progression</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="modal-state-panel">
-                <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Current State</p>
+                <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Current State</p>
                 <AscensionSelector value={fromAsc} onChange={handleFromAscChange} label="Ascension" elementColor={elColor} isCharacter={true} />
                 <div className="mt-4">
                   <LevelSlider value={fromLevel} onChange={setFromLevel} ascension={fromAsc} label="Level" elementColor={elColor} isCharacter={true} />
                 </div>
               </div>
               <div className="modal-state-panel">
-                <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Target State</p>
+                <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Target State</p>
                 <AscensionSelector value={safeToAsc} onChange={handleToAscChange} label="Ascension" elementColor={elColor} isCharacter={true} />
                 <div className="mt-4">
                   <LevelSlider value={safeToLevel} onChange={setToLevel} ascension={safeToAsc} label="Level" elementColor={elColor} isCharacter={true} />
@@ -475,7 +475,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
               <span className="font-cinzel font-bold text-sm" style={{ color: elColor }}>A{fromAsc} Lv{fromLevel}</span>
               <div className="flex-1 flex items-center gap-1">
                 <div className="flex-1 h-px" style={{ background: `${elColor}40` }} />
-                <span className="text-[10px] text-[var(--muted)] px-1">to</span>
+                <span className="text-xs text-[var(--muted)] px-1">to</span>
                 <div className="flex-1 h-px" style={{ background: `${elColor}40` }} />
               </div>
               <span className="font-cinzel font-bold text-sm" style={{ color: elColor }}>A{safeToAsc} Lv{safeToLevel}</span>
@@ -541,14 +541,14 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
             {equippedWeaponName && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                 <div className="modal-state-panel">
-                  <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
+                  <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
                   <AscensionSelector value={weaponFromAsc} onChange={(a) => { setWeaponFromAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { ascension: a }) }} label="Ascension" elementColor="#9CA3AF" isCharacter={false} />
                   <div className="mt-4">
                     <LevelSlider value={weaponFromLevel} onChange={(lv) => { setWeaponFromLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { level: lv }) }} ascension={weaponFromAsc} label="Level" elementColor="#9CA3AF" isCharacter={false} />
                   </div>
                 </div>
                 <div className="modal-state-panel">
-                  <p className="text-[10px] font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Weapon Target</p>
+                  <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Weapon Target</p>
                   <AscensionSelector value={safeWeaponToAsc} onChange={(a) => { setWeaponToAsc(a); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetAscension: a }) }} label="Ascension" elementColor="var(--gold)" isCharacter={false} />
                   <div className="mt-4">
                     <LevelSlider value={safeWeaponToLevel} onChange={(lv) => { setWeaponToLevel(lv); if (localWeaponId) updateTrackedWeapon(localWeaponId, { targetLevel: lv }) }} ascension={safeWeaponToAsc} label="Level" elementColor="var(--gold)" isCharacter={false} />
@@ -656,7 +656,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
                   { label: 'Common Enhancement Material', value: materials.mob_material, icon: '⚔️' },
                 ].filter(({ value }) => value && value !== 'nan').map(({ label, value, icon }) => (
                   <div key={label} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2">
-                    <p className="text-[9px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-0.5">{icon} {label}</p>
+                    <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-0.5">{icon} {label}</p>
                     <p className="text-xs text-[var(--text)] font-medium">{formatMaterialName(value)}</p>
                   </div>
                 ))}

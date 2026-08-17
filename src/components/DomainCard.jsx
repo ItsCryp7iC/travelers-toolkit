@@ -67,7 +67,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
       {/* Header */}
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
         <span className="text-xs">{familyObj.type === 'weekly_boss' ? '👑' : familyObj.type === 'world_boss' ? '🐉' : familyObj.type === 'elite_mob' ? '🛡️' : familyObj.type === 'gemstones' ? '💎' : '🏛️'}</span>
-        <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
+        <span className="text-xs font-bold tracking-wider uppercase text-[var(--muted)] truncate">
           {['weekly_boss', 'world_boss', 'elite_mob', 'gemstones', 'currency'].includes(familyObj.type) ? domainName : `Domain: ${domainName}`}
         </span>
       </div>
@@ -120,7 +120,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
       {(chars.length > 0 || weaps.length > 0) && (
         <div className="px-3 pb-3 mt-auto">
           <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
-          <p className="text-[9px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
+          <p className="text-xs font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
           <div>
             {chars.length > 0 && (
               <div className="flex flex-wrap gap-1">
@@ -133,7 +133,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                       className="w-full h-full object-cover relative z-10"
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+                    <div className="absolute inset-0 flex items-center justify-center text-xs z-0" title={entity.name}>👤</div>
                   </div>
                 ))}
               </div>
@@ -150,7 +150,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                       className="w-full h-full object-cover relative z-10"
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+                    <div className="absolute inset-0 flex items-center justify-center text-xs z-0" title={entity.name}>👤</div>
                   </div>
                 ))}
               </div>

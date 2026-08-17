@@ -81,7 +81,7 @@ export default function WeaponCard({ weapon, onClick }) {
 
         {/* Weapon badge */}
         <div className="flex flex-wrap gap-1 mb-1">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-[var(--border)] text-[var(--muted)] bg-[var(--elevated)]">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border border-[var(--border)] text-[var(--muted)] bg-[var(--elevated)]">
             <GenshinImage src={getWeaponTypeIcon(type)} alt={type} className="w-3 h-3 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
             <span>{type || 'Unknown'}</span>
           </span>

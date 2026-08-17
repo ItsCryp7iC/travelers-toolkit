@@ -33,6 +33,13 @@ export default {
         'el-pyro':    '#F97316',
         'el-cryo':    '#BAE6FD',
       },
+      fontSize: {
+        'xs': ['0.85rem', { lineHeight: '1.25rem' }],
+        'sm': ['0.95rem', { lineHeight: '1.5rem' }],
+        'base': ['1.05rem', { lineHeight: '1.75rem' }],
+        'lg': ['1.15rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.3rem', { lineHeight: '1.75rem' }],
+      },
       fontFamily: {
         cinzel: ['Cinzel', 'serif'],
         inter:  ['Inter', 'sans-serif'],

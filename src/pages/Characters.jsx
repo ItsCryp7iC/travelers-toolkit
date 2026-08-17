@@ -254,7 +254,7 @@ export default function Characters() {
 
             {/* Element filters */}
             <div className="mb-3">
-              <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+              <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
                 Element
               </p>
               <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by element">
@@ -275,7 +275,7 @@ export default function Characters() {
             {/* Weapon + Rarity filters */}
             <div className="flex flex-wrap gap-6">
               <div>
-                <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+                <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
                   Weapon
                 </p>
                 <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by weapon type">
@@ -294,7 +294,7 @@ export default function Characters() {
               </div>
 
               <div>
-                <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
+                <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2">
                   Rarity
                 </p>
                 <div className="flex gap-2" role="group" aria-label="Filter by rarity">
@@ -316,16 +316,16 @@ export default function Characters() {
                   <thead>
                     {/* Top Header Grouping */}
                     <tr className="bg-[var(--elevated)] border-b border-[var(--border)]">
-                      <th colSpan="6" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
-                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">Current State</th>
-                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[var(--gold)] border-r border-[var(--border)]">Target State</th>
-                      <th colSpan="9" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Ascension Requirements</th>
-                      <th colSpan="12" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Talent Requirements</th>
-                      <th colSpan="4" className="px-4 py-2 text-center text-[10px] uppercase tracking-widest text-green-400 border-r border-[var(--border)]">Grand Totals</th>
+                      <th colSpan="6" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]">Identity</th>
+                      <th colSpan="4" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]">Current State</th>
+                      <th colSpan="4" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[var(--gold)] border-r border-[var(--border)]">Target State</th>
+                      <th colSpan="9" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Ascension Requirements</th>
+                      <th colSpan="12" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]">Talent Requirements</th>
+                      <th colSpan="4" className="px-4 py-2 text-center text-xs uppercase tracking-widest text-green-400 border-r border-[var(--border)]">Grand Totals</th>
                       <th className="px-4 py-2 border-b border-[var(--border)]"></th>
                     </tr>
                     {/* Sub Headers */}
-                    <tr className="border-b border-[var(--border)] text-[10px] uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
+                    <tr className="border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)] bg-[var(--surface)]">
                       {/* Identity (Sticky) */}
                       <th 
                         className="w-16 px-4 py-2 cursor-pointer sticky left-0 z-20 bg-[var(--surface)] border-r border-gray-700/50"
@@ -468,7 +468,7 @@ export default function Characters() {
                               </div>
                               <div className="truncate">
                                 <p className="font-cinzel text-xs font-semibold text-[var(--text)] truncate">{formatName(char.name)}</p>
-                                <p className={`text-[10px] ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
+                                <p className={`text-xs ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
                               </div>
                             </div>
                           </td>
@@ -499,12 +499,12 @@ export default function Characters() {
                                   fallback={<span className="text-xl shrink-0">{WEAPON_TYPES[eqWeapon.data?.type]?.emoji || '⚔️'}</span>} 
                                 />
                                 <div className="truncate min-w-0">
-                                  <p className="text-[11px] font-semibold text-[var(--text)] truncate">{formatName(eqWeapon.tracked.weaponName)}</p>
-                                  <p className="text-[9px] text-[var(--muted)]">Lv{eqWeapon.tracked.level}→{eqWeapon.tracked.targetLevel}</p>
+                                  <p className="text-xs font-semibold text-[var(--text)] truncate">{formatName(eqWeapon.tracked.weaponName)}</p>
+                                  <p className="text-xs text-[var(--muted)]">Lv{eqWeapon.tracked.level}→{eqWeapon.tracked.targetLevel}</p>
                                 </div>
                               </div>
                             ) : (
-                              <span className="text-[10px] text-[var(--muted)] italic">None</span>
+                              <span className="text-xs text-[var(--muted)] italic">None</span>
                             )}
                           </td>
                           
@@ -516,7 +516,7 @@ export default function Characters() {
                                 min={1}
                                 max={90}
                                 onChangeSubmit={(val) => updateCharacter(char.name, { level: val })}
-                                className="font-mono text-[11px] text-[var(--text)]"
+                                className="font-mono text-xs text-[var(--text)]"
                               />
                               {isAscended(entry?.level ?? 1, entry?.ascension ?? 0) && (entry?.level ?? 1) < 90 && (
                                 <img 
@@ -551,7 +551,7 @@ export default function Characters() {
                               value={entry?.talents?.normal ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, normal: val } })}
-                              className="font-mono text-[11px] text-[var(--muted)]"
+                              className="font-mono text-xs text-[var(--muted)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center">
@@ -559,7 +559,7 @@ export default function Characters() {
                               value={entry?.talents?.skill ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, skill: val } })}
-                              className="font-mono text-[11px] text-[var(--muted)]"
+                              className="font-mono text-xs text-[var(--muted)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center border-r border-[var(--border)]">
@@ -567,7 +567,7 @@ export default function Characters() {
                               value={entry?.talents?.burst ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { talents: { ...entry?.talents, burst: val } })}
-                              className="font-mono text-[11px] text-[var(--muted)]"
+                              className="font-mono text-xs text-[var(--muted)]"
                             />
                           </td>
                           
@@ -579,7 +579,7 @@ export default function Characters() {
                                 min={1}
                                 max={90}
                                 onChangeSubmit={(val) => updateCharacter(char.name, { targetLevel: val })}
-                                className="font-mono text-[11px] text-[var(--gold)]"
+                                className="font-mono text-xs text-[var(--gold)]"
                               />
                               {isAscended(entry?.targetLevel ?? 90, entry?.targetAscension ?? 6) && (entry?.targetLevel ?? 90) < 90 && (
                                 <img 
@@ -614,7 +614,7 @@ export default function Characters() {
                               value={entry?.targetTalents?.normal ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, normal: val } })}
-                              className="font-mono text-[11px] text-[var(--gold)]"
+                              className="font-mono text-xs text-[var(--gold)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center">
@@ -622,7 +622,7 @@ export default function Characters() {
                               value={entry?.targetTalents?.skill ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, skill: val } })}
-                              className="font-mono text-[11px] text-[var(--gold)]"
+                              className="font-mono text-xs text-[var(--gold)]"
                             />
                           </td>
                           <td className="px-3 py-2 text-center border-r border-[var(--border)]">
@@ -630,7 +630,7 @@ export default function Characters() {
                               value={entry?.targetTalents?.burst ?? 1}
                               min={1} max={10}
                               onChangeSubmit={(val) => updateCharacter(char.name, { targetTalents: { ...entry?.targetTalents, burst: val } })}
-                              className="font-mono text-[11px] text-[var(--gold)]"
+                              className="font-mono text-xs text-[var(--gold)]"
                             />
                           </td>
 
@@ -657,25 +657,25 @@ export default function Characters() {
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora_na)}</span>
+                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora_na)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora_skill)}</span>
+                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora_skill)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora_burst)}</span>
+                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora_burst)}</span>
                             </div>
                           </td>
                           <td className="px-3 py-2 border-r border-[var(--border)]">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-[11px] font-mono font-bold">{formatNumber(tal?.mora)}</span>
+                              <span className="text-xs font-mono font-bold">{formatNumber(tal?.mora)}</span>
                             </div>
                           </td>
                           
@@ -686,7 +686,7 @@ export default function Characters() {
                           <td className="px-3 py-2 border-r border-[var(--border)]">
                             <div className="flex items-center justify-center gap-2 text-[#C8A96E]">
                               <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-8 h-8 object-contain shrink-0" />
-                              <span className="text-[11px] font-mono font-bold">{formatNumber(grandMora)}</span>
+                              <span className="text-xs font-mono font-bold">{formatNumber(grandMora)}</span>
                             </div>
                           </td>
                           
@@ -694,7 +694,7 @@ export default function Characters() {
                           <td className="px-4 py-2" onClick={(e) => e.stopPropagation()}>
                             <button
                               onClick={() => removeCharacter(char.name)}
-                              className="text-[10px] text-red-400 hover:text-red-300 px-2 py-1 rounded border border-red-500/20 hover:border-red-500/40 transition-colors"
+                              className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded border border-red-500/20 hover:border-red-500/40 transition-colors"
                             >
                               ✕
                             </button>

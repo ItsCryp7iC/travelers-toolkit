@@ -133,7 +133,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-[var(--text)] text-sm truncate">{displayName}</h3>
-          <p className="text-[10px] text-[var(--gold)] font-cinzel tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
+          <p className="text-xs text-[var(--gold)] font-cinzel tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
         </div>
         {character?.element && (
           <img 
@@ -147,7 +147,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
       {/* State Block */}
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className="bg-black/20 p-2 rounded-lg border border-white/5">
-          <p className="text-[10px] text-[var(--muted)] mb-0.5 uppercase tracking-wider">Level</p>
+          <p className="text-xs text-[var(--muted)] mb-0.5 uppercase tracking-wider">Level</p>
           <p className="font-semibold text-gray-200">
             Lv. {entry.level ?? 1} 
             <span className="text-[var(--gold)] mx-1">→</span> 
@@ -155,22 +155,22 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
           </p>
         </div>
         <div className="bg-black/20 p-2 rounded-lg border border-white/5">
-          <p className="text-[10px] text-[var(--muted)] mb-0.5 uppercase tracking-wider">Talents</p>
+          <p className="text-xs text-[var(--muted)] mb-0.5 uppercase tracking-wider">Talents</p>
           {talentState ? (
-            <p className="font-semibold text-gray-200 text-[10px]">
+            <p className="font-semibold text-gray-200 text-xs">
               {talentState.normalFrom}/{talentState.skillFrom}/{talentState.burstFrom}
               <span className="text-[var(--gold)] mx-1">→</span>
               {talentState.normalTo}/{talentState.skillTo}/{talentState.burstTo}
             </p>
           ) : (
-            <p className="text-gray-500 text-[10px]">Maxed</p>
+            <p className="text-gray-500 text-xs">Maxed</p>
           )}
         </div>
       </div>
 
       {/* Materials Block */}
       <div className="mt-auto border-t border-white/5 pt-3">
-        <p className="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-2 font-semibold">Required Materials</p>
+        <p className="text-xs text-[var(--muted)] uppercase tracking-wider mb-2 font-semibold">Required Materials</p>
         {Object.keys(totalCosts || {}).length === 0 ? (
           <p className="text-xs text-gray-500 italic">No materials needed.</p>
         ) : (
@@ -192,7 +192,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
                     />
                     <span className="hidden text-xl mb-1" title={formatItemName(matId)}>📦</span>
                     
-                    <span className={`text-[9px] font-bold ${toFarm === 0 ? 'text-green-400' : 'text-gray-300'}`}>
+                    <span className={`text-xs font-bold ${toFarm === 0 ? 'text-green-400' : 'text-gray-300'}`}>
                       {toFarm === 0 ? '✅' : `×${formatNumber(toFarm)}`}
                     </span>
                   </div>

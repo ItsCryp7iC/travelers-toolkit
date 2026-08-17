@@ -135,7 +135,7 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
                           <img src={option.icon} alt={option.name} className="w-8 h-8 object-contain rounded" />
                           {/* Render stars */}
                           {stars > 0 && (
-                            <div className="text-[8px] text-yellow-400 tracking-tighter mt-1 leading-none text-center w-full">
+                            <div className="text-xs text-yellow-400 tracking-tighter mt-1 leading-none text-center w-full">
                               {'★'.repeat(stars)}
                             </div>
                           )}

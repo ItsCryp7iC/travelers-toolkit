@@ -190,11 +190,11 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
             <div className="grid grid-cols-2 gap-4 mb-2 px-2">
               <label className="flex items-center gap-2 cursor-pointer w-max justify-end ml-auto pr-6">
                 <input type="checkbox" checked={overrideCurrentTalents} onChange={e => setOverrideCurrentTalents(e.target.checked)} className="accent-[var(--gold)] w-3.5 h-3.5" />
-                <span className={`text-[10px] font-bold uppercase tracking-wider ${overrideCurrentTalents ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Override Current</span>
+                <span className={`text-xs font-bold uppercase tracking-wider ${overrideCurrentTalents ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Override Current</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer w-max pl-2">
                 <input type="checkbox" checked={overrideTargetTalents} onChange={e => setOverrideTargetTalents(e.target.checked)} className="accent-[var(--gold)] w-3.5 h-3.5" />
-                <span className={`text-[10px] font-bold uppercase tracking-wider ${overrideTargetTalents ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Override Target</span>
+                <span className={`text-xs font-bold uppercase tracking-wider ${overrideTargetTalents ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Override Target</span>
               </label>
             </div>
             <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] px-4 py-2">

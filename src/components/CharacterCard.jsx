@@ -142,7 +142,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
           {/* Element + Weapon badges */}
           <div className="flex flex-wrap gap-1 mb-3">
               <span
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border"
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border"
                 style={{
                   background: elConfig.colorDim,
                   borderColor: elConfig.color + '60',
@@ -154,7 +154,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
               </span>
 
               {wpConfig && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border border-[var(--border)] text-[var(--muted)] bg-[var(--elevated)]">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border border-[var(--border)] text-[var(--muted)] bg-[var(--elevated)]">
                   <GenshinImage src={getWeaponTypeIcon(weapon_type)} alt={weapon_type} className="w-3 h-3 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
                   <span>{weapon_type}</span>
                 </span>
@@ -166,7 +166,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick }
             <button
               id={`roster-btn-${name.toLowerCase().replace(/\s+/g, '-')}`}
               onClick={handleToggleRoster}
-              className="w-full text-[11px] font-semibold py-1.5 rounded-lg transition-all duration-200"
+              className="w-full text-xs font-semibold py-1.5 rounded-lg transition-all duration-200"
               style={
                 inRoster
                   ? {

@@ -275,7 +275,7 @@ export default function Settings() {
                     <span className="text-xs font-medium text-[var(--color-text-main)]">
                       {new Date(backup.createdTime).toLocaleString()}
                     </span>
-                    <span className="text-[10px] text-[var(--color-text-muted)]">
+                    <span className="text-xs text-[var(--color-text-muted)]">
                       {backup.name}
                     </span>
                   </div>

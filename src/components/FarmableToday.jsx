@@ -53,7 +53,7 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
       {/* Header */}
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
         <span className="text-xs">🏛️</span>
-        <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
+        <span className="text-xs font-bold tracking-wider uppercase text-[var(--muted)] truncate">
           Domain: {domainName}
         </span>
       </div>
@@ -106,7 +106,7 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
       {neededBy && neededBy.length > 0 && (
         <div className="px-3 pb-3 mt-auto">
           <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
-          <p className="text-[9px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
+          <p className="text-xs font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
           <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
             {neededBy.map((entity, i) => (
               <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
@@ -117,7 +117,7 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
                   className="w-full h-full object-cover relative z-10"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
-                <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+                <div className="absolute inset-0 flex items-center justify-center text-xs z-0" title={entity.name}>👤</div>
               </div>
             ))}
           </div>
@@ -136,7 +136,7 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
       
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
         <span className="text-xs">👑</span>
-        <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] truncate">
+        <span className="text-xs font-bold tracking-wider uppercase text-[var(--muted)] truncate">
           Boss: {bossName}
         </span>
       </div>
@@ -182,7 +182,7 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
       {neededBy && neededBy.length > 0 && (
         <div className="px-3 pb-3 mt-auto">
           <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
-          <p className="text-[9px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
+          <p className="text-xs font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
           <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
             {neededBy.map((entity, i) => (
               <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
@@ -193,7 +193,7 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
                   className="w-full h-full object-cover relative z-10"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
-                <div className="absolute inset-0 flex items-center justify-center text-[10px] z-0" title={entity.name}>👤</div>
+                <div className="absolute inset-0 flex items-center justify-center text-xs z-0" title={entity.name}>👤</div>
               </div>
             ))}
           </div>
@@ -529,7 +529,7 @@ export default function FarmableToday() {
             <h3 className="font-cinzel font-bold text-sm text-[var(--text)]">
               Daily Action Plan
             </h3>
-            <p className="text-[10px] tracking-widest font-semibold mt-0.5" style={{ color: dayColor }}>
+            <p className="text-xs tracking-widest font-semibold mt-0.5" style={{ color: dayColor }}>
               {dayLabel.toUpperCase()}
             </p>
           </div>
@@ -538,7 +538,7 @@ export default function FarmableToday() {
           <p className="font-cinzel font-bold text-lg leading-none" style={{ color: farmableCount > 0 ? dayColor : '#4ADE80' }}>
             {farmableCount}
           </p>
-          <p className="text-[9px] text-[var(--muted)] uppercase tracking-wider">tasks</p>
+          <p className="text-xs text-[var(--muted)] uppercase tracking-wider">tasks</p>
         </div>
       </div>
 
@@ -548,7 +548,7 @@ export default function FarmableToday() {
           <button
             key={day}
             onClick={() => setSelectedDay(day)}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${selectedDay === day ? 'opacity-100 shadow-md' : 'opacity-40 hover:opacity-70 border-transparent'}`}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedDay === day ? 'opacity-100 shadow-md' : 'opacity-40 hover:opacity-70 border-transparent'}`}
             style={{ 
               background: selectedDay === day ? `${WEEKDAY_COLORS[day] || '#C8A96E'}15` : 'transparent',
               color: selectedDay === day ? (WEEKDAY_COLORS[day] || '#C8A96E') : 'var(--muted)',
@@ -562,13 +562,13 @@ export default function FarmableToday() {
 
       <div className="px-5 py-5">
         <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('talent-main')}>
-          <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-            <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['talent-main'] ? '' : 'rotate-90'}`}>›</span>
+          <p className="text-xs font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+            <span className={`text-xs inline-block transition-transform duration-200 ${collapsed['talent-main'] ? '' : 'rotate-90'}`}>›</span>
             <span>📚</span> Talent Materials
           </p>
           <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', false, groupedBooksData)}>Expand All Regions</button>
-            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', true, groupedBooksData)}>Collapse All Regions</button>
+            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', false, groupedBooksData)}>Expand All Regions</button>
+            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', true, groupedBooksData)}>Collapse All Regions</button>
           </div>
         </div>
         {!collapsed['talent-main'] && renderRegionGroups(groupedBooksData, dayColor, 'talent')}
@@ -576,13 +576,13 @@ export default function FarmableToday() {
         <div className="genshin-divider my-6" />
 
         <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('weapon-main')}>
-          <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-            <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['weapon-main'] ? '' : 'rotate-90'}`}>›</span>
+          <p className="text-xs font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+            <span className={`text-xs inline-block transition-transform duration-200 ${collapsed['weapon-main'] ? '' : 'rotate-90'}`}>›</span>
             <span>🗡️</span> Weapon Ascension Materials
           </p>
           <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', false, groupedWeaponData)}>Expand All Regions</button>
-            <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', true, groupedWeaponData)}>Collapse All Regions</button>
+            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', false, groupedWeaponData)}>Expand All Regions</button>
+            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', true, groupedWeaponData)}>Collapse All Regions</button>
           </div>
         </div>
         {!collapsed['weapon-main'] && renderRegionGroups(groupedWeaponData, 'var(--gold)', 'weapon')}
@@ -592,13 +592,13 @@ export default function FarmableToday() {
           <>
             <div className="genshin-divider my-6" />
             <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('weekly-boss-main')}>
-              <p className="text-[10px] font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
-                <span className={`text-[12px] inline-block transition-transform duration-200 ${collapsed['weekly-boss-main'] ? '' : 'rotate-90'}`}>›</span>
+              <p className="text-xs font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
+                <span className={`text-xs inline-block transition-transform duration-200 ${collapsed['weekly-boss-main'] ? '' : 'rotate-90'}`}>›</span>
                 <span>👑</span> Weekly Boss Reminders
               </p>
               <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', false, groupedWeeklyBosses)}>Expand All Regions</button>
-                <button className="text-[9px] text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', true, groupedWeeklyBosses)}>Collapse All Regions</button>
+                <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', false, groupedWeeklyBosses)}>Expand All Regions</button>
+                <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', true, groupedWeeklyBosses)}>Collapse All Regions</button>
               </div>
             </div>
             {!collapsed['weekly-boss-main'] && renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'weekly-boss')}

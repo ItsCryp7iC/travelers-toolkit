@@ -139,7 +139,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-[var(--text)] text-sm truncate">{displayName}</h3>
-          <p className="text-[10px] text-[var(--gold)] font-cinzel tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
+          <p className="text-xs text-[var(--gold)] font-cinzel tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
         </div>
         {weapon.type && (
           <img 
@@ -153,7 +153,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
       {/* State Block */}
       <div className="grid grid-cols-1 gap-2 text-xs">
         <div className="bg-black/20 p-2 rounded-lg border border-white/5 flex items-center justify-between">
-          <p className="text-[10px] text-[var(--muted)] uppercase tracking-wider">Level</p>
+          <p className="text-xs text-[var(--muted)] uppercase tracking-wider">Level</p>
           <p className="font-semibold text-gray-200">
             Lv. {entry.level ?? 1} 
             <span className="text-[var(--gold)] mx-2">→</span> 
@@ -164,7 +164,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
 
       {/* Materials Block */}
       <div className="mt-auto border-t border-white/5 pt-3">
-        <p className="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-2 font-semibold">Required Materials</p>
+        <p className="text-xs text-[var(--muted)] uppercase tracking-wider mb-2 font-semibold">Required Materials</p>
         {Object.keys(totalCosts || {}).length === 0 ? (
           <p className="text-xs text-gray-500 italic">No materials needed.</p>
         ) : (
@@ -195,7 +195,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
                       alt={actualId} 
                       className="w-8 h-8 object-contain mb-1"
                     />
-                    <span className="text-[10px] text-gray-400 font-medium">x{qty}</span>
+                    <span className="text-xs text-gray-400 font-medium">x{qty}</span>
                   </div>
                 );
             })}
