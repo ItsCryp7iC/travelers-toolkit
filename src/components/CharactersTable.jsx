@@ -337,23 +337,45 @@ export default function CharactersTable({
           }
         },
         {
-          id: 'asc_stones', header: 'Stones',
+          id: 'asc_gem_5', header: 'Gemstone',
           accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['4_star']?.name || 'Unknown',
-          sortingFn: (rowA, rowB) => {
-            const a = rowA.original.ascCosts; const b = rowB.original.ascCosts;
-            const ta = (a?.gem_sliver||0) + (a?.gem_fragment||0) + (a?.gem_chunk||0) + (a?.gem_gemstone||0);
-            const tb = (b?.gem_sliver||0) + (b?.gem_fragment||0) + (b?.gem_chunk||0) + (b?.gem_gemstone||0);
-            return ta - tb;
-          },
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_gemstone || 0) - (rowB.original.ascCosts?.gem_gemstone || 0),
+          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#FBBF24]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const asc = row.original.ascCosts;
-            const totalStones = (asc?.gem_sliver || 0) + (asc?.gem_fragment || 0) + (asc?.gem_chunk || 0) + (asc?.gem_gemstone || 0);
             const resolvedMats = resolveCharacterMaterials(row.original);
-            return <MatQuantity val={totalStones} icon="💎" nameKey={resolvedMats?.gem?.tiers?.['4_star']?.name || ''} category="Character Ascension Gem" />;
+            return <MatQuantity val={row.original.ascCosts?.gem_gemstone || 0} icon="💎" color="text-[#FBBF24]" nameKey={resolvedMats?.gem?.tiers?.['4_star']?.name} category="Character Ascension Gem" />;
           }
         },
         {
+          id: 'asc_gem_4', header: 'Chunk',
+          accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['3_star']?.name || 'Unknown',
+          sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_chunk || 0) - (rowB.original.ascCosts?.gem_chunk || 0),
+          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#A78BFA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => {
+            const resolvedMats = resolveCharacterMaterials(row.original);
+            return <MatQuantity val={row.original.ascCosts?.gem_chunk || 0} icon="💎" color="text-[#A78BFA]" nameKey={resolvedMats?.gem?.tiers?.['3_star']?.name} category="Character Ascension Gem" />;
+          }
+        },
+        {
+          id: 'asc_gem_3', header: 'Fragment',
+          accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['2_star']?.name || 'Unknown',
+          sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_fragment || 0) - (rowB.original.ascCosts?.gem_fragment || 0),
+          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => {
+            const resolvedMats = resolveCharacterMaterials(row.original);
+            return <MatQuantity val={row.original.ascCosts?.gem_fragment || 0} icon="💎" color="text-[#60A5FA]" nameKey={resolvedMats?.gem?.tiers?.['2_star']?.name} category="Character Ascension Gem" />;
+          }
+        },
+        {
+          id: 'asc_gem_2', header: 'Sliver',
+          accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['1_star']?.name || 'Unknown',
+          sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_sliver || 0) - (rowB.original.ascCosts?.gem_sliver || 0),
+          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#4ADE80]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => {
+            const resolvedMats = resolveCharacterMaterials(row.original);
+            return <MatQuantity val={row.original.ascCosts?.gem_sliver || 0} icon="💎" color="text-[#4ADE80]" nameKey={resolvedMats?.gem?.tiers?.['1_star']?.name} category="Character Ascension Gem" />;
+          }
+        },        {
           id: 'asc_enh3', header: 'Enh 3★',
           accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.['3_star_enemy_material'] || 0) - (rowB.original.ascCosts?.['3_star_enemy_material'] || 0),
