@@ -78,7 +78,7 @@ export function resolveWeaponMaterials(weaponState) {
   const safeId = identifier.toLowerCase().replace(/[^a-z0-9]/g, '');
 
   // Match against the database strictly using the sanitized ID
-  const dbWeapon = weaponsData.find(w => w.id === safeId);
+  const dbWeapon = weaponsData.find(w => w.id.toLowerCase() === safeId);
 
   if (!dbWeapon || !dbWeapon.materials) {
     return { ascensionFamily: SAFE_FALLBACK, eliteFamily: SAFE_FALLBACK, commonFamily: SAFE_FALLBACK };

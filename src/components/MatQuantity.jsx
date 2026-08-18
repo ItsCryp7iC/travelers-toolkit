@@ -3,7 +3,7 @@ import { formatNumber } from '../utils/calculator'
 import GenshinImage from './GenshinImage'
 import { getMaterialIcon } from '../utils/assetHelper'
 
-export default function MatQuantity({ val, color = 'text-[var(--text)]', align = 'center', format = true, nameKey, category }) {
+export default function MatQuantity({ val, color = 'text-[var(--text)]', align = 'center', format = true, nameKey, category, icon }) {
   if (!val) {
     return (
       <div className={`flex items-center gap-1.5 ${align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center'}`}>
@@ -19,6 +19,8 @@ export default function MatQuantity({ val, color = 'text-[var(--text)]', align =
   const fallbackStr = nameKey ? nameKey.substring(0, 2).toUpperCase() : '??'
   const iconFallback = <span className="text-xs font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
 
+  const renderFallback = icon ? <span className="text-base" title={nameKey}>{icon}</span> : iconFallback;
+
   return (
     <div className={`flex items-center gap-2 ${justifyClass}`}>
       {nameKey ? (
@@ -26,10 +28,10 @@ export default function MatQuantity({ val, color = 'text-[var(--text)]', align =
           src={getMaterialIcon(nameKey, category)} 
           alt={nameKey} 
           className="w-8 h-8 object-contain shrink-0" 
-          fallback={iconFallback} 
+          fallback={renderFallback} 
         />
       ) : (
-        iconFallback
+        renderFallback
       )}
       <span className={`text-xs font-bold ${color}`}>{displayVal}</span>
     </div>
