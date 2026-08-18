@@ -266,7 +266,7 @@ export default function WeaponsTable({
         {
           id: 'total_mora', header: 'Mora', accessorFn: row => row.costs?.total_mora || 0,
           meta: { filterType: 'number', thClassName: "text-right px-2 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-right border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.total_mora || 0} icon="🪙" color="text-[#C8A96E]" align="right" nameKey="Mora" category="Currency" />
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.total_mora || 0} icon="🪙" color="text-blue-400" align="right" nameKey="Mora" category="Currency" />
         }
       ]
     },
@@ -313,7 +313,7 @@ export default function WeaponsTable({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['2_star_ascension_material'] || 0} icon="🛡️" color="text-[#9CA3AF]" nameKey={resolvedMats?.ascensionFamily?.tiers?.['2_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['2_star_ascension_material'] || 0} icon="🛡️" color="text-green-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['2_star']?.name} category="Weapon Ascension Material" />;
           }
         }
       ]
@@ -351,7 +351,7 @@ export default function WeaponsTable({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['2_star_enhancement_material'] || 0} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.eliteFamily?.tiers?.['2_star']?.name} category="Elite Enhancement Material" />;
+            return <MatQuantity val={row.original.costs?.['2_star_enhancement_material'] || 0} icon="⚔️" color="text-green-400" nameKey={resolvedMats?.eliteFamily?.tiers?.['2_star']?.name} category="Elite Enhancement Material" />;
           }
         }
       ]
@@ -369,7 +369,7 @@ export default function WeaponsTable({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#A78BFA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['3_star_enemy_material'] || 0} icon="💧" color="text-[#A78BFA]" nameKey={resolvedMats?.commonFamily?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.costs?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.commonFamily?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
@@ -379,7 +379,7 @@ export default function WeaponsTable({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['2_star_enemy_material'] || 0} icon="💧" color="text-[#60A5FA]" nameKey={resolvedMats?.commonFamily?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.costs?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.commonFamily?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
