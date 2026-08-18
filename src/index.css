@@ -14,7 +14,10 @@ body {
   @apply font-sans;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
 }
 
@@ -61,6 +64,10 @@ button, input, select, textarea {
 /* ──────────────────────────────────────────────
    Base Resets & Body
 ─────────────────────────────────────────────── */
+* {
+  font-weight: normal !important;
+}
+
 *,
 *::before,
 *::after {
@@ -140,7 +147,8 @@ body {
 
 .genshin-btn {
   background: linear-gradient(135deg, var(--color-primary), #0284c7);
-  color: #0f172a; /* Dark navy text for sharp contrast against the bright blue */
+  color: #0f172a;
+  /* Dark navy text for sharp contrast against the bright blue */
   font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 12px;
@@ -900,16 +908,33 @@ body {
 }
 
 @keyframes swipeInNext {
-  0% { opacity: 0; transform: translateX(30px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
+
 @keyframes swipeInPrev {
-  0% { opacity: 0; transform: translateX(-30px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
+
 .animate-swipe-next {
   animation: swipeInNext 0.25s ease-out forwards;
 }
+
 .animate-swipe-prev {
   animation: swipeInPrev 0.25s ease-out forwards;
 }
