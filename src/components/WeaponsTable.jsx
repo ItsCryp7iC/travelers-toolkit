@@ -16,6 +16,16 @@ import { resolveWeaponMaterials } from '../utils/dataManager';
 import { formatNumber, toggleMilestoneAscension, isMilestone } from '../utils/calculator';
 import { universalFilterFn, UnifiedHeaderMenu } from './Table/UnifiedHeaderMenu';
 
+
+const getRarityColorClass = (rarity) => {
+  const r = Number(rarity) || rarity;
+  if (r === 5 || r === '5*' || r === '★★★★★') return 'text-amber-400 font-semibold';
+  if (r === 4 || r === '4*' || r === '★★★★') return 'text-purple-400 font-semibold';
+  if (r === 3 || r === '3*' || r === '★★★') return 'text-blue-400';
+  if (r === 2 || r === '2*' || r === '★★') return 'text-green-400';
+  return 'text-gray-400';
+};
+
 const isAscended = (level, ascension) => {
   if (level === 20 && ascension >= 1) return true;
   if (level === 40 && ascension >= 2) return true;
@@ -135,7 +145,7 @@ export default function WeaponsTable({
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="font-bold text-sm text-[var(--text)] truncate">{formatName(wp.weaponName)}</span>
+                  <span className={`font-bold text-sm truncate ${getRarityColorClass(wp.data?.rarity)}`}>{formatName(wp.weaponName)}</span>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity)}</span>
                   </div>
@@ -182,7 +192,7 @@ export default function WeaponsTable({
             return (
               <div className="flex items-center gap-2 overflow-hidden">
                 <GenshinImage src={getCharacterAvatar(assignedTo)} alt={assignedTo} className="w-6 h-6 rounded-full object-cover shrink-0 border border-gray-700" fallback={<span className="text-xs text-[var(--muted)]">{getInitials(assignedTo)}</span>} />
-                <span className="text-xs text-[var(--text)] truncate" style={{ color: elCfg ? elCfg.color : 'inherit' }}>{assignedTo}</span>
+                <span className={`text-xs truncate ${getRarityColorClass(assignedChar?.rarity)}`}>{assignedTo}</span>
               </div>
             );
           }
@@ -245,27 +255,27 @@ export default function WeaponsTable({
       columns: [
         {
           id: 'mystic_ore', header: 'Mystic Ore', accessorFn: row => row.costs?.mystic_ore || 0,
-          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-[#F472B6]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.mystic_ore || 0} icon="🔮" color="text-[#F472B6]" nameKey="Mystic Enhancement Ore" category="Experience" />
+          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.mystic_ore || 0} icon="🔮" color="text-blue-400" nameKey="Mystic Enhancement Ore" category="Experience" />
         },
         {
           id: 'fine_ore', header: 'Fine Ore', accessorFn: row => row.costs?.fine_ore || 0,
-          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.fine_ore || 0} icon="🔮" color="text-[#60A5FA]" nameKey="Fine Enhancement Ore" category="Experience" />
+          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.fine_ore || 0} icon="🔮" color="text-green-400" nameKey="Fine Enhancement Ore" category="Experience" />
         },
         {
           id: 'normal_ore', header: 'Normal Ore', accessorFn: row => row.costs?.normal_ore || 0,
-          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-[#9CA3AF]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.normal_ore || 0} icon="🔮" color="text-[#9CA3AF]" nameKey="Enhancement Ore" category="Experience" />
+          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-gray-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.normal_ore || 0} icon="🔮" color="text-gray-400" nameKey="Enhancement Ore" category="Experience" />
         },
         {
           id: 'wasted_exp', header: 'Wasted EXP', accessorFn: row => row.costs?.wasted_exp || 0,
-          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-orange-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.wasted_exp || 0} icon="🗑️" color="text-orange-400" />
+          meta: { filterType: 'number', thClassName: "text-gray-400 px-2 py-2 font-semibold text-gray-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.wasted_exp || 0} icon="🗑️" color="text-gray-400" />
         },
         {
           id: 'total_mora', header: 'Mora', accessorFn: row => row.costs?.total_mora || 0,
-          meta: { filterType: 'number', thClassName: "text-right px-2 py-2 font-semibold text-[#C8A96E] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-right border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'number', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-right border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => <MatQuantity val={row.original.costs?.total_mora || 0} icon="🪙" color="text-blue-400" align="right" nameKey="Mora" category="Currency" />
         }
       ]
@@ -274,43 +284,43 @@ export default function WeaponsTable({
     {
       id: 'Ascension',
       header: 'Weapon Ascension Material',
-      meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]" },
+      meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-blue-400 border-r border-[var(--border)]" },
       columns: [
         {
           id: 'asc_5', header: 'Asc 5★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['5_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['5_star_ascension_material'] || 0) - (rowB.original.costs?.['5_star_ascension_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#FBBF24]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-amber-400 px-2 py-2 font-semibold text-amber-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['5_star_ascension_material'] || 0} icon="🛡️" color="text-[#FBBF24]" nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['5_star_ascension_material'] || 0} icon="🛡️" color="text-amber-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} category="Weapon Ascension Material" />;
           }
         },
         {
           id: 'asc_4', header: 'Asc 4★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['4_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['4_star_ascension_material'] || 0) - (rowB.original.costs?.['4_star_ascension_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#A78BFA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-purple-400 px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['4_star_ascension_material'] || 0} icon="🛡️" color="text-[#A78BFA]" nameKey={resolvedMats?.ascensionFamily?.tiers?.['4_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['4_star_ascension_material'] || 0} icon="🛡️" color="text-purple-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['4_star']?.name} category="Weapon Ascension Material" />;
           }
         },
         {
           id: 'asc_3', header: 'Asc 3★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['3_star_ascension_material'] || 0) - (rowB.original.costs?.['3_star_ascension_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['3_star_ascension_material'] || 0} icon="🛡️" color="text-[#60A5FA]" nameKey={resolvedMats?.ascensionFamily?.tiers?.['3_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['3_star_ascension_material'] || 0} icon="🛡️" color="text-blue-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['3_star']?.name} category="Weapon Ascension Material" />;
           }
         },
         {
           id: 'asc_2', header: 'Asc 2★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['2_star_ascension_material'] || 0) - (rowB.original.costs?.['2_star_ascension_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-green-400 px-2 py-2 font-semibold text-green-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['2_star_ascension_material'] || 0} icon="🛡️" color="text-green-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['2_star']?.name} category="Weapon Ascension Material" />;
@@ -328,27 +338,27 @@ export default function WeaponsTable({
           id: 'elite_4', header: 'Elite 4★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.eliteFamily?.tiers?.['4_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['4_star_enhancement_material'] || 0) - (rowB.original.costs?.['4_star_enhancement_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#A78BFA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-purple-400 px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['4_star_enhancement_material'] || 0} icon="⚔️" color="text-[#A78BFA]" nameKey={resolvedMats?.eliteFamily?.tiers?.['4_star']?.name} category="Elite Enhancement Material" />;
+            return <MatQuantity val={row.original.costs?.['4_star_enhancement_material'] || 0} icon="⚔️" color="text-purple-400" nameKey={resolvedMats?.eliteFamily?.tiers?.['4_star']?.name} category="Elite Enhancement Material" />;
           }
         },
         {
           id: 'elite_3', header: 'Elite 3★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.eliteFamily?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['3_star_enhancement_material'] || 0) - (rowB.original.costs?.['3_star_enhancement_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['3_star_enhancement_material'] || 0} icon="⚔️" color="text-[#60A5FA]" nameKey={resolvedMats?.eliteFamily?.tiers?.['3_star']?.name} category="Elite Enhancement Material" />;
+            return <MatQuantity val={row.original.costs?.['3_star_enhancement_material'] || 0} icon="⚔️" color="text-blue-400" nameKey={resolvedMats?.eliteFamily?.tiers?.['3_star']?.name} category="Elite Enhancement Material" />;
           }
         },
         {
           id: 'elite_2', header: 'Elite 2★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.eliteFamily?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['2_star_enhancement_material'] || 0) - (rowB.original.costs?.['2_star_enhancement_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-green-400 px-2 py-2 font-semibold text-green-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['2_star_enhancement_material'] || 0} icon="⚔️" color="text-green-400" nameKey={resolvedMats?.eliteFamily?.tiers?.['2_star']?.name} category="Elite Enhancement Material" />;
@@ -366,7 +376,7 @@ export default function WeaponsTable({
           id: 'mob_3', header: 'Enh 3★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.commonFamily?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['3_star_enemy_material'] || 0) - (rowB.original.costs?.['3_star_enemy_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#A78BFA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.commonFamily?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
@@ -376,7 +386,7 @@ export default function WeaponsTable({
           id: 'mob_2', header: 'Enh 2★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.commonFamily?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['2_star_enemy_material'] || 0) - (rowB.original.costs?.['2_star_enemy_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-green-400 px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.commonFamily?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
@@ -386,10 +396,10 @@ export default function WeaponsTable({
           id: 'mob_1', header: 'Enh 1★',
           accessorFn: row => resolveWeaponMaterials(row.data)?.commonFamily?.tiers?.['1_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['1_star_enemy_material'] || 0) - (rowB.original.costs?.['1_star_enemy_material'] || 0),
-          meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#9CA3AF] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          meta: { filterType: 'text', thClassName: "text-gray-400 px-2 py-2 font-semibold text-gray-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['1_star_enemy_material'] || 0} icon="💧" color="text-[#9CA3AF]" nameKey={resolvedMats?.commonFamily?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.costs?.['1_star_enemy_material'] || 0} icon="💧" color="text-gray-400" nameKey={resolvedMats?.commonFamily?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
           }
         }
       ]
