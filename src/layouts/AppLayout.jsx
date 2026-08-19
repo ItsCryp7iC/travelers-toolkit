@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { uploadBackupToDrive } from '../utils/driveSync'
+import { useGoogleLogin } from '@react-oauth/google'
 
 const navItems = [
  { to: '/', label: 'Dashboard', icon: '🏠', id: 'nav-dashboard' },
@@ -52,6 +53,26 @@ export default function AppLayout() {
  const autoBackupEnabled = useStore((s) => s.autoBackupEnabled)
  const googleAccessToken = useStore((s) => s.googleAccessToken)
  const tokenExpiry = useStore((s) => s.tokenExpiry)
+ const googleUser = useStore((s) => s.googleUser)
+ const setGoogleSession = useStore((s) => s.setGoogleSession)
+ const clearGoogleSession = useStore((s) => s.clearGoogleSession)
+
+ const [dropdownOpen, setDropdownOpen] = useState(false)
+
+ const login = useGoogleLogin({
+   onSuccess: async (tokenResponse) => {
+     try {
+       const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + tokenResponse.access_token, {
+         headers: { Authorization: `Bearer ${tokenResponse.access_token}`, Accept: 'application/json' }
+       });
+       const userInfo = await userInfoRes.json();
+       setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in, userInfo);
+     } catch (err) {
+       setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
+     }
+   },
+   scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+ });
 
  useEffect(() => {
  if (autoBackupEnabled) {
@@ -285,19 +306,46 @@ export default function AppLayout() {
  </div>
  </div>
 
- {/* Avatar */}
- <div
- id="user-avatar"
- className="w-9 h-9 rounded-full flex items-center justify-center text-sm cursor-pointer transition-all hover:scale-105 flex-shrink-0"
- style={{
- background: 'linear-gradient(135deg, #C8A96E, #7A5C2E)',
- color: '#0D0F1A',
- }}
- title="Traveler"
- >
- T
- </div>
- </header>
+        {/* Avatar & Dropdown */}
+        <div className="relative">
+          {!googleUser ? (
+            <div
+              id="user-avatar-logged-out"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-sm cursor-pointer transition-all hover:scale-105 flex-shrink-0 bg-gray-600 text-white"
+              title="Sign In with Google"
+              onClick={() => login()}
+            >
+              ?
+            </div>
+          ) : (
+            <div
+              id="user-avatar-logged-in"
+              className="w-9 h-9 rounded-full cursor-pointer transition-all hover:scale-105 flex-shrink-0 border-2 border-[var(--border)] overflow-hidden"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              <img src={googleUser.picture} alt="Profile" className="w-full h-full object-cover" />
+            </div>
+          )}
+
+          {dropdownOpen && googleUser && (
+            <div className="absolute right-0 mt-2 w-48 bg-[var(--elevated)] border border-[var(--border)] rounded-md shadow-lg py-1 z-50">
+              <div className="px-4 py-2 border-b border-[var(--border)]">
+                <p className="text-sm font-semibold text-[var(--text)] truncate">{googleUser.name}</p>
+                <p className="text-xs text-[var(--muted)] truncate">{googleUser.email}</p>
+              </div>
+              <button
+                className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors"
+                onClick={() => {
+                  clearGoogleSession();
+                  setDropdownOpen(false);
+                }}
+              >
+                Sign Out / Disconnect
+              </button>
+            </div>
+          )}
+        </div>
+      </header>
 
  {/* Page Content */}
  <main className="flex-1 p-6 md:p-8" id="page-content">

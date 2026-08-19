@@ -27,7 +27,13 @@ const useStore = create(
       setAutoBackupEnabled: (val) => set({ autoBackupEnabled: val }),
       googleAccessToken: null,
       tokenExpiry: null,
-      setGoogleSession: (token, expiresIn) => set({ googleAccessToken: token, tokenExpiry: Date.now() + expiresIn * 1000 }),
+      googleUser: null,
+      setGoogleSession: (token, expiresIn, user = null) => set((state) => ({ 
+        googleAccessToken: token, 
+        tokenExpiry: Date.now() + expiresIn * 1000,
+        googleUser: user || state.googleUser 
+      })),
+      clearGoogleSession: () => set({ googleAccessToken: null, tokenExpiry: null, googleUser: null }),
       importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [] }),
       importGoodData: (goodPayload) => set((state) => {
         // 1. Materials
@@ -129,6 +135,7 @@ const useStore = create(
           autoBackupEnabled: false,
           googleAccessToken: null,
           tokenExpiry: null,
+          googleUser: null,
         })
       },
 
@@ -516,6 +523,7 @@ const useStore = create(
         autoBackupEnabled: state.autoBackupEnabled,
         googleAccessToken: state.googleAccessToken,
         tokenExpiry: state.tokenExpiry,
+        googleUser: state.googleUser,
       }),
     }
   )

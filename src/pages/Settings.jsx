@@ -45,19 +45,35 @@ export default function Settings() {
 
   const loginForSync = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
+      try {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + tokenResponse.access_token, {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}`, Accept: 'application/json' }
+        });
+        const userInfo = await userInfoRes.json();
+        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in, userInfo);
+      } catch (err) {
+        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
+      }
       await handleCloudBackup(tokenResponse.access_token);
       await fetchBackups(tokenResponse.access_token);
     },
-    scope: 'https://www.googleapis.com/auth/drive.appdata',
+    scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
   });
 
   const loginForRestore = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
+      try {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + tokenResponse.access_token, {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}`, Accept: 'application/json' }
+        });
+        const userInfo = await userInfoRes.json();
+        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in, userInfo);
+      } catch (err) {
+        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
+      }
       await fetchBackups(tokenResponse.access_token);
     },
-    scope: 'https://www.googleapis.com/auth/drive.appdata',
+    scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
   });
 
   const fetchBackups = async (token) => {
