@@ -1,25 +1,41 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import charactersData from '../data/characters.json'
-import weaponsData    from '../data/weapons.json'
+import weaponsData from '../data/weapons.json'
+import normalBossData from '../data/normal_boss.json'
+import localSpecialtyData from '../data/local_specialty.json'
+import weeklyBossData from '../data/weekly_boss.json'
+import talentData from '../data/talent_materials.json'
+import commonEnemyData from '../data/common_enemy.json'
+import eliteEnemyData from '../data/elite_enemy.json'
 import { toPascalCase } from '../utils/assetHelper'
 
 // ─── Static option lists ──────────────────────────────────────────────────────
 
-const ELEMENTS     = ['Anemo','Geo','Electro','Dendro','Hydro','Pyro','Cryo']
-const WEAPON_TYPES = ['Sword','Claymore','Polearm','Bow','Catalyst']
-const REGIONS      = ['Mondstadt','Liyue','Inazuma','Sumeru','Fontaine','Natlan','Snezhnaya','Khaenri\'ah','Unknown']
+const ELEMENTS = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo']
+const WEAPON_TYPES = ['Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
+const REGIONS = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Snezhnaya', 'Khaenri\'ah', 'Unknown']
+
+const getGemFamily = (element) => {
+  const gems = {
+    Anemo: "VayudaTurquoise", Cryo: "ShivadaJade",
+    Electro: "VajradaAmethyst", Geo: "PrithivaTopaz",
+    Hydro: "VarunadaLazulite", Pyro: "AgnidusAgate",
+    Dendro: "NagadusEmerald"
+  }
+  return gems[element] || ""
+}
 
 const MATERIAL_CATEGORIES = [
-  { value: 'Local Specialty',               label: '🌿 Local Specialty' },
-  { value: 'Normal Boss Material',          label: '🐲 Normal Boss' },
-  { value: 'Weekly Boss Material',          label: '👑 Weekly Boss' },
-  { value: 'Talent Material',               label: '📚 Talent Book' },
-  { value: 'Common Enhancement Material',   label: '💧 Common Drop' },
-  { value: 'Elite Enhancement Material',    label: '🏵️ Elite Drop' },
-  { value: 'Weapon Ascension Material',     label: '🔮 Weapon Ascension' },
-  { value: 'Character Ascension Gem',       label: '💎 Ascension Gem' },
-  { value: 'Ores',                          label: '⛏️ Ores / EXP' },
-  { value: 'Currency',                      label: '🪙 Currency' },
+  { value: 'Local Specialty', label: '🌿 Local Specialty' },
+  { value: 'Normal Boss Material', label: '🐲 Normal Boss' },
+  { value: 'Weekly Boss Material', label: '👑 Weekly Boss' },
+  { value: 'Talent Material', label: '📚 Talent Book' },
+  { value: 'Common Enhancement Material', label: '💧 Common Drop' },
+  { value: 'Elite Enhancement Material', label: '🏵️ Elite Drop' },
+  { value: 'Weapon Ascension Material', label: '🔮 Weapon Ascension' },
+  { value: 'Character Ascension Gem', label: '💎 Ascension Gem' },
+  { value: 'Ores', label: '⛏️ Ores / EXP' },
+  { value: 'Currency', label: '🪙 Currency' },
 ]
 
 // ─── Derive suggestion lists from existing data ────────────────────────────────
@@ -29,17 +45,18 @@ function unique(arr) { return [...new Set(arr.filter(Boolean).sort())] }
 function useDataSuggestions() {
   return useMemo(() => {
     const chars = charactersData
-    const wpns  = weaponsData
+    const wpns = weaponsData
 
-    const worldBoss     = unique(chars.map(c => c.materials?.world_boss).filter(v => v !== 'nan'))
-    const weeklyBoss    = unique(chars.map(c => c.materials?.weekly_boss).filter(v => v !== 'nan'))
-    const talentBook    = unique(chars.map(c => c.materials?.talent_book).filter(v => v !== 'nan'))
-    const mobMaterial   = unique(chars.map(c => c.materials?.mob_material))
-    const localSpec     = unique(chars.map(c => c.materials?.local_specialty))
-    const gemstone      = unique(chars.map(c => c.materials?.gemstone))
-    const ascensionMat  = unique(wpns.map(w => w.materials?.ascension_mat))
-    const eliteMat      = unique(wpns.map(w => w.materials?.elite_mat))
-    const mobMat        = unique(wpns.map(w => w.materials?.mob_mat))
+    const worldBoss = unique(chars.map(c => c.materials?.world_boss_material_id).filter(v => v !== 'nan'))
+    const weeklyBoss = unique(chars.map(c => c.materials?.weekly_boss_material_id).filter(v => v !== 'nan'))
+    const talentBook = unique(chars.map(c => c.materials?.talent_material_family_id).filter(v => v !== 'nan'))
+    const mobMaterial = unique(chars.map(c => c.materials?.enemy_material_family_id))
+    const localSpec = unique(chars.map(c => c.materials?.local_specialty_id))
+    const gemstone = unique(chars.map(c => c.materials?.gem_family_id))
+
+    const ascensionMat = unique(wpns.map(w => w.materials?.ascension_material_family_id))
+    const eliteMat = unique(wpns.map(w => w.materials?.enhancement_material_family_id))
+    const mobMat = unique(wpns.map(w => w.materials?.enemy_material_family_id))
 
     return { worldBoss, weeklyBoss, talentBook, mobMaterial, localSpec, gemstone, ascensionMat, eliteMat, mobMat }
   }, [])
@@ -49,29 +66,33 @@ function useDataSuggestions() {
 
 const DEFAULT_CHAR = {
   name: '', rarity: 5, weapon_type: 'Sword', element: 'Pyro',
-  materials: { world_boss:'', weekly_boss:'', talent_book:'', mob_material:'', local_specialty:'', gemstone:'' },
+  materials: {
+    world_boss_material_id: '', weekly_boss_material_id: '',
+    talent_material_family_id: '', enemy_material_family_id: '',
+    local_specialty_id: '', gem_family_id: 'AgnidusAgate'
+  },
 }
 const DEFAULT_WEAPON = {
   name: '', rarity: 5, type: 'Sword',
-  materials: { ascension_mat:'', elite_mat:'', mob_mat:'' },
+  materials: { ascension_material_family_id: '', enhancement_material_family_id: '', enemy_material_family_id: '' },
 }
-// Material sub-categories and their default states
+
 const MAT_SUB_CATEGORIES = [
-  { key: 'normal_boss',   label: '🐲 Normal Boss' },
-  { key: 'local_spec',    label: '🌿 Local Specialty' },
-  { key: 'weekly_boss',   label: '👑 Weekly Boss' },
-  { key: 'talent',        label: '📚 Talent Material' },
-  { key: 'common_drop',   label: '💧 Common Enemy Drop' },
-  { key: 'elite_drop',    label: '🏵️ Elite Enemy Drop' },
+  { key: 'normal_boss', label: '🐲 Normal Boss' },
+  { key: 'local_spec', label: '🌿 Local Specialty' },
+  { key: 'weekly_boss', label: '👑 Weekly Boss' },
+  { key: 'talent', label: '📚 Talent Material' },
+  { key: 'common_drop', label: '💧 Common Enemy Drop' },
+  { key: 'elite_drop', label: '🏵️ Elite Enemy Drop' },
 ]
 
 const MAT_DEFAULTS = {
-  normal_boss:  { name: '', region: 'Unknown' },
-  local_spec:   { name: '', region: 'Unknown' },
-  weekly_boss:  { bossName: '', mat1: '', mat2: '', mat3: '' },
-  talent:       { series: '' },
-  common_drop:  { groupName: '', star1: '', star2: '', star3: '' },
-  elite_drop:   { groupName: '', star2: '', star3: '', star4: '' },
+  normal_boss: { name: '', bossName: '', region: 'Unknown' },
+  local_spec: { name: '', region: 'Unknown' },
+  weekly_boss: { bossName: '', region: 'Unknown', mat1: '', mat2: '', mat3: '' },
+  talent: { series: '', region: 'Unknown', domain: '', days: '' },
+  common_drop: { groupName: '', star1: '', star2: '', star3: '' },
+  elite_drop: { groupName: '', star2: '', star3: '', star4: '' },
 }
 
 // ─── Shared UI primitives ─────────────────────────────────────────────────────
@@ -119,7 +140,6 @@ function SelectInput({ value, onChange, options }) {
   )
 }
 
-/** Combobox = free-text input + datalist suggestions */
 function ComboInput({ value, onChange, placeholder, listId, suggestions }) {
   return (
     <>
@@ -139,8 +159,6 @@ function ComboInput({ value, onChange, placeholder, listId, suggestions }) {
   )
 }
 
-// ─── Materials section header ─────────────────────────────────────────────────
-
 function MatHeader() {
   return (
     <div className="border-t border-[var(--border)] pt-4 mt-1 mb-2">
@@ -155,22 +173,25 @@ function MatHeader() {
 // ─── Character Form ────────────────────────────────────────────────────────────
 
 function CharacterForm({ data, onChange, suggestions }) {
-  const set    = (k, v) => onChange({ ...data, [k]: v })
+  const set = (k, v) => onChange({ ...data, [k]: v })
   const setMat = (k, v) => onChange({ ...data, materials: { ...data.materials, [k]: v } })
 
   return (
     <div>
-      <Field label="Character Name" hint="PascalCase — no spaces">
-        <TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. HuTao" />
+      <Field label="Character Name" hint="Spaces allowed; ID generates automatically">
+        <TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. Hu Tao" />
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
         <Field label="Rarity">
           <SelectInput value={data.rarity} onChange={v => set('rarity', Number(v))}
-            options={[5,4].map(r => ({ value: r, label: `${r}★` }))} />
+            options={[5, 4].map(r => ({ value: r, label: `${r}★` }))} />
         </Field>
         <Field label="Element">
-          <SelectInput value={data.element} onChange={v => set('element', v)} options={ELEMENTS} />
+          <SelectInput value={data.element} onChange={v => {
+            set('element', v);
+            setMat('gem_family_id', getGemFamily(v));
+          }} options={ELEMENTS} />
         </Field>
       </div>
 
@@ -180,29 +201,29 @@ function CharacterForm({ data, onChange, suggestions }) {
 
       <MatHeader />
 
-      <Field label="World Boss Drop" hint="world_boss">
-        <ComboInput value={data.materials.world_boss} onChange={v => setMat('world_boss', v)}
+      <Field label="World Boss Drop" hint="world_boss_material_id">
+        <ComboInput value={data.materials.world_boss_material_id} onChange={v => setMat('world_boss_material_id', v)}
           placeholder="e.g. BasaltiladeOfDragon" listId="dl-world-boss" suggestions={suggestions.worldBoss} />
       </Field>
-      <Field label="Weekly Boss Drop" hint="weekly_boss">
-        <ComboInput value={data.materials.weekly_boss} onChange={v => setMat('weekly_boss', v)}
+      <Field label="Weekly Boss Drop" hint="weekly_boss_material_id">
+        <ComboInput value={data.materials.weekly_boss_material_id} onChange={v => setMat('weekly_boss_material_id', v)}
           placeholder="e.g. DvalinsSigh" listId="dl-weekly-boss" suggestions={suggestions.weeklyBoss} />
       </Field>
-      <Field label="Talent Book Series" hint="talent_book">
-        <ComboInput value={data.materials.talent_book} onChange={v => setMat('talent_book', v)}
+      <Field label="Talent Book Series" hint="talent_material_family_id">
+        <ComboInput value={data.materials.talent_material_family_id} onChange={v => setMat('talent_material_family_id', v)}
           placeholder="e.g. Diligence" listId="dl-talent-book" suggestions={suggestions.talentBook} />
       </Field>
-      <Field label="Common Mob Drop Base" hint="mob_material">
-        <ComboInput value={data.materials.mob_material} onChange={v => setMat('mob_material', v)}
+      <Field label="Common Mob Drop Base" hint="enemy_material_family_id">
+        <ComboInput value={data.materials.enemy_material_family_id} onChange={v => setMat('enemy_material_family_id', v)}
           placeholder="e.g. Samachurl" listId="dl-mob-material" suggestions={suggestions.mobMaterial} />
       </Field>
-      <Field label="Local Specialty" hint="local_specialty">
-        <ComboInput value={data.materials.local_specialty} onChange={v => setMat('local_specialty', v)}
+      <Field label="Local Specialty" hint="local_specialty_id">
+        <ComboInput value={data.materials.local_specialty_id} onChange={v => setMat('local_specialty_id', v)}
           placeholder="e.g. CrimsonLotusBloom" listId="dl-local-spec" suggestions={suggestions.localSpec} />
       </Field>
-      <Field label="Gemstone Base Name" hint="gemstone">
-        <ComboInput value={data.materials.gemstone} onChange={v => setMat('gemstone', v)}
-          placeholder="e.g. AgateSapphire" listId="dl-gemstone" suggestions={suggestions.gemstone} />
+      <Field label="Gemstone Base Name" hint="gem_family_id">
+        <ComboInput value={data.materials.gem_family_id} onChange={v => setMat('gem_family_id', v)}
+          placeholder="e.g. AgnidusAgate" listId="dl-gemstone" suggestions={suggestions.gemstone} />
       </Field>
     </div>
   )
@@ -211,19 +232,19 @@ function CharacterForm({ data, onChange, suggestions }) {
 // ─── Weapon Form ───────────────────────────────────────────────────────────────
 
 function WeaponForm({ data, onChange, suggestions }) {
-  const set    = (k, v) => onChange({ ...data, [k]: v })
+  const set = (k, v) => onChange({ ...data, [k]: v })
   const setMat = (k, v) => onChange({ ...data, materials: { ...data.materials, [k]: v } })
 
   return (
     <div>
-      <Field label="Weapon Name" hint="PascalCase — no spaces">
-        <TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. StaffOfHoma" />
+      <Field label="Weapon Name" hint="Spaces allowed; ID generates automatically">
+        <TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. Staff of Homa" />
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
         <Field label="Rarity">
           <SelectInput value={data.rarity} onChange={v => set('rarity', Number(v))}
-            options={[5,4,3,2,1].map(r => ({ value: r, label: `${r}★` }))} />
+            options={[5, 4, 3, 2, 1].map(r => ({ value: r, label: `${r}★` }))} />
         </Field>
         <Field label="Weapon Type" hint="type">
           <SelectInput value={data.type} onChange={v => set('type', v)} options={WEAPON_TYPES} />
@@ -232,17 +253,17 @@ function WeaponForm({ data, onChange, suggestions }) {
 
       <MatHeader />
 
-      <Field label="Weapon Ascension Mat" hint="ascension_mat">
-        <ComboInput value={data.materials.ascension_mat} onChange={v => setMat('ascension_mat', v)}
-          placeholder="e.g. BolideSeries" listId="dl-asc-mat" suggestions={suggestions.ascensionMat} />
+      <Field label="Weapon Ascension Mat" hint="ascension_material_family_id">
+        <ComboInput value={data.materials.ascension_material_family_id} onChange={v => setMat('ascension_material_family_id', v)}
+          placeholder="e.g. DecarabianTiles" listId="dl-asc-mat" suggestions={suggestions.ascensionMat} />
       </Field>
-      <Field label="Elite Mob Drop Base" hint="elite_mat">
-        <ComboInput value={data.materials.elite_mat} onChange={v => setMat('elite_mat', v)}
-          placeholder="e.g. Mist" listId="dl-elite-mat" suggestions={suggestions.eliteMat} />
+      <Field label="Elite Mob Drop Base" hint="enhancement_material_family_id">
+        <ComboInput value={data.materials.enhancement_material_family_id} onChange={v => setMat('enhancement_material_family_id', v)}
+          placeholder="e.g. Mitachurl" listId="dl-elite-mat" suggestions={suggestions.eliteMat} />
       </Field>
-      <Field label="Common Mob Drop Base" hint="mob_mat">
-        <ComboInput value={data.materials.mob_mat} onChange={v => setMat('mob_mat', v)}
-          placeholder="e.g. Hilichurl" listId="dl-mob-mat" suggestions={suggestions.mobMat} />
+      <Field label="Common Mob Drop Base" hint="enemy_material_family_id">
+        <ComboInput value={data.materials.enemy_material_family_id} onChange={v => setMat('enemy_material_family_id', v)}
+          placeholder="e.g. Slime" listId="dl-mob-mat" suggestions={suggestions.mobMat} />
       </Field>
     </div>
   )
@@ -250,19 +271,13 @@ function WeaponForm({ data, onChange, suggestions }) {
 
 // ─── Material Form ─────────────────────────────────────────────────────────────
 
-// Sub-tab pill strip shared by the material section
 function SubTabBar({ active, onChange }) {
   return (
     <div className="flex flex-wrap gap-1.5 mb-5 p-1 rounded-xl bg-[var(--elevated)] border border-[var(--border)]">
       {MAT_SUB_CATEGORIES.map(({ key, label }) => (
-        <button
-          key={key}
-          onClick={() => onChange(key)}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 whitespace-nowrap ${
-            active === key
-              ? 'bg-[var(--gold)] text-[var(--bg)] shadow-sm'
-              : 'text-[var(--muted)] hover:text-[var(--text)]'
-          }`}
+        <button key={key} onClick={() => onChange(key)}
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 whitespace-nowrap ${active === key ? 'bg-[var(--gold)] text-[var(--bg)] shadow-sm' : 'text-[var(--muted)] hover:text-[var(--text)]'
+            }`}
         >
           {label}
         </button>
@@ -273,8 +288,6 @@ function SubTabBar({ active, onChange }) {
 
 function MaterialForm({ subCat, data, onSubCatChange, onChange }) {
   const set = (k, v) => onChange({ ...data, [k]: v })
-
-  // Shared region picker used by simple forms
   const RegionField = () => (
     <Field label="Region" hint="optional">
       <SelectInput value={data.region ?? 'Unknown'} onChange={v => set('region', v)} options={REGIONS} />
@@ -283,173 +296,231 @@ function MaterialForm({ subCat, data, onSubCatChange, onChange }) {
 
   return (
     <div>
-      {/* Info banner */}
       <div className="mb-4 p-3 rounded-xl border border-[#60A5FA]/20 bg-[#60A5FA]/5">
         <p className="text-xs text-[#60A5FA]/80 leading-relaxed">
           <span className="font-semibold">ℹ️ New Material</span> — document a new material so you can
-          reference it in the Character / Weapon forms. The output records the names as PascalCase keys.
+          reference it in the Character / Weapon forms.
         </p>
       </div>
 
       <SubTabBar active={subCat} onChange={onSubCatChange} />
 
-      {/* ── Normal Boss ── */}
       {subCat === 'normal_boss' && (
         <>
-          <Field label="Material Name" hint="PascalCase">
-            <TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. BasaltiladeOfDragonStorm" />
-          </Field>
+          <Field label="Material Name" hint="Spaces allowed"><TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. Basaltilade" /></Field>
+          <Field label="Boss Name" hint="Spaces allowed"><TextInput value={data.bossName} onChange={v => set('bossName', v)} placeholder="e.g. Anemo Hypostasis" /></Field>
           <RegionField />
         </>
       )}
-
-      {/* ── Local Specialty ── */}
       {subCat === 'local_spec' && (
-        <>
-          <Field label="Material Name" hint="PascalCase">
-            <TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. CrimsonLotusBloom" />
-          </Field>
-          <RegionField />
-        </>
+        <><Field label="Material Name" hint="Spaces allowed"><TextInput value={data.name} onChange={v => set('name', v)} placeholder="e.g. Crimson Lotus Bloom" /></Field><RegionField /></>
       )}
-
-      {/* ── Weekly Boss ── */}
       {subCat === 'weekly_boss' && (
         <>
-          <Field label="Weekly Boss Name" hint="e.g. Dvalin">
-            <TextInput value={data.bossName} onChange={v => set('bossName', v)} placeholder="e.g. Dvalin" />
-          </Field>
-          <Field label="Weekly Boss Mat 1" hint="1st drop (PascalCase)">
-            <TextInput value={data.mat1} onChange={v => set('mat1', v)} placeholder="e.g. DvalinsSigh" />
-          </Field>
-          <Field label="Weekly Boss Mat 2" hint="2nd drop (PascalCase)">
-            <TextInput value={data.mat2} onChange={v => set('mat2', v)} placeholder="e.g. DvalinsClaw" />
-          </Field>
-          <Field label="Weekly Boss Mat 3" hint="3rd drop (PascalCase)">
-            <TextInput value={data.mat3} onChange={v => set('mat3', v)} placeholder="e.g. ShardOfFoulLegacy" />
-          </Field>
+          <Field label="Weekly Boss Name" hint="e.g. Stormterror Dvalin"><TextInput value={data.bossName} onChange={v => set('bossName', v)} placeholder="e.g. Stormterror Dvalin" /></Field>
+          <RegionField />
+          <Field label="Weekly Boss Mat 1" hint="1st drop (Spaces allowed)"><TextInput value={data.mat1} onChange={v => set('mat1', v)} placeholder="e.g. Dvalin's Sigh" /></Field>
+          <Field label="Weekly Boss Mat 2" hint="2nd drop (Spaces allowed)"><TextInput value={data.mat2} onChange={v => set('mat2', v)} placeholder="e.g. Dvalin's Claw" /></Field>
+          <Field label="Weekly Boss Mat 3" hint="3rd drop (Spaces allowed)"><TextInput value={data.mat3} onChange={v => set('mat3', v)} placeholder="e.g. Shard of a Foul Legacy" /></Field>
         </>
       )}
-
-      {/* ── Talent Material ── */}
       {subCat === 'talent' && (
         <>
-          <Field label="Talent Book Series Name" hint="base key used in character data">
-            <TextInput value={data.series} onChange={v => set('series', v)} placeholder="e.g. Diligence" />
-          </Field>
+          <Field label="Talent Book Series Name" hint="e.g. Freedom"><TextInput value={data.series} onChange={v => set('series', v)} placeholder="e.g. Freedom" /></Field>
+          <RegionField />
+          <Field label="Domain Name" hint="Spaces allowed"><TextInput value={data.domain} onChange={v => set('domain', v)} placeholder="e.g. Forsaken Rift" /></Field>
+          <Field label="Drop Days" hint="Comma-separated numbers (e.g. 1, 4)"><TextInput value={data.days} onChange={v => set('days', v)} placeholder="e.g. 1, 4" /></Field>
         </>
       )}
-
-      {/* ── Common Enemy Drop ── */}
       {subCat === 'common_drop' && (
         <>
-          <Field label="Enemy Group Name" hint="base key used in character mob_material">
-            <TextInput value={data.groupName} onChange={v => set('groupName', v)} placeholder="e.g. Samachurl" />
-          </Field>
-          <Field label="1★ Drop" hint="weakest tier">
-            <TextInput value={data.star1} onChange={v => set('star1', v)} placeholder="e.g. DiviningScroll" />
-          </Field>
-          <Field label="2★ Drop">
-            <TextInput value={data.star2} onChange={v => set('star2', v)} placeholder="e.g. SealedScroll" />
-          </Field>
-          <Field label="3★ Drop" hint="strongest tier">
-            <TextInput value={data.star3} onChange={v => set('star3', v)} placeholder="e.g. ForbiddenCurseScroll" />
-          </Field>
+          <Field label="Enemy Group Name" hint="e.g. Slime"><TextInput value={data.groupName} onChange={v => set('groupName', v)} placeholder="e.g. Slime" /></Field>
+          <Field label="1★ Drop" hint="weakest tier"><TextInput value={data.star1} onChange={v => set('star1', v)} placeholder="e.g. Slime Condensate" /></Field>
+          <Field label="2★ Drop"><TextInput value={data.star2} onChange={v => set('star2', v)} placeholder="e.g. Slime Secretions" /></Field>
+          <Field label="3★ Drop" hint="strongest tier"><TextInput value={data.star3} onChange={v => set('star3', v)} placeholder="e.g. Slime Concentrate" /></Field>
         </>
       )}
-
-      {/* ── Elite Enemy Drop ── */}
       {subCat === 'elite_drop' && (
         <>
-          <Field label="Elite Enemy Group Name" hint="base key used in weapon elite_mat">
-            <TextInput value={data.groupName} onChange={v => set('groupName', v)} placeholder="e.g. RuinGuard" />
-          </Field>
-          <Field label="2★ Drop" hint="weakest elite tier">
-            <TextInput value={data.star2} onChange={v => set('star2', v)} placeholder="e.g. RunedHead" />
-          </Field>
-          <Field label="3★ Drop">
-            <TextInput value={data.star3} onChange={v => set('star3', v)} placeholder="e.g. InspectorFlip" />
-          </Field>
-          <Field label="4★ Drop" hint="strongest elite tier">
-            <TextInput value={data.star4} onChange={v => set('star4', v)} placeholder="e.g. InspectorProbe" />
-          </Field>
+          <Field label="Elite Enemy Group Name" hint="e.g. Mitachurl"><TextInput value={data.groupName} onChange={v => set('groupName', v)} placeholder="e.g. Mitachurl" /></Field>
+          <Field label="2★ Drop" hint="weakest elite tier"><TextInput value={data.star2} onChange={v => set('star2', v)} placeholder="e.g. Heavy Horn" /></Field>
+          <Field label="3★ Drop"><TextInput value={data.star3} onChange={v => set('star3', v)} placeholder="e.g. Black Bronze Horn" /></Field>
+          <Field label="4★ Drop" hint="strongest elite tier"><TextInput value={data.star4} onChange={v => set('star4', v)} placeholder="e.g. Black Crystal Horn" /></Field>
         </>
       )}
     </div>
   )
 }
 
-// Build a typed JSON output object based on the active sub-category
-function buildMatJson(subCat, data) {
+const floatAdd = (base, increment) => parseFloat((base + increment).toFixed(3));
+
+const getLastSortOrder = (dataArray, defaultOrder, tierKey) => {
+  if (!dataArray || dataArray.length === 0) return defaultOrder;
+  const lastItem = dataArray[dataArray.length - 1];
+  if (tierKey && lastItem.tiers && lastItem.tiers[tierKey]) {
+    return lastItem.tiers[tierKey].sortOrder;
+  }
+  return lastItem.sortOrder || defaultOrder;
+}
+
+function buildMatJson(subCat, data, queueLength) {
   switch (subCat) {
-    case 'normal_boss':
-    case 'local_spec':
-      return { name: toPascalCase(data.name || ''), region: data.region || 'Unknown' }
-    case 'weekly_boss':
+    case 'normal_boss': {
+      const baseOrder = getLastSortOrder(normalBossData, 2.000);
       return {
-        boss: toPascalCase(data.bossName || ''),
-        drops: [
-          toPascalCase(data.mat1 || ''),
-          toPascalCase(data.mat2 || ''),
-          toPascalCase(data.mat3 || ''),
-        ],
-      }
-    case 'talent': {
-      const s = data.series || ''
-      return {
-        series:       toPascalCase(s),
-        teaching:     s ? toPascalCase("Teachings of " + s) : '',
-        guide:        s ? toPascalCase("Guide to " + s) : '',
-        philosophies: s ? toPascalCase("Philosophies of " + s) : '',
+        id: toPascalCase(data.name || ''),
+        name: data.name,
+        type: 'normal_boss',
+        boss_name: data.bossName || '',
+        region: data.region || 'Unknown',
+        sortOrder: floatAdd(baseOrder, (queueLength + 1) * 0.001)
       }
     }
-    case 'common_drop':
+    case 'local_spec': {
+      const baseOrder = getLastSortOrder(localSpecialtyData, 8.000);
       return {
-        group: toPascalCase(data.groupName || ''),
-        star1: toPascalCase(data.star1 || ''),
-        star2: toPascalCase(data.star2 || ''),
-        star3: toPascalCase(data.star3 || ''),
+        id: toPascalCase(data.name || ''),
+        name: data.name,
+        region: data.region || 'Unknown',
+        sortOrder: floatAdd(baseOrder, (queueLength + 1) * 0.001)
       }
-    case 'elite_drop':
+    }
+    case 'weekly_boss': {
+      const baseOrder = getLastSortOrder(weeklyBossData, 3.000);
+      const startOrder = floatAdd(baseOrder, queueLength * 0.003);
+      return [
+        {
+          id: toPascalCase(data.mat1 || ''),
+          name: data.mat1,
+          type: 'weekly_boss',
+          boss_name: data.bossName || '',
+          region: data.region || 'Unknown',
+          sortOrder: floatAdd(startOrder, 0.001)
+        },
+        {
+          id: toPascalCase(data.mat2 || ''),
+          name: data.mat2,
+          type: 'weekly_boss',
+          boss_name: data.bossName || '',
+          region: data.region || 'Unknown',
+          sortOrder: floatAdd(startOrder, 0.002)
+        },
+        {
+          id: toPascalCase(data.mat3 || ''),
+          name: data.mat3,
+          type: 'weekly_boss',
+          boss_name: data.bossName || '',
+          region: data.region || 'Unknown',
+          sortOrder: floatAdd(startOrder, 0.003)
+        }
+      ]
+    }
+    case 'talent': {
+      const baseOrder = getLastSortOrder(talentData, 4.000, '2_star');
+      const startOrder = floatAdd(baseOrder, queueLength * 0.003);
+      const s = data.series || '';
       return {
-        group: toPascalCase(data.groupName || ''),
-        star2: toPascalCase(data.star2 || ''),
-        star3: toPascalCase(data.star3 || ''),
-        star4: toPascalCase(data.star4 || ''),
+        id: toPascalCase(s),
+        name: s,
+        region: data.region || 'Unknown',
+        tiers: {
+          "4_star": {
+            id: toPascalCase("Philosophies of " + s),
+            name: "Philosophies of " + s,
+            sortOrder: floatAdd(startOrder, 0.001)
+          },
+          "3_star": {
+            id: toPascalCase("Guide to " + s),
+            name: "Guide to " + s,
+            sortOrder: floatAdd(startOrder, 0.002)
+          },
+          "2_star": {
+            id: toPascalCase("Teachings of " + s),
+            name: "Teachings of " + s,
+            sortOrder: floatAdd(startOrder, 0.003)
+          }
+        },
+        domain: data.domain || '',
+        days: (data.days || '').split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d))
       }
+    }
+    case 'common_drop': {
+      const baseOrder = getLastSortOrder(commonEnemyData, 5.000, '1_star');
+      const startOrder = floatAdd(baseOrder, queueLength * 0.003);
+      return {
+        id: toPascalCase(data.groupName || ''),
+        name: data.groupName,
+        type: 'common_enemy',
+        tiers: {
+          "3_star": {
+            id: toPascalCase(data.star3 || ''),
+            name: data.star3,
+            sortOrder: floatAdd(startOrder, 0.001)
+          },
+          "2_star": {
+            id: toPascalCase(data.star2 || ''),
+            name: data.star2,
+            sortOrder: floatAdd(startOrder, 0.002)
+          },
+          "1_star": {
+            id: toPascalCase(data.star1 || ''),
+            name: data.star1,
+            sortOrder: floatAdd(startOrder, 0.003)
+          }
+        }
+      }
+    }
+    case 'elite_drop': {
+      const baseOrder = getLastSortOrder(eliteEnemyData, 6.000, '2_star');
+      const startOrder = floatAdd(baseOrder, queueLength * 0.003);
+      return {
+        id: toPascalCase(data.groupName || ''),
+        name: data.groupName,
+        type: 'elite_enemy',
+        tiers: {
+          "4_star": {
+            id: toPascalCase(data.star4 || ''),
+            name: data.star4,
+            sortOrder: floatAdd(startOrder, 0.001)
+          },
+          "3_star": {
+            id: toPascalCase(data.star3 || ''),
+            name: data.star3,
+            sortOrder: floatAdd(startOrder, 0.002)
+          },
+          "2_star": {
+            id: toPascalCase(data.star2 || ''),
+            name: data.star2,
+            sortOrder: floatAdd(startOrder, 0.003)
+          }
+        }
+      }
+    }
     default:
       return data
   }
 }
 
-// ─── Syntax Highlighter (no deps) ────────────────────────────────────────────
+// ─── Syntax Highlighter & Output ─────────────────────────────────────────────
 
 function syntaxHighlight(line) {
-  const esc = line
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
+  const esc = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   return esc
-    .replace(/: "([^"]*)"(,?)$/g, (_,v,c) => `: <span style="color:#A3E635">"${v}"</span>${c}`)
-    .replace(/"([^"]+)":/g,       (_,k)    => `<span style="color:#60A5FA">"${k}"</span>:`)
-    .replace(/: (\d+)(,?)$/g,     (_,n,c)  => `: <span style="color:#F59E0B">${n}</span>${c}`)
-    .replace(/([{}[\]])/g,                    `<span style="color:#9CA3AF">$1</span>`)
+    .replace(/: "([^"]*)"(,?)$/g, (_, v, c) => `: <span style="color:#A3E635">"${v}"</span>${c}`)
+    .replace(/"([^"]+)":/g, (_, k) => `<span style="color:#60A5FA">"${k}"</span>:`)
+    .replace(/: (\d+)(,?)$/g, (_, n, c) => `: <span style="color:#F59E0B">${n}</span>${c}`)
+    .replace(/([{}[\]])/g, `<span style="color:#9CA3AF">$1</span>`)
 }
-
-// ─── Output Panel ─────────────────────────────────────────────────────────────
 
 function OutputPanel({ json, mode }) {
   const [copied, setCopied] = useState(false)
-
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(json).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setCopied(true); setTimeout(() => setCopied(false), 2000)
     })
   }, [json])
 
   const lines = json.split('\n')
-
   const tipText = mode === 'material'
     ? 'Use this name exactly when filling in Character / Weapon material fields above.'
     : (
@@ -457,7 +528,7 @@ function OutputPanel({ json, mode }) {
         Paste inside the root <code className="text-[#A78BFA] bg-[var(--bg)] px-1 rounded text-xs">[ … ]</code> array in{' '}
         <code className="text-[#60A5FA] bg-[var(--bg)] px-1 rounded text-xs">
           {mode === 'character' ? 'src/data/characters.json' : 'src/data/weapons.json'}
-        </code>. Remember the trailing comma on the previous entry.
+        </code>. Remember the trailing comma.
       </>
     )
 
@@ -467,108 +538,143 @@ function OutputPanel({ json, mode }) {
         <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase flex items-center gap-2">
           <span>📄</span> Generated JSON
         </p>
-        <button
-          onClick={handleCopy}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${
-            copied
-              ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
-              : 'bg-[var(--elevated)] border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--gold)]'
-          }`}
-        >
+        <button onClick={handleCopy} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${copied ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-[var(--elevated)] border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--gold)]'}`}>
           {copied ? '✓ Copied!' : '⧉ Copy'}
         </button>
       </div>
-
       <div className="flex-1 rounded-2xl overflow-hidden border border-[var(--border)] bg-[var(--bg)]" style={{ minHeight: '360px' }}>
         <div className="flex h-full overflow-auto custom-scrollbar">
-          {/* Line numbers */}
           <div className="shrink-0 select-none border-r border-[var(--border)] bg-[var(--bg)] px-3 py-4 text-right">
-            {lines.map((_, i) => (
-              <div key={i} className="text-xs text-[var(--muted)] opacity-40 leading-5">{i + 1}</div>
-            ))}
+            {lines.map((_, i) => <div key={i} className="text-xs text-[var(--muted)] opacity-40 leading-5">{i + 1}</div>)}
           </div>
-          {/* Code */}
           <pre className="flex-1 p-4 text-xs leading-5 overflow-x-auto">
-            <code>
-              {lines.map((line, i) => (
-                <div key={i} dangerouslySetInnerHTML={{ __html: syntaxHighlight(line) || '&nbsp;' }} />
-              ))}
-            </code>
+            <code>{lines.map((line, i) => <div key={i} dangerouslySetInnerHTML={{ __html: syntaxHighlight(line) || '&nbsp;' }} />)}</code>
           </pre>
         </div>
       </div>
-
       <div className="mt-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--elevated)]">
-        <p className="text-xs text-[var(--muted)] leading-relaxed">
-          <span className="text-[var(--gold)] font-semibold">📌 Tip:</span> {tipText}
-        </p>
+        <p className="text-xs text-[var(--muted)] leading-relaxed"><span className="text-[var(--gold)] font-semibold">📌 Tip:</span> {tipText}</p>
       </div>
     </div>
   )
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Formatting Wrappers ──────────────────────────────────────────────────────
 
-function formatCharData(d) {
+function formatCharData(d, releaseOrderNum) {
   return {
-    ...d,
-    name: toPascalCase(d.name || ''),
+    id: toPascalCase(d.name || ''),
+    name: d.name,
+    rarity: "★".repeat(d.rarity),
+    weapon_type: d.weapon_type,
+    element: d.element,
     materials: {
-      world_boss: toPascalCase(d.materials.world_boss || ''),
-      weekly_boss: toPascalCase(d.materials.weekly_boss || ''),
-      talent_book: toPascalCase(d.materials.talent_book || ''),
-      mob_material: toPascalCase(d.materials.mob_material || ''),
-      local_specialty: toPascalCase(d.materials.local_specialty || ''),
-      gemstone: toPascalCase(d.materials.gemstone || ''),
-    }
+      world_boss_material_id: toPascalCase(d.materials.world_boss_material_id || ''),
+      weekly_boss_material_id: toPascalCase(d.materials.weekly_boss_material_id || ''),
+      talent_material_family_id: toPascalCase(d.materials.talent_material_family_id || ''),
+      enemy_material_family_id: toPascalCase(d.materials.enemy_material_family_id || ''),
+      local_specialty_id: toPascalCase(d.materials.local_specialty_id || ''),
+      gem_family_id: toPascalCase(d.materials.gem_family_id || ''),
+    },
+    release_order: releaseOrderNum
   }
 }
 
-function formatWeaponData(d) {
+function formatWeaponData(d, releaseOrderNum) {
   return {
-    ...d,
-    name: toPascalCase(d.name || ''),
+    id: toPascalCase(d.name || ''),
+    name: d.name,
+    rarity: "★".repeat(d.rarity),
+    type: d.type,
     materials: {
-      ascension_mat: toPascalCase(d.materials.ascension_mat || ''),
-      elite_mat: toPascalCase(d.materials.elite_mat || ''),
-      mob_mat: toPascalCase(d.materials.mob_mat || ''),
-    }
+      ascension_material_family_id: toPascalCase(d.materials.ascension_material_family_id || ''),
+      enhancement_material_family_id: toPascalCase(d.materials.enhancement_material_family_id || ''),
+      enemy_material_family_id: toPascalCase(d.materials.enemy_material_family_id || ''),
+    },
+    release_order: releaseOrderNum
   }
 }
 
 export default function DevBuilder() {
-  const [mode,       setMode]       = useState('material')
-  const [charData,   setCharData]   = useState(DEFAULT_CHAR)
+  const [mode, setMode] = useState('material')
+
+  // Active Form States
+  const [charData, setCharData] = useState(DEFAULT_CHAR)
   const [weaponData, setWeaponData] = useState(DEFAULT_WEAPON)
-  const [matSubCat,  setMatSubCat]  = useState('normal_boss')
-  const [matData,    setMatData]    = useState(MAT_DEFAULTS.normal_boss)
+  const [matSubCat, setMatSubCat] = useState('normal_boss')
+  const [matData, setMatData] = useState(MAT_DEFAULTS.normal_boss)
+
+  // Accumulator Queues for bulk entry
+  const [charQueue, setCharQueue] = useState([])
+  const [weaponQueue, setWeaponQueue] = useState([])
+  const [matQueue, setMatQueue] = useState([])
 
   const suggestions = useDataSuggestions()
 
-  // When sub-category changes, reset matData to matching defaults
   const handleSubCatChange = (key) => {
     setMatSubCat(key)
     setMatData(MAT_DEFAULTS[key])
+    setMatQueue([]) // Clear queue when switching subcategories
   }
 
-  const activeOutputData =
-    mode === 'character' ? formatCharData(charData)
-    : mode === 'weapon'  ? formatWeaponData(weaponData)
-    : buildMatJson(matSubCat, matData)
+  // Calculate accurate baseline Release Order from JSON
+  const baseReleaseOrder = charactersData.length > 0
+    ? (charactersData[charactersData.length - 1].release_order || charactersData.length)
+    : 0;
+
+  const baseWeaponReleaseOrder = weaponsData.length > 0
+    ? (weaponsData[weaponsData.length - 1].release_order || 1.000)
+    : 1.000;
+
+  // Determine what to render based on queue length
+  let activeOutputData;
+  if (mode === 'character') {
+    const currentFormatted = formatCharData(charData, baseReleaseOrder + charQueue.length + 1);
+    activeOutputData = charQueue.length > 0 ? [...charQueue, currentFormatted] : currentFormatted;
+  } else if (mode === 'weapon') {
+    const currentFormatted = formatWeaponData(weaponData, floatAdd(baseWeaponReleaseOrder, (weaponQueue.length + 1) * 0.001));
+    activeOutputData = weaponQueue.length > 0 ? [...weaponQueue, currentFormatted] : currentFormatted;
+  } else {
+    const currentFormatted = buildMatJson(matSubCat, matData, matQueue.length);
+    const flatQueue = matQueue.flat();
+    const flatCurrent = Array.isArray(currentFormatted) ? currentFormatted : [currentFormatted];
+    activeOutputData = matQueue.length > 0 ? [...flatQueue, ...flatCurrent] : (Array.isArray(currentFormatted) ? currentFormatted : currentFormatted);
+  }
 
   const outputJson = JSON.stringify(activeOutputData, null, 2)
 
+  const handleAddAnother = () => {
+    if (mode === 'character') {
+      const currentFormatted = formatCharData(charData, baseReleaseOrder + charQueue.length + 1);
+      setCharQueue([...charQueue, currentFormatted]);
+      setCharData(DEFAULT_CHAR);
+    } else if (mode === 'weapon') {
+      const currentFormatted = formatWeaponData(weaponData, floatAdd(baseWeaponReleaseOrder, (weaponQueue.length + 1) * 0.001));
+      setWeaponQueue([...weaponQueue, currentFormatted]);
+      setWeaponData(DEFAULT_WEAPON);
+    } else {
+      setMatQueue([...matQueue, buildMatJson(matSubCat, matData, matQueue.length)]);
+      setMatData(MAT_DEFAULTS[matSubCat]);
+    }
+  }
+
   const handleReset = () => {
-    if (mode === 'character') setCharData(DEFAULT_CHAR)
-    else if (mode === 'weapon') setWeaponData(DEFAULT_WEAPON)
-    else setMatData(MAT_DEFAULTS[matSubCat])
+    if (mode === 'character') {
+      setCharData(DEFAULT_CHAR);
+      setCharQueue([]);
+    } else if (mode === 'weapon') {
+      setWeaponData(DEFAULT_WEAPON);
+      setWeaponQueue([]);
+    } else {
+      setMatData(MAT_DEFAULTS[matSubCat]);
+      setMatQueue([]);
+    }
   }
 
   const formLabel = mode === 'character' ? 'Character' : mode === 'weapon' ? 'Weapon' : 'Material'
 
   return (
     <div className="animate-fade-in">
-      {/* ── Page Header ── */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
@@ -584,62 +690,43 @@ export default function DevBuilder() {
         </span>
       </div>
 
-      {/* ── Mode Toggle ── */}
       <div className="flex gap-1 p-1 rounded-xl border border-[var(--border)] bg-[var(--surface)] mb-6 w-fit">
         {[
-          { key: 'material',  label: '💎  New Material' },
+          { key: 'material', label: '💎  New Material' },
           { key: 'character', label: '⚔️  New Character' },
-          { key: 'weapon',    label: '🗡️  New Weapon' },
+          { key: 'weapon', label: '🗡️  New Weapon' },
         ].map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setMode(key)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
-              mode === key
-                ? 'bg-[var(--gold)] text-[var(--bg)] shadow-md'
-                : 'text-[var(--muted)] hover:text-[var(--text)]'
-            }`}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${mode === key ? 'bg-[var(--gold)] text-[var(--bg)] shadow-md' : 'text-[var(--muted)] hover:text-[var(--text)]'
+              }`}
           >
             {label}
           </button>
         ))}
       </div>
 
-      {/* ── Two-column layout ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-
-        {/* Form panel */}
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
           <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-5 flex items-center gap-2">
             <span>✏️</span> {formLabel} Details
           </p>
 
-          {mode === 'character' && (
-            <CharacterForm data={charData} onChange={setCharData} suggestions={suggestions} />
-          )}
-          {mode === 'weapon' && (
-            <WeaponForm data={weaponData} onChange={setWeaponData} suggestions={suggestions} />
-          )}
-          {mode === 'material' && (
-            <MaterialForm
-              subCat={matSubCat}
-              data={matData}
-              onSubCatChange={handleSubCatChange}
-              onChange={setMatData}
-            />
-          )}
+          {mode === 'character' && <CharacterForm data={charData} onChange={setCharData} suggestions={suggestions} />}
+          {mode === 'weapon' && <WeaponForm data={weaponData} onChange={setWeaponData} suggestions={suggestions} />}
+          {mode === 'material' && <MaterialForm subCat={matSubCat} data={matData} onSubCatChange={handleSubCatChange} onChange={setMatData} />}
 
-          <div className="border-t border-[var(--border)] pt-4 mt-4">
-            <button
-              onClick={handleReset}
-              className="w-full py-2 rounded-xl text-xs font-semibold border border-[var(--border)] text-[var(--muted)] hover:border-red-500/40 hover:text-red-400 transition-all"
-            >
+          <div className="border-t border-[var(--border)] pt-4 mt-4 flex gap-3">
+            <button onClick={handleAddAnother} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 transition-all">
+              ➕ Add Another
+            </button>
+            <button onClick={handleReset} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--border)] text-[var(--muted)] hover:border-red-500/40 hover:text-red-400 transition-all">
               ↺ Reset Form
             </button>
           </div>
         </div>
 
-        {/* Output panel */}
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
           <OutputPanel json={outputJson} mode={mode} />
         </div>
