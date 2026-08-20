@@ -526,7 +526,7 @@ function OutputPanel({ content, isScript, onToggleView, stagedUpdates }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'update_db.js';
+    a.download = 'update_db.cjs';
     a.click();
     URL.revokeObjectURL(url);
   }, [content, isScript]);
@@ -572,7 +572,7 @@ function OutputPanel({ content, isScript, onToggleView, stagedUpdates }) {
           </button>
           {isScript && (
             <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--elevated)] text-[var(--muted)] hover:border-[#A78BFA] hover:text-[#A78BFA] transition-all duration-200">
-              ⬇ Download update.js
+              ⬇ Download update_db.cjs
             </button>
           )}
           <button onClick={handleCopy} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${copied ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-[var(--elevated)] border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--gold)]'}`}>
