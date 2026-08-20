@@ -7,6 +7,7 @@ import weeklyBossData from '../data/weekly_boss.json'
 import talentData from '../data/talent_materials.json'
 import commonEnemyData from '../data/common_enemy.json'
 import eliteEnemyData from '../data/elite_enemy.json'
+import weaponAscensionData from '../data/weapon_ascension.json'
 import { toPascalCase } from '../utils/assetHelper'
 
 // ─── Static option lists ──────────────────────────────────────────────────────
@@ -45,18 +46,17 @@ function unique(arr) { return [...new Set(arr.filter(Boolean).sort())] }
 function useDataSuggestions() {
   return useMemo(() => {
     const chars = charactersData
-    const wpns = weaponsData
 
-    const worldBoss = unique(chars.map(c => c.materials?.world_boss_material_id).filter(v => v !== 'nan'))
-    const weeklyBoss = unique(chars.map(c => c.materials?.weekly_boss_material_id).filter(v => v !== 'nan'))
-    const talentBook = unique(chars.map(c => c.materials?.talent_material_family_id).filter(v => v !== 'nan'))
-    const mobMaterial = unique(chars.map(c => c.materials?.enemy_material_family_id))
-    const localSpec = unique(chars.map(c => c.materials?.local_specialty_id))
+    const worldBoss = unique(normalBossData.map(m => m.name))
+    const weeklyBoss = unique(weeklyBossData.map(m => m.name))
+    const talentBook = unique(talentData.map(m => m.name))
+    const mobMaterial = unique(commonEnemyData.map(m => m.name))
+    const localSpec = unique(localSpecialtyData.map(m => m.name))
     const gemstone = unique(chars.map(c => c.materials?.gem_family_id))
 
-    const ascensionMat = unique(wpns.map(w => w.materials?.ascension_material_family_id))
-    const eliteMat = unique(wpns.map(w => w.materials?.enhancement_material_family_id))
-    const mobMat = unique(wpns.map(w => w.materials?.enemy_material_family_id))
+    const ascensionMat = unique(weaponAscensionData.map(m => m.name))
+    const eliteMat = unique(eliteEnemyData.map(m => m.name))
+    const mobMat = mobMaterial
 
     return { worldBoss, weeklyBoss, talentBook, mobMaterial, localSpec, gemstone, ascensionMat, eliteMat, mobMat }
   }, [])
@@ -90,7 +90,7 @@ const MAT_DEFAULTS = {
   normal_boss: { name: '', bossName: '', region: REGIONS[REGIONS.length - 1] },
   local_spec: { name: '', region: REGIONS[REGIONS.length - 1] },
   weekly_boss: { bossName: '', region: REGIONS[REGIONS.length - 1], mat1: '', mat2: '', mat3: '' },
-  talent: { series: '', region: REGIONS[REGIONS.length - 1], domain: '', days: '' },
+  talent: { series1: '', series2: '', series3: '', domain: '', region: REGIONS[REGIONS.length - 1] },
   common_drop: { groupName: '', star1: '', star2: '', star3: '' },
   elite_drop: { groupName: '', star2: '', star3: '', star4: '' },
 }
@@ -326,10 +326,11 @@ function MaterialForm({ subCat, data, onSubCatChange, onChange }) {
       )}
       {subCat === 'talent' && (
         <>
-          <Field label="Talent Book Series Name" hint="e.g. Freedom"><TextInput value={data.series} onChange={v => set('series', v)} placeholder="e.g. Freedom" /></Field>
+          <Field label="Talent Series Name 1 (Mon/Thu)" hint="e.g. Freedom"><TextInput value={data.series1} onChange={v => set('series1', v)} placeholder="e.g. Freedom" /></Field>
+          <Field label="Talent Series Name 2 (Tue/Fri)" hint="e.g. Resistance"><TextInput value={data.series2} onChange={v => set('series2', v)} placeholder="e.g. Resistance" /></Field>
+          <Field label="Talent Series Name 3 (Wed/Sat)" hint="e.g. Ballad"><TextInput value={data.series3} onChange={v => set('series3', v)} placeholder="e.g. Ballad" /></Field>
           <RegionField />
           <Field label="Domain Name" hint="Spaces allowed"><TextInput value={data.domain} onChange={v => set('domain', v)} placeholder="e.g. Forsaken Rift" /></Field>
-          <Field label="Drop Days" hint="Comma-separated numbers (e.g. 1, 4)"><TextInput value={data.days} onChange={v => set('days', v)} placeholder="e.g. 1, 4" /></Field>
         </>
       )}
       {subCat === 'common_drop' && (
@@ -387,7 +388,7 @@ function buildMatJson(subCat, data, queueLength) {
     }
     case 'weekly_boss': {
       const baseOrder = getLastSortOrder(weeklyBossData, 3.000);
-      const startOrder = floatAdd(baseOrder, queueLength * 0.003);
+      const startOrder = floatAdd(baseOrder, queueLength * 0.001);
       return [
         {
           id: toPascalCase(data.mat1 || ''),
@@ -418,8 +419,8 @@ function buildMatJson(subCat, data, queueLength) {
     case 'talent': {
       const baseOrder = getLastSortOrder(talentData, 4.000, '2_star');
       const startOrder = floatAdd(baseOrder, queueLength * 0.003);
-      const s = data.series || '';
-      return {
+      
+      const createSeries = (s, days, offset) => ({
         id: toPascalCase(s),
         name: s,
         region: data.region || 'Unknown',
@@ -427,22 +428,28 @@ function buildMatJson(subCat, data, queueLength) {
           "4_star": {
             id: toPascalCase("Philosophies of " + s),
             name: "Philosophies of " + s,
-            sortOrder: floatAdd(startOrder, 0.001)
+            sortOrder: floatAdd(startOrder, offset + 0.001)
           },
           "3_star": {
             id: toPascalCase("Guide to " + s),
             name: "Guide to " + s,
-            sortOrder: floatAdd(startOrder, 0.002)
+            sortOrder: floatAdd(startOrder, offset + 0.002)
           },
           "2_star": {
             id: toPascalCase("Teachings of " + s),
             name: "Teachings of " + s,
-            sortOrder: floatAdd(startOrder, 0.003)
+            sortOrder: floatAdd(startOrder, offset + 0.003)
           }
         },
         domain: data.domain || '',
-        days: (data.days || '').split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d))
-      }
+        days
+      });
+
+      return [
+        createSeries(data.series1 || '', [1, 4], 0.000),
+        createSeries(data.series2 || '', [2, 5], 0.003),
+        createSeries(data.series3 || '', [3, 6], 0.006)
+      ];
     }
     case 'common_drop': {
       const baseOrder = getLastSortOrder(commonEnemyData, 5.000, '1_star');
@@ -822,10 +829,12 @@ export default function DevBuilder() {
     const currentFormatted = formatWeaponData(weaponData, allWeapons);
     activeOutputData = weaponQueue.length > 0 ? [...weaponQueue, currentFormatted] : currentFormatted;
   } else {
-    const currentFormatted = buildMatJson(matSubCat, matData, matQueue.length);
-    const flatQueue = matQueue.flat();
-    const flatCurrent = Array.isArray(currentFormatted) ? currentFormatted : [currentFormatted];
-    activeOutputData = matQueue.length > 0 ? [...flatQueue, ...flatCurrent] : (Array.isArray(currentFormatted) ? currentFormatted : currentFormatted);
+    const generatedMat = buildMatJson(matSubCat, matData, matQueue.length);
+    if (matQueue.length > 0) {
+      activeOutputData = Array.isArray(generatedMat) ? [...matQueue, ...generatedMat] : [...matQueue, generatedMat];
+    } else {
+      activeOutputData = generatedMat;
+    }
   }
 
   const outputContent = outputView === 'script' ? generateNodeScript(stagedUpdates) : JSON.stringify(activeOutputData, null, 2)
@@ -853,7 +862,8 @@ export default function DevBuilder() {
       setWeaponQueue([...weaponQueue, currentFormatted]);
       setWeaponData(DEFAULT_WEAPON);
     } else {
-      setMatQueue([...matQueue, buildMatJson(matSubCat, matData, matQueue.length)]);
+      const generatedMat = buildMatJson(matSubCat, matData, matQueue.length);
+      setMatQueue(Array.isArray(generatedMat) ? [...matQueue, ...generatedMat] : [...matQueue, generatedMat]);
       setMatData(MAT_DEFAULTS[matSubCat]);
     }
   }
