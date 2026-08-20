@@ -12,7 +12,7 @@ import { toPascalCase } from '../utils/assetHelper'
 // ─── Static option lists ──────────────────────────────────────────────────────
 
 const ELEMENTS = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo']
-const WEAPON_TYPES = ['Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
+const WEAPON_TYPES = ['Sword', 'Claymore', 'Polearm', 'Catalyst', 'Bow']
 const REGIONS = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya']
 
 const getGemFamily = (element) => {
@@ -620,7 +620,29 @@ function formatCharData(d, releaseOrderNum) {
   }
 }
 
-function formatWeaponData(d, releaseOrderNum) {
+const WEAPON_TYPE_MAP = { Sword: 1, Claymore: 2, Polearm: 3, Catalyst: 4, Bow: 5 };
+
+function formatWeaponData(d, allWeapons) {
+  const typeBlock = WEAPON_TYPE_MAP[d.type] || 1;
+  const rarity = d.rarity || 5;
+
+  let maxSequence = 0;
+  for (const w of allWeapons) {
+    const wRarity = typeof w.rarity === 'string' ? w.rarity.length : w.rarity;
+    if (wRarity === rarity && w.type === d.type && w.release_order) {
+      const roStr = Number(w.release_order).toFixed(3);
+      const seqStr = roStr.slice(3);
+      const seqNum = parseInt(seqStr, 10);
+      if (!isNaN(seqNum) && seqNum > maxSequence) {
+        maxSequence = seqNum;
+      }
+    }
+  }
+
+  const nextSequence = maxSequence + 1;
+  const sequenceStr = String(nextSequence).padStart(2, '0');
+  const releaseOrderNum = parseFloat(`${rarity}.${typeBlock}${sequenceStr}`);
+
   return {
     id: toPascalCase(d.name || ''),
     name: d.name,
@@ -661,6 +683,18 @@ Object.keys(stagedData).forEach(filename => {
     const fileContent = fs.readFileSync(filePath, 'utf-8');
     const currentData = JSON.parse(fileContent);
     currentData.push(...stagedData[filename]);
+    
+    if (currentData.length > 0) {
+      const hasReleaseOrder = currentData.some(item => 'release_order' in item);
+      const hasSortOrder = currentData.some(item => 'sortOrder' in item);
+      
+      if (hasReleaseOrder) {
+        currentData.sort((a, b) => (parseFloat(a.release_order) || 99999) - (parseFloat(b.release_order) || 99999));
+      } else if (hasSortOrder) {
+        currentData.sort((a, b) => (parseFloat(a.sortOrder) || 99999) - (parseFloat(b.sortOrder) || 99999));
+      }
+    }
+
     fs.writeFileSync(filePath, JSON.stringify(currentData, null, 2));
     console.log(\`✅ Successfully updated \${filename}\`);
   } catch (err) {
@@ -696,6 +730,73 @@ export default function DevBuilder() {
 
   const suggestions = useDataSuggestions()
 
+  const validMaterialIds = useMemo(() => {
+    const ids = new Set([
+      ...suggestions.worldBoss,
+      ...suggestions.weeklyBoss,
+      ...suggestions.talentBook,
+      ...suggestions.mobMaterial,
+      ...suggestions.localSpec,
+      ...suggestions.gemstone,
+      ...suggestions.ascensionMat,
+      ...suggestions.eliteMat,
+      ...suggestions.mobMat
+    ].filter(Boolean));
+
+    const extractIds = (items) => {
+      items.forEach(item => {
+        if (item.id) ids.add(item.id);
+        if (item.tiers) {
+          Object.values(item.tiers).forEach(t => {
+            if (t.id) ids.add(t.id);
+          });
+        }
+      });
+    };
+
+    extractIds(normalBossData);
+    extractIds(localSpecialtyData);
+    extractIds(weeklyBossData);
+    extractIds(talentData);
+    extractIds(commonEnemyData);
+    extractIds(eliteEnemyData);
+
+    const flatMatQueue = matQueue.flat();
+    extractIds(flatMatQueue);
+
+    const stagedMats = [
+      ...stagedUpdates['normal_boss.json'],
+      ...stagedUpdates['local_specialty.json'],
+      ...stagedUpdates['weekly_boss.json'],
+      ...stagedUpdates['talent_materials.json'],
+      ...stagedUpdates['common_enemy.json'],
+      ...stagedUpdates['elite_enemy.json'],
+    ];
+    extractIds(stagedMats);
+
+    return ids;
+  }, [suggestions, matQueue, stagedUpdates]);
+
+  const getMissingMaterials = () => {
+    if (mode === 'material') return [];
+
+    const activeMaterials = mode === 'character'
+      ? Object.values(charData.materials)
+      : Object.values(weaponData.materials);
+
+    const missing = [];
+    for (const m of activeMaterials) {
+      if (!m || m.trim() === '') continue;
+      const pascal = toPascalCase(m.trim());
+      if (!validMaterialIds.has(pascal)) {
+        missing.push(pascal);
+      }
+    }
+    return missing;
+  };
+
+  const missingMaterials = getMissingMaterials();
+
   const handleSubCatChange = (key) => {
     setMatSubCat(key)
     setMatData(MAT_DEFAULTS[key])
@@ -717,7 +818,8 @@ export default function DevBuilder() {
     const currentFormatted = formatCharData(charData, baseReleaseOrder + charQueue.length + 1);
     activeOutputData = charQueue.length > 0 ? [...charQueue, currentFormatted] : currentFormatted;
   } else if (mode === 'weapon') {
-    const currentFormatted = formatWeaponData(weaponData, floatAdd(baseWeaponReleaseOrder, (weaponQueue.length + 1) * 0.001));
+    const allWeapons = [...weaponsData, ...weaponQueue, ...stagedUpdates['weapons.json']];
+    const currentFormatted = formatWeaponData(weaponData, allWeapons);
     activeOutputData = weaponQueue.length > 0 ? [...weaponQueue, currentFormatted] : currentFormatted;
   } else {
     const currentFormatted = buildMatJson(matSubCat, matData, matQueue.length);
@@ -731,12 +833,12 @@ export default function DevBuilder() {
   const handleStageUpdates = () => {
     const filename = FILE_MAP[mode === 'material' ? matSubCat : mode];
     const itemsToStage = Array.isArray(activeOutputData) ? activeOutputData : [activeOutputData];
-    
+
     setStagedUpdates(prev => ({
       ...prev,
       [filename]: [...prev[filename], ...itemsToStage]
     }));
-    
+
     handleReset();
   }
 
@@ -746,7 +848,8 @@ export default function DevBuilder() {
       setCharQueue([...charQueue, currentFormatted]);
       setCharData(DEFAULT_CHAR);
     } else if (mode === 'weapon') {
-      const currentFormatted = formatWeaponData(weaponData, floatAdd(baseWeaponReleaseOrder, (weaponQueue.length + 1) * 0.001));
+      const allWeapons = [...weaponsData, ...weaponQueue, ...stagedUpdates['weapons.json']];
+      const currentFormatted = formatWeaponData(weaponData, allWeapons);
       setWeaponQueue([...weaponQueue, currentFormatted]);
       setWeaponData(DEFAULT_WEAPON);
     } else {
@@ -814,12 +917,32 @@ export default function DevBuilder() {
           {mode === 'weapon' && <WeaponForm data={weaponData} onChange={setWeaponData} suggestions={suggestions} />}
           {mode === 'material' && <MaterialForm subCat={matSubCat} data={matData} onSubCatChange={handleSubCatChange} onChange={setMatData} />}
 
+          {missingMaterials.length > 0 && (
+            <div className="mt-4 p-3 rounded-xl border border-red-500/40 bg-red-500/10">
+              <p className="text-xs font-semibold text-red-400">
+                ⚠️ Dependency Error: Material ID "{missingMaterials[0]}" does not exist. Please stage it as a New Material first.
+              </p>
+            </div>
+          )}
+
           <div className="border-t border-[var(--border)] pt-4 mt-4 flex flex-col gap-3">
-            <button onClick={handleStageUpdates} className="w-full py-2.5 rounded-xl text-xs font-bold border border-[#60A5FA] bg-[#60A5FA]/10 text-[#60A5FA] hover:bg-[#60A5FA]/20 transition-all">
+            <button
+              onClick={handleStageUpdates}
+              disabled={missingMaterials.length > 0}
+              className={`w-full py-2.5 rounded-xl text-xs font-bold border transition-all ${missingMaterials.length > 0
+                ? 'border-gray-500/30 bg-gray-500/10 text-gray-500 cursor-not-allowed'
+                : 'border-[#60A5FA] bg-[#60A5FA]/10 text-[#60A5FA] hover:bg-[#60A5FA]/20'
+                }`}>
               📦 Stage Updates
             </button>
             <div className="flex gap-3">
-              <button onClick={handleAddAnother} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 transition-all">
+              <button
+                onClick={handleAddAnother}
+                disabled={missingMaterials.length > 0}
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold border transition-all ${missingMaterials.length > 0
+                  ? 'border-gray-500/30 bg-gray-500/10 text-gray-500 cursor-not-allowed'
+                  : 'border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20'
+                  }`}>
                 ➕ Add to Queue
               </button>
               <button onClick={handleReset} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--border)] text-[var(--muted)] hover:border-red-500/40 hover:text-red-400 transition-all">
