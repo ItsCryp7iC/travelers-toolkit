@@ -189,8 +189,14 @@ function CharacterForm({ data, onChange, suggestions }) {
         </Field>
         <Field label="Element">
           <SelectInput value={data.element} onChange={v => {
-            set('element', v);
-            setMat('gem_family_id', getGemFamily(v));
+            onChange({
+              ...data,
+              element: v,
+              materials: {
+                ...data.materials,
+                gem_family_id: getGemFamily(v)
+              }
+            });
           }} options={ELEMENTS} />
         </Field>
       </div>
