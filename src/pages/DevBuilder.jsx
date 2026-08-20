@@ -13,7 +13,7 @@ import { toPascalCase } from '../utils/assetHelper'
 
 const ELEMENTS = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo']
 const WEAPON_TYPES = ['Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
-const REGIONS = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Snezhnaya', 'Khaenri\'ah', 'Unknown']
+const REGIONS = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya']
 
 const getGemFamily = (element) => {
   const gems = {
@@ -87,10 +87,10 @@ const MAT_SUB_CATEGORIES = [
 ]
 
 const MAT_DEFAULTS = {
-  normal_boss: { name: '', bossName: '', region: 'Unknown' },
-  local_spec: { name: '', region: 'Unknown' },
-  weekly_boss: { bossName: '', region: 'Unknown', mat1: '', mat2: '', mat3: '' },
-  talent: { series: '', region: 'Unknown', domain: '', days: '' },
+  normal_boss: { name: '', bossName: '', region: REGIONS[REGIONS.length - 1] },
+  local_spec: { name: '', region: REGIONS[REGIONS.length - 1] },
+  weekly_boss: { bossName: '', region: REGIONS[REGIONS.length - 1], mat1: '', mat2: '', mat3: '' },
+  talent: { series: '', region: REGIONS[REGIONS.length - 1], domain: '', days: '' },
   common_drop: { groupName: '', star1: '', star2: '', star3: '' },
   elite_drop: { groupName: '', star2: '', star3: '', star4: '' },
 }
@@ -290,7 +290,7 @@ function MaterialForm({ subCat, data, onSubCatChange, onChange }) {
   const set = (k, v) => onChange({ ...data, [k]: v })
   const RegionField = () => (
     <Field label="Region" hint="optional">
-      <SelectInput value={data.region ?? 'Unknown'} onChange={v => set('region', v)} options={REGIONS} />
+      <SelectInput value={data.region ?? REGIONS[REGIONS.length - 1]} onChange={v => set('region', v)} options={REGIONS} />
     </Field>
   )
 
