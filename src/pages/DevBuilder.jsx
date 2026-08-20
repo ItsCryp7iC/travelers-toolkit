@@ -512,35 +512,73 @@ function syntaxHighlight(line) {
     .replace(/([{}[\]])/g, `<span style="color:#9CA3AF">$1</span>`)
 }
 
-function OutputPanel({ json, mode }) {
+function OutputPanel({ content, isScript, onToggleView, stagedUpdates }) {
   const [copied, setCopied] = useState(false)
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(json).then(() => {
+    navigator.clipboard.writeText(content).then(() => {
       setCopied(true); setTimeout(() => setCopied(false), 2000)
     })
-  }, [json])
+  }, [content])
 
-  const lines = json.split('\n')
-  const tipText = mode === 'material'
-    ? 'Use this name exactly when filling in Character / Weapon material fields above.'
-    : (
-      <>
-        Paste inside the root <code className="text-[#A78BFA] bg-[var(--bg)] px-1 rounded text-xs">[ … ]</code> array in{' '}
-        <code className="text-[#60A5FA] bg-[var(--bg)] px-1 rounded text-xs">
-          {mode === 'character' ? 'src/data/characters.json' : 'src/data/weapons.json'}
-        </code>. Remember the trailing comma.
-      </>
-    )
+  const handleDownload = useCallback(() => {
+    if (!isScript) return;
+    const blob = new Blob([content], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'update_db.js';
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [content, isScript]);
+
+  const lines = content.split('\n')
+
+  const getUniqueCount = (file, arr) => {
+    if (file === 'weekly_boss.json') {
+      const uniqueBosses = new Set(arr.map(obj => obj.boss_name));
+      return uniqueBosses.size;
+    }
+    return arr.length;
+  };
+
+  const totalItems = Object.entries(stagedUpdates || {}).reduce((acc, [file, arr]) => acc + getUniqueCount(file, arr), 0);
+  const LABELS = {
+    "characters.json": "Characters",
+    "weapons.json": "Weapons",
+    "normal_boss.json": "Normal Bosses",
+    "local_specialty.json": "Local Specialties",
+    "weekly_boss.json": "Weekly Bosses",
+    "talent_materials.json": "Talent Materials",
+    "common_enemy.json": "Common Enemies",
+    "elite_enemy.json": "Elite Enemies"
+  };
+  const tooltipLines = Object.entries(stagedUpdates || {})
+    .filter(([_, arr]) => arr.length > 0)
+    .map(([file, arr]) => `${getUniqueCount(file, arr)}x ${LABELS[file] || file}`);
+  const tooltipStr = tooltipLines.length > 0 ? tooltipLines.join('\n') : 'No items staged';
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase flex items-center gap-2">
-          <span>📄</span> Generated JSON
+          <span>{isScript ? '📜' : '📄'}</span> {isScript ? 'Generated Node Script' : 'JSON Preview'}
         </p>
-        <button onClick={handleCopy} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${copied ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-[var(--elevated)] border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--gold)]'}`}>
-          {copied ? '✓ Copied!' : '⧉ Copy'}
-        </button>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold px-2 py-1 bg-[var(--elevated)] border border-[var(--border)] rounded text-[#60A5FA] cursor-help" title={tooltipStr}>
+            {totalItems} Item(s)
+          </span>
+          <button onClick={onToggleView} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--elevated)] text-[var(--muted)] hover:border-[#60A5FA] hover:text-[#60A5FA] transition-all duration-200">
+            {isScript ? 'View JSON' : 'Generate Node Script'}
+          </button>
+          {isScript && (
+            <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--elevated)] text-[var(--muted)] hover:border-[#A78BFA] hover:text-[#A78BFA] transition-all duration-200">
+              ⬇ Download update.js
+            </button>
+          )}
+          <button onClick={handleCopy} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 ${copied ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-[var(--elevated)] border-[var(--border)] text-[var(--muted)] hover:border-[var(--gold)] hover:text-[var(--gold)]'}`}>
+            {copied ? '✓ Copied!' : '⧉ Copy'}
+          </button>
+        </div>
       </div>
       <div className="flex-1 rounded-2xl overflow-hidden border border-[var(--border)] bg-[var(--bg)]" style={{ minHeight: '360px' }}>
         <div className="flex h-full overflow-auto custom-scrollbar">
@@ -548,13 +586,15 @@ function OutputPanel({ json, mode }) {
             {lines.map((_, i) => <div key={i} className="text-xs text-[var(--muted)] opacity-40 leading-5">{i + 1}</div>)}
           </div>
           <pre className="flex-1 p-4 text-xs leading-5 overflow-x-auto">
-            <code>{lines.map((line, i) => <div key={i} dangerouslySetInnerHTML={{ __html: syntaxHighlight(line) || '&nbsp;' }} />)}</code>
+            <code>{lines.map((line, i) => <div key={i} dangerouslySetInnerHTML={{ __html: isScript ? line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : syntaxHighlight(line) || '&nbsp;' }} />)}</code>
           </pre>
         </div>
       </div>
-      <div className="mt-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--elevated)]">
-        <p className="text-xs text-[var(--muted)] leading-relaxed"><span className="text-[var(--gold)] font-semibold">📌 Tip:</span> {tipText}</p>
-      </div>
+      {!isScript && (
+        <div className="mt-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--elevated)]">
+          <p className="text-xs text-[var(--muted)] leading-relaxed"><span className="text-[var(--gold)] font-semibold">📌 Tip:</span> Stage your updates first, then generate the script to apply them.</p>
+        </div>
+      )}
     </div>
   )
 }
@@ -595,8 +635,53 @@ function formatWeaponData(d, releaseOrderNum) {
   }
 }
 
+const FILE_MAP = {
+  character: 'characters.json',
+  weapon: 'weapons.json',
+  normal_boss: 'normal_boss.json',
+  local_spec: 'local_specialty.json',
+  weekly_boss: 'weekly_boss.json',
+  talent: 'talent_materials.json',
+  common_drop: 'common_enemy.json',
+  elite_drop: 'elite_enemy.json',
+}
+
+function generateNodeScript(stagedUpdates) {
+  const stagedStr = JSON.stringify(stagedUpdates, null, 2);
+  return `const fs = require('fs');
+const path = require('path');
+
+// Auto-generated payload
+const stagedData = ${stagedStr};
+
+Object.keys(stagedData).forEach(filename => {
+  if (stagedData[filename].length === 0) return;
+  const filePath = path.join(__dirname, 'src', 'data', filename);
+  try {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const currentData = JSON.parse(fileContent);
+    currentData.push(...stagedData[filename]);
+    fs.writeFileSync(filePath, JSON.stringify(currentData, null, 2));
+    console.log(\`✅ Successfully updated \${filename}\`);
+  } catch (err) {
+    console.error(\`❌ Failed to update \${filename}:\`, err.message);
+  }
+});`;
+}
+
 export default function DevBuilder() {
   const [mode, setMode] = useState('material')
+  const [outputView, setOutputView] = useState('json')
+  const [stagedUpdates, setStagedUpdates] = useState({
+    "characters.json": [],
+    "weapons.json": [],
+    "normal_boss.json": [],
+    "local_specialty.json": [],
+    "weekly_boss.json": [],
+    "talent_materials.json": [],
+    "common_enemy.json": [],
+    "elite_enemy.json": [],
+  })
 
   // Active Form States
   const [charData, setCharData] = useState(DEFAULT_CHAR)
@@ -641,7 +726,19 @@ export default function DevBuilder() {
     activeOutputData = matQueue.length > 0 ? [...flatQueue, ...flatCurrent] : (Array.isArray(currentFormatted) ? currentFormatted : currentFormatted);
   }
 
-  const outputJson = JSON.stringify(activeOutputData, null, 2)
+  const outputContent = outputView === 'script' ? generateNodeScript(stagedUpdates) : JSON.stringify(activeOutputData, null, 2)
+
+  const handleStageUpdates = () => {
+    const filename = FILE_MAP[mode === 'material' ? matSubCat : mode];
+    const itemsToStage = Array.isArray(activeOutputData) ? activeOutputData : [activeOutputData];
+    
+    setStagedUpdates(prev => ({
+      ...prev,
+      [filename]: [...prev[filename], ...itemsToStage]
+    }));
+    
+    handleReset();
+  }
 
   const handleAddAnother = () => {
     if (mode === 'character') {
@@ -717,18 +814,23 @@ export default function DevBuilder() {
           {mode === 'weapon' && <WeaponForm data={weaponData} onChange={setWeaponData} suggestions={suggestions} />}
           {mode === 'material' && <MaterialForm subCat={matSubCat} data={matData} onSubCatChange={handleSubCatChange} onChange={setMatData} />}
 
-          <div className="border-t border-[var(--border)] pt-4 mt-4 flex gap-3">
-            <button onClick={handleAddAnother} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 transition-all">
-              ➕ Add Another
+          <div className="border-t border-[var(--border)] pt-4 mt-4 flex flex-col gap-3">
+            <button onClick={handleStageUpdates} className="w-full py-2.5 rounded-xl text-xs font-bold border border-[#60A5FA] bg-[#60A5FA]/10 text-[#60A5FA] hover:bg-[#60A5FA]/20 transition-all">
+              📦 Stage Updates
             </button>
-            <button onClick={handleReset} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--border)] text-[var(--muted)] hover:border-red-500/40 hover:text-red-400 transition-all">
-              ↺ Reset Form
-            </button>
+            <div className="flex gap-3">
+              <button onClick={handleAddAnother} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--gold)] bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 transition-all">
+                ➕ Add to Queue
+              </button>
+              <button onClick={handleReset} className="flex-1 py-2 rounded-xl text-xs font-semibold border border-[var(--border)] text-[var(--muted)] hover:border-red-500/40 hover:text-red-400 transition-all">
+                ↺ Reset Form
+              </button>
+            </div>
           </div>
         </div>
 
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
-          <OutputPanel json={outputJson} mode={mode} />
+          <OutputPanel content={outputContent} isScript={outputView === 'script'} onToggleView={() => setOutputView(v => v === 'json' ? 'script' : 'json')} stagedUpdates={stagedUpdates} />
         </div>
       </div>
     </div>
