@@ -265,7 +265,7 @@
   },
   {
     "id": "AscendedSampleKnight",
-    "name": "Ascended Sample Knight",
+    "name": "Ascended Sample: Knight",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
     "region": "Mondstadt",
@@ -273,7 +273,7 @@
   },
   {
     "id": "AscendedSampleRook",
-    "name": "Ascended Sample Rook",
+    "name": "Ascended Sample: Rook",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
     "region": "Mondstadt",
@@ -281,7 +281,7 @@
   },
   {
     "id": "AscendedSampleQueen",
-    "name": "Ascended Sample Queen",
+    "name": "Ascended Sample: Queen",
     "type": "weekly_boss",
     "boss_name": "The Game Before the Gate",
     "region": "Mondstadt",
