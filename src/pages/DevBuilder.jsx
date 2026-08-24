@@ -614,7 +614,7 @@ function OutputPanel({ content, isScript, onToggleView, stagedUpdates }) {
 
 // ─── Formatting Wrappers ──────────────────────────────────────────────────────
 
-function formatCharData(d, releaseOrderNum) {
+function formatCharData(d, releaseOrderNum, lookupMap) {
   return {
     id: toPascalCase(d.name || ''),
     name: d.name,
@@ -622,12 +622,12 @@ function formatCharData(d, releaseOrderNum) {
     weapon_type: d.weapon_type,
     element: d.element,
     materials: {
-      world_boss_material_id: toPascalCase(d.materials.world_boss_material_id || ''),
-      weekly_boss_material_id: toPascalCase(d.materials.weekly_boss_material_id || ''),
-      talent_material_family_id: toPascalCase(d.materials.talent_material_family_id || ''),
-      enemy_material_family_id: toPascalCase(d.materials.enemy_material_family_id || ''),
-      local_specialty_id: toPascalCase(d.materials.local_specialty_id || ''),
-      gem_family_id: toPascalCase(d.materials.gem_family_id || ''),
+      world_boss_material_id: lookupMap[d.materials.world_boss_material_id] || '',
+      weekly_boss_material_id: lookupMap[d.materials.weekly_boss_material_id] || '',
+      talent_material_family_id: lookupMap[d.materials.talent_material_family_id] || '',
+      enemy_material_family_id: lookupMap[d.materials.enemy_material_family_id] || '',
+      local_specialty_id: lookupMap[d.materials.local_specialty_id] || '',
+      gem_family_id: lookupMap[d.materials.gem_family_id] || '',
     },
     release_order: releaseOrderNum
   }
@@ -635,7 +635,7 @@ function formatCharData(d, releaseOrderNum) {
 
 const WEAPON_TYPE_MAP = { Sword: 1, Claymore: 2, Polearm: 3, Catalyst: 4, Bow: 5 };
 
-function formatWeaponData(d, allWeapons) {
+function formatWeaponData(d, allWeapons, lookupMap) {
   const typeBlock = WEAPON_TYPE_MAP[d.type] || 1;
   const rarity = d.rarity || 5;
 
@@ -662,9 +662,9 @@ function formatWeaponData(d, allWeapons) {
     rarity: "★".repeat(d.rarity),
     type: d.type,
     materials: {
-      ascension_material_family_id: toPascalCase(d.materials.ascension_material_family_id || ''),
-      enhancement_material_family_id: toPascalCase(d.materials.enhancement_material_family_id || ''),
-      enemy_material_family_id: toPascalCase(d.materials.enemy_material_family_id || ''),
+      ascension_material_family_id: lookupMap[d.materials.ascension_material_family_id] || '',
+      enhancement_material_family_id: lookupMap[d.materials.enhancement_material_family_id] || '',
+      enemy_material_family_id: lookupMap[d.materials.enemy_material_family_id] || '',
     },
     release_order: releaseOrderNum
   }
@@ -743,39 +743,36 @@ export default function DevBuilder() {
 
   const suggestions = useDataSuggestions()
 
-  const validMaterialIds = useMemo(() => {
-    const ids = new Set([
-      ...suggestions.worldBoss,
-      ...suggestions.weeklyBoss,
-      ...suggestions.talentBook,
-      ...suggestions.mobMaterial,
-      ...suggestions.localSpec,
-      ...suggestions.gemstone,
-      ...suggestions.ascensionMat,
-      ...suggestions.eliteMat,
-      ...suggestions.mobMat
-    ].filter(Boolean));
+  const materialLookupMap = useMemo(() => {
+    const map = {};
 
-    const extractIds = (items) => {
+    const extractToMap = (items) => {
       items.forEach(item => {
-        if (item.id) ids.add(item.id);
+        if (item.id) {
+          map[item.id] = item.id;
+          if (item.name) map[item.name] = item.id;
+        }
         if (item.tiers) {
           Object.values(item.tiers).forEach(t => {
-            if (t.id) ids.add(t.id);
+            if (t.id) {
+              map[t.id] = t.id;
+              if (t.name) map[t.name] = t.id;
+            }
           });
         }
       });
     };
 
-    extractIds(normalBossData);
-    extractIds(localSpecialtyData);
-    extractIds(weeklyBossData);
-    extractIds(talentData);
-    extractIds(commonEnemyData);
-    extractIds(eliteEnemyData);
+    extractToMap(normalBossData);
+    extractToMap(localSpecialtyData);
+    extractToMap(weeklyBossData);
+    extractToMap(talentData);
+    extractToMap(commonEnemyData);
+    extractToMap(eliteEnemyData);
+    extractToMap(weaponAscensionData);
 
     const flatMatQueue = matQueue.flat();
-    extractIds(flatMatQueue);
+    extractToMap(flatMatQueue);
 
     const stagedMats = [
       ...stagedUpdates['normal_boss.json'],
@@ -784,11 +781,17 @@ export default function DevBuilder() {
       ...stagedUpdates['talent_materials.json'],
       ...stagedUpdates['common_enemy.json'],
       ...stagedUpdates['elite_enemy.json'],
+      ...(stagedUpdates['weapon_ascension.json'] || []),
     ];
-    extractIds(stagedMats);
+    extractToMap(stagedMats);
 
-    return ids;
-  }, [suggestions, matQueue, stagedUpdates]);
+    ELEMENTS.forEach(el => {
+      const gem = getGemFamily(el);
+      map[gem] = gem;
+    });
+
+    return map;
+  }, [matQueue, stagedUpdates]);
 
   const getMissingMaterials = () => {
     if (mode === 'material') return [];
@@ -800,9 +803,8 @@ export default function DevBuilder() {
     const missing = [];
     for (const m of activeMaterials) {
       if (!m || m.trim() === '') continue;
-      const pascal = toPascalCase(m.trim());
-      if (!validMaterialIds.has(pascal)) {
-        missing.push(pascal);
+      if (!materialLookupMap[m.trim()]) {
+        missing.push(m.trim());
       }
     }
     return missing;
@@ -828,11 +830,11 @@ export default function DevBuilder() {
   // Determine what to render based on queue length
   let activeOutputData;
   if (mode === 'character') {
-    const currentFormatted = formatCharData(charData, baseReleaseOrder + charQueue.length + 1);
+    const currentFormatted = formatCharData(charData, baseReleaseOrder + charQueue.length + 1, materialLookupMap);
     activeOutputData = charQueue.length > 0 ? [...charQueue, currentFormatted] : currentFormatted;
   } else if (mode === 'weapon') {
     const allWeapons = [...weaponsData, ...weaponQueue, ...stagedUpdates['weapons.json']];
-    const currentFormatted = formatWeaponData(weaponData, allWeapons);
+    const currentFormatted = formatWeaponData(weaponData, allWeapons, materialLookupMap);
     activeOutputData = weaponQueue.length > 0 ? [...weaponQueue, currentFormatted] : currentFormatted;
   } else {
     const generatedMat = buildMatJson(matSubCat, matData, matQueue.length);
@@ -859,12 +861,12 @@ export default function DevBuilder() {
 
   const handleAddAnother = () => {
     if (mode === 'character') {
-      const currentFormatted = formatCharData(charData, baseReleaseOrder + charQueue.length + 1);
+      const currentFormatted = formatCharData(charData, baseReleaseOrder + charQueue.length + 1, materialLookupMap);
       setCharQueue([...charQueue, currentFormatted]);
       setCharData(DEFAULT_CHAR);
     } else if (mode === 'weapon') {
       const allWeapons = [...weaponsData, ...weaponQueue, ...stagedUpdates['weapons.json']];
-      const currentFormatted = formatWeaponData(weaponData, allWeapons);
+      const currentFormatted = formatWeaponData(weaponData, allWeapons, materialLookupMap);
       setWeaponQueue([...weaponQueue, currentFormatted]);
       setWeaponData(DEFAULT_WEAPON);
     } else {
