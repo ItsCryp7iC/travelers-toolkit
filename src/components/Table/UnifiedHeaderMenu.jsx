@@ -9,19 +9,29 @@ export const universalFilterFn = (row, columnId, filterValue) => {
   const val = row.getValue(columnId);
   const { text, min, max, selection } = filterValue;
   
+  const isArr = Array.isArray(val);
+
   if (text) {
-    if (!String(val).toLowerCase().includes(text.toLowerCase())) return false;
+    if (isArr) {
+      if (!val.some(v => String(v).toLowerCase().includes(text.toLowerCase()))) return false;
+    } else {
+      if (!String(val).toLowerCase().includes(text.toLowerCase())) return false;
+    }
   }
   
   if (min !== undefined && min !== '') {
-    if (parseFloat(val) < parseFloat(min)) return false;
+    if (!isArr && parseFloat(val) < parseFloat(min)) return false;
   }
   if (max !== undefined && max !== '') {
-    if (parseFloat(val) > parseFloat(max)) return false;
+    if (!isArr && parseFloat(val) > parseFloat(max)) return false;
   }
   
   if (selection && selection.length > 0) {
-    if (!selection.includes(val)) return false;
+    if (isArr) {
+      if (!val.some(v => selection.includes(v))) return false;
+    } else {
+      if (!selection.includes(val)) return false;
+    }
   }
   
   return true;
@@ -59,7 +69,13 @@ export function UnifiedHeaderMenu({ column, table, closeMenu, anchorEl, menuRef 
     const values = new Set();
     table.getPreFilteredRowModel().flatRows.forEach(row => {
       const val = row.getValue(column.id);
-      if (val !== undefined && val !== null && val !== '') values.add(val);
+      if (Array.isArray(val)) {
+        val.forEach(v => {
+          if (v !== undefined && v !== null && v !== '') values.add(v);
+        });
+      } else if (val !== undefined && val !== null && val !== '') {
+        values.add(val);
+      }
     });
     const arr = Array.from(values);
     if (arr.length > 0 && typeof arr[0] === 'number') {
