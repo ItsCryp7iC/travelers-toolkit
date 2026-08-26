@@ -608,7 +608,7 @@ function syntaxHighlight(line) {
     .replace(/([{}[\]])/g, `<span style="color:#9CA3AF">$1</span>`)
 }
 
-function OutputPanel({ content, assetScriptContent, isScript, onToggleView, stagedUpdates, onOpenStagingModal }) {
+function OutputPanel({ content, assetScriptContent, isScript, onToggleView, stagedUpdates, onOpenStagingModal, onClearStaging }) {
   const [copied, setCopied] = useState(false)
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {
@@ -671,6 +671,9 @@ function OutputPanel({ content, assetScriptContent, isScript, onToggleView, stag
           <span>{isScript ? '📜' : '📄'}</span> {isScript ? 'Generated Node Script' : 'JSON Preview'}
         </p>
         <div className="flex items-center gap-2">
+          <button onClick={onClearStaging} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--elevated)] text-[var(--muted)] hover:border-red-500 hover:text-red-400 transition-all duration-200" title="Clear Staging Queue">
+            🗑️ Clear
+          </button>
           <button onClick={onOpenStagingModal} className="text-xs font-bold px-2 py-1 bg-[var(--elevated)] border border-[var(--border)] rounded text-[#60A5FA] cursor-pointer hover:border-[#60A5FA] transition-all duration-200" title={tooltipStr}>
             {totalItems} Item(s)
           </button>
@@ -1083,6 +1086,21 @@ export default function DevBuilder() {
     localStorage.setItem('devBuilder_stagedUpdates', JSON.stringify(stagedUpdates));
   }, [stagedUpdates]);
 
+  const handleClearStaging = useCallback(() => {
+    setStagedUpdates({
+      "characters.json": [],
+      "weapons.json": [],
+      "normal_boss.json": [],
+      "local_specialty.json": [],
+      "weekly_boss.json": [],
+      "talent_materials.json": [],
+      "weapon_ascension.json": [],
+      "common_enemy.json": [],
+      "elite_enemy.json": [],
+    });
+    localStorage.removeItem('devBuilder_stagedUpdates');
+  }, []);
+
   // Active Form States
   const [charData, setCharData] = useState(DEFAULT_CHAR)
   const [weaponData, setWeaponData] = useState(DEFAULT_WEAPON)
@@ -1331,6 +1349,7 @@ export default function DevBuilder() {
             onToggleView={() => setOutputView(v => v === 'json' ? 'script' : 'json')} 
             stagedUpdates={stagedUpdates} 
             onOpenStagingModal={() => setIsStagingModalOpen(true)} 
+            onClearStaging={handleClearStaging}
           />
         </div>
       </div>
