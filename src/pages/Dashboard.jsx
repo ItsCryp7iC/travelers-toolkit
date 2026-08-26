@@ -161,9 +161,9 @@ export default function Dashboard() {
 
  list.sort((a, b) => {
  if (sortBy === 'Release') {
- const orderA = a.release_order ?? 999;
- const orderB = b.release_order ?? 999;
- return orderA - orderB;
+ const orderA = parseFloat(a.release_order) || 0;
+ const orderB = parseFloat(b.release_order) || 0;
+ return orderB - orderA;
  }
  if (sortBy === 'Rarity') {
  const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
