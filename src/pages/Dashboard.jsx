@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import CharacterCard from '../components/CharacterCard'
 import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
@@ -45,6 +46,8 @@ function StatCard({ icon, label, value, accent }) {
 }
 
 export default function Dashboard() {
+ const navigate = useNavigate();
+ const hasCookie = Boolean(localStorage.getItem('hoyolab_ltuid') && localStorage.getItem('hoyolab_ltoken'));
  const roster = useStore((s) => s.roster)
  const batchAddCharacters = useStore((s) => s.batchAddCharacters)
  const trackedWeapons = useStore((s) => s.trackedWeapons) || []
@@ -258,12 +261,27 @@ export default function Dashboard() {
  </div>
 
  {/* ── Trackers ────────────────────────────── */}
+ {hasCookie ? (
  <div className="mb-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
  <ResinTracker syncData={syncPayload?.resin} />
  {syncPayload?.realm_currency && (
  <RealmCurrencyTracker syncData={syncPayload.realm_currency} />
  )}
  </div>
+ ) : (
+ <div className="mb-6 bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md flex flex-col items-center justify-center text-center min-h-[160px]">
+ <div className="text-4xl mb-3">🌙</div>
+ <p className="text-[var(--text)] mb-4 text-sm max-w-md">
+ Add your HoYo Cookie ID in Settings to show your live in-game Resin and Realm Currency counters.
+ </p>
+ <button 
+ onClick={() => navigate('/settings')}
+ className="px-5 py-2 bg-primary/10 text-primary border border-primary/30 rounded-lg text-sm font-bold hover:bg-primary hover:text-gray-900 transition-all duration-300"
+ >
+ Go to Settings
+ </button>
+ </div>
+ )}
 
  {/* ── Tab Toggle ──────────────────────────────── */}
  <div className="flex justify-center mb-8">
