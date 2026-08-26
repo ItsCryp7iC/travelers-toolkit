@@ -82,6 +82,7 @@ const MAT_SUB_CATEGORIES = [
   { key: 'local_spec', label: '🌿 Local Specialty' },
   { key: 'weekly_boss', label: '👑 Weekly Boss' },
   { key: 'talent', label: '📚 Talent Material' },
+  { key: 'weapon_asc', label: '🔮 Weapon Asc' },
   { key: 'common_drop', label: '💧 Common Enemy Drop' },
   { key: 'elite_drop', label: '🏵️ Elite Enemy Drop' },
 ]
@@ -91,6 +92,12 @@ const MAT_DEFAULTS = {
   local_spec: { name: '', region: REGIONS[REGIONS.length - 1] },
   weekly_boss: { bossName: '', region: REGIONS[REGIONS.length - 1], mat1: '', mat2: '', mat3: '' },
   talent: { series1: '', series2: '', series3: '', domain: '', region: REGIONS[REGIONS.length - 1] },
+  weapon_asc: {
+    series1Name: '', s1_5: '', s1_4: '', s1_3: '', s1_2: '',
+    series2Name: '', s2_5: '', s2_4: '', s2_3: '', s2_2: '',
+    series3Name: '', s3_5: '', s3_4: '', s3_3: '', s3_2: '',
+    domain: '', region: REGIONS[REGIONS.length - 1]
+  },
   common_drop: { groupName: '', star1: '', star2: '', star3: '' },
   elite_drop: { groupName: '', star2: '', star3: '', star4: '' },
 }
@@ -339,6 +346,42 @@ function MaterialForm({ subCat, data, onSubCatChange, onChange }) {
           <Field label="Domain Name" hint="Spaces allowed"><TextInput value={data.domain} onChange={v => set('domain', v)} placeholder="e.g. Forsaken Rift" /></Field>
         </>
       )}
+      {subCat === 'weapon_asc' && (
+        <>
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-[var(--gold)] mb-2">Group 1 (Mon/Thu)</h4>
+            <Field label="Weapon Material Series 1 Name" hint="e.g. Decarabian"><TextInput value={data.series1Name} onChange={v => set('series1Name', v)} placeholder="e.g. Decarabian" /></Field>
+            <div className="grid grid-cols-2 gap-2">
+              <Field label="5★ Drop"><TextInput value={data.s1_5} onChange={v => set('s1_5', v)} placeholder="5★ Item" /></Field>
+              <Field label="4★ Drop"><TextInput value={data.s1_4} onChange={v => set('s1_4', v)} placeholder="4★ Item" /></Field>
+              <Field label="3★ Drop"><TextInput value={data.s1_3} onChange={v => set('s1_3', v)} placeholder="3★ Item" /></Field>
+              <Field label="2★ Drop"><TextInput value={data.s1_2} onChange={v => set('s1_2', v)} placeholder="2★ Item" /></Field>
+            </div>
+          </div>
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-[var(--gold)] mb-2">Group 2 (Tue/Fri)</h4>
+            <Field label="Weapon Material Series 2 Name" hint="e.g. Boreal Wolf"><TextInput value={data.series2Name} onChange={v => set('series2Name', v)} placeholder="e.g. Boreal Wolf" /></Field>
+            <div className="grid grid-cols-2 gap-2">
+              <Field label="5★ Drop"><TextInput value={data.s2_5} onChange={v => set('s2_5', v)} placeholder="5★ Item" /></Field>
+              <Field label="4★ Drop"><TextInput value={data.s2_4} onChange={v => set('s2_4', v)} placeholder="4★ Item" /></Field>
+              <Field label="3★ Drop"><TextInput value={data.s2_3} onChange={v => set('s2_3', v)} placeholder="3★ Item" /></Field>
+              <Field label="2★ Drop"><TextInput value={data.s2_2} onChange={v => set('s2_2', v)} placeholder="2★ Item" /></Field>
+            </div>
+          </div>
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-[var(--gold)] mb-2">Group 3 (Wed/Sat)</h4>
+            <Field label="Weapon Material Series 3 Name" hint="e.g. Dandelion Gladiator"><TextInput value={data.series3Name} onChange={v => set('series3Name', v)} placeholder="e.g. Dandelion Gladiator" /></Field>
+            <div className="grid grid-cols-2 gap-2">
+              <Field label="5★ Drop"><TextInput value={data.s3_5} onChange={v => set('s3_5', v)} placeholder="5★ Item" /></Field>
+              <Field label="4★ Drop"><TextInput value={data.s3_4} onChange={v => set('s3_4', v)} placeholder="4★ Item" /></Field>
+              <Field label="3★ Drop"><TextInput value={data.s3_3} onChange={v => set('s3_3', v)} placeholder="3★ Item" /></Field>
+              <Field label="2★ Drop"><TextInput value={data.s3_2} onChange={v => set('s3_2', v)} placeholder="2★ Item" /></Field>
+            </div>
+          </div>
+          <RegionField />
+          <Field label="Domain Name" hint="Spaces allowed"><TextInput value={data.domain} onChange={v => set('domain', v)} placeholder="e.g. Cecilia Garden" /></Field>
+        </>
+      )}
       {subCat === 'common_drop' && (
         <>
           <Field label="Enemy Group Name" hint="e.g. Slime"><TextInput value={data.groupName} onChange={v => set('groupName', v)} placeholder="e.g. Slime" /></Field>
@@ -457,6 +500,46 @@ function buildMatJson(subCat, data, queueLength) {
         createSeries(data.series3 || '', [3, 6], 0.006)
       ];
     }
+    case 'weapon_asc': {
+      const baseOrder = getLastSortOrder(weaponAscensionData, 7.000, '2_star');
+      const startOrder = floatAdd(baseOrder, queueLength * 0.004);
+      
+      const createSeries = (name, d5, d4, d3, d2, days, offset) => ({
+        id: toPascalCase(name || ''),
+        name: name,
+        region: data.region || 'Unknown',
+        tiers: {
+          "5_star": {
+            id: toPascalCase(d5 || ''),
+            name: d5,
+            sortOrder: floatAdd(startOrder, offset + 0.001)
+          },
+          "4_star": {
+            id: toPascalCase(d4 || ''),
+            name: d4,
+            sortOrder: floatAdd(startOrder, offset + 0.002)
+          },
+          "3_star": {
+            id: toPascalCase(d3 || ''),
+            name: d3,
+            sortOrder: floatAdd(startOrder, offset + 0.003)
+          },
+          "2_star": {
+            id: toPascalCase(d2 || ''),
+            name: d2,
+            sortOrder: floatAdd(startOrder, offset + 0.004)
+          }
+        },
+        domain: data.domain || '',
+        days
+      });
+
+      return [
+        createSeries(data.series1Name, data.s1_5, data.s1_4, data.s1_3, data.s1_2, [1, 4], 0.000),
+        createSeries(data.series2Name, data.s2_5, data.s2_4, data.s2_3, data.s2_2, [2, 5], 0.004),
+        createSeries(data.series3Name, data.s3_5, data.s3_4, data.s3_3, data.s3_2, [3, 6], 0.008)
+      ];
+    }
     case 'common_drop': {
       const baseOrder = getLastSortOrder(commonEnemyData, 5.000, '1_star');
       const startOrder = floatAdd(baseOrder, queueLength * 0.003);
@@ -562,6 +645,7 @@ function OutputPanel({ content, isScript, onToggleView, stagedUpdates, onOpenSta
     "local_specialty.json": "Local Specialties",
     "weekly_boss.json": "Weekly Bosses",
     "talent_materials.json": "Talent Materials",
+    "weapon_ascension.json": "Weapon Ascension",
     "common_enemy.json": "Common Enemies",
     "elite_enemy.json": "Elite Enemies"
   };
@@ -677,6 +761,7 @@ const FILE_MAP = {
   local_spec: 'local_specialty.json',
   weekly_boss: 'weekly_boss.json',
   talent: 'talent_materials.json',
+  weapon_asc: 'weapon_ascension.json',
   common_drop: 'common_enemy.json',
   elite_drop: 'elite_enemy.json',
 }
@@ -759,6 +844,7 @@ function StagingModal({ isOpen, onClose, stagedUpdates, setStagedUpdates }) {
     "local_specialty.json": "Local Specialties",
     "weekly_boss.json": "Weekly Bosses",
     "talent_materials.json": "Talent Materials",
+    "weapon_ascension.json": "Weapon Ascension",
     "common_enemy.json": "Common Enemies",
     "elite_enemy.json": "Elite Enemies"
   };
@@ -848,24 +934,27 @@ export default function DevBuilder() {
   const [outputView, setOutputView] = useState('json')
   const [isStagingModalOpen, setIsStagingModalOpen] = useState(false)
   const [stagedUpdates, setStagedUpdates] = useState(() => {
-    const saved = localStorage.getItem('devBuilder_stagedUpdates');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Failed to parse stagedUpdates from localStorage", e);
-      }
-    }
-    return {
+    const defaultState = {
       "characters.json": [],
       "weapons.json": [],
       "normal_boss.json": [],
       "local_specialty.json": [],
       "weekly_boss.json": [],
       "talent_materials.json": [],
+      "weapon_ascension.json": [],
       "common_enemy.json": [],
       "elite_enemy.json": [],
     };
+    const saved = localStorage.getItem('devBuilder_stagedUpdates');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return { ...defaultState, ...parsed };
+      } catch (e) {
+        console.error("Failed to parse stagedUpdates from localStorage", e);
+      }
+    }
+    return defaultState;
   })
 
   useEffect(() => {
@@ -995,7 +1084,7 @@ export default function DevBuilder() {
 
     setStagedUpdates(prev => ({
       ...prev,
-      [filename]: [...prev[filename], ...itemsToStage]
+      [filename]: [...(prev[filename] || []), ...itemsToStage]
     }));
 
     handleReset();
