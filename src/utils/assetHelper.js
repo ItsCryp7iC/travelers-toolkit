@@ -17,6 +17,8 @@ export function formatAssetString(name) {
 export const toPascalCase = (str) => {
   if (!str) return '';
 
+  str = str.replace(/[\u00AD\u200B-\u200D\uFEFF]/g, '');
+
   // 1. Insert a space between lowercase and uppercase letters (kamisatoAyato -> kamisato Ayato)
   const spacedStr = str.replace(/([a-z])([A-Z])/g, '$1 $2');
 
