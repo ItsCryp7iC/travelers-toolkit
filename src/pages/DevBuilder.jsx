@@ -608,7 +608,7 @@ function syntaxHighlight(line) {
     .replace(/([{}[\]])/g, `<span style="color:#9CA3AF">$1</span>`)
 }
 
-function OutputPanel({ content, isScript, onToggleView, stagedUpdates, onOpenStagingModal }) {
+function OutputPanel({ content, assetScriptContent, isScript, onToggleView, stagedUpdates, onOpenStagingModal }) {
   const [copied, setCopied] = useState(false)
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(content).then(() => {
@@ -626,6 +626,16 @@ function OutputPanel({ content, isScript, onToggleView, stagedUpdates, onOpenSta
     a.click();
     URL.revokeObjectURL(url);
   }, [content, isScript]);
+
+  const handleDownloadAsset = useCallback(() => {
+    const blob = new Blob([assetScriptContent], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'download_assets.cjs';
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [assetScriptContent]);
 
   const lines = content.split('\n')
 
@@ -665,7 +675,10 @@ function OutputPanel({ content, isScript, onToggleView, stagedUpdates, onOpenSta
             {totalItems} Item(s)
           </button>
           <button onClick={onToggleView} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--elevated)] text-[var(--muted)] hover:border-[#60A5FA] hover:text-[#60A5FA] transition-all duration-200">
-            {isScript ? 'View JSON' : 'Generate Node Script'}
+            {isScript ? 'View JSON' : 'Generate DB Script'}
+          </button>
+          <button onClick={handleDownloadAsset} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--elevated)] text-[var(--muted)] hover:border-emerald-400 hover:text-emerald-400 transition-all duration-200">
+            ⬇ Generate Asset Script
           </button>
           {isScript && (
             <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-[var(--border)] bg-[var(--elevated)] text-[var(--muted)] hover:border-[#A78BFA] hover:text-[#A78BFA] transition-all duration-200">
@@ -803,10 +816,32 @@ Object.keys(stagedData).forEach(filename => {
 });
 
 // --- AUTOMATED IMAGE DOWNLOADER ---
-const outputDir = path.join(__dirname, 'public', 'assets', 'downloads');
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
+// Logic moved to download_assets.cjs
+`;
 }
+
+function generateAssetScript(stagedUpdates) {
+  const stagedStr = JSON.stringify(stagedUpdates, null, 2);
+  return `const fs = require('fs');
+const path = require('path');
+
+// Auto-generated payload
+const stagedData = ${stagedStr};
+
+// --- AUTOMATED IMAGE DOWNLOADER ---
+const baseDir = __dirname;
+
+const DIR_MAP = {
+  "normal_boss.json": "normal_boss_materials",
+  "local_specialty.json": "local_specialties",
+  "weekly_boss.json": "weekly_boss_materials",
+  "talent_materials.json": "talent_materials",
+  "weapon_ascension.json": "weapon_ascension_materials",
+  "common_enemy.json": "common_enhancement_materials",
+  "elite_enemy.json": "elite_enhancement_materials",
+  "characters.json": "characters",
+  "weapons.json": "weapons"
+};
 
 const formatWikiName = (name) => name.replace(/[\\u00AD\\u200B-\\u200D\\uFEFF]/g, '').replace(/[:]/g, '').replace(/ /g, '_');
 const toPascalCase = (str) => str
@@ -816,21 +851,30 @@ const toPascalCase = (str) => str
 
 const itemsToDownload = [];
 Object.entries(stagedData).forEach(([filename, items]) => {
+  const folderName = DIR_MAP[filename] || "misc";
+  let wikiType = 'item';
+  if (filename === 'characters.json') wikiType = 'character';
+  if (filename === 'weapons.json') wikiType = 'weapon';
+
   items.forEach(item => {
-    let type = 'item';
-    if (filename === 'characters.json') type = 'character';
-    if (filename === 'weapons.json') type = 'weapon';
-    
-    // Grab top-level name
-    if (item.name && !item.tiers) itemsToDownload.push({ name: item.name, type });
-    
-    // Grab nested tier names (for talents, ascensions, enemies)
+    if (item.name && !item.tiers) {
+      itemsToDownload.push({ name: item.name, wikiType, folderName });
+    }
     if (item.tiers) {
       Object.values(item.tiers).forEach(tier => {
-        if (tier.name) itemsToDownload.push({ name: tier.name, type: 'item' });
+        if (tier.name) itemsToDownload.push({ name: tier.name, wikiType, folderName });
       });
     }
   });
+});
+
+// Create unique folders based on what is in the queue
+const uniqueFolders = [...new Set(itemsToDownload.map(i => i.folderName))];
+uniqueFolders.forEach(folder => {
+  const dirPath = path.join(baseDir, folder);
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
 });
 
 const downloadImage = async (wikiFileName, filepath) => {
@@ -853,16 +897,16 @@ const runDownloads = async () => {
   console.log("\\n🚀 Starting Fandom Image Rip...");
   for (const item of itemsToDownload) {
     const finalId = toPascalCase(item.name);
-    const savePath = path.join(outputDir, \`\${finalId}.png\`);
+    const savePath = path.join(baseDir, item.folderName, \`\${finalId}.png\`);
     
     // Skip if we already downloaded it previously
     if (fs.existsSync(savePath)) continue;
     
     let prefix = "Item_";
-    if (item.type === "character") prefix = ""; 
-    if (item.type === "weapon") prefix = "Weapon_";
+    if (item.wikiType === "character") prefix = ""; 
+    if (item.wikiType === "weapon") prefix = "Weapon_";
     
-    const suffix = item.type === "character" ? "_Icon.png" : ".png";
+    const suffix = item.wikiType === "character" ? "_Icon.png" : ".png";
     const wikiFileName = \`\${prefix}\${formatWikiName(item.name)}\${suffix}\`;
     
     try {
@@ -873,7 +917,7 @@ const runDownloads = async () => {
       console.log(\`❌ \${err.message}\`);
     }
   }
-  console.log("🎉 Update and Asset Rip complete!");
+  console.log("🎉 Asset Rip complete!");
 };
 
 runDownloads();`;
@@ -1282,6 +1326,7 @@ export default function DevBuilder() {
         <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md">
           <OutputPanel 
             content={outputContent} 
+            assetScriptContent={generateAssetScript(stagedUpdates)}
             isScript={outputView === 'script'} 
             onToggleView={() => setOutputView(v => v === 'json' ? 'script' : 'json')} 
             stagedUpdates={stagedUpdates} 
