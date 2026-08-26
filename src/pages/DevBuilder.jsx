@@ -419,9 +419,9 @@ function buildMatJson(subCat, data, queueLength) {
       const baseOrder = getLastSortOrder(normalBossData, 2.000);
       return {
         id: toPascalCase(data.name || ''),
-        name: data.name,
+        name: sanitizeText(data.name),
         type: 'normal_boss',
-        boss_name: data.bossName || '',
+        boss_name: sanitizeText(data.bossName || ''),
         region: data.region || 'Unknown',
         sortOrder: floatAdd(baseOrder, (queueLength + 1) * 0.001)
       }
@@ -430,7 +430,7 @@ function buildMatJson(subCat, data, queueLength) {
       const baseOrder = getLastSortOrder(localSpecialtyData, 8.000);
       return {
         id: toPascalCase(data.name || ''),
-        name: data.name,
+        name: sanitizeText(data.name),
         region: data.region || 'Unknown',
         sortOrder: floatAdd(baseOrder, (queueLength + 1) * 0.001)
       }
@@ -441,25 +441,25 @@ function buildMatJson(subCat, data, queueLength) {
       return [
         {
           id: toPascalCase(data.mat1 || ''),
-          name: data.mat1,
+          name: sanitizeText(data.mat1),
           type: 'weekly_boss',
-          boss_name: data.bossName || '',
+          boss_name: sanitizeText(data.bossName || ''),
           region: data.region || 'Unknown',
           sortOrder: floatAdd(startOrder, 0.001)
         },
         {
           id: toPascalCase(data.mat2 || ''),
-          name: data.mat2,
+          name: sanitizeText(data.mat2),
           type: 'weekly_boss',
-          boss_name: data.bossName || '',
+          boss_name: sanitizeText(data.bossName || ''),
           region: data.region || 'Unknown',
           sortOrder: floatAdd(startOrder, 0.002)
         },
         {
           id: toPascalCase(data.mat3 || ''),
-          name: data.mat3,
+          name: sanitizeText(data.mat3),
           type: 'weekly_boss',
-          boss_name: data.bossName || '',
+          boss_name: sanitizeText(data.bossName || ''),
           region: data.region || 'Unknown',
           sortOrder: floatAdd(startOrder, 0.003)
         }
@@ -471,22 +471,22 @@ function buildMatJson(subCat, data, queueLength) {
       
       const createSeries = (s, days, offset) => ({
         id: toPascalCase(s),
-        name: s,
+        name: sanitizeText(s),
         region: data.region || 'Unknown',
         tiers: {
           "4_star": {
             id: toPascalCase("Philosophies of " + s),
-            name: "Philosophies of " + s,
+            name: sanitizeText("Philosophies of " + s),
             sortOrder: floatAdd(startOrder, offset + 0.001)
           },
           "3_star": {
             id: toPascalCase("Guide to " + s),
-            name: "Guide to " + s,
+            name: sanitizeText("Guide to " + s),
             sortOrder: floatAdd(startOrder, offset + 0.002)
           },
           "2_star": {
             id: toPascalCase("Teachings of " + s),
-            name: "Teachings of " + s,
+            name: sanitizeText("Teachings of " + s),
             sortOrder: floatAdd(startOrder, offset + 0.003)
           }
         },
@@ -506,27 +506,27 @@ function buildMatJson(subCat, data, queueLength) {
       
       const createSeries = (name, d5, d4, d3, d2, days, offset) => ({
         id: toPascalCase(name || ''),
-        name: name,
+        name: sanitizeText(name),
         region: data.region || 'Unknown',
         tiers: {
           "5_star": {
             id: toPascalCase(d5 || ''),
-            name: d5,
+            name: sanitizeText(d5),
             sortOrder: floatAdd(startOrder, offset + 0.001)
           },
           "4_star": {
             id: toPascalCase(d4 || ''),
-            name: d4,
+            name: sanitizeText(d4),
             sortOrder: floatAdd(startOrder, offset + 0.002)
           },
           "3_star": {
             id: toPascalCase(d3 || ''),
-            name: d3,
+            name: sanitizeText(d3),
             sortOrder: floatAdd(startOrder, offset + 0.003)
           },
           "2_star": {
             id: toPascalCase(d2 || ''),
-            name: d2,
+            name: sanitizeText(d2),
             sortOrder: floatAdd(startOrder, offset + 0.004)
           }
         },
@@ -545,22 +545,22 @@ function buildMatJson(subCat, data, queueLength) {
       const startOrder = floatAdd(baseOrder, queueLength * 0.003);
       return {
         id: toPascalCase(data.groupName || ''),
-        name: data.groupName,
+        name: sanitizeText(data.groupName),
         type: 'common_enemy',
         tiers: {
           "3_star": {
             id: toPascalCase(data.star3 || ''),
-            name: data.star3,
+            name: sanitizeText(data.star3),
             sortOrder: floatAdd(startOrder, 0.001)
           },
           "2_star": {
             id: toPascalCase(data.star2 || ''),
-            name: data.star2,
+            name: sanitizeText(data.star2),
             sortOrder: floatAdd(startOrder, 0.002)
           },
           "1_star": {
             id: toPascalCase(data.star1 || ''),
-            name: data.star1,
+            name: sanitizeText(data.star1),
             sortOrder: floatAdd(startOrder, 0.003)
           }
         }
@@ -571,22 +571,22 @@ function buildMatJson(subCat, data, queueLength) {
       const startOrder = floatAdd(baseOrder, queueLength * 0.003);
       return {
         id: toPascalCase(data.groupName || ''),
-        name: data.groupName,
+        name: sanitizeText(data.groupName),
         type: 'elite_enemy',
         tiers: {
           "4_star": {
             id: toPascalCase(data.star4 || ''),
-            name: data.star4,
+            name: sanitizeText(data.star4),
             sortOrder: floatAdd(startOrder, 0.001)
           },
           "3_star": {
             id: toPascalCase(data.star3 || ''),
-            name: data.star3,
+            name: sanitizeText(data.star3),
             sortOrder: floatAdd(startOrder, 0.002)
           },
           "2_star": {
             id: toPascalCase(data.star2 || ''),
-            name: data.star2,
+            name: sanitizeText(data.star2),
             sortOrder: floatAdd(startOrder, 0.003)
           }
         }
@@ -698,10 +698,12 @@ function OutputPanel({ content, isScript, onToggleView, stagedUpdates, onOpenSta
 
 // ─── Formatting Wrappers ──────────────────────────────────────────────────────
 
+const sanitizeText = (str) => typeof str === 'string' ? str.replace(/[\u00AD\u200B-\u200D\uFEFF]/g, '') : str;
+
 function formatCharData(d, releaseOrderNum, lookupMap) {
   return {
     id: toPascalCase(d.name || ''),
-    name: d.name,
+    name: sanitizeText(d.name),
     rarity: "★".repeat(d.rarity),
     weapon_type: d.weapon_type,
     element: d.element,
@@ -742,7 +744,7 @@ function formatWeaponData(d, allWeapons, lookupMap) {
 
   return {
     id: toPascalCase(d.name || ''),
-    name: d.name,
+    name: sanitizeText(d.name),
     rarity: "★".repeat(d.rarity),
     type: d.type,
     materials: {
@@ -798,7 +800,83 @@ Object.keys(stagedData).forEach(filename => {
   } catch (err) {
     console.error(\`❌ Failed to update \${filename}:\`, err.message);
   }
-});`;
+});
+
+// --- AUTOMATED IMAGE DOWNLOADER ---
+const outputDir = path.join(__dirname, 'public', 'assets', 'downloads');
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+const formatWikiName = (name) => name.replace(/[\\u00AD\\u200B-\\u200D\\uFEFF]/g, '').replace(/[:]/g, '').replace(/ /g, '_');
+const toPascalCase = (str) => str
+  .replace(/[\\u00AD\\u200B-\\u200D\\uFEFF]/g, '') 
+  .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
+  .replace(/[^a-zA-Z0-9]/g, '');
+
+const itemsToDownload = [];
+Object.entries(stagedData).forEach(([filename, items]) => {
+  items.forEach(item => {
+    let type = 'item';
+    if (filename === 'characters.json') type = 'character';
+    if (filename === 'weapons.json') type = 'weapon';
+    
+    // Grab top-level name
+    if (item.name && !item.tiers) itemsToDownload.push({ name: item.name, type });
+    
+    // Grab nested tier names (for talents, ascensions, enemies)
+    if (item.tiers) {
+      Object.values(item.tiers).forEach(tier => {
+        if (tier.name) itemsToDownload.push({ name: tier.name, type: 'item' });
+      });
+    }
+  });
+});
+
+const downloadImage = async (wikiFileName, filepath) => {
+  const apiUrl = \`https://genshin-impact.fandom.com/api.php?action=query&titles=File:\${wikiFileName}&prop=imageinfo&iiprop=url&format=json\`;
+  const apiResponse = await fetch(apiUrl, { headers: { 'User-Agent': 'TravelersToolkit/1.0' } });
+  const apiData = await apiResponse.json();
+  const pages = apiData.query.pages;
+  const pageId = Object.keys(pages)[0];
+
+  if (pageId === "-1" || !pages[pageId].imageinfo) throw new Error("Not found on Wiki");
+  
+  const imgResponse = await fetch(pages[pageId].imageinfo[0].url, { headers: { 'User-Agent': 'TravelersToolkit/1.0' } });
+  if (!imgResponse.ok) throw new Error(\`CDN status \${imgResponse.status}\`);
+  
+  const arrayBuffer = await imgResponse.arrayBuffer();
+  fs.writeFileSync(filepath, Buffer.from(arrayBuffer));
+};
+
+const runDownloads = async () => {
+  console.log("\\n🚀 Starting Fandom Image Rip...");
+  for (const item of itemsToDownload) {
+    const finalId = toPascalCase(item.name);
+    const savePath = path.join(outputDir, \`\${finalId}.png\`);
+    
+    // Skip if we already downloaded it previously
+    if (fs.existsSync(savePath)) continue;
+    
+    let prefix = "Item_";
+    if (item.type === "character") prefix = ""; 
+    if (item.type === "weapon") prefix = "Weapon_";
+    
+    const suffix = item.type === "character" ? "_Icon.png" : ".png";
+    const wikiFileName = \`\${prefix}\${formatWikiName(item.name)}\${suffix}\`;
+    
+    try {
+      process.stdout.write(\`Downloading: \${item.name} -> \${finalId}.png... \`);
+      await downloadImage(wikiFileName, savePath);
+      console.log(\`✅ Success!\`);
+    } catch (err) {
+      console.log(\`❌ \${err.message}\`);
+    }
+  }
+  console.log("🎉 Update and Asset Rip complete!");
+};
+
+runDownloads();`;
 }
 
 function StagingModal({ isOpen, onClose, stagedUpdates, setStagedUpdates }) {
