@@ -701,7 +701,7 @@ export default function Planner() {
       for (const enemy of eliteEnemyData) {
         if (matchedEnemy) break;
         for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
-          if (tierObj.name === item.name || tierObj.id === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
+          if (tierObj.name === item.name || tierObj.id.toLowerCase() === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
             matchedEnemy = enemy;
             matchedTierId = tierObj.id;
             break;
@@ -754,7 +754,7 @@ export default function Planner() {
       for (const enemy of commonEnemyData) {
         if (matchedEnemy) break;
         for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
-          if (tierObj.name === item.name || tierObj.id === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
+          if (tierObj.name === item.name || tierObj.id.toLowerCase() === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
             matchedEnemy = enemy;
             matchedTierId = tierObj.id;
             break;
