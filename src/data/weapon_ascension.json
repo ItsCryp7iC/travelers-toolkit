@@ -670,5 +670,101 @@
       3,
       6
     ]
+  },
+  {
+    "id": "PaleStarArmy",
+    "name": "Pale Star Army",
+    "region": "Snezhnaya",
+    "tiers": {
+      "5_star": {
+        "id": "TriumphOfThePaleStarArmy",
+        "name": "Triumph of the Pale Star Army",
+        "sortOrder": 7.085
+      },
+      "4_star": {
+        "id": "ClarionOfThePaleStarArmy",
+        "name": "Clarion of the Pale Star Army",
+        "sortOrder": 7.086
+      },
+      "3_star": {
+        "id": "MusterOfThePaleStarArmy",
+        "name": "Muster of the Pale Star Army",
+        "sortOrder": 7.087
+      },
+      "2_star": {
+        "id": "RiseOfThePaleStarArmy",
+        "name": "Rise of the Pale Star Army",
+        "sortOrder": 7.088
+      }
+    },
+    "domain": "Scars of Cursed Obsession",
+    "days": [
+      1,
+      4
+    ]
+  },
+  {
+    "id": "CellaredSpiritualNectar",
+    "name": "Cellared Spiritual Nectar",
+    "region": "Snezhnaya",
+    "tiers": {
+      "5_star": {
+        "id": "RevelryOfTheCellaredSpiritualNectar",
+        "name": "Revelry of the Cellared Spiritual Nectar",
+        "sortOrder": 7.089
+      },
+      "4_star": {
+        "id": "ExhilarationOfTheCellaredSpiritualNectar",
+        "name": "Exhilaration of the Cellared Spiritual Nectar",
+        "sortOrder": 7.09
+      },
+      "3_star": {
+        "id": "IntoxicationOfTheCellaredSpiritualNectar",
+        "name": "Intoxication of the Cellared Spiritual Nectar",
+        "sortOrder": 7.091
+      },
+      "2_star": {
+        "id": "MeasuredPourOfTheCellaredSpiritualNectar",
+        "name": "Measured Pour of the Cellared Spiritual Nectar",
+        "sortOrder": 7.092
+      }
+    },
+    "domain": "Scars of Cursed Obsession",
+    "days": [
+      2,
+      5
+    ]
+  },
+  {
+    "id": "TheFrostEmperor",
+    "name": "The Frost Emperor",
+    "region": "Snezhnaya",
+    "tiers": {
+      "5_star": {
+        "id": "TheFrostEmperorsFarewell",
+        "name": "The Frost Emperor's Farewell",
+        "sortOrder": 7.093
+      },
+      "4_star": {
+        "id": "TheFrostEmperorsLament",
+        "name": "The Frost Emperor's Lament",
+        "sortOrder": 7.094
+      },
+      "3_star": {
+        "id": "TheFrostEmperorsCeremony",
+        "name": "The Frost Emperor's Ceremony",
+        "sortOrder": 7.095
+      },
+      "2_star": {
+        "id": "TheFrostEmperorsRevival",
+        "name": "The Frost Emperor's Revival",
+        "sortOrder": 7.096
+      }
+    },
+    "domain": "Scars of Cursed Obsession",
+    "days": [
+      3,
+      6
+    ]
   }
 ]

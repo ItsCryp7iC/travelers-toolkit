@@ -310,5 +310,29 @@
     "boss_name": "Heretic of the False Moon",
     "region": "Nod-Krai",
     "sortOrder": 3.039
+  },
+  {
+    "id": "CounterfeitResin",
+    "name": "Counterfeit Resin",
+    "type": "weekly_boss",
+    "boss_name": "Exalted Master of the Heretical Path",
+    "region": "Sumeru",
+    "sortOrder": 3.04
+  },
+  {
+    "id": "TwistedWitheredBranch",
+    "name": "Twisted Withered Branch",
+    "type": "weekly_boss",
+    "boss_name": "Exalted Master of the Heretical Path",
+    "region": "Sumeru",
+    "sortOrder": 3.041
+  },
+  {
+    "id": "ProfanedSprout",
+    "name": "Profaned Sprout",
+    "type": "weekly_boss",
+    "boss_name": "Exalted Master of the Heretical Path",
+    "region": "Sumeru",
+    "sortOrder": 3.042
   }
 ]

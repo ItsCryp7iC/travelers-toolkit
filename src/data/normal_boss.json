@@ -342,5 +342,37 @@
     "boss_name": "Lord of the Hidden Depths: Whisperer of Nightmares",
     "region": "Nod-Krai",
     "sortOrder": 2.043
+  },
+  {
+    "id": "PrismaticSeveredTail",
+    "name": "Prismatic Severed Tail",
+    "type": "normal_boss",
+    "boss_name": "Radiant Moongecko",
+    "region": "Nod-Krai",
+    "sortOrder": 2.044
+  },
+  {
+    "id": "PlumeOfTheFallenWatcher",
+    "name": "Plume of the Fallen Watcher",
+    "type": "normal_boss",
+    "boss_name": "The Open-Eyed",
+    "region": "Mondstadt",
+    "sortOrder": 2.045
+  },
+  {
+    "id": "UnscorchedBlossomBranch",
+    "name": "Unscorched Blossom Branch",
+    "type": "normal_boss",
+    "boss_name": "Immortal Construct",
+    "region": "Snezhnaya",
+    "sortOrder": 2.046
+  },
+  {
+    "id": "SeveredTailOfTheSkyRoamer",
+    "name": "Severed Tail of the Sky-Roamer",
+    "type": "normal_boss",
+    "boss_name": "Chimeric Winged Lion",
+    "region": "Snezhnaya",
+    "sortOrder": 2.047
   }
 ]

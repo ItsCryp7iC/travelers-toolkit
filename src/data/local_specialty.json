@@ -334,5 +334,35 @@
     "name": "Pine Amber",
     "region": "Nod-Krai",
     "sortOrder": 8.056
+  },
+  {
+    "id": "EtherwingMoth",
+    "name": "Etherwing Moth",
+    "region": "Mondstadt",
+    "sortOrder": 8.057
+  },
+  {
+    "id": "TeardropOfTheMoon",
+    "name": "Teardrop of the Moon",
+    "region": "Nod-Krai",
+    "sortOrder": 8.058
+  },
+  {
+    "id": "FrostfairyFlower",
+    "name": "Frostfairy Flower",
+    "region": "Snezhnaya",
+    "sortOrder": 8.059
+  },
+  {
+    "id": "Flockingweed",
+    "name": "Flockingweed",
+    "region": "Snezhnaya",
+    "sortOrder": 8.06
+  },
+  {
+    "id": "GoldenFern",
+    "name": "Golden Fern",
+    "region": "Snezhnaya",
+    "sortOrder": 8.061
   }
 ]

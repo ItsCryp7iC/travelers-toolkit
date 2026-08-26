@@ -1854,5 +1854,133 @@
       "gem_family_id": "PrithivaTopaz"
     },
     "release_order": 110
+  },
+  {
+    "id": "Varka",
+    "name": "Varka",
+    "rarity": "★★★★★",
+    "weapon_type": "Claymore",
+    "element": "Anemo",
+    "materials": {
+      "world_boss_material_id": "PrismaticSeveredTail",
+      "weekly_boss_material_id": "AscendedSampleRook",
+      "talent_material_family_id": "Freedom",
+      "enemy_material_family_id": "Landcruisers",
+      "local_specialty_id": "Wolfhook",
+      "gem_family_id": "VayudaTurquoise"
+    },
+    "release_order": 111
+  },
+  {
+    "id": "Linnea",
+    "name": "Linnea",
+    "rarity": "★★★★★",
+    "weapon_type": "Bow",
+    "element": "Geo",
+    "materials": {
+      "world_boss_material_id": "PlumeOfTheFallenWatcher",
+      "weekly_boss_material_id": "ElixirOfTheHeretic",
+      "talent_material_family_id": "Vagrancy",
+      "enemy_material_family_id": "FatuiOprichniki",
+      "local_specialty_id": "EtherwingMoth",
+      "gem_family_id": "PrithivaTopaz"
+    },
+    "release_order": 112
+  },
+  {
+    "id": "Prune",
+    "name": "Prune",
+    "rarity": "★★★★",
+    "weapon_type": "Catalyst",
+    "element": "Anemo",
+    "materials": {
+      "world_boss_material_id": "RadiantAntler",
+      "weekly_boss_material_id": "MaskOfTheVirtuousDoctor",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "TreasureHoarder",
+      "local_specialty_id": "WinterIcelea",
+      "gem_family_id": "VayudaTurquoise"
+    },
+    "release_order": 113
+  },
+  {
+    "id": "Nicole",
+    "name": "Nicole",
+    "rarity": "★★★★★",
+    "weapon_type": "Catalyst",
+    "element": "Pyro",
+    "materials": {
+      "world_boss_material_id": "RemnantOfTheDreadwing",
+      "weekly_boss_material_id": "CounterfeitResin",
+      "talent_material_family_id": "Elysium",
+      "enemy_material_family_id": "FatuiOprichniki",
+      "local_specialty_id": "PineAmber",
+      "gem_family_id": "AgnidusAgate"
+    },
+    "release_order": 114
+  },
+  {
+    "id": "Lohen",
+    "name": "Lohen",
+    "rarity": "★★★★★",
+    "weapon_type": "Polearm",
+    "element": "Cryo",
+    "materials": {
+      "world_boss_material_id": "PrismaticSeveredTail",
+      "weekly_boss_material_id": "AscendedSampleKnight",
+      "talent_material_family_id": "Resistance",
+      "enemy_material_family_id": "HilichurlShooter",
+      "local_specialty_id": "EtherwingMoth",
+      "gem_family_id": "ShivadaJade"
+    },
+    "release_order": 115
+  },
+  {
+    "id": "Sandrone",
+    "name": "Sandrone",
+    "rarity": "★★★★★",
+    "weapon_type": "Claymore",
+    "element": "Cryo",
+    "materials": {
+      "world_boss_material_id": "PlumeOfTheFallenWatcher",
+      "weekly_boss_material_id": "MadmansRestraint",
+      "talent_material_family_id": "Vagrancy",
+      "enemy_material_family_id": "Landcruisers",
+      "local_specialty_id": "SubdetectionUnit",
+      "gem_family_id": "ShivadaJade"
+    },
+    "release_order": 116
+  },
+  {
+    "id": "Alyosha",
+    "name": "Alyosha",
+    "rarity": "★★★★",
+    "weapon_type": "Polearm",
+    "element": "Electro",
+    "materials": {
+      "world_boss_material_id": "SeveredTailOfTheSkyRoamer",
+      "weekly_boss_material_id": "ElixirOfTheHeretic",
+      "talent_material_family_id": "Fortitude",
+      "enemy_material_family_id": "AberrantChimericMonsters",
+      "local_specialty_id": "Flockingweed",
+      "gem_family_id": "VajradaAmethyst"
+    },
+    "release_order": 117
+  },
+  {
+    "id": "Odette",
+    "name": "Odette",
+    "rarity": "★★★★★",
+    "weapon_type": "Sword",
+    "element": "Cryo",
+    "materials": {
+      "world_boss_material_id": "UnscorchedBlossomBranch",
+      "weekly_boss_material_id": "TwistedWitheredBranch",
+      "talent_material_family_id": "Charity",
+      "enemy_material_family_id": "SnowlandFae",
+      "local_specialty_id": "FrostfairyFlower",
+      "gem_family_id": "ShivadaJade"
+    },
+    "release_order": 118
   }
 ]

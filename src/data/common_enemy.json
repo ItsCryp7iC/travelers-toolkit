@@ -372,5 +372,49 @@
         "sortOrder": 5.051
       }
     }
+  },
+  {
+    "id": "SnowlandFae",
+    "name": "Snowland Fae",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "EtherealCrystalscaleStone",
+        "name": "Ethereal Crystalscale Stone",
+        "sortOrder": 5.052
+      },
+      "2_star": {
+        "id": "EtherealCrystal",
+        "name": "Ethereal Crystal",
+        "sortOrder": 5.053
+      },
+      "1_star": {
+        "id": "EtherealGlimmershard",
+        "name": "Ethereal Glimmershard",
+        "sortOrder": 5.054
+      }
+    }
+  },
+  {
+    "id": "AberrantChimericMonsters",
+    "name": "Aberrant Chimeric Monsters",
+    "type": "common_enemy",
+    "tiers": {
+      "3_star": {
+        "id": "PrimeChimericNexus",
+        "name": "Prime Chimeric Nexus",
+        "sortOrder": 5.055
+      },
+      "2_star": {
+        "id": "SymbioticChimericNucleus",
+        "name": "Symbiotic Chimeric Nucleus",
+        "sortOrder": 5.056
+      },
+      "1_star": {
+        "id": "ChimericCore",
+        "name": "Chimeric Core",
+        "sortOrder": 5.057
+      }
+    }
   }
 ]

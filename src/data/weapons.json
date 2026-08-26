@@ -744,6 +744,30 @@
     "release_order": 4.127
   },
   {
+    "id": "HereticsMoltenBlade",
+    "name": "Heretic's Molten Blade",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "BlazingSacrificialHearts",
+      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
+      "enemy_material_family_id": "SauroformTribalWarriors"
+    },
+    "release_order": 4.128
+  },
+  {
+    "id": "EmBerWell",
+    "name": "Em­ber­well",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "PaleStarArmy",
+      "enhancement_material_family_id": "VolkodlakBrute",
+      "enemy_material_family_id": "SnowlandFae"
+    },
+    "release_order": 4.129
+  },
+  {
     "id": "FavoniusGreatsword",
     "name": "Favonius Greatsword",
     "rarity": "★★★★",
@@ -1044,6 +1068,30 @@
     "release_order": 4.225
   },
   {
+    "id": "ForgedByTheGoldenMelody",
+    "name": "Forged by the Golden Melody",
+    "rarity": "★★★★",
+    "type": "Claymore",
+    "materials": {
+      "ascension_material_family_id": "SacredDewdrops",
+      "enhancement_material_family_id": "PraetorianGolem",
+      "enemy_material_family_id": "FontemerAberrant"
+    },
+    "release_order": 4.226
+  },
+  {
+    "id": "BladeOfAToneMent",
+    "name": "Blade of A­tone­ment",
+    "rarity": "★★★★",
+    "type": "Claymore",
+    "materials": {
+      "ascension_material_family_id": "PaleStarArmy",
+      "enhancement_material_family_id": "VolkodlakBrute",
+      "enemy_material_family_id": "SnowlandFae"
+    },
+    "release_order": 4.227
+  },
+  {
     "id": "DragonsBane",
     "name": "Dragon's Bane",
     "rarity": "★★★★",
@@ -1318,6 +1366,30 @@
       "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 4.323
+  },
+  {
+    "id": "Frostbreath",
+    "name": "Frostbreath",
+    "rarity": "★★★★",
+    "type": "Polearm",
+    "materials": {
+      "ascension_material_family_id": "CellaredSpiritualNectar",
+      "enhancement_material_family_id": "VolkodlakBrute",
+      "enemy_material_family_id": "AberrantChimericMonsters"
+    },
+    "release_order": 4.324
+  },
+  {
+    "id": "SongOfTheVigIl",
+    "name": "Song of the Vig­il",
+    "rarity": "★★★★",
+    "type": "Polearm",
+    "materials": {
+      "ascension_material_family_id": "TheFrostEmperor",
+      "enhancement_material_family_id": "WildwoodLeshy",
+      "enemy_material_family_id": "SnowlandFae"
+    },
+    "release_order": 4.325
   },
   {
     "id": "FavoniusCodex",
@@ -1618,6 +1690,30 @@
       "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 4.425
+  },
+  {
+    "id": "ClashOfKings",
+    "name": "Clash of Kings",
+    "rarity": "★★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "TalismanOfTheForestDew",
+      "enhancement_material_family_id": "PrimalConstruct",
+      "enemy_material_family_id": "TheEremites"
+    },
+    "release_order": 4.426
+  },
+  {
+    "id": "EchOesOfTheHeart",
+    "name": "Ech­oes of the Heart",
+    "rarity": "★★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "PaleStarArmy",
+      "enhancement_material_family_id": "VolkodlakBrute",
+      "enemy_material_family_id": "SnowlandFae"
+    },
+    "release_order": 4.427
   },
   {
     "id": "FavoniusWarbow",
@@ -1956,6 +2052,30 @@
     "release_order": 4.528
   },
   {
+    "id": "JadeVista",
+    "name": "Jade Vista",
+    "rarity": "★★★★",
+    "type": "Bow",
+    "materials": {
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "FatuiSkirmisher"
+    },
+    "release_order": 4.529
+  },
+  {
+    "id": "CovenantOfFrostAndSnow",
+    "name": "Cov­en­ant of Frost and Snow",
+    "rarity": "★★★★",
+    "type": "Bow",
+    "materials": {
+      "ascension_material_family_id": "PaleStarArmy",
+      "enhancement_material_family_id": "WildwoodLeshy",
+      "enemy_material_family_id": "AberrantChimericMonsters"
+    },
+    "release_order": 4.53
+  },
+  {
     "id": "AquilaFavonia",
     "name": "Aquila Favonia",
     "rarity": "★★★★★",
@@ -2148,6 +2268,18 @@
     "release_order": 5.116
   },
   {
+    "id": "WhiteLakeFrostFeather",
+    "name": "White­lake Frost­feather",
+    "rarity": "★★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "CellaredSpiritualNectar",
+      "enhancement_material_family_id": "WildwoodLeshy",
+      "enemy_material_family_id": "AberrantChimericMonsters"
+    },
+    "release_order": 5.117
+  },
+  {
     "id": "SkywardPride",
     "name": "Skyward Pride",
     "rarity": "★★★★★",
@@ -2254,6 +2386,30 @@
       "enemy_material_family_id": "NatlanSaurian"
     },
     "release_order": 5.209
+  },
+  {
+    "id": "GestOfTheMightyWolf",
+    "name": "Gest of the Mighty Wolf",
+    "rarity": "★★★★★",
+    "type": "Claymore",
+    "materials": {
+      "ascension_material_family_id": "BorealWolfTeeth",
+      "enhancement_material_family_id": "FisherOfHiddenDepths",
+      "enemy_material_family_id": "FatuiSkirmisher"
+    },
+    "release_order": 5.21
+  },
+  {
+    "id": "ATeaspoonOfTranscendence",
+    "name": "A Teaspoon of Transcendence",
+    "rarity": "★★★★★",
+    "type": "Claymore",
+    "materials": {
+      "ascension_material_family_id": "TheFarnorthScions",
+      "enhancement_material_family_id": "PrecursorsSecretSourceMatrixOfOverseerNetwork",
+      "enemy_material_family_id": "FatuiOprichniki"
+    },
+    "release_order": 5.211
   },
   {
     "id": "PrimordialJadeWingedSpear",
@@ -2400,6 +2556,18 @@
     "release_order": 5.312
   },
   {
+    "id": "DisasterAndRemorse",
+    "name": "Disaster and Remorse",
+    "rarity": "★★★★★",
+    "type": "Polearm",
+    "materials": {
+      "ascension_material_family_id": "DecarabianTiles",
+      "enhancement_material_family_id": "RadiantBeast",
+      "enemy_material_family_id": "Whopperflower"
+    },
+    "release_order": 5.313
+  },
+  {
     "id": "SkywardAtlas",
     "name": "Skyward Atlas",
     "rarity": "★★★★★",
@@ -2412,8 +2580,8 @@
     "release_order": 5.401
   },
   {
-    "id": "LostPrayertotheSacredWinds",
-    "name": "Lost Prayertothe Sacred Winds",
+    "id": "LostPrayerToTheSacredWinds",
+    "name": "Lost Prayer to the Sacred Winds",
     "rarity": "★★★★★",
     "type": "Catalyst",
     "materials": {
@@ -2616,6 +2784,18 @@
     "release_order": 5.418
   },
   {
+    "id": "AngelosHeptades",
+    "name": "Angelos' Heptades",
+    "rarity": "★★★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "ArtfulDevices",
+      "enhancement_material_family_id": "DomainKeeper",
+      "enemy_material_family_id": "Landcruisers"
+    },
+    "release_order": 5.419
+  },
+  {
     "id": "SkywardHarp",
     "name": "Skyward Harp",
     "rarity": "★★★★★",
@@ -2640,8 +2820,8 @@
     "release_order": 5.502
   },
   {
-    "id": "ElegyfortheEnd",
-    "name": "Elegyforthe End",
+    "id": "ElegyForTheEnd",
+    "name": "Elegy for the End",
     "rarity": "★★★★★",
     "type": "Bow",
     "materials": {
@@ -2746,5 +2926,17 @@
       "enemy_material_family_id": "TreasureHoarder"
     },
     "release_order": 5.511
+  },
+  {
+    "id": "GoldenFrostboundOath",
+    "name": "Golden Frostbound Oath",
+    "rarity": "★★★★★",
+    "type": "Bow",
+    "materials": {
+      "ascension_material_family_id": "LongNightFlints",
+      "enhancement_material_family_id": "DomainKeeper",
+      "enemy_material_family_id": "FatuiOprichniki"
+    },
+    "release_order": 5.512
   }
 ]

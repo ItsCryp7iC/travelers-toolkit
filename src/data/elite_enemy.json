@@ -636,5 +636,93 @@
         "sortOrder": 6.087
       }
     }
+  },
+  {
+    "id": "DomainKeeper",
+    "name": "Domain Keeper",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "JeweledFlamingHilt",
+        "name": "Jeweled Flaming Hilt",
+        "sortOrder": 6.088
+      },
+      "3_star": {
+        "id": "FracturedFlamingHilt",
+        "name": "Fractured Flaming Hilt",
+        "sortOrder": 6.089
+      },
+      "2_star": {
+        "id": "FadedFlamingHilt",
+        "name": "Faded Flaming Hilt",
+        "sortOrder": 6.09
+      }
+    }
+  },
+  {
+    "id": "PrecursorsSecretSourceMatrixOfOverseerNetwork",
+    "name": "Precursor's Secret Source Matrix of Overseer Network",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "UnblemishedLunarIron",
+        "name": "Unblemished Lunar Iron",
+        "sortOrder": 6.091
+      },
+      "3_star": {
+        "id": "DepletedLunarIron",
+        "name": "Depleted Lunar Iron",
+        "sortOrder": 6.092
+      },
+      "2_star": {
+        "id": "FracturedLunarIron",
+        "name": "Fractured Lunar Iron",
+        "sortOrder": 6.093
+      }
+    }
+  },
+  {
+    "id": "VolkodlakBrute",
+    "name": "Volkodlak Brute",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "AccretedGrowth",
+        "name": "Accreted Growth",
+        "sortOrder": 6.094
+      },
+      "3_star": {
+        "id": "AccretedMass",
+        "name": "Accreted Mass",
+        "sortOrder": 6.095
+      },
+      "2_star": {
+        "id": "AccretedFragment",
+        "name": "Accreted Fragment",
+        "sortOrder": 6.096
+      }
+    }
+  },
+  {
+    "id": "WildwoodLeshy",
+    "name": "Wildwood Leshy",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "CoiledCoreOfLife",
+        "name": "Coiled Core of Life",
+        "sortOrder": 6.097
+      },
+      "3_star": {
+        "id": "SproutNodeOfLife",
+        "name": "Sprout Node of Life",
+        "sortOrder": 6.098
+      },
+      "2_star": {
+        "id": "HollowRootOfLife",
+        "name": "Hollow Root of Life",
+        "sortOrder": 6.099
+      }
+    }
   }
 ]

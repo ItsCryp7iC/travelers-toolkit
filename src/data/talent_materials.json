@@ -565,5 +565,86 @@
       2,
       6
     ]
+  },
+  {
+    "id": "Charity",
+    "name": "Charity",
+    "region": "Snezhnaya",
+    "tiers": {
+      "4_star": {
+        "id": "PhilosophiesOfCharity",
+        "name": "Philosophies of Charity",
+        "sortOrder": 4.064
+      },
+      "3_star": {
+        "id": "GuideToCharity",
+        "name": "Guide to Charity",
+        "sortOrder": 4.065
+      },
+      "2_star": {
+        "id": "TeachingsOfCharity",
+        "name": "Teachings of Charity",
+        "sortOrder": 4.066
+      }
+    },
+    "domain": "Relics of the Fallen Grace",
+    "days": [
+      1,
+      4
+    ]
+  },
+  {
+    "id": "Fortitude",
+    "name": "Fortitude",
+    "region": "Snezhnaya",
+    "tiers": {
+      "4_star": {
+        "id": "PhilosophiesOfFortitude",
+        "name": "Philosophies of Fortitude",
+        "sortOrder": 4.067
+      },
+      "3_star": {
+        "id": "GuideToFortitude",
+        "name": "Guide to Fortitude",
+        "sortOrder": 4.068
+      },
+      "2_star": {
+        "id": "TeachingsOfFortitude",
+        "name": "Teachings of Fortitude",
+        "sortOrder": 4.069
+      }
+    },
+    "domain": "Relics of the Fallen Grace",
+    "days": [
+      2,
+      5
+    ]
+  },
+  {
+    "id": "Glory",
+    "name": "Glory",
+    "region": "Snezhnaya",
+    "tiers": {
+      "4_star": {
+        "id": "PhilosophiesOfGlory",
+        "name": "Philosophies of Glory",
+        "sortOrder": 4.07
+      },
+      "3_star": {
+        "id": "GuideToGlory",
+        "name": "Guide to Glory",
+        "sortOrder": 4.071
+      },
+      "2_star": {
+        "id": "TeachingsOfGlory",
+        "name": "Teachings of Glory",
+        "sortOrder": 4.072
+      }
+    },
+    "domain": "Relics of the Fallen Grace",
+    "days": [
+      3,
+      6
+    ]
   }
 ]
