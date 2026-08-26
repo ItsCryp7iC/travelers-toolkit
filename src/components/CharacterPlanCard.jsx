@@ -1,5 +1,6 @@
 import React from 'react'
 import { formatName } from '../utils/gameData'
+import { toPascalCase } from '../utils/assetHelper'
 import { formatNumber, formatItemName } from '../utils/calculator'
 import characterGemsData from '../data/character_gems.json'
 import normalBossData from '../data/normal_boss.json'
@@ -13,46 +14,10 @@ import weaponAscData from '../data/weapon_ascension.json'
 export default function CharacterPlanCard({ entryObj, inventory, categories = {} }) {
  const { name, entry, totalCosts, talentState, character } = entryObj;
  
- const getSafeImgId = (id) => {
- if (!id) return '';
- 
- // 1. Decode URI to catch %E2%80%94 (em-dash), then strip apostrophes and replace dashes with spaces
- let strId = decodeURIComponent(id.toString());
- strId = strId.replace(/['’]/g, '').replace(/[-—]/g, ' ');
- 
- // 2. Intercept Talent Books (continuous strings)
- const talentMatch = strId.match(/^(philosophiesof|guideto|teachingsof)(.+)$/i);
- if (talentMatch) {
- const prefix = talentMatch[1].toLowerCase();
- const suffix = talentMatch[2];
- 
- let formattedPrefix = '';
- if (prefix === 'philosophiesof') formattedPrefix = 'Philosophiesof';
- else if (prefix === 'guideto') formattedPrefix = 'Guideto';
- else if (prefix === 'teachingsof') formattedPrefix = 'Teachingsof';
- 
- const formattedSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
- return `${formattedPrefix}${formattedSuffix}`;
- }
- 
- // 3. True Title Case (spaces removed)
- const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for', 'from'];
- return strId
- .split(/[\s_]+/) 
- .map((word, index) => {
- if (!word) return '';
- const lowerWord = word.toLowerCase();
- // Keep articles/prepositions lowercase unless they are the first word
- if (index > 0 && lowercaseExceptions.includes(lowerWord)) {
- return lowerWord;
- }
- return word.charAt(0).toUpperCase() + word.slice(1);
- })
- .join('');
- };
+
 
  const displayName = formatName(name);
- const avatarUrl = `https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/characters/${getSafeImgId(name)}.png`;
+ const avatarUrl = `https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/characters/${toPascalCase(name)}.png`;
 
  const getFolder = (category) => {
  switch (category) {
@@ -137,7 +102,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  </div>
  {character?.element && (
  <img 
- src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/elements/${getSafeImgId(character.element)}.png`} 
+ src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/elements/${toPascalCase(character.element)}.png`} 
  alt={character.element} 
  className="w-8 h-8 object-contain opacity-80 ml-auto" 
  />
@@ -184,7 +149,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  return (
  <div key={matId} className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-black/30 border border-white/5 relative group/mat hover:border-primary/30 transition-colors">
  <img 
- src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[matId])}/${getSafeImgId(getItemName(matId))}.png`} 
+ src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[matId])}/${toPascalCase(getItemName(matId))}.png`} 
  alt={formatItemName(matId)} 
  className="w-8 h-8 object-contain mb-1 drop-shadow-md"
  title={`${formatItemName(matId)}\nNeeded: ${toFarm} (Total: ${qty})`}

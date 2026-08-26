@@ -1,5 +1,6 @@
 import React from 'react'
 import { formatName } from '../utils/gameData'
+import { toPascalCase } from '../utils/assetHelper'
 import { formatNumber, formatItemName } from '../utils/calculator'
 import characterGemsData from '../data/character_gems.json'
 import normalBossData from '../data/normal_boss.json'
@@ -15,37 +16,10 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  const { name, entry, totalCosts } = entryObj;
  const weapon = weaponsData.find(w => w.name === name) || {};
  
- const getSafeImgId = (id) => {
- if (!id) return '';
- let strId = decodeURIComponent(id.toString());
- strId = strId.replace(/['’]/g, '').replace(/[-—]/g, ' ');
- const talentMatch = strId.match(/^(philosophiesof|guideto|teachingsof)(.+)$/i);
- if (talentMatch) {
- const prefix = talentMatch[1].toLowerCase();
- const suffix = talentMatch[2];
- let formattedPrefix = '';
- if (prefix === 'philosophiesof') formattedPrefix = 'Philosophiesof';
- else if (prefix === 'guideto') formattedPrefix = 'Guideto';
- else if (prefix === 'teachingsof') formattedPrefix = 'Teachingsof';
- const formattedSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
- return `${formattedPrefix}${formattedSuffix}`;
- }
- const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for', 'from'];
- return strId
- .split(/[\s_]+/) 
- .map((word, index) => {
- if (!word) return '';
- const lowerWord = word.toLowerCase();
- if (index > 0 && lowercaseExceptions.includes(lowerWord)) {
- return lowerWord;
- }
- return word.charAt(0).toUpperCase() + word.slice(1);
- })
- .join('');
- };
+
 
  const displayName = formatName(name);
- const avatarUrl = `https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/weapons/${getSafeImgId(name)}.png`;
+ const avatarUrl = `https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/weapons/${toPascalCase(name)}.png`;
 
  const getFolder = (category) => {
  switch (category) {
@@ -143,7 +117,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  </div>
  {weapon.type && (
  <img 
- src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/billets/${getSafeImgId(weapon.type)}.png`} 
+ src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/billets/${toPascalCase(weapon.type)}.png`} 
  alt={weapon.type} 
  className="w-8 h-8 object-contain opacity-80 ml-auto" 
  />
@@ -191,7 +165,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  return (
  <div key={index} className="flex flex-col items-center p-2 bg-bg-surface rounded-lg border border-white/5">
  <img 
- src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[actualId])}/${getSafeImgId(getItemName(actualId) || actualId)}.png`} 
+ src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[actualId])}/${toPascalCase(getItemName(actualId) || actualId)}.png`} 
  alt={actualId} 
  className="w-8 h-8 object-contain mb-1"
  />

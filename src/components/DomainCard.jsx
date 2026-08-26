@@ -1,5 +1,5 @@
 import React from 'react'
-import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
+import { getCharacterAvatar, getWeaponIcon, getMaterialIcon, toPascalCase } from '../utils/assetHelper'
 import { formatItemName } from '../utils/calculator'
 
 const RARITY_COLORS = {
@@ -12,47 +12,6 @@ const RARITY_COLORS = {
 
 export default function DomainCard({ domainName, familyObj, accent, globalCosts, inventory, itemFolder = "weapon_ascension_materials" }) {
   const { familyName, familyData, items, neededBy } = familyObj;
-
-  const getSafeImgId = (id) => {
-    if (!id) return '';
-
-    // 1. Decode URI to catch %E2%80%94 (em-dash), then strip apostrophes and replace dashes with spaces
-    let strId = decodeURIComponent(id.toString());
-    strId = strId.replace(/['’]/g, '').replace(/[-—]/g, ' ');
-
-    // 2. Intercept Talent Books (continuous strings)
-    const talentMatch = strId.match(/^(philosophiesof|guideto|teachingsof)(.+)$/i);
-    if (talentMatch) {
-      const prefix = talentMatch[1].toLowerCase();
-      const suffix = talentMatch[2];
-
-      let formattedPrefix = '';
-      if (prefix === 'philosophiesof') formattedPrefix = 'Philosophiesof';
-      else if (prefix === 'guideto') formattedPrefix = 'Guideto';
-      else if (prefix === 'teachingsof') formattedPrefix = 'Teachingsof';
-
-      const formattedSuffix = suffix.charAt(0).toUpperCase() + suffix.slice(1);
-      return `${formattedPrefix}${formattedSuffix}`;
-    }
-
-    // 3. True Title Case (spaces removed)
-    const lowercaseExceptions = ['of', 'the', 'a', 'an', 'to', 'and', 'in', 'on', 'for', 'from'];
-    let finalId = strId
-      .split(/[\s_]+/)
-      .map((word, index) => {
-        if (!word) return '';
-        const lowerWord = word.toLowerCase();
-        // Keep articles/prepositions lowercase unless they are the first word
-        if (index > 0 && lowercaseExceptions.includes(lowerWord)) {
-          return lowerWord;
-        }
-        return word.charAt(0).toUpperCase() + word.slice(1);
-      })
-      .join('');
-
-    if (finalId === 'CrownofInsight') return 'CrownOfInsight';
-    return finalId;
-  };
 
   const chars = neededBy?.filter(e => e.type === 'character') || [];
   const weaps = neededBy?.filter(e => e.type === 'weapon') || [];
@@ -92,7 +51,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
                   <img
-                    src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${itemFolder}/${getSafeImgId(tier.name)}.png`}
+                    src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${itemFolder}/${toPascalCase(tier.name)}.png`}
                     alt={tier.name}
                     className="w-8 h-8 object-contain drop-shadow-md"
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
@@ -127,7 +86,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 {chars.map((entity, i) => (
                   <div key={`char-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
                     <img
-                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/characters/${getSafeImgId(entity.name)}.png`}
+                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/characters/${toPascalCase(entity.name)}.png`}
                       alt={entity.name}
                       title={entity.name}
                       className="w-full h-full object-cover relative z-10"
@@ -144,7 +103,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 {weaps.map((entity, i) => (
                   <div key={`weap-${i}`} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
                     <img
-                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/weapons/${getSafeImgId(entity.name)}.png`}
+                      src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/weapons/${toPascalCase(entity.name)}.png`}
                       alt={entity.name}
                       title={entity.name}
                       className="w-full h-full object-cover relative z-10"
