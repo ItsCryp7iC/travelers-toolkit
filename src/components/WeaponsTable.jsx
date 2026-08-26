@@ -424,6 +424,24 @@ export default function WeaponsTable({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  const totals = useMemo(() => {
+    const sums = {
+      costs: {}
+    };
+    
+    const add = (target, key, val) => {
+      if (!val) return;
+      target[key] = (target[key] || 0) + val;
+    };
+
+    table.getRowModel().rows.forEach(r => {
+      const costs = r.original.costs || {};
+      Object.entries(costs).forEach(([k, v]) => add(sums.costs, k, v));
+    });
+
+    return sums;
+  }, [table.getRowModel().rows]);
+
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-md relative pb-10">
       <div className="overflow-x-auto custom-scrollbar">
@@ -480,6 +498,66 @@ export default function WeaponsTable({
             ))}
           </thead>
           <tbody>
+            {table.getRowModel().rows.length > 0 && (
+              <tr className="bg-[var(--surface)] font-bold border-b-2 border-slate-600 sticky top-0 z-10 shadow-sm pointer-events-none">
+                {table.getVisibleLeafColumns().map((column) => {
+                  const tdClass = column.columnDef.meta?.tdClassName || "px-3 py-2 border-r border-[var(--border)]/50";
+                  
+                  if (column.id === 'weapon_name') {
+                    return <td key={column.id} className={`${tdClass} text-right pr-4`}><span className="text-amber-400 text-sm tracking-widest font-bold">TOTALS</span></td>;
+                  }
+                  
+                  const isIdentity = ['select', 'sl', 'type', 'rarity', 'current_lv', 'target_lv'].includes(column.id);
+                  if (isIdentity) {
+                    return <td key={column.id} className={tdClass}></td>;
+                  }
+
+                  const renderTotalItem = (val, iconOrNameKey, colorClass, isGameIcon, align = 'center') => {
+                    const justify = align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center';
+                    const imgContent = isGameIcon 
+                      ? <GenshinImage src={getMaterialIcon(iconOrNameKey, 'others')} alt={iconOrNameKey} className="w-6 h-6 object-contain shrink-0" />
+                      : <span className="text-[14px] leading-none">{iconOrNameKey}</span>;
+                      
+                    return (
+                      <div className={`flex items-center ${justify} gap-1.5 text-xs font-bold ${colorClass}`}>
+                        {align === 'right' ? (
+                          <><span>{formatNumber(val)}</span>{imgContent}</>
+                        ) : (
+                          <>{imgContent}<span>{formatNumber(val)}</span></>
+                        )}
+                      </div>
+                    );
+                  };
+
+                  let cellContent = null;
+                  switch(column.id) {
+                    case 'mystic_ore': cellContent = renderTotalItem(totals.costs.mystic_ore, 'MysticEnhancementOre', 'text-blue-400', true); break;
+                    case 'fine_ore': cellContent = renderTotalItem(totals.costs.fine_ore, 'FineEnhancementOre', 'text-green-400', true); break;
+                    case 'normal_ore': cellContent = renderTotalItem(totals.costs.normal_ore, 'EnhancementOre', 'text-gray-400', true); break;
+                    case 'wasted_exp': cellContent = renderTotalItem(totals.costs.wasted_exp, '🗑️', 'text-gray-400', false); break;
+                    case 'total_mora': cellContent = renderTotalItem(totals.costs.total_mora, 'Mora', 'text-blue-400', true, 'right'); break;
+                    case 'asc_5': cellContent = renderTotalItem(totals.costs['5_star_ascension_material'], '🏺', 'text-amber-400', false); break;
+                    case 'asc_4': cellContent = renderTotalItem(totals.costs['4_star_ascension_material'], '🏺', 'text-purple-400', false); break;
+                    case 'asc_3': cellContent = renderTotalItem(totals.costs['3_star_ascension_material'], '🏺', 'text-blue-400', false); break;
+                    case 'asc_2': cellContent = renderTotalItem(totals.costs['2_star_ascension_material'], '🏺', 'text-green-400', false); break;
+                    case 'elite_4': cellContent = renderTotalItem(totals.costs['4_star_enhancement_material'], '⚔️', 'text-purple-400', false); break;
+                    case 'elite_3': cellContent = renderTotalItem(totals.costs['3_star_enhancement_material'], '⚔️', 'text-blue-400', false); break;
+                    case 'elite_2': cellContent = renderTotalItem(totals.costs['2_star_enhancement_material'], '⚔️', 'text-green-400', false); break;
+                    case 'mob_3': cellContent = renderTotalItem(totals.costs['3_star_enemy_material'], '🎭', 'text-blue-400', false); break;
+                    case 'mob_2': cellContent = renderTotalItem(totals.costs['2_star_enemy_material'], '🎭', 'text-green-400', false); break;
+                    case 'mob_1': cellContent = renderTotalItem(totals.costs['1_star_enemy_material'], '🎭', 'text-gray-400', false); break;
+                    default: cellContent = null;
+                  }
+
+                  return (
+                    <td key={column.id} className={tdClass}>
+                      {cellContent}
+                    </td>
+                  );
+                })}
+                <td className="px-4 py-2 border-b border-[var(--border)]"></td>
+              </tr>
+            )}
             {table.getRowModel().rows.map((row, idx) => {
               return (
                 <tr 

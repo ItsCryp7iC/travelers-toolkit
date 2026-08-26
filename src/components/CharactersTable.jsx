@@ -698,6 +698,40 @@ export default function CharactersTable({
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  const totals = useMemo(() => {
+    const sums = {
+      ascCosts: {},
+      talentCosts: {}
+    };
+    
+    const add = (target, key, val) => {
+      if (!val) return;
+      target[key] = (target[key] || 0) + val;
+    };
+
+    table.getRowModel().rows.forEach(r => {
+      const char = r.original;
+      const asc = char.ascCosts || {};
+      const tal = char.talentCosts || {};
+      
+      Object.entries(asc).forEach(([k, v]) => add(sums.ascCosts, k, v));
+      Object.entries(tal).forEach(([k, v]) => add(sums.talentCosts, k, v));
+    });
+
+    // Re-map traveler books to generic for the totals row
+    ['2', '3', '4'].forEach(tier => {
+       const genericKey = `${tier}_star_talent_material`;
+       Object.keys(sums.talentCosts).forEach(k => {
+          if (k !== genericKey && k.endsWith(`_${tier}_star_talent_material`)) {
+             add(sums.talentCosts, genericKey, sums.talentCosts[k]);
+             delete sums.talentCosts[k];
+          }
+       });
+    });
+
+    return sums;
+  }, [table.getRowModel().rows]);
+
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-md relative pb-10">
       <div className="overflow-x-auto custom-scrollbar">
@@ -753,6 +787,80 @@ export default function CharactersTable({
             ))}
           </thead>
           <tbody>
+            {table.getRowModel().rows.length > 0 && (
+              <tr className="bg-[var(--surface)] font-bold border-b-2 border-slate-600 sticky top-0 z-10 shadow-sm pointer-events-none">
+                {table.getVisibleLeafColumns().map((column) => {
+                  const tdClass = column.columnDef.meta?.tdClassName || "px-3 py-2 border-r border-[var(--border)]/50";
+                  
+                  if (column.id === 'character') {
+                    return <td key={column.id} className={`${tdClass} text-right pr-4`}><span className="text-amber-400 text-sm tracking-widest font-bold">TOTALS</span></td>;
+                  }
+                  
+                  const isIdentity = ['select', 'sl', 'element', 'weapon', 'status', 'current_lv', 'current_na', 'current_skill', 'current_burst', 'target_lv', 'target_na', 'target_skill', 'target_burst'].includes(column.id);
+                  if (isIdentity) {
+                    return <td key={column.id} className={tdClass}></td>;
+                  }
+
+                  const renderTotalItem = (val, iconOrNameKey, colorClass, isGameIcon, align = 'center') => {
+                    const justify = align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center';
+                    const imgContent = isGameIcon 
+                      ? <GenshinImage src={getMaterialIcon(iconOrNameKey, 'others')} alt={iconOrNameKey} className="w-6 h-6 object-contain shrink-0" />
+                      : <span className="text-[14px] leading-none">{iconOrNameKey}</span>;
+                      
+                    return (
+                      <div className={`flex items-center ${justify} gap-1.5 text-xs font-bold ${colorClass}`}>
+                        {align === 'right' ? (
+                          <><span>{formatNumber(val)}</span>{imgContent}</>
+                        ) : (
+                          <>{imgContent}<span>{formatNumber(val)}</span></>
+                        )}
+                      </div>
+                    );
+                  };
+
+                  let cellContent = null;
+                  switch(column.id) {
+                    case 'asc_wit': cellContent = renderTotalItem(totals.ascCosts.heros_wit, 'HerosWit', 'text-purple-400', true); break;
+                    case 'asc_nboss': cellContent = renderTotalItem(totals.ascCosts.boss_material, '👹', 'text-purple-400', false); break;
+                    case 'asc_local': cellContent = renderTotalItem(totals.ascCosts.local_specialty, '🌸', 'text-gray-400', false); break;
+                    case 'asc_gem_5': cellContent = renderTotalItem(totals.ascCosts.gem_gemstone, '💎', 'text-amber-400', false); break;
+                    case 'asc_gem_4': cellContent = renderTotalItem(totals.ascCosts.gem_chunk, '💎', 'text-purple-400', false); break;
+                    case 'asc_gem_3': cellContent = renderTotalItem(totals.ascCosts.gem_fragment, '💎', 'text-blue-400', false); break;
+                    case 'asc_gem_2': cellContent = renderTotalItem(totals.ascCosts.gem_sliver, '💎', 'text-green-400', false); break;
+                    case 'asc_enh3': cellContent = renderTotalItem(totals.ascCosts['3_star_enemy_material'], '🎭', 'text-blue-400', false); break;
+                    case 'asc_enh2': cellContent = renderTotalItem(totals.ascCosts['2_star_enemy_material'], '🎭', 'text-green-400', false); break;
+                    case 'asc_enh1': cellContent = renderTotalItem(totals.ascCosts['1_star_enemy_material'], '🎭', 'text-gray-400', false); break;
+                    case 'asc_stella': cellContent = renderTotalItem(totals.ascCosts.masterless_stella_fortuna, 'MasterlessStellaFortuna', 'text-amber-400', true); break;
+                    case 'asc_mora': cellContent = renderTotalItem(totals.ascCosts.mora, 'Mora', 'text-blue-400', true, 'right'); break;
+                    
+                    case 'tal_4': cellContent = renderTotalItem(totals.talentCosts['4_star_talent_material'], '📚', 'text-purple-400', false); break;
+                    case 'tal_3': cellContent = renderTotalItem(totals.talentCosts['3_star_talent_material'], '📚', 'text-blue-400', false); break;
+                    case 'tal_2': cellContent = renderTotalItem(totals.talentCosts['2_star_talent_material'], '📚', 'text-green-400', false); break;
+                    case 'tal_wk': cellContent = renderTotalItem(totals.talentCosts.weekly_boss_material, '👹', 'text-amber-400', false); break;
+                    case 'tal_crown': cellContent = renderTotalItem(totals.talentCosts.crown, 'CrownOfInsight', 'text-amber-400', true); break;
+                    case 'tal_enh3': cellContent = renderTotalItem(totals.talentCosts['3_star_enemy_material'], '🎭', 'text-blue-400', false); break;
+                    case 'tal_enh2': cellContent = renderTotalItem(totals.talentCosts['2_star_enemy_material'], '🎭', 'text-green-400', false); break;
+                    case 'tal_enh1': cellContent = renderTotalItem(totals.talentCosts['1_star_enemy_material'], '🎭', 'text-gray-400', false); break;
+                    case 'tal_na_mora': cellContent = renderTotalItem(totals.talentCosts.mora_na, 'Mora', 'text-blue-400', true, 'right'); break;
+                    case 'tal_skill_mora': cellContent = renderTotalItem(totals.talentCosts.mora_skill, 'Mora', 'text-blue-400', true, 'right'); break;
+                    case 'tal_burst_mora': cellContent = renderTotalItem(totals.talentCosts.mora_burst, 'Mora', 'text-blue-400', true, 'right'); break;
+                    case 'tal_mora': cellContent = renderTotalItem(totals.talentCosts.mora, 'Mora', 'text-blue-400', true, 'right'); break;
+                    
+                    case 'grand_enh3': cellContent = renderTotalItem((totals.ascCosts['3_star_enemy_material']||0) + (totals.talentCosts['3_star_enemy_material']||0), '🎭', 'text-blue-400', false); break;
+                    case 'grand_enh2': cellContent = renderTotalItem((totals.ascCosts['2_star_enemy_material']||0) + (totals.talentCosts['2_star_enemy_material']||0), '🎭', 'text-green-400', false); break;
+                    case 'grand_enh1': cellContent = renderTotalItem((totals.ascCosts['1_star_enemy_material']||0) + (totals.talentCosts['1_star_enemy_material']||0), '🎭', 'text-[#9CA3AF]', false); break;
+                    case 'grand_mora': cellContent = renderTotalItem((totals.ascCosts.mora||0) + (totals.talentCosts.mora||0), 'Mora', 'text-blue-400', true, 'right'); break;
+                    default: cellContent = null;
+                  }
+
+                  return (
+                    <td key={column.id} className={tdClass}>
+                      {cellContent}
+                    </td>
+                  );
+                })}
+              </tr>
+            )}
             {table.getRowModel().rows.map((row, idx) => {
               return (
                 <tr
