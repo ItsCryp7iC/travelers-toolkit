@@ -60,6 +60,55 @@ export default function CharactersTable({
     return () => document.removeEventListener('click', handleDocumentClick);
   }, []);
 
+  const renderTalentCell = (row, tierStar, defaultColor, defaultIcon) => {
+    const isTraveler = !!row.original.materials?.talent_material_family_ids;
+    const resolvedMats = resolveCharacterMaterials(row.original);
+
+    if (!isTraveler) {
+      const val = row.original.talentCosts?.[`${tierStar}_star_talent_material`] || 0;
+      return <MatQuantity val={val} icon={defaultIcon} color={`text-${defaultColor}`} nameKey={resolvedMats?.talent?.tiers?.[`${tierStar}_star`]?.name} category="Talent Material" />;
+    }
+
+    // Traveler Logic
+    const families = row.original.materials.talent_material_family_ids;
+    const breakdown = [];
+    let totalVal = 0;
+    
+    families.forEach(family => {
+      const key = `${family}_${tierStar}_star_talent_material`;
+      const qty = row.original.talentCosts?.[key] || 0;
+      if (qty > 0) {
+         breakdown.push({ family, qty });
+         totalVal += qty;
+      }
+    });
+
+    if (totalVal === 0) {
+       return <MatQuantity val={0} icon={defaultIcon} color={`text-${defaultColor}`} category="Talent Material" />;
+    }
+
+    const firstBookName = resolvedMats?.talent?.tiers?.[`${tierStar}_star`]?.name;
+
+    return (
+      <div className="group/book relative inline-flex items-center justify-center">
+        <MatQuantity val={totalVal} icon={defaultIcon} color={`text-${defaultColor}`} nameKey={firstBookName} category="Talent Material" isStacked={true} />
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/book:block w-max bg-[var(--surface)] border border-[var(--border)] rounded-lg p-3 shadow-xl z-50 text-left">
+          <p className="text-xs font-semibold text-[var(--text)] mb-2 border-b border-[var(--border)] pb-1">
+            {tierStar === 2 ? 'Teachings' : tierStar === 3 ? 'Guides' : 'Philosophies'} ({tierStar}★)
+          </p>
+          <div className="flex flex-col gap-1 mt-1">
+            {breakdown.map(b => (
+              <div key={b.family} className="flex justify-between gap-4 text-xs">
+                <span className="text-[var(--muted)]">{b.family}</span>
+                <span className={`font-mono text-${defaultColor}`}>×{b.qty}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const columns = useMemo(() => [
     // ──────────────── IDENTITY ────────────────
     {
@@ -438,30 +487,21 @@ export default function CharactersTable({
           accessorFn: row => resolveCharacterMaterials(row)?.talent?.tiers?.['4_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['4_star_talent_material'] || 0) - (rowB.original.talentCosts?.['4_star_talent_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.talentCosts?.['4_star_talent_material'] || 0} icon="📜" color="text-purple-400" nameKey={resolvedMats?.talent?.tiers?.['4_star']?.name} category="Talent Material" />;
-          }
+          cell: ({ row }) => renderTalentCell(row, 4, 'purple-400', '📜')
         },
         {
           id: 'tal_3', header: 'Tal 3★',
           accessorFn: row => resolveCharacterMaterials(row)?.talent?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['3_star_talent_material'] || 0) - (rowB.original.talentCosts?.['3_star_talent_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.talentCosts?.['3_star_talent_material'] || 0} icon="📜" color="text-blue-400" nameKey={resolvedMats?.talent?.tiers?.['3_star']?.name} category="Talent Material" />;
-          }
+          cell: ({ row }) => renderTalentCell(row, 3, 'blue-400', '📜')
         },
         {
           id: 'tal_2', header: 'Tal 2★',
           accessorFn: row => resolveCharacterMaterials(row)?.talent?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['2_star_talent_material'] || 0) - (rowB.original.talentCosts?.['2_star_talent_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.talentCosts?.['2_star_talent_material'] || 0} icon="📜" color="text-green-400" nameKey={resolvedMats?.talent?.tiers?.['2_star']?.name} category="Talent Material" />;
-          }
+          cell: ({ row }) => renderTalentCell(row, 2, 'green-400', '📜')
         },
         {
           id: 'tal_wk', header: 'Wk.Boss',

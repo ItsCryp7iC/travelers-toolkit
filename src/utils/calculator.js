@@ -223,6 +223,11 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
   if (rawFromLv < 100 && rawToLv === 100) stellaFortuna += 2;
   if (stellaFortuna > 0) result['masterless_stella_fortuna'] = stellaFortuna;
 
+  // Traveler / No-Boss check
+  if (character && character.materials && !character.materials.world_boss_material_id) {
+    delete result.boss_material;
+  }
+
   return result;
 }
 
@@ -337,6 +342,33 @@ export function calculateTalentCost(character, fromLv, toLv) {
   if (!costsData?.talent_levels) return {};
   const sLv = extractLevel(fromLv);
   const tLv = extractLevel(toLv);
+
+  const books = character?.materials?.talent_material_family_ids;
+  
+  if (books && books.length === 3) {
+    const total = {};
+    for (let i = sLv; i < tLv; i++) {
+       const cost = TALENT_LEVEL_COSTS[i - 1]; // since index 0 is 1->2
+       if (!cost) continue;
+       
+       total.mora = (total.mora || 0) + cost.mora;
+       if (cost.mob[0]) total['1_star_enemy_material'] = (total['1_star_enemy_material'] || 0) + cost.mob[0];
+       if (cost.mob[1]) total['2_star_enemy_material'] = (total['2_star_enemy_material'] || 0) + cost.mob[1];
+       if (cost.mob[2]) total['3_star_enemy_material'] = (total['3_star_enemy_material'] || 0) + cost.mob[2];
+       if (cost.weekly) total['weekly_boss_material'] = (total['weekly_boss_material'] || 0) + cost.weekly;
+       if (cost.crown) total['crown'] = (total['crown'] || 0) + cost.crown;
+       
+       if (cost.bookQty > 0) {
+           const bookIndex = (i - 1) % 3;
+           const bookFamily = books[bookIndex];
+           const bookTierStr = `${cost.bookTier}_star_talent_material`;
+           const customKey = `${bookFamily}_${bookTierStr}`;
+           total[customKey] = (total[customKey] || 0) + cost.bookQty;
+       }
+    }
+    return total;
+  }
+
   const sObj = costsData.talent_levels.find(x => x.level === sLv) || costsData.talent_levels[0];
   const tObj = costsData.talent_levels.find(x => x.level === tLv) || costsData.talent_levels[costsData.talent_levels.length - 1];
   return calculateDifference(sObj, tObj, true);

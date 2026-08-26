@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
-import charactersData from '../data/characters.json'
+import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
 import normalBossData from '../data/normal_boss.json'
 import localSpecialtyData from '../data/local_specialty.json'

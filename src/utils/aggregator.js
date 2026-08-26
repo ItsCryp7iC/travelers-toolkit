@@ -5,7 +5,7 @@
  *   import { aggregateRosterCosts, computeToFarm } from './aggregator'
  */
 
-import charactersData from '../data/characters.json'
+import charactersData from './characters'
 import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
 import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost, WEAPON_ORE_KEY } from './calculator'

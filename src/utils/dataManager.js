@@ -1,4 +1,4 @@
-import charactersData from '../data/characters.json'
+import charactersData from './characters'
 import weaponsData from '../data/weapons.json'
 import miscMaterials from '../data/misc_materials.json'
 import normalBoss from '../data/normal_boss.json'
@@ -51,7 +51,8 @@ export const resolveCharacterMaterials = (char) => {
     gem: m.gem_family_id ? (lookupGems.get(m.gem_family_id) || SAFE_FALLBACK) : SAFE_FALLBACK
   }
 
-  const talentData = m.talent_material_family_id ? lookupTalent.get(m.talent_material_family_id) : null
+  const talentFamilyId = m.talent_material_family_id || (m.talent_material_family_ids ? m.talent_material_family_ids[0] : null)
+  const talentData = talentFamilyId ? lookupTalent.get(talentFamilyId) : null
   if (talentData) {
     resolved.talent = { ...talentData }
   }

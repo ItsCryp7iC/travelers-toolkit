@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import charactersData from '../data/characters.json'
+import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
 import useStore from '../store/useStore'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getRarityClass, getStars } from '../utils/gameData'

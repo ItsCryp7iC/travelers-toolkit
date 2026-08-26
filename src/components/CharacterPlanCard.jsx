@@ -81,6 +81,45 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  }
  };
 
+  const getSortWeight = (matId, category) => {
+    const catWeight = {
+      'experience': 1,
+      'heroWits': 1,
+      'localSpecialty': 2,
+      'gemstones': 3,
+      'worldBoss': 4,
+      'mob': 5,
+      'talentBooks': 6,
+      'weeklyBoss': 7,
+      'crown': 8,
+    }[category] || 99;
+
+    let tierWeight = 0;
+    if (category === 'gemstones') {
+      if (matId.includes('sliver')) tierWeight = 1;
+      else if (matId.includes('fragment')) tierWeight = 2;
+      else if (matId.includes('chunk')) tierWeight = 3;
+      else if (matId.includes('gemstone')) tierWeight = 4;
+    } else if (matId.includes('1_star')) {
+      tierWeight = 1;
+    } else if (matId.includes('2_star')) {
+      tierWeight = 2;
+    } else if (matId.includes('3_star')) {
+      tierWeight = 3;
+    } else if (matId.includes('4_star')) {
+      tierWeight = 4;
+    } else if (matId.includes('5_star')) {
+      tierWeight = 5;
+    } else if (category === 'talentBooks') {
+      // Fallback for custom traveler book keys like Freedom_2_star_talent_material
+      const match = matId.match(/(\d)_star/);
+      if (match) tierWeight = parseInt(match[1]);
+    }
+
+    // Combine category weight (major) and tier weight (minor)
+    return catWeight * 100 + tierWeight;
+  };
+
  return (
  <div className={`bg-gradient-to-br ${getElementGradient(character?.element)} to-bg-base border border-white/5 rounded-xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors hover:border-white/10 group`}>
  {/* Header */}
@@ -142,6 +181,12 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  <div className="grid grid-cols-4 gap-2">
  {Object.entries(totalCosts)
  .filter(([matId, qty]) => qty > 0 && matId !== 'mora')
+ .sort(([idA], [idB]) => {
+    const weightA = getSortWeight(idA, categories[idA]);
+    const weightB = getSortWeight(idB, categories[idB]);
+    if (weightA === weightB) return idA.localeCompare(idB);
+    return weightA - weightB;
+  })
  .map(([matId, qty]) => {
  const owned = inventory[matId] || 0;
  const toFarm = Math.max(0, qty - owned);

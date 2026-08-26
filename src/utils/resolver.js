@@ -100,10 +100,20 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
         '3_star_talent_material': '3_star',
         '4_star_talent_material': '4_star'
       }
-      const family = DB.talent[mats.talent_material_family_id]
-      if (family && family.tiers[tierMap[genericKey]]) {
-        const item = family.tiers[tierMap[genericKey]]
-        return { id: item.id || toSnakeCase(item.name), category: 'talentBooks', name: item.name, rarity }
+      
+      let familyId = mats.talent_material_family_id;
+      let tierKey = genericKey;
+      
+      const parts = genericKey.split('_');
+      if (parts.length > 4) { // e.g., ["Freedom", "2", "star", "talent", "material"]
+         familyId = parts[0];
+         tierKey = parts.slice(1).join('_');
+      }
+      
+      const family = DB.talent[familyId]
+      if (family && family.tiers[tierMap[tierKey]]) {
+        const item = family.tiers[tierMap[tierKey]]
+        return { id: item.id || toSnakeCase(item.name), category: 'talentBooks', name: item.name, rarity: parseInt(tierKey.charAt(0)) || rarity }
       }
     }
     

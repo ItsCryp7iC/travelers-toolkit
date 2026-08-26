@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import charactersData from '../data/characters.json'
+import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
 import { calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost } from '../utils/calculator'
 

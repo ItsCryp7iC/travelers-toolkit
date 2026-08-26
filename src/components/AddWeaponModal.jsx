@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import weaponsData from '../data/weapons.json'
-import charactersData from '../data/characters.json'
+import charactersData from '../utils/characters'
 import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg, getWeaponTheme } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
