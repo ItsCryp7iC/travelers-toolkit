@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../utils/characters'
+import forgingData from '../data/weapon_forging.json'
 import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg, getWeaponTheme } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
@@ -105,7 +106,10 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
   const [ascension,      setAscension]      = useState(existingWeapon ? existingWeapon.ascension : 0)
   const [targetLevel,    setTargetLevel]    = useState(existingWeapon ? existingWeapon.targetLevel : 90)
   const [targetAscension, setTargetAscension] = useState(existingWeapon ? (existingWeapon.targetAscension ?? 6) : 6)
+  const [currentRefinement, setCurrentRefinement] = useState(existingWeapon ? (existingWeapon.currentRefinement ?? 1) : 1)
+  const [targetRefinement, setTargetRefinement] = useState(existingWeapon ? (existingWeapon.targetRefinement ?? 1) : 1)
   const [assignedTo,     setAssignedTo]     = useState(existingWeapon ? (existingWeapon.assignedTo || '') : '')
+  const [planningToCraft, setPlanningToCraft] = useState(existingWeapon ? (existingWeapon.currentRefinement === 0) : false)
 
   // Sync state when navigating between duplicate weapons
   useEffect(() => {
@@ -115,6 +119,9 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
       setAscension(existingWeapon.ascension || 0)
       setTargetLevel(existingWeapon.targetLevel || 90)
       setTargetAscension(existingWeapon.targetAscension ?? 6)
+      setCurrentRefinement(existingWeapon.currentRefinement ?? 1)
+      setTargetRefinement(existingWeapon.targetRefinement ?? 1)
+      setPlanningToCraft(existingWeapon.currentRefinement === 0)
       setAssignedTo(existingWeapon.assignedTo || '')
     }
   }, [existingWeapon, currentIndex])
@@ -189,22 +196,23 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
     if (existingWeapon) {
       updateTrackedWeapon(existingWeapon.id, {
-        level,
-        ascension,
-        targetLevel,
-        targetAscension,
+        level: planningToCraft ? 1 : level,
+        ascension: planningToCraft ? 0 : ascension,
+        targetLevel: planningToCraft ? 90 : targetLevel,
+        targetAscension: planningToCraft ? 6 : targetAscension,
+        currentRefinement: planningToCraft ? 0 : currentRefinement,
+        targetRefinement: planningToCraft ? Math.max(1, targetRefinement) : targetRefinement,
         assignedTo: assignedTo || null
       })
     } else {
-      const newId = addTrackedWeapon(selectedWeapon.name, assignedTo || null)
-      if (newId) {
-        updateTrackedWeapon(newId, {
-          level,
-          ascension,
-          targetLevel,
-          targetAscension
-        })
-      }
+      const newId = addTrackedWeapon(selectedWeapon.name, assignedTo || null, {
+        currentLevel: planningToCraft ? 1 : level,
+        currentAscension: planningToCraft ? 0 : ascension,
+        targetLevel: planningToCraft ? 90 : targetLevel,
+        targetAscension: planningToCraft ? 6 : targetAscension,
+        currentRefinement: planningToCraft ? 0 : currentRefinement,
+        targetRefinement: planningToCraft ? Math.max(1, targetRefinement) : targetRefinement
+      })
     }
     onClose()
   }
@@ -349,56 +357,131 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
               <div className="space-y-4">
                 {(() => {
                   const theme = getWeaponTheme(selectedWeapon.rarity);
+                  const isCraftable = !!(forgingData[selectedWeapon.id] || forgingData[selectedWeapon.name]);
                   return (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
-                      <div className="modal-state-panel">
-                        <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
-                        <AscensionSelector 
-                          value={ascension} 
-                          onChange={(a) => { 
-                            setAscension(a); 
-                            const clampedLevel = clampLevel(level, a);
-                            setLevel(clampedLevel); 
-                            if (a > targetAscension) setTargetAscension(a);
-                            if (clampedLevel > targetLevel) setTargetLevel(clampedLevel);
-                          }} 
-                          label="Ascension" 
-                          elementColor={theme.elementColor} 
-                        />
-                        <div className="mt-4">
-                          <LevelSlider 
-                            value={level} 
-                            onChange={(l) => {
-                              setLevel(l);
-                              if (l > targetLevel) setTargetLevel(l);
+                    <div className="flex flex-col gap-4">
+                      {isCraftable && (
+                        <div className="flex items-center gap-3 p-4 rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5">
+                          <input
+                            type="checkbox"
+                            id="planningToCraftToggle"
+                            checked={planningToCraft}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setPlanningToCraft(checked);
+                              if (checked) {
+                                setAscension(0);
+                                setLevel(1);
+                                setCurrentRefinement(0);
+                              }
+                            }}
+                            className="w-4 h-4 accent-[var(--gold)] cursor-pointer"
+                          />
+                          <label htmlFor="planningToCraftToggle" className="text-sm font-semibold text-[var(--gold)] cursor-pointer select-none flex-1">
+                            Planning to craft (I don't own this yet)
+                          </label>
+                        </div>
+                      )}
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-2">
+                        <div className={`modal-state-panel ${planningToCraft ? 'opacity-40 pointer-events-none' : ''}`}>
+                          <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
+                          <AscensionSelector 
+                            value={ascension} 
+                            onChange={(a) => { 
+                              setAscension(a); 
+                              const clampedLevel = clampLevel(level, a);
+                              setLevel(clampedLevel); 
+                              if (a > targetAscension) setTargetAscension(a);
+                              if (clampedLevel > targetLevel) setTargetLevel(clampedLevel);
                             }} 
-                            ascension={ascension} 
-                            label="Level" 
+                            label="Ascension" 
                             elementColor={theme.elementColor} 
                           />
+                          <div className="mt-4">
+                            <LevelSlider 
+                              value={level} 
+                              onChange={(l) => {
+                                setLevel(l);
+                                if (l > targetLevel) setTargetLevel(l);
+                              }} 
+                              ascension={ascension} 
+                              label="Level" 
+                              elementColor={theme.elementColor} 
+                            />
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                            <div className="flex justify-between items-end mb-2">
+                              <label className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
+                                Refinement
+                              </label>
+                              <div className="flex items-baseline gap-1">
+                                <span className="text-xl font-bold leading-none" style={{ color: theme.elementColor }}>
+                                  {currentRefinement}
+                                </span>
+                                <span className="text-xs text-[var(--muted)]">/ 5</span>
+                              </div>
+                            </div>
+                            <input
+                              type="range"
+                              min={1}
+                              max={5}
+                              value={currentRefinement}
+                              onChange={(e) => {
+                                const val = parseInt(e.target.value, 10);
+                                setCurrentRefinement(val);
+                                if (val > targetRefinement) setTargetRefinement(val);
+                              }}
+                              className="level-slider w-full"
+                              style={{ '--slider-color': theme.elementColor, '--pct': `${((currentRefinement - 1) / 4) * 100}%` }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className="modal-state-panel">
-                        <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>🎯 Weapon Target</p>
-                        <AscensionSelector 
-                          value={targetAscension} 
-                          onChange={(a) => { 
-                            setTargetAscension(a); 
-                            setTargetLevel(clampLevel(targetLevel, a)) 
-                          }} 
-                          label="Ascension" 
-                          elementColor={theme.elementColor}
-                          minValid={ascension} 
-                        />
-                        <div className="mt-4">
-                          <LevelSlider 
-                            value={targetLevel} 
-                            onChange={setTargetLevel} 
-                            ascension={targetAscension} 
-                            label="Level" 
-                            elementColor={theme.elementColor}
-                            minOverride={targetAscension === ascension ? level : undefined} 
-                          />
+                        <div className="modal-state-panel">
+                          <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>🎯 Weapon Target</p>
+                            <AscensionSelector 
+                              value={targetAscension} 
+                              onChange={(a) => { 
+                                setTargetAscension(a); 
+                                setTargetLevel(clampLevel(targetLevel, a)) 
+                              }} 
+                              label="Ascension" 
+                              elementColor={theme.elementColor}
+                              minValid={planningToCraft ? 0 : ascension} 
+                            />
+                            <div className="mt-4">
+                              <LevelSlider 
+                                value={targetLevel} 
+                                onChange={setTargetLevel} 
+                                ascension={targetAscension} 
+                                label="Level" 
+                                elementColor={theme.elementColor}
+                                minOverride={targetAscension === ascension && !planningToCraft ? level : undefined} 
+                              />
+                            </div>
+                          <div className={`mt-4 pt-4 border-t border-[var(--border)] ${!isCraftable ? 'opacity-40 pointer-events-none' : ''}`}>
+                            <div className="flex justify-between items-end mb-2">
+                              <label className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
+                                Target Refinement
+                              </label>
+                              <div className="flex items-baseline gap-1">
+                                <span className="text-xl font-bold leading-none" style={{ color: theme.elementColor }}>
+                                  {isCraftable ? targetRefinement : '—'}
+                                </span>
+                                {isCraftable && <span className="text-xs text-[var(--muted)]">/ 5</span>}
+                              </div>
+                            </div>
+                            <input
+                              type="range"
+                              min={1}
+                              max={5}
+                              value={targetRefinement}
+                              onChange={(e) => setTargetRefinement(parseInt(e.target.value, 10))}
+                              className="level-slider w-full"
+                              style={{ '--slider-color': theme.elementColor, '--pct': `${((targetRefinement - 1) / 4) * 100}%` }}
+                              disabled={!isCraftable}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

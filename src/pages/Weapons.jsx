@@ -3,6 +3,7 @@ import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
 import BatchAddWeaponModal from '../components/BatchAddWeaponModal'
 import BulkEditWeaponModal from '../components/BulkEditWeaponModal'
+import CraftQueuePanel from '../components/CraftQueuePanel'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../utils/characters'
 import useStore from '../store/useStore'
@@ -52,6 +53,7 @@ export default function Weapons() {
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
   const bulkUpdateWeapons   = useStore((s) => s.bulkUpdateWeapons)
 
+  const [pageTab,      setPageTab]      = useState('armory') // 'armory' | 'craft'
   const [search,       setSearch]       = useState('')
   const [typeFilter,   setTypeFilter]   = useState('All')
   const [rarityFilter, setRarityFilter] = useState('All')
@@ -152,62 +154,94 @@ export default function Weapons() {
       <div className="sticky top-16 z-40 bg-[var(--bg)]/80 backdrop-blur-xl pb-4 pt-2 mb-6 border-b border-[var(--border)] shadow-sm flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-2xl">🗡️</span>
-            <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">My Armory</h1>
+            <span className="text-2xl">{pageTab === 'armory' ? '🗡️' : '⚒️'}</span>
+            <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">
+              {pageTab === 'armory' ? 'My Armory' : 'To Craft'}
+            </h1>
           </div>
           <p className="text-[var(--muted)] text-sm ml-11">
-            {trackedWeapons.length} weapon{trackedWeapons.length !== 1 ? 's' : ''} tracked
+            {pageTab === 'armory'
+              ? `${trackedWeapons.length} weapon${trackedWeapons.length !== 1 ? 's' : ''} tracked`
+              : 'Track weapons you want to forge'}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* View toggle */}
+          {/* Page tab toggle */}
           <div className="flex rounded-lg overflow-hidden border border-[var(--border)]">
             <button
-              onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 text-xs font-semibold transition-colors ${viewMode === 'table' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
+              id="weapons-tab-armory"
+              onClick={() => setPageTab('armory')}
+              className={`px-3 py-1.5 text-xs font-semibold transition-colors ${pageTab === 'armory' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
             >
-              ☰ Table
+              🗡️ My Armory
             </button>
             <button
-              onClick={() => setViewMode('card')}
-              className={`px-3 py-1.5 text-xs font-semibold transition-colors ${viewMode === 'card' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
+              id="weapons-tab-craft"
+              onClick={() => setPageTab('craft')}
+              className={`px-3 py-1.5 text-xs font-semibold transition-colors ${pageTab === 'craft' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
             >
-              📋 Cards
+              ⚒️ To Craft
             </button>
           </div>
-          {selectedIds.length > 0 && (
+          {/* Armory-only controls */}
+          {pageTab === 'armory' && (
             <>
+              {/* View toggle */}
+              <div className="flex rounded-lg overflow-hidden border border-[var(--border)]">
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={`px-3 py-1.5 text-xs font-semibold transition-colors ${viewMode === 'table' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
+                >
+                  ☰ Table
+                </button>
+                <button
+                  onClick={() => setViewMode('card')}
+                  className={`px-3 py-1.5 text-xs font-semibold transition-colors ${viewMode === 'card' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
+                >
+                  📋 Cards
+                </button>
+              </div>
+              {selectedIds.length > 0 && (
+                <>
+                  <button
+                    onClick={() => {
+                      if (window.confirm(`Are you sure you want to delete these ${selectedIds.length} weapons?`)) {
+                        batchRemoveWeapons(selectedIds);
+                        setSelectedIds([]);
+                      }
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 hover:text-red-300 transition-colors shadow-md animate-fade-in"
+                  >
+                    Delete Selected ({selectedIds.length})
+                  </button>
+                  <button
+                    onClick={() => setBulkModalOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[var(--bg)] transition-colors shadow-md animate-fade-in"
+                  >
+                    Bulk Edit ({selectedIds.length})
+                  </button>
+                </>
+              )}
               <button
-                onClick={() => {
-                  if (window.confirm(`Are you sure you want to delete these ${selectedIds.length} weapons?`)) {
-                    batchRemoveWeapons(selectedIds);
-                    setSelectedIds([]);
-                  }
-                }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 hover:text-red-300 transition-colors shadow-md animate-fade-in"
+                id="add-weapon-btn"
+                onClick={() => setIsBatchModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md"
               >
-                Delete Selected ({selectedIds.length})
-              </button>
-              <button
-                onClick={() => setBulkModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[var(--bg)] transition-colors shadow-md animate-fade-in"
-              >
-                Bulk Edit ({selectedIds.length})
+                + Batch Add Weapons
               </button>
             </>
           )}
-          <button
-            id="add-weapon-btn"
-            onClick={() => setIsBatchModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md"
-          >
-            + Batch Add Weapons
-          </button>
         </div>
       </div>
 
-      {/* ── Empty state ── */}
-      {trackedWeapons.length === 0 ? (
+      {/* ── To Craft tab ── */}
+      {pageTab === 'craft' && <CraftQueuePanel />}
+
+      {/* ── My Armory tab ── */}
+      {pageTab === 'armory' && (
+        <>
+          {/* ── Empty state ── */}
+          {trackedWeapons.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-32 text-center">
           <span className="text-6xl mb-5">🗡️</span>
           <h3 className="font-semibold text-[var(--text)] text-xl mb-2">Your armory is empty</h3>
@@ -305,6 +339,9 @@ export default function Weapons() {
           )}
         </>
       )}
+      </>
+    )}
+    {/* end armory tab */}
 
       {/* ── Modals ── */}
       {isBatchModalOpen && <BatchAddWeaponModal onClose={() => setIsBatchModalOpen(false)} />}

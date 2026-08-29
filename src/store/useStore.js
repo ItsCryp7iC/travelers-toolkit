@@ -10,6 +10,7 @@ import { calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost 
  * Slices:
  *  - roster:          Characters the player is tracking { [charName]: { ... , equippedWeaponId } }
  *  - trackedWeapons:  Weapons in the armory [{ id, weaponName, level, ascension, targetLevel, targetAscension, assignedTo }]
+ *  - craftQueue:      Weapons queued to be crafted [{ id, weaponId, weaponName, quantity, note, targetRefinement }]
  *  - inventory:       Materials the player has { [materialName]: quantity }
  *  - goals:           Progression targets
  *  - resin:           Resin tracker { resinCount, resinTimestamp }
@@ -34,7 +35,7 @@ const useStore = create(
         googleUser: user || state.googleUser 
       })),
       clearGoogleSession: () => set({ googleAccessToken: null, tokenExpiry: null, googleUser: null }),
-      importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [] }),
+      importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [], craftQueue: data.craftQueue || [] }),
       importGoodData: (goodPayload) => set((state) => {
         // 1. Materials
         const newInventory = { ...state.inventory };
@@ -126,6 +127,7 @@ const useStore = create(
         set({
           roster: {},
           trackedWeapons: [],
+          craftQueue: [],
           inventory: {},
           goals: [],
           resinCount: 200,
@@ -349,6 +351,8 @@ const useStore = create(
           ascension: config.currentAscension ?? 0,
           targetLevel: config.targetLevel ?? 90,
           targetAscension: config.targetAscension ?? 6,
+          currentRefinement: config.currentRefinement ?? 1,
+          targetRefinement: config.targetRefinement ?? 1,
           assignedTo,
           createdAt: Date.now(),
         }
@@ -448,9 +452,19 @@ const useStore = create(
           }
 
           // 2. Finally, apply the standard patch to the target weapon itself
-          updatedWeapons = updatedWeapons.map((w) =>
-            w.id === id ? { ...w, ...patch } : w
-          );
+          updatedWeapons = updatedWeapons.map((w) => {
+            if (w.id === id) {
+              const updated = { ...w, ...patch };
+              if ('currentRefinement' in patch) {
+                updated.currentRefinement = Math.max(0, Math.min(5, Number(updated.currentRefinement) || 0));
+              }
+              if ('targetRefinement' in patch) {
+                updated.targetRefinement = Math.max(0, Math.min(5, Number(updated.targetRefinement) || 0));
+              }
+              return updated;
+            }
+            return w;
+          });
 
           return { trackedWeapons: updatedWeapons, roster: updatedRoster };
         }),
@@ -574,6 +588,8 @@ const useStore = create(
           }
         }),
 
+      // ─── CRAFT QUEUE (Removed in v4) ────────────────────────────────────
+
       // ─── INVENTORY ─────────────────────────────────────────────────────
       inventory: {},
 
@@ -612,7 +628,7 @@ const useStore = create(
     }),
     {
       name: 'travelers-toolkit-store',
-      version: 2, // bump if you need another migration
+      version: 4, // bump if you need another migration
       migrate: (persistedState, fromVersion) => {
         // v1 → v2: convert old string `equippedWeapon` fields into `trackedWeapons` entries
         if (fromVersion < 2) {
@@ -648,7 +664,23 @@ const useStore = create(
               targetWeaponAscension: undefined,
             }
           }
-          return migrated
+          persistedState = migrated
+        }
+        // v2 → v3: introduce craftQueue slice
+        if (fromVersion < 3) {
+          persistedState = { ...persistedState, craftQueue: persistedState.craftQueue ?? [] }
+        }
+        // v3 → v4: migrate to refinement tracking, remove craftQueue
+        if (fromVersion < 4) {
+          persistedState = { ...persistedState }
+          delete persistedState.craftQueue
+          if (persistedState.trackedWeapons) {
+            persistedState.trackedWeapons = persistedState.trackedWeapons.map((w) => ({
+              ...w,
+              currentRefinement: w.currentRefinement ?? 1,
+              targetRefinement: w.targetRefinement ?? 1,
+            }))
+          }
         }
         return persistedState
       },

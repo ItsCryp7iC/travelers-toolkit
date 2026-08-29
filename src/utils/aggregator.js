@@ -188,8 +188,116 @@ export function computeToFarm(totals, inventory) {
     weeklyBoss: filterCategory('weeklyBoss'),
     weaponAscMats: filterCategory('weaponAscMats'),
     eliteMob: filterCategory('eliteMob'),
+    craftingMats: allItems.filter(item => item.category === 'billet' || item.category === 'forgingOre' || item.category === 'Crafting Material'),
     totalItems: allItems.length,
     allDone: allItems.length === 0,
+  }
+}
+
+/**
+ * Calculate the forging costs for a single weapon based on its refinement delta.
+ * @param {Object} weapon - The tracked weapon object from the store.
+ * @param {number} currentRefinement - Current refinement level (0-5).
+ * @param {number} targetRefinement - Target refinement level (0-5).
+ * @param {Object} forgingData - Imported weapon_forging.json
+ * @returns {Object} Cost map of material IDs to quantities.
+ */
+export function calculateForgingCost(weapon, currentRefinement, targetRefinement, forgingData) {
+  if (targetRefinement <= currentRefinement || !forgingData) return {};
+  const originalWeapon = WEAPON_MAP[weapon.weaponName];
+  const recipeId = originalWeapon ? originalWeapon.id : weapon.weaponName;
+  const recipe = forgingData[recipeId] || forgingData[weapon.weaponName];
+  if (!recipe) return {};
+
+  const delta = targetRefinement - currentRefinement;
+  const costs = {};
+
+  if (recipe.billet) {
+    costs[recipe.billet.id] = (recipe.billet.qty ?? 1) * delta;
+  }
+  for (const ore of (recipe.ores ?? [])) {
+    const oreQty = (ore.qty ?? 0) * delta;
+    if (oreQty > 0) costs[ore.id] = oreQty;
+  }
+  if (recipe.mora) {
+    costs['mora'] = recipe.mora * delta;
+  }
+
+  return costs;
+}
+
+/**
+ * Aggregate the total materials required for all entries in trackedWeapons.
+ *
+ * @param {Array}  trackedWeapons - Zustand trackedWeapons slice
+ * @param {Object} forgingData  - Imported weapon_forging.json (keyed by weapon id)
+ * @returns {{ totalCosts, categories, rarities, breakdown }}
+ *   Same shape as aggregateRosterCosts, so it's drop-in compatible with rendering code.
+ *   Category values for new material types:
+ *     - 'billet'     for billet items (Northlander/Midlander/Borderland * type)
+ *     - 'forgingOre' for regional ores (Crystal Chunk, Amethyst Lump, etc.)
+ *     - 'mora'       for Mora cost
+ */
+export function getCraftingCosts(trackedWeapons, forgingData) {
+  const grandTotalCosts = {}
+  const grandTotalCategories = {}
+  const grandTotalRarities = {}
+  const breakdown = []
+
+  if (!forgingData || !trackedWeapons?.length) {
+    return { totalCosts: grandTotalCosts, categories: grandTotalCategories, rarities: grandTotalRarities, breakdown }
+  }
+
+  for (const weapon of trackedWeapons) {
+    const curRefine = weapon.currentRefinement ?? 1;
+    const tgtRefine = weapon.targetRefinement ?? 1;
+    
+    if (tgtRefine <= curRefine) continue;
+
+    const wData = WEAPON_MAP[weapon.weaponName];
+    const recipeKey = wData ? wData.id : weapon.weaponName.replace(/[^a-zA-Z]/g, '');
+    const recipe = forgingData[recipeKey];
+    if (!recipe) continue;
+
+    const totalCosts = calculateForgingCost(weapon, curRefine, tgtRefine, forgingData);
+
+    // ── Update Categories and Rarities ──────────────────────────────────────
+    if (recipe.billet && totalCosts[recipe.billet.id]) {
+      grandTotalCategories[recipe.billet.id] = 'billet'
+      grandTotalRarities[recipe.billet.id] = 4
+    }
+    for (const ore of (recipe.ores ?? [])) {
+      if (totalCosts[ore.id]) {
+        grandTotalCategories[ore.id] = 'forgingOre'
+        grandTotalRarities[ore.id] = 1
+      }
+    }
+    if (totalCosts['mora']) {
+      grandTotalCategories['mora'] = 'mora'
+      grandTotalRarities['mora'] = 1
+    }
+
+    // ── Merge into grand totals ─────────────────────────────────────────────
+    for (const [id, qty] of Object.entries(totalCosts)) {
+      grandTotalCosts[id] = (grandTotalCosts[id] || 0) + qty;
+    }
+
+    breakdown.push({
+      id: weapon.id,
+      name: weapon.weaponName,
+      weaponId: weapon.weapon_id,
+      quantity: tgtRefine - curRefine,
+      recipe,
+      totalCosts,
+    })
+  }
+
+  return {
+    totalCosts: grandTotalCosts,
+    categories: grandTotalCategories,
+    rarities: grandTotalRarities,
+    breakdown,
+    trackedCount: breakdown.length,
   }
 }
 

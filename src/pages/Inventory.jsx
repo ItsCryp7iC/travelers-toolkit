@@ -151,11 +151,13 @@ const TAB_MAP = {
   'weapon_asc': 'Weapon Ascension Material',
   'local_spec': 'Local Specialty',
   'character_gems': 'Character Ascension Gem',
+  'crafting_mats': 'Crafting Material',
 }
 
 const SUB_TABS = {
   'Boss Drops': ['Normal Boss', 'Weekly Boss'],
   'Enemy Drops': ['Common Enhancement Material', 'Elite Enhancement Material'],
+  'Crafting Material': ['Billet', 'Forging Ore'],
 }
 
 export default function Inventory() {
@@ -182,7 +184,7 @@ export default function Inventory() {
       if (activeTab === 'Currency & Experience') {
         return mat.category === 'Currency' || mat.category === 'Experience'
       }
-      if (activeTab === 'Boss Drops' || activeTab === 'Enemy Drops') {
+      if (activeTab === 'Boss Drops' || activeTab === 'Enemy Drops' || activeTab === 'Crafting Material') {
         return mat.subCategory === activeSubTab
       }
       return mat.category === activeTab

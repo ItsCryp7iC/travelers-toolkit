@@ -48,6 +48,24 @@ export function getWeaponTypeIcon(type) {
   return `${BASE_URL}/billets/${toPascalCase(type)}.png`
 }
 
+/**
+ * Icon for a craftable weapon billet item (Northlander/Midlander/Borderland Sword Billet, etc.)
+ * Uses the new `billet_items/` CDN folder — distinct from `billets/` which holds weapon-type icons.
+ * e.g. "Northlander Sword Billet" → billet_items/NorthladerSwordBillet.png
+ */
+export function getBilletIcon(billetName) {
+  return `${BASE_URL}/billet_items/${toPascalCase(billetName)}.png`
+}
+
+/**
+ * Icon for a forging ore material (Crystal Chunk, Amethyst Lump, Condessence Crystal, etc.)
+ * Uses the new `forging_ores/` CDN folder.
+ * e.g. "Crystal Chunk" → forging_ores/CrystalChunk.png
+ */
+export function getForgingOreIcon(oreName) {
+  return `${BASE_URL}/forging_ores/${toPascalCase(oreName)}.png`
+}
+
 import normalBoss from '../data/normal_boss.json';
 import weeklyBoss from '../data/weekly_boss.json';
 import commonEnemy from '../data/common_enemy.json';
@@ -56,6 +74,7 @@ import localSpecialty from '../data/local_specialty.json';
 import talentMaterials from '../data/talent_materials.json';
 import weaponAscension from '../data/weapon_ascension.json';
 import characterGems from '../data/character_gems.json';
+import craftingMaterials from '../data/crafting_materials.json';
 
 let categoryMapCache = null;
 function getResolvedCategory(fileName) {
@@ -78,6 +97,7 @@ function getResolvedCategory(fileName) {
     mapTiers(weaponAscension, 'Weapon Ascension Mats');
     mapTiers(localSpecialty, 'Local Specialties');
     mapTiers(characterGems, 'Character Ascension Gems');
+    mapTiers(craftingMaterials, 'Crafting Material');
   }
   return categoryMapCache[fileName];
 }
@@ -117,6 +137,8 @@ export function getMaterialIcon(materialName, category) {
     folder = 'local_specialties';
   } else if (resolvedCategory === 'Character Ascension Gems' || resolvedCategory === 'Character Ascension Gem') {
     folder = 'character_ascension_gems';
+  } else if (resolvedCategory === 'Crafting Material' || resolvedCategory === 'billet' || resolvedCategory === 'forgingOre') {
+    folder = 'crafting_materials';
   }
 
   return `${BASE_URL}/${folder}/${fileName}.png`;

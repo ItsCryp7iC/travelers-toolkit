@@ -1,0 +1,863 @@
+{
+  "_comment": "Craftable weapon recipes. Keys match weapon id from weapons.json. Source: genshin-impact.fandom.com/wiki/Forging, gamewith.net, sportskeeda.com (verified per-weapon).",
+  "PrototypeRancour": {
+    "billet": {
+      "id": "northlander_sword_billet",
+      "name": "Northlander Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "IronSting": {
+    "billet": {
+      "id": "northlander_sword_billet",
+      "name": "Northlander Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "PrototypeArchaic": {
+    "billet": {
+      "id": "northlander_claymore_billet",
+      "name": "Northlander Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "Whiteblind": {
+    "billet": {
+      "id": "northlander_claymore_billet",
+      "name": "Northlander Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "PrototypeStarglitter": {
+    "billet": {
+      "id": "northlander_polearm_billet",
+      "name": "Northlander Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "CrescentPike": {
+    "billet": {
+      "id": "northlander_polearm_billet",
+      "name": "Northlander Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "PrototypeAmber": {
+    "billet": {
+      "id": "northlander_catalyst_billet",
+      "name": "Northlander Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "MappaMare": {
+    "billet": {
+      "id": "northlander_catalyst_billet",
+      "name": "Northlander Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "PrototypeCrescent": {
+    "billet": {
+      "id": "northlander_bow_billet",
+      "name": "Northlander Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "CompoundBow": {
+    "billet": {
+      "id": "northlander_bow_billet",
+      "name": "Northlander Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "SnowTombedStarsilver": {
+    "billet": {
+      "id": "northlander_claymore_billet",
+      "name": "Northlander Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "starsilver",
+        "name": "Starsilver",
+        "qty": 50
+      },
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "DragonspineSpear": {
+    "billet": {
+      "id": "northlander_polearm_billet",
+      "name": "Northlander Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "starsilver",
+        "name": "Starsilver",
+        "qty": 50
+      },
+      {
+        "id": "empowered_dragontooth",
+        "name": "Empowered Dragontooth",
+        "qty": 8
+      }
+    ],
+    "mora": 500
+  },
+  "Frostbearer": {
+    "billet": {
+      "id": "northlander_catalyst_billet",
+      "name": "Northlander Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "starsilver",
+        "name": "Starsilver",
+        "qty": 50
+      },
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "AmenomaKageuchi": {
+    "billet": {
+      "id": "northlander_sword_billet",
+      "name": "Northlander Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "amethyst_lump",
+        "name": "Amethyst Lump",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "KatsuragikiriNagamasa": {
+    "billet": {
+      "id": "northlander_claymore_billet",
+      "name": "Northlander Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "amethyst_lump",
+        "name": "Amethyst Lump",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "KitainCrossSpear": {
+    "billet": {
+      "id": "northlander_polearm_billet",
+      "name": "Northlander Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "amethyst_lump",
+        "name": "Amethyst Lump",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "Hamayumi": {
+    "billet": {
+      "id": "northlander_bow_billet",
+      "name": "Northlander Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "amethyst_lump",
+        "name": "Amethyst Lump",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "HakushinRing": {
+    "billet": {
+      "id": "northlander_catalyst_billet",
+      "name": "Northlander Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "amethyst_lump",
+        "name": "Amethyst Lump",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "SapwoodBlade": {
+    "billet": {
+      "id": "midlander_sword_billet",
+      "name": "Midlander Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "ForestRegalia": {
+    "billet": {
+      "id": "midlander_claymore_billet",
+      "name": "Midlander Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "Moonpiercer": {
+    "billet": {
+      "id": "midlander_polearm_billet",
+      "name": "Midlander Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "FruitOfFulfillment": {
+    "billet": {
+      "id": "midlander_catalyst_billet",
+      "name": "Midlander Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "KingsSquire": {
+    "billet": {
+      "id": "midlander_bow_billet",
+      "name": "Midlander Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "crystal_chunk",
+        "name": "Crystal Chunk",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "FinaleOfTheDeep": {
+    "billet": {
+      "id": "midlander_sword_billet",
+      "name": "Midlander Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "TidalShadow": {
+    "billet": {
+      "id": "midlander_claymore_billet",
+      "name": "Midlander Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "RightfulReward": {
+    "billet": {
+      "id": "midlander_polearm_billet",
+      "name": "Midlander Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "FlowingPurity": {
+    "billet": {
+      "id": "midlander_catalyst_billet",
+      "name": "Midlander Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "SongOfStillness": {
+    "billet": {
+      "id": "midlander_bow_billet",
+      "name": "Midlander Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "FluteOfEzpitzal": {
+    "billet": {
+      "id": "borderland_sword_billet",
+      "name": "Borderland Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "EarthShaker": {
+    "billet": {
+      "id": "borderland_claymore_billet",
+      "name": "Borderland Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "FootprintOfTheRainbow": {
+    "billet": {
+      "id": "borderland_polearm_billet",
+      "name": "Borderland Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "RingOfYaxche": {
+    "billet": {
+      "id": "borderland_catalyst_billet",
+      "name": "Borderland Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "ChainBreaker": {
+    "billet": {
+      "id": "borderland_bow_billet",
+      "name": "Borderland Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "condessence_crystal",
+        "name": "Condessence Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "BlackmarrowLantern": {
+    "billet": {
+      "id": "borderland_catalyst_billet",
+      "name": "Borderland Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "MasterKey": {
+    "billet": {
+      "id": "borderland_claymore_billet",
+      "name": "Borderland Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "ProspectorsShovel": {
+    "billet": {
+      "id": "borderland_polearm_billet",
+      "name": "Borderland Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "SerenitysCall": {
+    "billet": {
+      "id": "borderland_sword_billet",
+      "name": "Borderland Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "SnareHook": {
+    "billet": {
+      "id": "borderland_bow_billet",
+      "name": "Borderland Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "Emberwell": {
+    "billet": {
+      "id": "borderland_sword_billet",
+      "name": "Borderland Sword Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "BladeOfAtonement": {
+    "billet": {
+      "id": "borderland_claymore_billet",
+      "name": "Borderland Claymore Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "SongOfTheVigil": {
+    "billet": {
+      "id": "borderland_polearm_billet",
+      "name": "Borderland Polearm Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "EchoesOfTheHeart": {
+    "billet": {
+      "id": "borderland_catalyst_billet",
+      "name": "Borderland Catalyst Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  },
+  "CovenantOfFrostAndSnow": {
+    "billet": {
+      "id": "borderland_bow_billet",
+      "name": "Borderland Bow Billet",
+      "qty": 1
+    },
+    "ores": [
+      {
+        "id": "rainbowdrop_crystal",
+        "name": "Rainbowdrop Crystal",
+        "qty": 50
+      },
+      {
+        "id": "white_iron_chunk",
+        "name": "White Iron Chunk",
+        "qty": 50
+      }
+    ],
+    "mora": 500
+  }
+}

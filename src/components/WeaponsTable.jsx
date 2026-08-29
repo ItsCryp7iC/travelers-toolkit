@@ -15,7 +15,9 @@ import InlineNumberInput from './InlineNumberInput';
 import { resolveWeaponMaterials } from '../utils/dataManager';
 import { formatNumber, toggleMilestoneAscension, isMilestone } from '../utils/calculator';
 import { universalFilterFn, UnifiedHeaderMenu } from './Table/UnifiedHeaderMenu';
-
+import forgingData from '../data/weapon_forging.json';
+import { calculateForgingCost } from '../utils/aggregator';
+import weaponsData from '../data/weapons.json';
 
 const getRarityColorClass = (rarity) => {
   const r = Number(rarity) || rarity;
@@ -226,6 +228,20 @@ export default function WeaponsTable({
           }
         },
         {
+          id: 'current_refine', header: 'R', accessorFn: row => row.currentRefinement ?? 1,
+          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-blue-300", tdClassName: "px-3 py-2 text-center" },
+          enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row, getValue }) => {
+            const wp = row.original;
+            const refine = getValue();
+            return (
+              <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
+                <InlineNumberInput value={refine} min={0} max={5} onChangeSubmit={(val) => updateWeapon(wp.id, { currentRefinement: val })} className="text-xs text-blue-300" />
+              </div>
+            );
+          }
+        },
+        {
           id: 'target_lv', header: '→ Lv', accessorFn: row => row.targetLevel ?? 90,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-[var(--gold)] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
@@ -244,10 +260,139 @@ export default function WeaponsTable({
               </div>
             );
           }
+        },
+        {
+          id: 'target_refine', header: '→ R', accessorFn: row => row.targetRefinement ?? 1,
+          meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-[var(--gold)] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" },
+          enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row, getValue }) => {
+            const wp = row.original;
+            const refine = getValue();
+            const originalWeapon = weaponsData.find(w => w.name === wp.weaponName);
+            const isCraftable = originalWeapon ? !!(forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : false;
+            if (!isCraftable) return <span className="text-gray-500/50 text-xs" title="Not a craftable weapon">—</span>;
+            return (
+              <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
+                <InlineNumberInput value={refine} min={0} max={5} onChangeSubmit={(val) => updateWeapon(wp.id, { targetRefinement: val })} className="text-xs text-[var(--gold)]" />
+              </div>
+            );
+          }
+        }
+      ]
+    },
+    // ──────────────── FORGING ────────────────
+    {
+      id: 'Forging',
+      header: 'Forging',
+      meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[#d8b575] border-r border-[var(--border)]" },
+      columns: [
+        {
+          id: 'forging_billet', header: 'Billet', 
+          accessorFn: row => {
+            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            return recipe?.billet?.name || 'Unknown';
+          },
+          sortingFn: (rowA, rowB) => {
+            const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
+            const originalB = weaponsData.find(w => w.name === rowB.original.weaponName);
+            const recipeA = originalA ? (forgingData[originalA.id] || forgingData[originalA.name]) : null;
+            const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
+            const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
+            const costB = calculateForgingCost(rowB.original, rowB.original.currentRefinement ?? 1, rowB.original.targetRefinement ?? 1, forgingData);
+            return (recipeA && costA[recipeA.billet.id] ? costA[recipeA.billet.id] : 0) - (recipeB && costB[recipeB.billet.id] ? costB[recipeB.billet.id] : 0);
+          },
+          meta: { filterType: 'text', thClassName: "text-amber-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, 
+          enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => {
+            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            if (!recipe) return <span className="text-gray-500/50 text-xs">—</span>;
+            const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
+            if (!cost[recipe.billet.id]) return <span className="text-gray-500/50 text-xs">—</span>;
+            return <MatQuantity val={cost[recipe.billet.id]} icon="📜" color="text-amber-300" nameKey={recipe.billet.name} category="billet" />;
+          }
+        },
+        {
+          id: 'forging_ore_regional', header: 'Regional Ore', 
+          accessorFn: row => {
+            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            return recipe?.ores?.[1]?.name || 'Unknown';
+          },
+          sortingFn: (rowA, rowB) => {
+            const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
+            const originalB = weaponsData.find(w => w.name === rowB.original.weaponName);
+            const recipeA = originalA ? (forgingData[originalA.id] || forgingData[originalA.name]) : null;
+            const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
+            const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
+            const costB = calculateForgingCost(rowB.original, rowB.original.currentRefinement ?? 1, rowB.original.targetRefinement ?? 1, forgingData);
+            return (recipeA && recipeA.ores?.[1] && costA[recipeA.ores[1].id] ? costA[recipeA.ores[1].id] : 0) - (recipeB && recipeB.ores?.[1] && costB[recipeB.ores[1].id] ? costB[recipeB.ores[1].id] : 0);
+          },
+          meta: { filterType: 'text', thClassName: "text-purple-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, 
+          enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => {
+            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            if (!recipe || !recipe.ores || recipe.ores.length < 2) return <span className="text-gray-500/50 text-xs">—</span>;
+            const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
+            const ore = recipe.ores[1];
+            if (!cost[ore.id]) return <span className="text-gray-500/50 text-xs">—</span>;
+            return <MatQuantity val={cost[ore.id]} icon="💎" color="text-purple-300" nameKey={ore.name} category="forgingOre" />;
+          }
+        },
+        {
+          id: 'forging_ore_common', header: 'Common Ore', 
+          accessorFn: row => {
+            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            return recipe?.ores?.[0]?.name || 'Unknown';
+          },
+          sortingFn: (rowA, rowB) => {
+            const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
+            const originalB = weaponsData.find(w => w.name === rowB.original.weaponName);
+            const recipeA = originalA ? (forgingData[originalA.id] || forgingData[originalA.name]) : null;
+            const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
+            const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
+            const costB = calculateForgingCost(rowB.original, rowB.original.currentRefinement ?? 1, rowB.original.targetRefinement ?? 1, forgingData);
+            return (recipeA && recipeA.ores?.[0] && costA[recipeA.ores[0].id] ? costA[recipeA.ores[0].id] : 0) - (recipeB && recipeB.ores?.[0] && costB[recipeB.ores[0].id] ? costB[recipeB.ores[0].id] : 0);
+          },
+          meta: { filterType: 'text', thClassName: "text-blue-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, 
+          enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => {
+            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            if (!recipe || !recipe.ores || recipe.ores.length < 1) return <span className="text-gray-500/50 text-xs">—</span>;
+            const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
+            const ore = recipe.ores[0];
+            if (!cost[ore.id]) return <span className="text-gray-500/50 text-xs">—</span>;
+            return <MatQuantity val={cost[ore.id]} icon="💎" color="text-blue-300" nameKey={ore.name} category="forgingOre" />;
+          }
+        },
+        {
+          id: 'forging_mora', header: 'Mora', 
+          accessorFn: row => {
+            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            if (!recipe || !recipe.mora) return 0;
+            const cost = calculateForgingCost(row, row.currentRefinement ?? 1, row.targetRefinement ?? 1, forgingData);
+            return cost['mora'] || 0;
+          },
+          meta: { filterType: 'number', thClassName: "text-yellow-400 px-2 py-2 font-semibold border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, 
+          enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
+          cell: ({ row }) => {
+            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+            if (!recipe) return <span className="text-gray-500/50 text-xs">—</span>;
+            const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
+            if (!cost['mora']) return <span className="text-gray-500/50 text-xs">—</span>;
+            return <MatQuantity val={cost['mora']} icon="🪙" color="text-yellow-400" align="right" nameKey="Mora" category="Currency" />;
+          }
         }
       ]
     },
     // ──────────────── ENHANCEMENT ────────────────
+
     {
       id: 'Enhancement',
       header: 'Enhancement',
@@ -426,7 +571,8 @@ export default function WeaponsTable({
 
   const totals = useMemo(() => {
     const sums = {
-      costs: {}
+      costs: {},
+      forging: {}
     };
     
     const add = (target, key, val) => {
@@ -437,6 +583,9 @@ export default function WeaponsTable({
     table.getRowModel().rows.forEach(r => {
       const costs = r.original.costs || {};
       Object.entries(costs).forEach(([k, v]) => add(sums.costs, k, v));
+
+      const forgeCost = calculateForgingCost(r.original, r.original.currentRefinement ?? 1, r.original.targetRefinement ?? 1, forgingData);
+      Object.entries(forgeCost).forEach(([k, v]) => add(sums.forging, k, v));
     });
 
     return sums;
@@ -531,6 +680,58 @@ export default function WeaponsTable({
 
                   let cellContent = null;
                   switch(column.id) {
+                    // Forging (Summed by iterating the available materials)
+                    case 'forging_billet': {
+                      const matEntries = Object.entries(totals.forging).filter(([k,v]) => k.includes('billet'));
+                      if (matEntries.length > 0) {
+                        const total = matEntries.reduce((acc, [k, v]) => acc + v, 0);
+                        cellContent = renderTotalItem(total, '📜', 'text-amber-300', false);
+                      }
+                      break;
+                    }
+                    case 'forging_ore_regional': {
+                      const oreNames = ['amethyst_lump', 'condessence_crystal', 'starsilver'];
+                      // Note: 'crystal_chunk' is technically the regional ore for Mondstadt/Liyue in this dataset structure,
+                      // but WeaponsTable groups it differently. Let's just sum all matching the regional filter.
+                      const matEntries = Object.entries(totals.forging).filter(([k,v]) => oreNames.includes(k) || (k === 'crystal_chunk' && Object.entries(totals.forging).some(([k2]) => k2 === 'white_iron_chunk')));
+                      // Actually, let's keep it simple: any ore that is NOT white_iron_chunk or crystal_chunk is regional,
+                      // except for the cases where crystal_chunk IS the regional ore (when paired with white_iron_chunk).
+                      // We can just rely on the existing 'oreNames' logic plus any crystal_chunk if it was regional.
+                      // The simplest and most robust way is to just look at how they are extracted per-row, but for totals
+                      // we can just match the known regional ones. Let's use all ores except white_iron_chunk and maybe crystal_chunk as fallback.
+                      const regionalOres = Object.entries(totals.forging).filter(([k,v]) => k !== 'white_iron_chunk' && k !== 'mora' && !k.includes('billet'));
+                      
+                      // Wait, we need to distinguish crystal_chunk as common vs regional. 
+                      // If we just use the known list + crystal_chunk (if it's the only one).
+                      // To be perfectly safe, let's just sum anything that isn't 'white_iron_chunk' and isn't a billet/mora as Regional.
+                      // Actually, for early game weapons, crystal_chunk IS the regional ore and white_iron_chunk is common.
+                      // So crystal_chunk = regional, white_iron_chunk = common.
+                      const regionalTotal = Object.entries(totals.forging)
+                        .filter(([k, v]) => k !== 'white_iron_chunk' && k !== 'mora' && !k.includes('billet'))
+                        .reduce((acc, [k, v]) => acc + v, 0);
+                        
+                      if (regionalTotal > 0) {
+                        cellContent = renderTotalItem(regionalTotal, '💎', 'text-purple-300', false);
+                      }
+                      break;
+                    }
+                    case 'forging_ore_common': {
+                      // Common ore is always White Iron Chunk in this dataset
+                      const commonTotal = Object.entries(totals.forging)
+                        .filter(([k, v]) => k === 'white_iron_chunk')
+                        .reduce((acc, [k, v]) => acc + v, 0);
+                        
+                      if (commonTotal > 0) {
+                        cellContent = renderTotalItem(commonTotal, '💎', 'text-blue-300', false);
+                      }
+                      break;
+                    }
+                    case 'forging_mora': {
+                      if (totals.forging['mora']) {
+                        cellContent = renderTotalItem(totals.forging['mora'], 'Mora', 'text-yellow-400', true, 'right');
+                      }
+                      break;
+                    }
                     case 'mystic_ore': cellContent = renderTotalItem(totals.costs.mystic_ore, 'MysticEnhancementOre', 'text-blue-400', true); break;
                     case 'fine_ore': cellContent = renderTotalItem(totals.costs.fine_ore, 'FineEnhancementOre', 'text-green-400', true); break;
                     case 'normal_ore': cellContent = renderTotalItem(totals.costs.normal_ore, 'EnhancementOre', 'text-gray-400', true); break;

@@ -1,9 +1,10 @@
 import React, { useMemo, useState, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import useStore from '../store/useStore'
-import { aggregateRosterCosts, computeToFarm } from '../utils/aggregator'
+import { aggregateRosterCosts, getCraftingCosts, computeToFarm } from '../utils/aggregator'
 import { formatNumber, formatItemName } from '../utils/calculator'
 import { formatName } from '../utils/gameData'
+import { getMaterialIcon } from '../utils/assetHelper'
 import FarmableToday from '../components/FarmableToday'
 import DomainCard from '../components/DomainCard'
 import CharacterPlanCard from '../components/CharacterPlanCard'
@@ -16,6 +17,7 @@ import normalBossData from '../data/normal_boss.json'
 import eliteEnemyData from '../data/elite_enemy.json'
 import commonEnemyData from '../data/common_enemy.json'
 import localSpecialtyData from '../data/local_specialty.json'
+import weaponForgingData from '../data/weapon_forging.json'
 
 
 // ─── Progress Bar ─────────────────────────────────────────────────────────
@@ -64,7 +66,7 @@ export function ItemCard({ item, accent }) {
       {/* Thumbnail */}
       <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center relative overflow-hidden" style={{ background: rarityBg }}>
         <img
-          src={`/assets/items/${item.name}.png`}
+          src={getMaterialIcon(item.name, item.category)}
           alt={formatItemName(item.name)}
           className="w-10 h-10 object-contain z-10 drop-shadow-md"
           onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
@@ -93,7 +95,7 @@ export function ItemCard({ item, accent }) {
 }
 
 // ─── To-Farm Category ─────────────────────────────────────────────────────
-function ToFarmCategory({ icon, title, items, accent, emptyMsg }) {
+function ToFarmCategory({ icon, title, items, accent, emptyMsg, maxCols = 5 }) {
   if (!items || items.length === 0) {
     return (
       <div className="mb-6">
@@ -113,7 +115,7 @@ function ToFarmCategory({ icon, title, items, accent, emptyMsg }) {
           {items.length} items
         </span>
       </div>
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className={`grid gap-4 ${maxCols === 3 ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
         {items.map((item) => (
           <ItemCard key={item.name} item={item} accent={accent} />
         ))}
@@ -305,7 +307,22 @@ export default function Planner() {
   const [weaponSearchQuery, setWeaponSearchQuery] = useState('')
 
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
-  const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
+  const craftingTotals = useMemo(() => getCraftingCosts(trackedWeapons, weaponForgingData), [trackedWeapons])
+  
+  const combinedTotals = useMemo(() => {
+    const combinedCosts = { ...totals.totalCosts }
+    for (const [k, v] of Object.entries(craftingTotals.totalCosts || {})) {
+      combinedCosts[k] = (combinedCosts[k] || 0) + v
+    }
+    return {
+      totalCosts: combinedCosts,
+      categories: { ...totals.categories, ...craftingTotals.categories },
+      rarities: { ...totals.rarities, ...craftingTotals.rarities },
+      breakdown: [...(totals.breakdown || []), ...(craftingTotals.breakdown || [])]
+    }
+  }, [totals, craftingTotals])
+
+  const toFarm = useMemo(() => computeToFarm(combinedTotals, inventory), [combinedTotals, inventory])
 
   const getNeededBy = useCallback((matKey, type) => {
     const needed = []
@@ -1027,6 +1044,31 @@ export default function Planner() {
           toFarm.worldBoss?.length > 0
             ? renderBossRegionGroups(groupedNormalBosses, '#F97316', 'all-normalboss', 'normal_boss_materials')
             : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All boss drops covered</div>
+        )}
+
+        {activeTab === 'crafting_materials' && (
+          toFarm.craftingMats?.length > 0
+            ? (
+              <>
+                <ToFarmCategory 
+                  icon="📜"
+                  title="Billets"
+                  items={toFarm.craftingMats.filter(i => i.category === 'billet' || i.name.toLowerCase().includes('billet'))}
+                  accent="var(--gold)"
+                  emptyMsg="All billets covered"
+                  maxCols={3}
+                />
+                <ToFarmCategory 
+                  icon="💎"
+                  title="Forging Ores"
+                  items={toFarm.craftingMats.filter(i => i.category === 'forgingOre' || (!i.name.toLowerCase().includes('billet') && i.name !== 'mora'))}
+                  accent="#A855F7"
+                  emptyMsg="All forging ores covered"
+                  maxCols={3}
+                />
+              </>
+            )
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All crafting materials covered</div>
         )}
 
         {activeTab === 'elite_enhancement' && (

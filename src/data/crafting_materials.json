@@ -1,0 +1,134 @@
+[
+  {
+    "id": "northlander_sword_billet",
+    "name": "Northlander Sword Billet",
+    "kind": "billet",
+    "sortOrder": 1
+  },
+  {
+    "id": "northlander_bow_billet",
+    "name": "Northlander Bow Billet",
+    "kind": "billet",
+    "sortOrder": 2
+  },
+  {
+    "id": "northlander_claymore_billet",
+    "name": "Northlander Claymore Billet",
+    "kind": "billet",
+    "sortOrder": 3
+  },
+  {
+    "id": "northlander_catalyst_billet",
+    "name": "Northlander Catalyst Billet",
+    "kind": "billet",
+    "sortOrder": 4
+  },
+  {
+    "id": "northlander_polearm_billet",
+    "name": "Northlander Polearm Billet",
+    "kind": "billet",
+    "sortOrder": 5
+  },
+  {
+    "id": "midlander_sword_billet",
+    "name": "Midlander Sword Billet",
+    "kind": "billet",
+    "sortOrder": 6
+  },
+  {
+    "id": "midlander_bow_billet",
+    "name": "Midlander Bow Billet",
+    "kind": "billet",
+    "sortOrder": 7
+  },
+  {
+    "id": "midlander_claymore_billet",
+    "name": "Midlander Claymore Billet",
+    "kind": "billet",
+    "sortOrder": 8
+  },
+  {
+    "id": "midlander_catalyst_billet",
+    "name": "Midlander Catalyst Billet",
+    "kind": "billet",
+    "sortOrder": 9
+  },
+  {
+    "id": "midlander_polearm_billet",
+    "name": "Midlander Polearm Billet",
+    "kind": "billet",
+    "sortOrder": 10
+  },
+  {
+    "id": "borderland_sword_billet",
+    "name": "Borderland Sword Billet",
+    "kind": "billet",
+    "sortOrder": 11
+  },
+  {
+    "id": "borderland_bow_billet",
+    "name": "Borderland Bow Billet",
+    "kind": "billet",
+    "sortOrder": 12
+  },
+  {
+    "id": "borderland_claymore_billet",
+    "name": "Borderland Claymore Billet",
+    "kind": "billet",
+    "sortOrder": 13
+  },
+  {
+    "id": "borderland_catalyst_billet",
+    "name": "Borderland Catalyst Billet",
+    "kind": "billet",
+    "sortOrder": 14
+  },
+  {
+    "id": "borderland_polearm_billet",
+    "name": "Borderland Polearm Billet",
+    "kind": "billet",
+    "sortOrder": 15
+  },
+  {
+    "id": "white_iron_chunk",
+    "name": "White Iron Chunk",
+    "kind": "ore",
+    "sortOrder": 20
+  },
+  {
+    "id": "crystal_chunk",
+    "name": "Crystal Chunk",
+    "kind": "ore",
+    "sortOrder": 21
+  },
+  {
+    "id": "starsilver",
+    "name": "Starsilver",
+    "kind": "ore",
+    "sortOrder": 22
+  },
+  {
+    "id": "empowered_dragontooth",
+    "name": "Empowered Dragontooth",
+    "kind": "ore",
+    "sortOrder": 23
+  },
+  {
+    "id": "amethyst_lump",
+    "name": "Amethyst Lump",
+    "kind": "ore",
+    "sortOrder": 24
+  },
+  {
+    "id": "condessence_crystal",
+    "name": "Condessence Crystal",
+    "kind": "ore",
+    "sortOrder": 25
+  },
+  {
+    "id": "rainbowdrop_crystal",
+    "name": "Rainbowdrop Crystal",
+    "kind": "ore",
+    "sortOrder": 26
+  }
+]
