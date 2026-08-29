@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import useStore from '../store/useStore'
 import { ASCENSION_CAPS } from '../utils/calculator'
 import { LevelSlider, AscensionSelector, TalentRow } from './CharacterModal'
+import CustomSelect from './CustomSelect'
+import { RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg, WEAPON_TYPES } from '../utils/gameData'
+import { getWeaponIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
+import charactersData from '../utils/characters'
+import weaponsData from '../data/weapons.json'
 
 export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, onSave }) {
   const bulkUpdateCharacters = useStore(s => s.bulkUpdateCharacters)
+  const trackedWeapons = useStore(s => s.trackedWeapons)
+  const roster = useStore(s => s.roster)
+
+  const globallyAssignedWeaponIds = useMemo(() => {
+    return new Set(trackedWeapons.filter(w => Boolean(w.assignedTo)).map(w => w.id));
+  }, [trackedWeapons]);
   
   // Toggles
   const [overrideCurrentLevel, setOverrideCurrentLevel] = useState(false)
@@ -25,6 +36,16 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
   const [normalTo, setNormalTo] = useState(10)
   const [skillTo, setSkillTo] = useState(10)
   const [burstTo, setBurstTo] = useState(10)
+
+  const [assignments, setAssignments] = useState({})
+
+  const selectedCharactersList = useMemo(() => {
+    return selectedIds.map(id => {
+      const charData = charactersData.find(c => c.name === id)
+      const rosterEntry = roster[id] || {}
+      return { id, data: charData, rosterEntry }
+    }).filter(c => c.data)
+  }, [selectedIds, roster])
 
   // Use a generic gold color for the bulk edit modal since it applies to many elements
   const elColor = "var(--gold)"
@@ -50,6 +71,11 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      const initAssignments = {}
+      selectedIds.forEach(id => {
+        initAssignments[id] = roster[id]?.equippedWeaponId || ''
+      })
+      setAssignments(initAssignments)
     } else {
       document.body.style.overflow = ''
       // Reset state to baseline on close
@@ -103,17 +129,29 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
         }
       }
       
-      if (Object.keys(patch).length === 0) {
+      let hasAssignmentChanges = false;
+      const payloads = selectedIds.map(id => {
+        const payload = { name: id, ...patch }
+        const oldWeapon = roster[id]?.equippedWeaponId || ''
+        const newWeapon = assignments[id] || ''
+        if (oldWeapon !== newWeapon) {
+          payload.equippedWeaponId = newWeapon ? newWeapon : null
+          hasAssignmentChanges = true
+        }
+        return payload
+      })
+      
+      if (Object.keys(patch).length === 0 && !hasAssignmentChanges) {
         console.warn("No overrides selected. Closing modal.");
         onClose()
         return
       }
 
-      console.log("Dispatching bulk update for:", selectedIds, "with patch:", patch);
+      console.log("Dispatching bulk update for characters with payloads:", payloads);
       if (onSave) {
-        onSave(patch)
+        onSave(payloads)
       } else {
-        bulkUpdateCharacters(selectedIds, patch)
+        bulkUpdateCharacters(payloads, patch)
         onClose()
       }
     } catch (error) {
@@ -133,7 +171,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-lg bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up relative overflow-hidden"
+        className="w-full max-w-3xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up relative overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -239,6 +277,73 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
                     charName="bulk" 
                     skill="burst" 
                   />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Weapon Assignments Section */}
+          <section>
+            <h3 className="modal-section-title text-sm mb-4">🗡️ Weapon Assignments</h3>
+            <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] overflow-hidden">
+              <div className="max-h-60 overflow-y-auto custom-scrollbar p-2">
+                <div className="space-y-2">
+                  {selectedCharactersList.map((c) => {
+                    const assignedToOthers = Object.entries(assignments)
+                      .filter(([id, wId]) => id !== c.id && wId !== '')
+                      .map(([_, wId]) => wId)
+
+                    const initialAssignedWeapon = roster[c.id]?.equippedWeaponId || '';
+                    const compatibleWeapons = trackedWeapons.filter((w) => {
+                      const wData = weaponsData.find(wd => wd.name === w.weaponName)
+                      if (!wData || wData.type !== c.data.weapon_type) return false;
+                      if (assignedToOthers.includes(w.id)) return false;
+                      if (globallyAssignedWeaponIds.has(w.id) && w.id !== initialAssignedWeapon) return false;
+                      return true;
+                    })
+
+                    const assignedValue = assignments[c.id] || '';
+                    const rColor = RARITY_COLORS[c.data.rarity] || '#C8A96E';
+                    
+                    return (
+                      <div key={c.id} className="flex items-center gap-3 p-2 bg-[var(--bg)]/50 rounded-lg border border-[var(--border)]">
+                        <div className="relative shrink-0 flex items-center justify-center">
+                          <img 
+                            src={getCharacterAvatar(c.data.name)}
+                            alt={c.data.name} 
+                            className="w-10 h-10 object-contain rounded-md"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm text-[var(--text)] truncate">
+                              {formatName(c.data.name)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="w-56 shrink-0">
+                          <CustomSelect
+                            placeholder="— Unassigned —"
+                            value={assignedValue}
+                            onChange={(newVal) => setAssignments(prev => ({ ...prev, [c.id]: newVal }))}
+                            options={[
+                              { id: '', name: '— Unassigned —', icon: null, rarity: 0 },
+                              ...compatibleWeapons.map((w) => {
+                                const wData = weaponsData.find(wd => wd.name === w.weaponName)
+                                return {
+                                  id: w.id,
+                                  name: formatName(w.weaponName),
+                                  icon: getWeaponIcon(w.weaponName),
+                                  rarity: wData ? wData.rarity : 0,
+                                  subtitle: `Lvl ${w.level}/${w.targetLevel}`
+                                }
+                              })
+                            ]}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>

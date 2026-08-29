@@ -243,13 +243,54 @@ const useStore = create(
           }
         }),
 
-      bulkUpdateCharacters: (identifiers, patch) =>
+      bulkUpdateCharacters: (identifiersOrPayloads, patch) =>
         set((state) => {
+          const isFirstArgPayloads = Array.isArray(identifiersOrPayloads) && identifiersOrPayloads.length > 0 && typeof identifiersOrPayloads[0] === 'object';
+          const isSecondArgPayloads = Array.isArray(patch) && patch.length > 0 && typeof patch[0] === 'object';
+          const isPayloads = isFirstArgPayloads || isSecondArgPayloads;
+          
+          const payloadsArray = isFirstArgPayloads ? identifiersOrPayloads : (isSecondArgPayloads ? patch : null);
+          
           const newRoster = { ...state.roster }
+          let updatedWeapons = state.trackedWeapons;
           let hasChanges = false
-          identifiers.forEach((name) => {
+          
+          const payloadsMap = isPayloads ? 
+            payloadsArray.reduce((acc, p) => ({ ...acc, [p.name]: p }), {}) : 
+            null;
+            
+          const targetNames = isPayloads ? payloadsArray.map(p => p.name) : identifiersOrPayloads;
+            
+          targetNames.forEach((name) => {
             if (newRoster[name]) {
-              const updatedEntry = { ...newRoster[name], ...patch }
+              const currentPatch = isPayloads ? payloadsMap[name] : patch;
+              const updatedEntry = { ...newRoster[name], ...currentPatch }
+              
+              if ('equippedWeaponId' in currentPatch && currentPatch.equippedWeaponId !== newRoster[name].equippedWeaponId) {
+                // A. Unassign old weapon from this character (so the old weapon has no owner)
+                if (newRoster[name].equippedWeaponId) {
+                  updatedWeapons = updatedWeapons.map(w => 
+                    w.id === newRoster[name].equippedWeaponId ? { ...w, assignedTo: null } : w
+                  )
+                }
+                
+                // B. The new weapon might belong to someone else. Rip it out of their hands.
+                const newWeaponId = currentPatch.equippedWeaponId;
+                if (newWeaponId) {
+                  const newWeapon = updatedWeapons.find(w => w.id === newWeaponId);
+                  if (newWeapon && newWeapon.assignedTo && newWeapon.assignedTo !== name) {
+                    newRoster[newWeapon.assignedTo] = {
+                      ...newRoster[newWeapon.assignedTo],
+                      equippedWeaponId: null
+                    }
+                  }
+                  
+                  // C. Hand the new weapon to this character
+                  updatedWeapons = updatedWeapons.map(w => 
+                    w.id === newWeaponId ? { ...w, assignedTo: name } : w
+                  )
+                }
+              }
               
               // Recalculate costs per user request
               const charData = charactersData.find(c => c.name === name)
@@ -268,7 +309,7 @@ const useStore = create(
             }
           })
           if (!hasChanges) return state
-          return { roster: newRoster }
+          return { roster: newRoster, trackedWeapons: updatedWeapons }
         }),
 
       isInRoster: (name) => Boolean(get().roster[name]),
