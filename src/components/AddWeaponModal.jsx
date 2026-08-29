@@ -87,6 +87,10 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
   const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
 
+  const globallyAssignedCharacterIds = useMemo(() => {
+    return new Set(trackedWeapons.map(w => w.assignedTo).filter(Boolean));
+  }, [trackedWeapons]);
+
   const modalRef = useRef(null)
 
   // Step 1 state
@@ -156,8 +160,12 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
     if (!selectedWeapon) return []
     return Object.keys(roster)
       .map((name) => charactersData.find((c) => c.name === name))
-      .filter((c) => c && c.weapon_type === selectedWeapon.type)
-  }, [roster, selectedWeapon])
+      .filter((c) => {
+        if (!c || c.weapon_type !== selectedWeapon.type) return false;
+        if (globallyAssignedCharacterIds.has(c.name) && c.name !== existingWeapon?.assignedTo) return false;
+        return true;
+      })
+  }, [roster, selectedWeapon, globallyAssignedCharacterIds, existingWeapon])
 
   const handleSelectWeapon = (weapon) => {
     setSelectedWeapon(weapon)

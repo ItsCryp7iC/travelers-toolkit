@@ -355,12 +355,43 @@ const useStore = create(
           ),
         })),
 
-      bulkUpdateWeapons: (identifiers, patch) =>
+      bulkUpdateWeapons: (identifiersOrPayloads, patch) =>
         set((state) => {
+          const isPayloads = Array.isArray(identifiersOrPayloads) && identifiersOrPayloads.length > 0 && typeof identifiersOrPayloads[0] === 'object';
+          
+          let updatedRoster = { ...state.roster };
+          
+          const unassignFromChar = (charName) => {
+             if (charName && updatedRoster[charName]) {
+                 updatedRoster[charName] = { ...updatedRoster[charName], equippedWeaponId: null };
+             }
+          }
+
+          const assignToChar = (charName, weaponId) => {
+             if (charName && updatedRoster[charName]) {
+                 updatedRoster[charName] = { ...updatedRoster[charName], equippedWeaponId: weaponId };
+             }
+          }
+
+          const payloadsMap = isPayloads ? 
+            identifiersOrPayloads.reduce((acc, p) => ({ ...acc, [p.id]: p }), {}) : 
+            null;
+
           const updatedArmory = state.trackedWeapons.map(weapon => {
-            if (identifiers.includes(weapon.id) || identifiers.includes(weapon.weaponName)) {
-              const updatedWeapon = { ...weapon, ...patch };
+            const isMatch = isPayloads ? payloadsMap[weapon.id] : (identifiersOrPayloads.includes(weapon.id) || identifiersOrPayloads.includes(weapon.weaponName));
+            
+            if (isMatch) {
+              const currentPatch = isPayloads ? payloadsMap[weapon.id] : patch;
+              const updatedWeapon = { ...weapon, ...currentPatch };
               
+              if ('assignedTo' in currentPatch && currentPatch.assignedTo !== weapon.assignedTo) {
+                 unassignFromChar(weapon.assignedTo);
+                 if (currentPatch.assignedTo && updatedRoster[currentPatch.assignedTo]?.equippedWeaponId) {
+                     // The character already has a weapon; we will unassign it in the second pass
+                 }
+                 assignToChar(currentPatch.assignedTo, weapon.id);
+              }
+
               const wData = weaponsData.find(w => w.name === updatedWeapon.weaponName);
               if (wData) {
                 const newCosts = calculateWeaponCost(
@@ -378,7 +409,17 @@ const useStore = create(
             }
             return weapon;
           });
-          return { trackedWeapons: updatedArmory };
+          
+          // Second pass: unassign weapons that were replaced
+          const currentlyEquippedWeaponIds = Object.values(updatedRoster).map(c => c.equippedWeaponId).filter(Boolean);
+          const finalArmory = updatedArmory.map(w => {
+             if (w.assignedTo && !currentlyEquippedWeaponIds.includes(w.id)) {
+                 return { ...w, assignedTo: null };
+             }
+             return w;
+          });
+
+          return { trackedWeapons: finalArmory, roster: updatedRoster };
         }),
 
       assignWeaponToCharacter: (weaponId, charName) =>

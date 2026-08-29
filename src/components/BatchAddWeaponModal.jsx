@@ -79,11 +79,15 @@ function LevelSlider({ value, onChange, ascension, label, elementColor, minOverr
 const ALL_TYPES     = ['All', ...Object.keys(WEAPON_TYPES)]
 const ALL_RARITIES  = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★', '⚪ 1★']
 
-export default function BatchAddWeaponModal({ onClose }) {
+export default function BatchAddWeaponModal({ isOpen, onClose }) {
   const roster = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
+
+  const globallyAssignedCharacterIds = useMemo(() => {
+    return new Set(trackedWeapons.map(w => w.assignedTo).filter(Boolean));
+  }, [trackedWeapons]);
 
   const modalRef = useRef(null)
 
@@ -427,7 +431,15 @@ export default function BatchAddWeaponModal({ onClose }) {
                     </thead>
                     <tbody className="divide-y divide-[var(--border)]">
                       {expandedSelectedWeapons.map((wp) => {
-                        const compatibleChars = getCompatibleChars(wp.type);
+                        const assignedToOthers = Object.entries(assignments)
+                          .filter(([id, char]) => id !== wp.uniqueId && char !== '')
+                          .map(([_, char]) => char);
+
+                        const compatibleChars = getCompatibleChars(wp.type).filter((c) => {
+                          if (assignedToOthers.includes(c.name)) return false;
+                          if (globallyAssignedCharacterIds.has(c.name)) return false;
+                          return true;
+                        });
                         const assignedValue = assignments[wp.uniqueId] || '';
                         const rColor = RARITY_COLORS[wp.rarity] || '#C8A96E';
                         

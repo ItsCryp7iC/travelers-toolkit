@@ -1,8 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { ASCENSION_CAPS } from '../utils/calculator'
 import { LevelSlider, AscensionSelector } from './CharacterModal'
-
+import useStore from '../store/useStore'
+import weaponsData from '../data/weapons.json'
+import charactersData from '../utils/characters'
+import { RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg } from '../utils/gameData'
+import GenshinImage from './GenshinImage'
+import CustomSelect from './CustomSelect'
+import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
 export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSave }) {
+  // Store
+  const trackedWeapons = useStore((s) => s.trackedWeapons)
+  const roster = useStore((s) => s.roster)
+
+  const globallyAssignedCharacterIds = useMemo(() => {
+    return new Set(trackedWeapons.map(w => w.assignedTo).filter(Boolean));
+  }, [trackedWeapons]);
+
   // Toggles
   const [overrideCurrentLevel, setOverrideCurrentLevel] = useState(false)
   const [overrideTargetLevel, setOverrideTargetLevel] = useState(false)
@@ -16,6 +30,19 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
   // Use a generic purple/gold color
   const elColor = "#9CA3AF"
   const targetColor = "var(--gold)"
+
+  // Character assignments state
+  const [assignments, setAssignments] = useState({})
+
+  // Compute full weapon data for selected weapons
+  const selectedWeaponsList = useMemo(() => {
+    return selectedIds.map(id => {
+      const tw = trackedWeapons.find(w => w.id === id)
+      if (!tw) return null
+      const data = weaponsData.find(w => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown' }
+      return { ...tw, data }
+    }).filter(Boolean)
+  }, [selectedIds, trackedWeapons])
 
   // Auto-clamp Current Level when Current Ascension changes
   useEffect(() => {
@@ -38,6 +65,11 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      const initialAssignments = {}
+      selectedWeaponsList.forEach(w => {
+        initialAssignments[w.id] = w.assignedTo || ''
+      })
+      setAssignments(initialAssignments)
     } else {
       document.body.style.overflow = ''
       // Reset state to baseline on close
@@ -47,35 +79,45 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
       setFromAsc(0)
       setToLevel(90)
       setToAsc(6)
+      setAssignments({})
     }
     return () => { document.body.style.overflow = '' }
-  }, [isOpen])
+  }, [isOpen, selectedWeaponsList])
 
   if (!isOpen) return null
 
   const handleApply = () => {
     try {
-      const patch = {}
-      
-      if (overrideCurrentLevel) {
-        patch.level = fromLevel
-        patch.ascension = fromAsc
-      }
-      
-      if (overrideTargetLevel) {
-        patch.targetLevel = toLevel
-        patch.targetAscension = toAsc
-      }
-      
-      if (Object.keys(patch).length === 0) {
+      const payloads = selectedWeaponsList.map(w => {
+        const payload = { id: w.id }
+        
+        if (overrideCurrentLevel) {
+          payload.level = fromLevel
+          payload.ascension = fromAsc
+        }
+        
+        if (overrideTargetLevel) {
+          payload.targetLevel = toLevel
+          payload.targetAscension = toAsc
+        }
+        
+        const newAssignment = assignments[w.id] || null;
+        if (newAssignment !== w.assignedTo) {
+          payload.assignedTo = newAssignment;
+        }
+
+        return payload;
+      }).filter(p => Object.keys(p).length > 1);
+
+      if (payloads.length === 0) {
         console.warn("No overrides selected. Closing modal.");
         onClose()
         return
       }
 
-      console.log("Dispatching bulk update for:", selectedIds, "with patch:", patch);
+      console.log("Dispatching bulk update for payloads:", payloads);
       if (onSave) {
-        onSave(patch)
+        onSave(payloads)
       } else {
         onClose()
       }
@@ -96,7 +138,7 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-lg bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up relative overflow-hidden"
+        className="w-full max-w-3xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up relative overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -144,6 +186,90 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
                   <div className="mt-4"><LevelSlider value={safeToLevel} onChange={setToLevel} ascension={safeToAsc} label="Level" elementColor={targetColor} isCharacter={false} /></div>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* Character Assignments Section */}
+          <section>
+            <h3 className="modal-section-title text-sm mb-4">📋 Character Assignments</h3>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm max-h-60 overflow-y-auto custom-scrollbar">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)] sticky top-0 z-10">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold w-16 text-center">Icon</th>
+                    <th className="px-4 py-3 font-semibold">Weapon Name</th>
+                    <th className="px-4 py-3 font-semibold w-1/2">Assign to Character</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border)]">
+                  {selectedWeaponsList.map((wp) => {
+                    const assignedToOthers = Object.entries(assignments)
+                      .filter(([id, char]) => id !== wp.id && char !== '')
+                      .map(([_, char]) => char)
+
+                    const initialAssigned = wp.assignedTo;
+                    const compatibleChars = Object.keys(roster)
+                      .map((name) => charactersData.find((c) => c.name === name))
+                      .filter((c) => {
+                        if (!c || c.weapon_type !== wp.data.type) return false;
+                        if (assignedToOthers.includes(c.name)) return false;
+                        if (globallyAssignedCharacterIds.has(c.name) && c.name !== initialAssigned) return false;
+                        return true;
+                      })
+
+                    const assignedValue = assignments[wp.id] || ''
+                    const rColor = RARITY_COLORS[wp.data.rarity] || '#C8A96E'
+                    
+                    return (
+                      <tr key={wp.id} className="hover:bg-[var(--elevated)] transition-colors">
+                        <td className="px-4 py-3 text-center">
+                          <div className={`w-10 h-10 mx-auto rounded-lg shadow flex items-center justify-center relative overflow-hidden ${getRarityBg(wp.data.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
+                            <GenshinImage 
+                              src={getWeaponIcon(wp.weaponName)} 
+                              alt={wp.weaponName} 
+                              className="w-full h-full object-contain absolute inset-0 z-10 p-1" 
+                            />
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <p className="font-semibold text-[var(--text)] text-sm">{formatName(wp.weaponName)}</p>
+                          <div className="flex gap-2 items-center mt-1 text-xs">
+                            <span className={getRarityClass(wp.data.rarity)}>{getStars(wp.data.rarity)}</span>
+                            <span className="text-[var(--muted)]">{wp.data.type}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          {compatibleChars.length === 0 ? (
+                            <p className="text-xs text-[var(--muted)] italic">No compatible rostered characters.</p>
+                          ) : (
+                            <CustomSelect
+                              placeholder="— Unassigned (Standalone) —"
+                              value={assignedValue}
+                              onChange={(newVal) => setAssignments(prev => ({ ...prev, [wp.id]: newVal }))}
+                              options={[
+                                { id: '', name: '— Unassigned (Standalone) —', icon: null, rarity: 0 },
+                                ...compatibleChars.map((c) => {
+                                  const entry = roster[c.name]
+                                  const hasWeapon = entry?.equippedWeaponId
+                                  const equippedWeaponName = hasWeapon ? trackedWeapons.find(w => w.id === hasWeapon)?.weaponName : null
+                                  return {
+                                    id: c.name,
+                                    name: formatName(c.name),
+                                    subtitle: equippedWeaponName && hasWeapon !== wp.id ? `⚠️ (has ${formatName(equippedWeaponName)})` : '',
+                                    icon: getCharacterAvatar(c.name),
+                                    rarity: c.rarity || 0,
+                                    secondaryIcon: equippedWeaponName && hasWeapon !== wp.id ? getWeaponIcon(equippedWeaponName) : null
+                                  }
+                                })
+                              ]}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           </section>
 

@@ -138,8 +138,12 @@ export default function Weapons() {
         isOpen={bulkModalOpen}
         onClose={() => setBulkModalOpen(false)}
         selectedIds={selectedIds}
-        onSave={(patch) => {
-          bulkUpdateWeapons(selectedIds, patch);
+        onSave={(payloads) => {
+          if (Array.isArray(payloads)) {
+            bulkUpdateWeapons(payloads);
+          } else {
+            bulkUpdateWeapons(selectedIds, payloads);
+          }
           setBulkModalOpen(false);
           setSelectedIds([]);
         }}
