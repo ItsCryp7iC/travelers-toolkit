@@ -335,9 +335,16 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
                                   name: formatName(w.weaponName),
                                   icon: getWeaponIcon(w.weaponName),
                                   rarity: wData ? wData.rarity : 0,
-                                  subtitle: `Lvl ${w.level}/${w.targetLevel}`
+                                  subtitle: `Armory: Lvl ${w.level}/${w.targetLevel}`
                                 }
-                              })
+                              }),
+                              ...weaponsData.filter(wd => wd.type === c.data.weapon_type).map((wd) => ({
+                                id: `NEW:${wd.name}`,
+                                name: formatName(wd.name),
+                                icon: getWeaponIcon(wd.name),
+                                rarity: wd.rarity,
+                                subtitle: `New (Lv. 1 → 90)`
+                              }))
                             ]}
                           />
                         </div>

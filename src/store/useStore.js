@@ -275,20 +275,41 @@ const useStore = create(
                 }
                 
                 // B. The new weapon might belong to someone else. Rip it out of their hands.
-                const newWeaponId = currentPatch.equippedWeaponId;
-                if (newWeaponId) {
-                  const newWeapon = updatedWeapons.find(w => w.id === newWeaponId);
-                  if (newWeapon && newWeapon.assignedTo && newWeapon.assignedTo !== name) {
-                    newRoster[newWeapon.assignedTo] = {
-                      ...newRoster[newWeapon.assignedTo],
-                      equippedWeaponId: null
+                const newWeaponIdStr = currentPatch.equippedWeaponId;
+                if (newWeaponIdStr) {
+                  let finalWeaponId = newWeaponIdStr;
+                  if (newWeaponIdStr.startsWith('NEW:')) {
+                    const weaponName = newWeaponIdStr.substring(4);
+                    finalWeaponId = crypto.randomUUID();
+                    const newWeapon = {
+                      id: finalWeaponId,
+                      weapon_id: weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
+                      weaponName: weaponName,
+                      level: 1,
+                      ascension: 0,
+                      targetLevel: 90,
+                      targetAscension: 6,
+                      assignedTo: name,
+                      createdAt: Date.now(),
+                    };
+                    updatedWeapons = [...updatedWeapons, newWeapon];
+                  } else {
+                    const newWeapon = updatedWeapons.find(w => w.id === finalWeaponId);
+                    if (newWeapon && newWeapon.assignedTo && newWeapon.assignedTo !== name) {
+                      newRoster[newWeapon.assignedTo] = {
+                        ...newRoster[newWeapon.assignedTo],
+                        equippedWeaponId: null
+                      }
                     }
+                    
+                    // C. Hand the new weapon to this character
+                    updatedWeapons = updatedWeapons.map(w => 
+                      w.id === finalWeaponId ? { ...w, assignedTo: name } : w
+                    )
                   }
                   
-                  // C. Hand the new weapon to this character
-                  updatedWeapons = updatedWeapons.map(w => 
-                    w.id === newWeaponId ? { ...w, assignedTo: name } : w
-                  )
+                  // Ensure updatedEntry uses the valid UUID instead of the 'NEW:' placeholder
+                  updatedEntry.equippedWeaponId = finalWeaponId;
                 }
               }
               
