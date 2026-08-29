@@ -349,11 +349,49 @@ const useStore = create(
         }),
 
       updateTrackedWeapon: (id, patch) =>
-        set((state) => ({
-          trackedWeapons: state.trackedWeapons.map((w) =>
+        set((state) => {
+          let updatedWeapons = state.trackedWeapons;
+          let updatedRoster = { ...state.roster };
+
+          const weapon = updatedWeapons.find((w) => w.id === id);
+          if (!weapon) return state;
+
+          // 1. Did the assignment change?
+          if ('assignedTo' in patch && patch.assignedTo !== weapon.assignedTo) {
+            
+            // A. Unassign this weapon from its previous owner
+            if (weapon.assignedTo && updatedRoster[weapon.assignedTo]) {
+              updatedRoster[weapon.assignedTo] = {
+                ...updatedRoster[weapon.assignedTo],
+                equippedWeaponId: null,
+              };
+            }
+
+            // B. If the new owner already has a different weapon, rip it out of their hands
+            const newCharName = patch.assignedTo;
+            if (newCharName && updatedRoster[newCharName]) {
+              const charPreviousWeaponId = updatedRoster[newCharName].equippedWeaponId;
+              if (charPreviousWeaponId && charPreviousWeaponId !== id) {
+                updatedWeapons = updatedWeapons.map((w) =>
+                  w.id === charPreviousWeaponId ? { ...w, assignedTo: null } : w
+                );
+              }
+
+              // C. Hand the new owner this weapon
+              updatedRoster[newCharName] = {
+                ...updatedRoster[newCharName],
+                equippedWeaponId: id,
+              };
+            }
+          }
+
+          // 2. Finally, apply the standard patch to the target weapon itself
+          updatedWeapons = updatedWeapons.map((w) =>
             w.id === id ? { ...w, ...patch } : w
-          ),
-        })),
+          );
+
+          return { trackedWeapons: updatedWeapons, roster: updatedRoster };
+        }),
 
       bulkUpdateWeapons: (identifiersOrPayloads, patch) =>
         set((state) => {
