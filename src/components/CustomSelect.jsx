@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function CustomSelect({ options, value, onChange, placeholder }) {
@@ -29,19 +29,44 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
   const updatePosition = () => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
+      // Assume a max height of 320px if ref isn't ready yet
+      const dropdownHeight = dropdownRef.current ? dropdownRef.current.getBoundingClientRect().height : 320;
+      
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      let top = rect.bottom + 4;
+      let bottom = 'auto';
+      let maxHeight = 320; // 320px = 20rem (max-h-80)
+
+      // If there's not enough room below, but there is more room above than below, flip upward
+      if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+        top = 'auto';
+        bottom = window.innerHeight - rect.top + 4;
+        maxHeight = Math.min(320, spaceAbove - 8);
+      } else {
+        // Open downward, but constrain height if space is very tight
+        maxHeight = Math.min(320, spaceBelow - 8);
+      }
+
       setDropdownStyles({
         position: 'fixed',
-        top: rect.bottom + 4,
+        top,
+        bottom,
         left: rect.left,
         width: rect.width,
+        maxHeight: `${maxHeight}px`,
         zIndex: 99999,
       });
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isOpen) {
       updatePosition();
+      // Call it a second time just in case rendering the children changed the height
+      requestAnimationFrame(updatePosition);
+      
       window.addEventListener('resize', updatePosition);
       window.addEventListener('scroll', updatePosition, true);
       // Auto-focus input when opened
