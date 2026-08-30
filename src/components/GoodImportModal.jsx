@@ -23,12 +23,15 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     // 3. Materials
     const inventoryList = getPrimaryInventoryList();
     const inventoryMap = {};
+    
+    const normalizeKey = (k) => String(k).replace(/[_ ']/g, '').toLowerCase();
+
     inventoryList.forEach(item => {
-      inventoryMap[item.matKey] = item;
+      inventoryMap[normalizeKey(item.matKey)] = item;
     });
 
     const mats = Object.entries(parsedData.materials || {}).map(([key, quantity]) => {
-      const dbItem = inventoryMap[key];
+      const dbItem = inventoryMap[normalizeKey(key)];
       let group = 'Other';
       let subGroup = '';
       let category = '';
@@ -54,16 +57,27 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           group = 'Local Specialties';
         } else if (cat === 'Character Ascension Gem') {
           group = 'Character Gems';
+        } else if (cat === 'Crafting Material' || cat === 'billet' || cat === 'forgingOre') {
+          group = 'Crafting Mats';
         }
       }
-      return { key, quantity, checked: group !== 'Other', group, subGroup, label: dbItem?.label || key, category: dbItem?.category || '' };
+      return { 
+        key, 
+        quantity, 
+        checked: group !== 'Other', 
+        group, 
+        subGroup, 
+        label: dbItem?.label || key, 
+        category: dbItem?.category || '',
+        dbItemKey: dbItem?.matKey
+      };
     });
     setMaterials(mats);
   }, [parsedData]);
 
   // Derived state for material tabs
   const materialGroups = [
-    'Currency & Exp', 'Boss Drops', 'Enemy Drops', 'Talent Mats', 'Weapon Asc Mats', 'Local Specialties', 'Character Gems', 'Other'
+    'Currency & Exp', 'Boss Drops', 'Enemy Drops', 'Talent Mats', 'Weapon Asc Mats', 'Crafting Mats', 'Local Specialties', 'Character Gems', 'Other'
   ];
   
   useEffect(() => {
@@ -127,7 +141,8 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     };
     
     materials.filter(m => m.checked).forEach(m => {
-      finalData.materials[m.key] = parseInt(m.quantity, 10) || 0;
+      const finalKey = m.dbItemKey || m.key;
+      finalData.materials[finalKey] = parseInt(m.quantity, 10) || 0;
     });
     
     onConfirm(finalData);
@@ -198,11 +213,17 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto bg-[var(--surface)] p-5">
+        <div className="flex-1 overflow-y-auto bg-[var(--surface)]">
           
           {/* Characters Tab */}
           {activeTab === 'characters' && (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+            <div className="flex flex-col">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20">
+                  {characters.filter(c => c.checked).length} selected / {characters.length} total characters
+                </div>
+              </div>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-5 pt-4">
               {characters.map((char, index) => (
                 <div key={index} className={`flex flex-col gap-3 p-3 rounded-xl border transition-all ${char.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
                   
@@ -246,12 +267,19 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                 </div>
               ))}
               {characters.length === 0 && <p className="text-[var(--color-text-muted)] text-center py-8 col-span-full">No characters found in file.</p>}
+              </div>
             </div>
           )}
 
           {/* Weapons Tab */}
           {activeTab === 'weapons' && (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20">
+                  {weapons.filter(w => w.checked).length} selected / {weapons.length} total weapons
+                </div>
+              </div>
+              <div className="flex flex-col gap-6 p-5 pt-4">
               {/* Equipped Weapons */}
               <div>
                 <h3 className="text-sm font-bold text-[var(--gold)] mb-3 border-b border-[var(--border)] pb-1 flex items-center gap-2">
@@ -273,12 +301,14 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                   {weapons.filter(w => !w.location).length === 0 && <p className="text-xs text-[var(--color-text-muted)] italic px-4">None found.</p>}
                 </div>
               </div>
+              </div>
             </div>
           )}
 
           {/* Materials Tab */}
           {activeTab === 'materials' && (
-            <div className="flex flex-col h-full gap-5">
+            <div className="flex flex-col">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
               {/* Primary Material Categories */}
               <div className="flex flex-wrap gap-2 mb-2">
                 {materialGroups.map(group => (
@@ -322,7 +352,11 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
               )}
 
               {/* Materials List */}
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+              <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20">
+                {activeMaterials.filter(m => m.checked).length} selected / {activeMaterials.length} total materials
+              </div>
+              </div>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-5 pt-4">
                 {activeMaterials.map((mat) => {
                   const globalIndex = materials.indexOf(mat);
                   return (
