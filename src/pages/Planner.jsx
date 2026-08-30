@@ -79,8 +79,8 @@ export function ItemCard({ item, accent }) {
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-0.5">
           <span className="text-xs font-semibold text-[var(--text)] truncate mr-2">{formatItemName(item.name)}</span>
-          <span className="font-bold text-xs" style={{ color: accent || 'var(--gold)' }}>
-            ×{item.toFarm}
+          <span className="font-bold text-xs" style={{ color: item.toFarm === 0 ? '#4ADE80' : (accent || 'var(--gold)') }}>
+            {item.toFarm === 0 ? '✅' : `×${item.toFarm}`}
           </span>
         </div>
         <div className="flex items-center gap-3 text-xs text-[var(--muted)] mb-1">

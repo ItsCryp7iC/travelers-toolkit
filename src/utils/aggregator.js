@@ -166,7 +166,7 @@ export function computeToFarm(totals, inventory) {
         rarity: rarities[name] || 3
       }
     })
-    .filter(item => item.toFarm > 0)
+    .filter(item => item.required > 0)
     .sort((a, b) => {
       if (b.rarity !== a.rarity) return b.rarity - a.rarity;
       return a.name.localeCompare(b.name);
