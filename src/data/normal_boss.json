@@ -213,7 +213,7 @@
     "type": "normal_boss",
     "boss_name": "Millennial Pearl Seahorse",
     "region": "Fontaine",
-    "sortOrder": 2.027
+    "sortOrder": 2.028
   },
   {
     "id": "TourbillonDevice",
@@ -221,7 +221,7 @@
     "type": "normal_boss",
     "boss_name": "Prototype Cal. Breguet",
     "region": "Fontaine",
-    "sortOrder": 2.028
+    "sortOrder": 2.027
   },
   {
     "id": "WaterThatFailedToTranscend",

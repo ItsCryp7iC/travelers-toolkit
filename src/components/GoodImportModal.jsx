@@ -380,11 +380,11 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                       
                       {/* Bottom Side: Quantity Input */}
                       <div className="flex items-center gap-2 bg-[var(--surface)] px-2 py-1.5 rounded border border-[var(--border)] mt-1 justify-between">
-                        <span className="text-xs text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Qty</span>
+                        <span className="text-xs text-[var(--color-text-muted)] font-bold uppercase tracking-wider shrink-0">Qty</span>
                         <input 
                           type="number" 
                           min="0"
-                          className="w-16 bg-transparent text-right text-sm text-white outline-none font-bold"
+                          className="flex-1 min-w-0 bg-transparent text-right text-sm text-white outline-none font-bold"
                           value={mat.quantity}
                           onChange={e => updateMaterial(globalIndex, e.target.value)}
                         />
