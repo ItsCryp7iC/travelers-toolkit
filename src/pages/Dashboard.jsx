@@ -458,8 +458,8 @@ export default function Dashboard() {
  >
  {filtered.map((item) => (
  activeTab === 'characters'
- ? <CharacterCard key={item.name} character={item} />
- : <WeaponCard key={item.id} weapon={item} onClick={() => setSelectedWeapon(item)} />
+ ? <CharacterCard key={item.name} character={item} variant="compact" />
+ : <WeaponCard key={item.id} weapon={item} onClick={() => setSelectedWeapon(item)} variant="compact" />
  ))}
  </div>
  ) : (

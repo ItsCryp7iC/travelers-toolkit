@@ -8,9 +8,11 @@ import { formatNumber } from '../utils/calculator'
 import GenshinImage from './GenshinImage'
 
 const RARITY_COLORS = {
-  '★★★★★': '#D87A34',
-  '★★★★': '#9370DB',
-  '★★★': '#4682B4',
+  5: '#D87A34',
+  4: '#9370DB',
+  3: '#4A9EFF',
+  2: '#6B8E23',
+  1: '#808080'
 }
 
 function getRarityNum(weapon) {

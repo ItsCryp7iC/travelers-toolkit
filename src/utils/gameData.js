@@ -134,7 +134,7 @@ export function getRarityClass(rarity) {
 export const RARITY_COLORS = {
   5: '#FFB13F', // Gold/Orange
   4: '#B07FE8', // Purple
-  3: '#4EC9B0', // Blue/Teal
+  3: '#4A9EFF', // Blue
   2: '#4ADE80', // Green
   1: '#9CA3AF'  // Gray
 }
