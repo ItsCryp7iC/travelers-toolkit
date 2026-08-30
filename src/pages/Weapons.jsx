@@ -331,7 +331,7 @@ export default function Weapons() {
 
           {/* ── Card View ── */}
           {viewMode === 'card' && (
-            <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))' }}>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {filtered.map((wp) => (
                 <WeaponCard key={wp.id} weapon={wp.data} onClick={() => setEditingWeapon(wp)} />
               ))}
