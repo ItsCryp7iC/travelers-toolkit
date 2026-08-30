@@ -10,12 +10,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -30,12 +32,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -50,12 +54,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -70,12 +76,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -90,12 +98,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -110,12 +120,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -130,12 +142,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -150,12 +164,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -170,12 +186,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -190,12 +208,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -210,12 +230,14 @@
       {
         "id": "starsilver",
         "name": "Starsilver",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -230,12 +252,14 @@
       {
         "id": "starsilver",
         "name": "Starsilver",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "empowered_dragontooth",
         "name": "Empowered Dragontooth",
-        "qty": 8
+        "qty": 8,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -250,12 +274,14 @@
       {
         "id": "starsilver",
         "name": "Starsilver",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -270,12 +296,14 @@
       {
         "id": "amethyst_lump",
         "name": "Amethyst Lump",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -290,12 +318,14 @@
       {
         "id": "amethyst_lump",
         "name": "Amethyst Lump",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -310,12 +340,14 @@
       {
         "id": "amethyst_lump",
         "name": "Amethyst Lump",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -330,12 +362,14 @@
       {
         "id": "amethyst_lump",
         "name": "Amethyst Lump",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -350,12 +384,14 @@
       {
         "id": "amethyst_lump",
         "name": "Amethyst Lump",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -370,12 +406,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -390,12 +428,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -410,12 +450,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -430,12 +472,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -450,12 +494,14 @@
       {
         "id": "crystal_chunk",
         "name": "Crystal Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -470,12 +516,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -490,12 +538,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -510,12 +560,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -530,12 +582,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -550,12 +604,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -570,12 +626,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -590,12 +648,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -610,12 +670,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -630,12 +692,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -650,12 +714,14 @@
       {
         "id": "condessence_crystal",
         "name": "Condessence Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -670,12 +736,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -690,12 +758,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -710,12 +780,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -730,12 +802,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -750,12 +824,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -770,12 +846,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -790,12 +868,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -810,12 +890,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -830,12 +912,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500
@@ -850,12 +934,14 @@
       {
         "id": "rainbowdrop_crystal",
         "name": "Rainbowdrop Crystal",
-        "qty": 50
+        "qty": 50,
+        "kind": "regional"
       },
       {
         "id": "white_iron_chunk",
         "name": "White Iron Chunk",
-        "qty": 50
+        "qty": 50,
+        "kind": "common"
       }
     ],
     "mora": 500

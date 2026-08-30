@@ -318,7 +318,7 @@ export default function WeaponsTable({
           accessorFn: row => {
             const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
-            return recipe?.ores?.[1]?.name || 'Unknown';
+            return recipe?.ores?.find(o => o.kind === 'regional')?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => {
             const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
@@ -327,17 +327,19 @@ export default function WeaponsTable({
             const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
             const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
             const costB = calculateForgingCost(rowB.original, rowB.original.currentRefinement ?? 1, rowB.original.targetRefinement ?? 1, forgingData);
-            return (recipeA && recipeA.ores?.[1] && costA[recipeA.ores[1].id] ? costA[recipeA.ores[1].id] : 0) - (recipeB && recipeB.ores?.[1] && costB[recipeB.ores[1].id] ? costB[recipeB.ores[1].id] : 0);
+            const oreA = recipeA?.ores?.find(o => o.kind === 'regional');
+            const oreB = recipeB?.ores?.find(o => o.kind === 'regional');
+            return (oreA && costA[oreA.id] ? costA[oreA.id] : 0) - (oreB && costB[oreB.id] ? costB[oreB.id] : 0);
           },
           meta: { filterType: 'text', thClassName: "text-purple-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, 
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
-            if (!recipe || !recipe.ores || recipe.ores.length < 2) return <span className="text-gray-500/50 text-xs">—</span>;
+            if (!recipe || !recipe.ores) return <span className="text-gray-500/50 text-xs">—</span>;
             const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
-            const ore = recipe.ores[1];
-            if (!cost[ore.id]) return <span className="text-gray-500/50 text-xs">—</span>;
+            const ore = recipe.ores.find(o => o.kind === 'regional');
+            if (!ore || !cost[ore.id]) return <span className="text-gray-500/50 text-xs">—</span>;
             return <MatQuantity val={cost[ore.id]} icon="💎" color="text-purple-300" nameKey={ore.name} category="forgingOre" />;
           }
         },
@@ -346,7 +348,7 @@ export default function WeaponsTable({
           accessorFn: row => {
             const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
-            return recipe?.ores?.[0]?.name || 'Unknown';
+            return recipe?.ores?.find(o => o.kind === 'common')?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => {
             const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
@@ -355,17 +357,19 @@ export default function WeaponsTable({
             const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
             const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
             const costB = calculateForgingCost(rowB.original, rowB.original.currentRefinement ?? 1, rowB.original.targetRefinement ?? 1, forgingData);
-            return (recipeA && recipeA.ores?.[0] && costA[recipeA.ores[0].id] ? costA[recipeA.ores[0].id] : 0) - (recipeB && recipeB.ores?.[0] && costB[recipeB.ores[0].id] ? costB[recipeB.ores[0].id] : 0);
+            const oreA = recipeA?.ores?.find(o => o.kind === 'common');
+            const oreB = recipeB?.ores?.find(o => o.kind === 'common');
+            return (oreA && costA[oreA.id] ? costA[oreA.id] : 0) - (oreB && costB[oreB.id] ? costB[oreB.id] : 0);
           },
           meta: { filterType: 'text', thClassName: "text-blue-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, 
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
-            if (!recipe || !recipe.ores || recipe.ores.length < 1) return <span className="text-gray-500/50 text-xs">—</span>;
+            if (!recipe || !recipe.ores) return <span className="text-gray-500/50 text-xs">—</span>;
             const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
-            const ore = recipe.ores[0];
-            if (!cost[ore.id]) return <span className="text-gray-500/50 text-xs">—</span>;
+            const ore = recipe.ores.find(o => o.kind === 'common');
+            if (!ore || !cost[ore.id]) return <span className="text-gray-500/50 text-xs">—</span>;
             return <MatQuantity val={cost[ore.id]} icon="💎" color="text-blue-300" nameKey={ore.name} category="forgingOre" />;
           }
         },
@@ -585,7 +589,18 @@ export default function WeaponsTable({
       Object.entries(costs).forEach(([k, v]) => add(sums.costs, k, v));
 
       const forgeCost = calculateForgingCost(r.original, r.original.currentRefinement ?? 1, r.original.targetRefinement ?? 1, forgingData);
-      Object.entries(forgeCost).forEach(([k, v]) => add(sums.forging, k, v));
+      const originalWeapon = weaponsData.find(w => w.name === r.original.weaponName);
+      const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
+      Object.entries(forgeCost).forEach(([k, v]) => {
+        add(sums.forging, k, v);
+        if (recipe && recipe.ores) {
+          const oreItem = recipe.ores.find(o => o.id === k);
+          if (oreItem) {
+            if (oreItem.kind === 'regional') add(sums, 'forging_regional_total', v);
+            if (oreItem.kind === 'common') add(sums, 'forging_common_total', v);
+          }
+        }
+      });
     });
 
     return sums;
@@ -690,39 +705,14 @@ export default function WeaponsTable({
                       break;
                     }
                     case 'forging_ore_regional': {
-                      const oreNames = ['amethyst_lump', 'condessence_crystal', 'starsilver'];
-                      // Note: 'crystal_chunk' is technically the regional ore for Mondstadt/Liyue in this dataset structure,
-                      // but WeaponsTable groups it differently. Let's just sum all matching the regional filter.
-                      const matEntries = Object.entries(totals.forging).filter(([k,v]) => oreNames.includes(k) || (k === 'crystal_chunk' && Object.entries(totals.forging).some(([k2]) => k2 === 'white_iron_chunk')));
-                      // Actually, let's keep it simple: any ore that is NOT white_iron_chunk or crystal_chunk is regional,
-                      // except for the cases where crystal_chunk IS the regional ore (when paired with white_iron_chunk).
-                      // We can just rely on the existing 'oreNames' logic plus any crystal_chunk if it was regional.
-                      // The simplest and most robust way is to just look at how they are extracted per-row, but for totals
-                      // we can just match the known regional ones. Let's use all ores except white_iron_chunk and maybe crystal_chunk as fallback.
-                      const regionalOres = Object.entries(totals.forging).filter(([k,v]) => k !== 'white_iron_chunk' && k !== 'mora' && !k.includes('billet'));
-                      
-                      // Wait, we need to distinguish crystal_chunk as common vs regional. 
-                      // If we just use the known list + crystal_chunk (if it's the only one).
-                      // To be perfectly safe, let's just sum anything that isn't 'white_iron_chunk' and isn't a billet/mora as Regional.
-                      // Actually, for early game weapons, crystal_chunk IS the regional ore and white_iron_chunk is common.
-                      // So crystal_chunk = regional, white_iron_chunk = common.
-                      const regionalTotal = Object.entries(totals.forging)
-                        .filter(([k, v]) => k !== 'white_iron_chunk' && k !== 'mora' && !k.includes('billet'))
-                        .reduce((acc, [k, v]) => acc + v, 0);
-                        
-                      if (regionalTotal > 0) {
-                        cellContent = renderTotalItem(regionalTotal, '💎', 'text-purple-300', false);
+                      if (totals.forging_regional_total > 0) {
+                        cellContent = renderTotalItem(totals.forging_regional_total, '💎', 'text-purple-300', false);
                       }
                       break;
                     }
                     case 'forging_ore_common': {
-                      // Common ore is always White Iron Chunk in this dataset
-                      const commonTotal = Object.entries(totals.forging)
-                        .filter(([k, v]) => k === 'white_iron_chunk')
-                        .reduce((acc, [k, v]) => acc + v, 0);
-                        
-                      if (commonTotal > 0) {
-                        cellContent = renderTotalItem(commonTotal, '💎', 'text-blue-300', false);
+                      if (totals.forging_common_total > 0) {
+                        cellContent = renderTotalItem(totals.forging_common_total, 'WhiteIronChunk', 'text-blue-300', true);
                       }
                       break;
                     }
