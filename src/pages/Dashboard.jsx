@@ -55,70 +55,33 @@ export default function Dashboard() {
  const [activeTab, setActiveTab] = useState('characters');
  const [selectedWeapon, setSelectedWeapon] = useState(null);
  const [showBatchWeaponModal, setShowBatchWeaponModal] = useState(false);
- const [syncPayload, setSyncPayload] = useState(null);
- const [isSyncing, setIsSyncing] = useState(false);
+ const syncPayload = useStore((s) => s.syncPayload);
+ const isSyncing = useStore((s) => s.isSyncing);
+ const globalHandleSyncNotes = useStore((s) => s.handleSyncNotes);
  const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
 
- const performSync = async (ltuid, ltoken, isAuto = false) => {
- setIsSyncing(true)
- try {
- const res = await fetch('/api/notes', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ ltuid, ltoken })
- })
-
- if (!res.ok) {
- if (res.status === 401) {
- localStorage.removeItem('hoyolab_ltuid')
- localStorage.removeItem('hoyolab_ltoken')
- if (!isAuto) {
- setIsCookieModalOpen(true)
- }
- throw new Error("Authentication failed. Please check your cookies.")
- }
- const text = await res.text()
- throw new Error(text)
- }
-
- const data = await res.json()
-
- const now = Date.now()
- if (data.resin) {
- data.resin.targetFullTime = now + (data.resin.recovery_time_seconds * 1000)
- }
- if (data.realm_currency) {
- data.realm_currency.targetFullTime = now + (data.realm_currency.recovery_time_seconds * 1000)
- }
-
- setSyncPayload(data)
- setIsCookieModalOpen(false) // Close modal if it was open on success
- } catch (err) {
- console.error(err)
- if (!isCookieModalOpen && !isAuto) {
- alert("Failed to sync Real-Time Notes: " + err.message)
- }
- } finally {
- setIsSyncing(false)
- }
- }
-
  const handleSyncNotes = async (isAuto = false) => {
- const ltuid = localStorage.getItem('hoyolab_ltuid')
- const ltoken = localStorage.getItem('hoyolab_ltoken')
-
- if (!ltuid || !ltoken) {
- if (!isAuto) {
- setIsCookieModalOpen(true)
- }
- return
- }
-
- await performSync(ltuid, ltoken, isAuto)
+   const res = await globalHandleSyncNotes(isAuto);
+   if (res?.error) {
+     if (res.error === 'no_cookie' || res.error === 'auth_failed') {
+       if (!isAuto) {
+         setIsCookieModalOpen(true);
+       }
+       if (res.error === 'auth_failed' && !isCookieModalOpen && !isAuto) {
+         alert("Authentication failed. Please check your cookies.");
+       }
+     } else {
+       if (!isCookieModalOpen && !isAuto) {
+         alert("Failed to sync Real-Time Notes: " + res.error);
+       }
+     }
+   } else {
+     setIsCookieModalOpen(false); // Close modal on success
+   }
  }
 
  useEffect(() => {
- handleSyncNotes(true)
+   handleSyncNotes(true)
  }, [])
 
  const handleAddAllCharacters = () => {
@@ -261,14 +224,23 @@ export default function Dashboard() {
  </div>
 
  {/* ── Trackers ────────────────────────────── */}
- {hasCookie ? (
- <div className="mb-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
- <ResinTracker syncData={syncPayload?.resin} />
- {syncPayload?.realm_currency && (
- <RealmCurrencyTracker syncData={syncPayload.realm_currency} />
- )}
- </div>
- ) : (
+  {hasCookie ? (
+    !syncPayload ? (
+      <div className="mb-6 bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md flex flex-col items-center justify-center text-center min-h-[160px]">
+        <div className="text-4xl mb-3 animate-spin w-10 h-10 flex items-center justify-center">🔄</div>
+        <p className="text-[var(--text)] text-sm max-w-md">
+          Syncing your Resin & Realm Currency...
+        </p>
+      </div>
+    ) : (
+      <div className="mb-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <ResinTracker syncData={syncPayload.resin} />
+        {syncPayload.realm_currency && (
+          <RealmCurrencyTracker syncData={syncPayload.realm_currency} />
+        )}
+      </div>
+    )
+  ) : (
  <div className="mb-6 bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-md flex flex-col items-center justify-center text-center min-h-[160px]">
  <div className="text-4xl mb-3">🌙</div>
  <p className="text-[var(--text)] mb-4 text-sm max-w-md">

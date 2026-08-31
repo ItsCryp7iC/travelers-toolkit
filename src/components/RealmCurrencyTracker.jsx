@@ -9,7 +9,7 @@ function formatTime(totalSeconds) {
  return `${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`
 }
 
-export default function RealmCurrencyTracker({ syncData }) {
+export default function RealmCurrencyTracker({ syncData, variant = 'default' }) {
  const [currentCurrency, setCurrentCurrency] = useState(0)
  const [secondsToFull, setSecondsToFull] = useState(0)
  const [maxCurrency, setMaxCurrency] = useState(2400) // Default max
@@ -42,10 +42,25 @@ export default function RealmCurrencyTracker({ syncData }) {
  return null; // Don't show if not synced
  }
 
- const isCapped = currentCurrency >= maxCurrency
- const pct = Math.min(100, (currentCurrency / maxCurrency) * 100)
+  const isCapped = currentCurrency >= maxCurrency
+  const pct = Math.min(100, (currentCurrency / maxCurrency) * 100)
 
- return (
+  if (variant === 'compact') {
+    return (
+      <div 
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" 
+        title={isCapped ? "Fully replenished!" : `Full in ${formatTime(secondsToFull)}`}
+      >
+        <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/others/RealmCurrency.png" className="w-5 h-5 object-contain" alt="Realm Currency" />
+        <span className="text-sm font-semibold whitespace-nowrap">
+          <span style={{ color: isCapped ? '#4EC9B0' : 'var(--text)' }}>{currentCurrency}</span>
+          <span className="text-[var(--muted)] text-xs ml-0.5">/ {maxCurrency}</span>
+        </span>
+      </div>
+    )
+  }
+
+  return (
  <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row gap-5 items-center shadow-lg">
  <div className="absolute top-0 right-0 w-64 h-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(ellipse at right, #4EC9B0, transparent)' }} />
  <span className="absolute -right-4 -bottom-6 text-9xl opacity-5 pointer-events-none select-none">🫖</span>

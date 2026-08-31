@@ -13,7 +13,7 @@ function formatTime(totalSeconds) {
  return `${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`
 }
 
-export default function ResinTracker({ syncData }) {
+export default function ResinTracker({ syncData, variant = 'default' }) {
  const storeResinCount = useStore((s) => s.resinCount)
  const storeResinTimestamp = useStore((s) => s.resinTimestamp)
  const setResin = useStore((s) => s.setResin)
@@ -64,6 +64,21 @@ export default function ResinTracker({ syncData }) {
 
  const isCapped = currentResin >= (syncData?.max || RESIN_CAP)
  const pct = Math.min(100, (currentResin / (syncData?.max || RESIN_CAP)) * 100)
+
+ if (variant === 'compact') {
+    return (
+      <div 
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" 
+        title={isCapped ? "Fully replenished!" : `Full in ${formatTime(secondsToFull)}`}
+      >
+        <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/others/FragileResin.png" className="w-5 h-5 object-contain" alt="Resin" />
+        <span className="text-sm font-semibold whitespace-nowrap">
+          <span style={{ color: isCapped ? '#FFD700' : 'var(--text)' }}>{currentResin}</span>
+          <span className="text-[var(--muted)] text-xs ml-0.5">/ {syncData?.max || RESIN_CAP}</span>
+        </span>
+      </div>
+    )
+  }
 
  return (
  <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 relative overflow-hidden flex flex-col md:flex-row gap-5 items-center shadow-lg">

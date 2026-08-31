@@ -35,6 +35,46 @@ const useStore = create(
         googleUser: user || state.googleUser 
       })),
       clearGoogleSession: () => set({ googleAccessToken: null, tokenExpiry: null, googleUser: null }),
+      
+      // ─── SYNC PAYLOAD ──────────────────────────────────────────────────
+      syncPayload: null,
+      isSyncing: false,
+      setSyncPayload: (payload) => set({ syncPayload: payload }),
+      setIsSyncing: (val) => set({ isSyncing: val }),
+      handleSyncNotes: async (isAuto = false) => {
+        const ltuid = localStorage.getItem('hoyolab_ltuid');
+        const ltoken = localStorage.getItem('hoyolab_ltoken');
+        if (!ltuid || !ltoken) return { error: 'no_cookie' };
+
+        set({ isSyncing: true });
+        try {
+          const res = await fetch('/api/notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ltuid, ltoken })
+          });
+          if (!res.ok) {
+            if (res.status === 401) {
+              localStorage.removeItem('hoyolab_ltuid');
+              localStorage.removeItem('hoyolab_ltoken');
+              throw new Error('auth_failed');
+            }
+            throw new Error(await res.text());
+          }
+          const data = await res.json();
+          const now = Date.now();
+          if (data.resin) data.resin.targetFullTime = now + (data.resin.recovery_time_seconds * 1000);
+          if (data.realm_currency) data.realm_currency.targetFullTime = now + (data.realm_currency.recovery_time_seconds * 1000);
+          set({ syncPayload: data });
+          return { success: true };
+        } catch (err) {
+          console.error(err);
+          return { error: err.message };
+        } finally {
+          set({ isSyncing: false });
+        }
+      },
+
       importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [], craftQueue: data.craftQueue || [] }),
       importGoodData: (goodPayload) => set((state) => {
         // 1. Materials
