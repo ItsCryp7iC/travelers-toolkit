@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import useStore from '../store/useStore'
-import costsData from '../data/costs.json'
+
 import weaponsData from '../data/weapons.json'
 import {
   ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass,
@@ -10,9 +10,7 @@ import GenshinImage from './GenshinImage'
 import CustomSelect from './CustomSelect'
 import { getElementIcon, getCharacterAvatar, getWeaponTypeIcon, getWeaponIcon } from '../utils/assetHelper'
 import {
-  calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost,
-  clampLevel, getLevelRange, ASCENSION_CAPS,
-  formatNumber, formatMaterialName, WEAPON_ORE_KEY
+  clampLevel, getLevelRange, ASCENSION_CAPS
 } from '../utils/calculator'
 
 // ─── Ascension Phase Selector ──────────────────────────────────────────────
@@ -153,41 +151,6 @@ export function TalentRow({ icon, label, fromVal, toVal, onFromChange, onToChang
   )
 }
 
-// ─── Cost Row ────────────────────────────────────────────────────────────
-function CostRow({ icon, label, value, accent, large }) {
-  return (
-    <div className="flex items-center justify-between py-2.5 border-b border-[var(--border)] last:border-0">
-      <div className="flex items-center gap-2.5">
-        <span className="text-base w-6 text-center">{icon}</span>
-        <span className="text-xs text-[var(--muted)]">{label}</span>
-      </div>
-      <span className={`font-bold ${large ? 'text-base' : 'text-sm'}`} style={{ color: accent || 'var(--text)' }}>
-        {value}
-      </span>
-    </div>
-  )
-}
-
-// ─── Material Group ────────────────────────────────────────────────────────
-function MaterialGroup({ icon, title, items, elementColor }) {
-  if (!items || Object.keys(items).length === 0) return null
-  return (
-    <div className="mb-4">
-      <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-2 flex items-center gap-1.5">
-        <span>{icon}</span> {title}
-      </p>
-      <div className="space-y-0 rounded-xl overflow-hidden border border-[var(--border)]">
-        {Object.entries(items).map(([mat, qty]) => (
-          <div key={mat} className="flex items-center justify-between px-3 py-2 bg-[var(--surface)] border-b border-[var(--border)] last:border-0">
-            <span className="text-xs text-[var(--text)]">{formatMaterialName(mat)}</span>
-            <span className="font-bold text-sm" style={{ color: elementColor }}>×{qty}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 // ─── Main Modal ────────────────────────────────────────────────────────────
 export default function CharacterModal({ character, onClose, onNext, onPrev, hasNext, hasPrev, slideDirection = 'next' }) {
   const { name, rarity, element, weapon_type, materials } = character
@@ -300,38 +263,6 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
 
   const safeWeaponToAsc = Math.max(weaponToAsc, weaponFromAsc)
   const safeWeaponToLevel = safeWeaponToAsc === weaponFromAsc ? Math.max(weaponToLevel, weaponFromLevel) : weaponToLevel
-
-  // ── Live calculation ─────────────────────────────────────────────────────
-  const ascCosts = useMemo(
-    () => calculateProgressionCost(character, fromLevel, safeToLevel),
-    [character, fromLevel, safeToLevel]
-  )
-
-  const normalCosts = useMemo(() => calculateTalentCost(character, normalFrom, normalTo), [character, normalFrom, normalTo]);
-  const skillCosts = useMemo(() => calculateTalentCost(character, skillFrom, skillTo), [character, skillFrom, skillTo]);
-  const burstCosts = useMemo(() => calculateTalentCost(character, burstFrom, burstTo), [character, burstFrom, burstTo]);
-
-  const weaponCosts = useMemo(
-    () => {
-      if (!selectedWeaponData) return {};
-      return calculateWeaponCost(selectedWeaponData, weaponFromLevel, safeWeaponToLevel, weaponFromAsc, safeWeaponToAsc, false, fullRoster)
-    },
-    [selectedWeaponData, weaponFromLevel, safeWeaponToLevel, weaponFromAsc, safeWeaponToAsc, fullRoster]
-  )
-
-  const totalCosts = {};
-  const allCostObjects = [ascCosts, normalCosts, skillCosts, burstCosts, weaponCosts];
-
-  allCostObjects.forEach(costObj => {
-    if (!costObj) return;
-    Object.entries(costObj).forEach(([key, val]) => {
-      if (typeof val === 'number' && val > 0) {
-        totalCosts[key] = (totalCosts[key] || 0) + val;
-      }
-    });
-  });
-
-  const hasAnyCost = Object.values(totalCosts).some(val => val > 0);
 
   // ── Save to Zustand ──────────────────────────────────────────────────────
   const handleSave = () => {
@@ -557,112 +488,6 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
               </div>
             )}
           </section>
-
-          {/* ✨ Required Resources ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨ */}
-          {weaponCosts?.has_ascension_discount && (
-            <div className="mb-4 bg-green-900/20 border border-green-700/50 rounded-lg p-3 flex items-center justify-center gap-2">
-              <span className="text-xl">✨</span>
-              <p className="text-green-400 text-sm font-semibold">
-                50% Ascension Mora reduction active via {weaponCosts.discount_source}'s passive!
-              </p>
-            </div>
-          )}
-          <section className="mb-6">
-            <h3 className="modal-section-title">💰 Required Resources</h3>
-            {hasAnyCost ? (
-              <>
-                <div className="rounded-xl border border-[var(--border)] overflow-hidden mb-4">
-                  <CostRow icon="💰" label="Total Mora" value={formatNumber(totalCosts['mora'] || 0)} accent="#C8A96E" large />
-                  {totalCosts['heros_wit'] > 0 && (
-                    <CostRow icon="📚" label="Hero's Wit" value={`×${totalCosts['heros_wit']}`} accent="#60A5FA" />
-                  )}
-                  {totalCosts['mystic_ore'] > 0 && (
-                    <CostRow icon="💠" label="Mystic Enh. Ore" value={`×${totalCosts['mystic_ore']}`} accent="#F472B6" />
-                  )}
-                  {totalCosts['crown'] > 0 && (
-                    <CostRow icon="👑" label="Crown of Insight" value={`×${totalCosts['crown']}`} accent="#FBBF24" />
-                  )}
-                </div>
-
-                <MaterialGroup icon="⭐" title="Awakening" items={totalCosts['masterless_stella_fortuna'] > 0 ? { "Masterless Stella Fortuna": totalCosts['masterless_stella_fortuna'] } : null} elementColor={elColor} />
-
-                <MaterialGroup icon="💎" title="Character Ascension Gems" items={Object.fromEntries(
-                  Object.entries({
-                    "Sliver": totalCosts['gem_sliver'],
-                    "Fragment": totalCosts['gem_fragment'],
-                    "Chunk": totalCosts['gem_chunk'],
-                    "Gemstone": totalCosts['gem_gemstone']
-                  }).filter(([_, v]) => v > 0)
-                )} elementColor={elColor} />
-
-                <MaterialGroup icon="🐉" title="World Boss" items={totalCosts['boss_material'] > 0 ? { "Boss Material": totalCosts['boss_material'] } : null} elementColor={elColor} />
-
-                <MaterialGroup icon="🌸" title="Local Specialty" items={totalCosts['local_specialty'] > 0 ? { "Local Specialty": totalCosts['local_specialty'] } : null} elementColor={elColor} />
-
-                <MaterialGroup icon="📖" title="Talent Books" items={Object.fromEntries(
-                  Object.entries({
-                    "2-Star Book": totalCosts['2_star_talent_material'],
-                    "3-Star Book": totalCosts['3_star_talent_material'],
-                    "4-Star Book": totalCosts['4_star_talent_material']
-                  }).filter(([_, v]) => v > 0)
-                )} elementColor={elColor} />
-
-                <MaterialGroup icon="🐺" title="Weekly Boss" items={totalCosts['weekly_boss_material'] > 0 ? { "Weekly Boss Material": totalCosts['weekly_boss_material'] } : null} elementColor={elColor} />
-
-                <MaterialGroup icon="🔗" title="Weapon Ascension" items={Object.fromEntries(
-                  Object.entries({
-                    "2-Star Material": totalCosts['2_star_ascension_material'],
-                    "3-Star Material": totalCosts['3_star_ascension_material'],
-                    "4-Star Material": totalCosts['4_star_ascension_material'],
-                    "5-Star Material": totalCosts['5_star_ascension_material']
-                  }).filter(([_, v]) => v > 0)
-                )} elementColor="var(--gold)" />
-
-                <MaterialGroup icon="🛡️" title="Weapon Elite Drops" items={Object.fromEntries(
-                  Object.entries({
-                    "2-Star Material": totalCosts['2_star_enhancement_material'],
-                    "3-Star Material": totalCosts['3_star_enhancement_material'],
-                    "4-Star Material": totalCosts['4_star_enhancement_material']
-                  }).filter(([_, v]) => v > 0)
-                )} elementColor="var(--gold)" />
-
-                <MaterialGroup icon="⚔️" title="Enemy Drops" items={Object.fromEntries(
-                  Object.entries({
-                    "1-Star Material": totalCosts['1_star_enemy_material'],
-                    "2-Star Material": totalCosts['2_star_enemy_material'],
-                    "3-Star Material": totalCosts['3_star_enemy_material']
-                  }).filter(([_, v]) => v > 0)
-                )} elementColor={elColor} />
-              </>
-            ) : (
-              <div className="flex flex-col items-center py-8 text-center rounded-xl border border-[var(--border)]">
-                <span className="text-3xl mb-2">✅</span>
-                <p className="text-[var(--muted)] text-sm">Already at target — no resources needed!</p>
-              </div>
-            )}
-          </section>
-
-          {/* ── Material Sources ────────────────────────── */}
-          {materials && (
-            <section className="mb-6">
-              <h3 className="modal-section-title">📖 Material Sources</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: 'Character Ascension Gem', value: materials.gemstone, icon: '💎' },
-                  { label: 'Local Specialty', value: materials.local_specialty, icon: '🌸' },
-                  { label: 'Normal Boss Material', value: materials.world_boss, icon: '🐉' },
-                  { label: 'Weekly Boss Material', value: materials.weekly_boss, icon: '🐺' },
-                  { label: 'Talent Material', value: materials.talent_book, icon: '📚' },
-                  { label: 'Common Enhancement Material', value: materials.mob_material, icon: '⚔️' },
-                ].filter(({ value }) => value && value !== 'nan').map(({ label, value, icon }) => (
-                  <div key={label} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2">
-                    <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-0.5">{icon} {label}</p>
-                    <p className="text-xs text-[var(--text)] font-medium">{formatMaterialName(value)}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
 
           {/* ── Actions ────────────────────────────────── */}
           <div className="flex gap-3 pt-2 pb-1">
