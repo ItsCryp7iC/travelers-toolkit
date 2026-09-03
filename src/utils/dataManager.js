@@ -48,6 +48,7 @@ export const resolveCharacterMaterials = (char) => {
     weeklyBoss: m.weekly_boss_material_id ? (lookupBoss.get(m.weekly_boss_material_id) || SAFE_FALLBACK) : SAFE_FALLBACK,
     talent: SAFE_FALLBACK,
     enemy: SAFE_FALLBACK,
+    ascensionEnemy: SAFE_FALLBACK,
     localSpecialty: m.local_specialty_id ? (lookupLocal.get(m.local_specialty_id) || SAFE_FALLBACK) : SAFE_FALLBACK,
     gem: m.gem_family_id ? (lookupGems.get(m.gem_family_id) || SAFE_FALLBACK) : SAFE_FALLBACK
   }
@@ -61,6 +62,11 @@ export const resolveCharacterMaterials = (char) => {
   const enemyData = m.enemy_material_family_id ? lookupEnemy.get(m.enemy_material_family_id) : null
   if (enemyData) {
     resolved.enemy = { ...enemyData }
+  }
+
+  const ascEnemyData = m.ascension_enemy_material_family_id ? lookupEnemy.get(m.ascension_enemy_material_family_id) : enemyData
+  if (ascEnemyData) {
+    resolved.ascensionEnemy = { ...ascEnemyData }
   }
 
   return resolved

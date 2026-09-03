@@ -41,7 +41,7 @@ const getRarity = (key) => {
 /**
  * Returns { id: string, category: string, name: string, rarity: number }
  */
-export function resolveSpecificItem(genericKey, character = null, weapon = null) {
+export function resolveSpecificItem(genericKey, character = null, weapon = null, isAscension = false) {
   const rarity = getRarity(genericKey);
   
   if (genericKey === 'mora') return { id: 'mora', category: 'mora', name: 'Mora', rarity: 3 }
@@ -88,7 +88,8 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
         '2_star_enemy_material': '2_star',
         '3_star_enemy_material': '3_star'
       }
-      const family = DB.common[mats.enemy_material_family_id]
+      const familyId = (isAscension && mats.ascension_enemy_material_family_id) ? mats.ascension_enemy_material_family_id : mats.enemy_material_family_id;
+      const family = DB.common[familyId]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
         return { id: toSnakeCase(item.name), category: 'mob', name: item.name, rarity }

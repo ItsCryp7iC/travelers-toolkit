@@ -464,7 +464,7 @@ export default function CharactersTable({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.ascCosts?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
@@ -474,7 +474,7 @@ export default function CharactersTable({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.ascCosts?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
@@ -484,7 +484,7 @@ export default function CharactersTable({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-gray-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.['1_star_enemy_material'] || 0} icon="💧" color="text-gray-400" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.ascCosts?.['1_star_enemy_material'] || 0} icon="💧" color="text-gray-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
@@ -747,12 +747,22 @@ export default function CharactersTable({
       target[key] = (target[key] || 0) + val;
     };
 
+    let processedTravelerAscension = false;
     table.getRowModel().rows.forEach(r => {
       const char = r.original;
       const asc = char.ascCosts || {};
       const tal = char.talentCosts || {};
       
-      Object.entries(asc).forEach(([k, v]) => add(sums.ascCosts, k, v));
+      const isTraveler = char.name.startsWith('Traveler ');
+      if (isTraveler) {
+        if (!processedTravelerAscension) {
+          Object.entries(asc).forEach(([k, v]) => add(sums.ascCosts, k, v));
+          processedTravelerAscension = true;
+        }
+      } else {
+        Object.entries(asc).forEach(([k, v]) => add(sums.ascCosts, k, v));
+      }
+      
       Object.entries(tal).forEach(([k, v]) => add(sums.talentCosts, k, v));
     });
 

@@ -13,6 +13,7 @@
         "Resistance",
         "Ballad"
       ],
+      "ascension_enemy_material_family_id": "Hilichurl",
       "enemy_material_family_id": "Samachurl",
       "local_specialty_id": "WindwheelAster",
       "gem_family_id": "BrilliantDiamond"
@@ -33,6 +34,7 @@
         "Diligence",
         "Gold"
       ],
+      "ascension_enemy_material_family_id": "Hilichurl",
       "enemy_material_family_id": "HilichurlShooter",
       "local_specialty_id": "WindwheelAster",
       "gem_family_id": "BrilliantDiamond"
@@ -53,6 +55,7 @@
         "Elegance",
         "Light"
       ],
+      "ascension_enemy_material_family_id": "Hilichurl",
       "enemy_material_family_id": "Nobushi",
       "local_specialty_id": "WindwheelAster",
       "gem_family_id": "BrilliantDiamond"
@@ -73,6 +76,7 @@
         "Ingenuity",
         "Praxis"
       ],
+      "ascension_enemy_material_family_id": "Hilichurl",
       "enemy_material_family_id": "Fungus",
       "local_specialty_id": "WindwheelAster",
       "gem_family_id": "BrilliantDiamond"
@@ -93,6 +97,7 @@
         "Justice",
         "Order"
       ],
+      "ascension_enemy_material_family_id": "Hilichurl",
       "enemy_material_family_id": "FontemerAberrant",
       "local_specialty_id": "WindwheelAster",
       "gem_family_id": "BrilliantDiamond"
@@ -113,6 +118,7 @@
         "Kindling",
         "Conflict"
       ],
+      "ascension_enemy_material_family_id": "Hilichurl",
       "enemy_material_family_id": "NatlanSaurian",
       "local_specialty_id": "WindwheelAster",
       "gem_family_id": "BrilliantDiamond"
@@ -133,6 +139,7 @@
         "Fortitude",
         "Glory"
       ],
+      "ascension_enemy_material_family_id": "Hilichurl",
       "enemy_material_family_id": "AberrantChimericMonsters",
       "local_specialty_id": "WindwheelAster",
       "gem_family_id": "BrilliantDiamond"

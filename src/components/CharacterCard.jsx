@@ -120,11 +120,11 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
 
     const costs = {}
     const cats = {}
-    const processCosts = (costObj) => {
+    const processCosts = (costObj, isAscension = false) => {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
         if (typeof val === 'number' && val > 0) {
-          const resolved = resolveSpecificItem(key, character);
+          const resolved = resolveSpecificItem(key, character, null, isAscension);
           const finalId = resolved.id;
           costs[finalId] = (costs[finalId] || 0) + val
           cats[finalId] = resolved.category
@@ -132,10 +132,10 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
       })
     }
 
-    processCosts(ascCosts)
-    processCosts(normalCosts)
-    processCosts(skillCosts)
-    processCosts(burstCosts)
+    processCosts(ascCosts, true)
+    processCosts(normalCosts, false)
+    processCosts(skillCosts, false)
+    processCosts(burstCosts, false)
 
     return { totalCosts: costs, categories: cats, talentState: tState }
   }, [inRoster, rosterEntry, character])

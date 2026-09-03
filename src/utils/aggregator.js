@@ -38,6 +38,8 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
   const grandTotalCategories = {}
   const grandTotalRarities = {}
   const breakdown = []
+  
+  let processedTravelerAscension = false;
 
   for (const [charName, entry] of Object.entries(roster)) {
     const fromLevel = entry.level ?? 1
@@ -64,6 +66,16 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
 
     const character = CHAR_MAP[charName]
     if (!character) continue
+    
+    const isTraveler = charName.startsWith('Traveler ')
+    let skipAscensionGrandTotal = false
+    if (isTraveler && !ascNoop) {
+      if (processedTravelerAscension) {
+        skipAscensionGrandTotal = true
+      } else {
+        processedTravelerAscension = true
+      }
+    }
 
     let ascCosts = null
     if (!ascNoop) {
@@ -79,24 +91,26 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
 
     const totalCosts = {}
 
-    const processCosts = (costObj, isWeapon = false) => {
+    const processCosts = (costObj, isWeapon = false, isAscension = false, skipGrandTotals = false) => {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
         if (typeof val === 'number' && val > 0) {
-          const resolved = resolveSpecificItem(key, isWeapon ? null : character, isWeapon ? wData : null);
+          const resolved = resolveSpecificItem(key, isWeapon ? null : character, isWeapon ? wData : null, isAscension);
           const finalId = resolved.id;
           totalCosts[finalId] = (totalCosts[finalId] || 0) + val
-          grandTotalCosts[finalId] = (grandTotalCosts[finalId] || 0) + val
-          grandTotalCategories[finalId] = resolved.category;
-          grandTotalRarities[finalId] = resolved.rarity;
+          if (!skipGrandTotals) {
+            grandTotalCosts[finalId] = (grandTotalCosts[finalId] || 0) + val
+            grandTotalCategories[finalId] = resolved.category;
+            grandTotalRarities[finalId] = resolved.rarity;
+          }
         }
       })
     }
 
-    processCosts(ascCosts, false)
-    processCosts(normalCosts, false)
-    processCosts(skillCosts, false)
-    processCosts(burstCosts, false)
+    processCosts(ascCosts, false, true, skipAscensionGrandTotal)
+    processCosts(normalCosts, false, false, false)
+    processCosts(skillCosts, false, false, false)
+    processCosts(burstCosts, false, false, false)
 
     if (Object.values(totalCosts).some(val => val > 0)) {
       breakdown.push({ name: charName, character, entry, totalCosts, talentState })
