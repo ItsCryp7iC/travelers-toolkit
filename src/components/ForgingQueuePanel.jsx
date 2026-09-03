@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import weaponsData from '../data/weapons.json'
 import forgingData from '../data/weapon_forging.json'
 import useStore from '../store/useStore'
-import { getCraftingCosts } from '../utils/aggregator'
+import { getForgingCosts } from '../utils/aggregator'
 import { getWeaponIcon, getMaterialIcon, toPascalCase } from '../utils/assetHelper'
 import { formatNumber } from '../utils/calculator'
 import GenshinImage from './GenshinImage'
@@ -83,10 +83,10 @@ function QueueEntry({ entry }) {
 }
 
 // ─── Materials Summary ────────────────────────────────────────────────────────
-function MaterialsSummary({ craftQueue }) {
-  const costs = useMemo(() => getCraftingCosts(craftQueue, forgingData), [craftQueue])
+function MaterialsSummary({ forgingQueue }) {
+  const costs = useMemo(() => getForgingCosts(forgingQueue, forgingData), [forgingQueue])
 
-  if (!craftQueue.length) return null
+  if (!forgingQueue.length) return null
 
   const { totalCosts, categories } = costs
   const entries = Object.entries(totalCosts).filter(([, qty]) => qty > 0)
@@ -178,22 +178,22 @@ function MaterialsSummary({ craftQueue }) {
 }
 
 // ─── Main Panel ──────────────────────────────────────────────────────────────
-export default function CraftQueuePanel() {
+export default function forgingQueuePanel() {
   const trackedWeapons = useStore(s => s.trackedWeapons)
   
-  const craftQueue = useMemo(() => {
+  const forgingQueue = useMemo(() => {
     return trackedWeapons.filter(w => (w.targetRefinement ?? 1) > (w.currentRefinement ?? 1))
   }, [trackedWeapons])
 
   return (
     <div className="animate-fade-in">
       {/* Queue list */}
-      {craftQueue.length === 0 ? (
+      {forgingQueue.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <span className="text-5xl mb-4">⚒️</span>
           <h3 className="font-semibold text-[var(--text)] text-lg mb-2">No weapons queued for forging</h3>
           <p className="text-[var(--muted)] text-sm max-w-xs">
-            In your Armory, increase the Target Refinement of a craftable weapon above its Current Refinement to track its forging costs here.
+            In your Armory, increase the Target Refinement of a forgeable weapon above its Current Refinement to track its forging costs here.
           </p>
         </div>
       ) : (
@@ -203,12 +203,12 @@ export default function CraftQueuePanel() {
               <h3 className="text-sm font-bold text-[var(--text)] tracking-wide uppercase flex items-center gap-2">
                 <span className="text-[var(--gold)]">📋</span> Forge Queue (From Armory)
                 <span className="ml-1 text-xs bg-[var(--elevated)] border border-[var(--border)] text-[var(--muted)] px-2 py-0.5 rounded-full">
-                  {craftQueue.length} weapon{craftQueue.length !== 1 ? 's' : ''}
+                  {forgingQueue.length} weapon{forgingQueue.length !== 1 ? 's' : ''}
                 </span>
               </h3>
             </div>
             <div className="flex flex-col gap-2">
-              {craftQueue.map(entry => (
+              {forgingQueue.map(entry => (
                 <QueueEntry
                   key={entry.id}
                   entry={entry}
@@ -218,7 +218,7 @@ export default function CraftQueuePanel() {
           </div>
 
           {/* Materials summary */}
-          <MaterialsSummary craftQueue={craftQueue} />
+          <MaterialsSummary forgingQueue={forgingQueue} />
         </>
       )}
     </div>

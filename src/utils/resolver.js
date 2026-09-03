@@ -6,7 +6,7 @@ import characterGemsData from '../data/character_gems.json'
 import weeklyBossData from '../data/weekly_boss.json'
 import normalBossData from '../data/normal_boss.json'
 import localSpecialtyData from '../data/local_specialty.json'
-import craftingMatsData from '../data/crafting_materials.json'
+import forgingMatsData from '../data/forging_materials.json'
 import miscMaterialsData from '../data/misc_materials.json'
 import weaponsData from '../data/weapons.json'
 
@@ -19,7 +19,7 @@ const DB = {
   weekly: Object.fromEntries(weeklyBossData.map(i => [i.id, i])),
   normal: Object.fromEntries(normalBossData.map(i => [i.id, i])),
   local: Object.fromEntries(localSpecialtyData.map(i => [i.id, i])),
-  crafting: Object.fromEntries(craftingMatsData.map(i => [i.id, i])),
+  forging: Object.fromEntries(forgingMatsData.map(i => [i.id, i])),
   misc: Object.fromEntries(miscMaterialsData.map(i => [i.id, i])),
 }
 
@@ -179,10 +179,10 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null)
     }
   }
 
-  // Crafting Materials (Billets / Ores)
-  if (DB.crafting[genericKey]) {
-    const item = DB.crafting[genericKey]
-    return { id: item.id, category: 'Crafting Material', name: item.name, rarity: item.kind === 'billet' ? 4 : 1 }
+  // Forging Materials (Billets / Ores)
+  if (DB.forging[genericKey]) {
+    const item = DB.forging[genericKey]
+    return { id: item.id, category: 'Forging Material', name: item.name, rarity: item.kind === 'billet' ? 4 : 1 }
   }
 
   if (genericKey === 'weekly_boss_material' || genericKey === 'boss_material') return { id: genericKey, category: 'unknown', name: 'Unknown Boss Material', rarity: 4 }

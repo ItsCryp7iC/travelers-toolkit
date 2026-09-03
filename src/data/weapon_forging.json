@@ -1,5 +1,5 @@
 {
-  "_comment": "Craftable weapon recipes. Keys match weapon id from weapons.json. Source: genshin-impact.fandom.com/wiki/Forging, gamewith.net, sportskeeda.com (verified per-weapon).",
+  "_comment": "Forgeable weapon recipes. Keys match weapon id from weapons.json. Source: genshin-impact.fandom.com/wiki/Forging, gamewith.net, sportskeeda.com (verified per-weapon).",
   "PrototypeRancour": {
     "billet": {
       "id": "northlander_sword_billet",

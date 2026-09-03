@@ -10,7 +10,6 @@ import { calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost 
  * Slices:
  *  - roster:          Characters the player is tracking { [charName]: { ... , equippedWeaponId } }
  *  - trackedWeapons:  Weapons in the armory [{ id, weaponName, level, ascension, targetLevel, targetAscension, assignedTo }]
- *  - craftQueue:      Weapons queued to be crafted [{ id, weaponId, weaponName, quantity, note, targetRefinement }]
  *  - inventory:       Materials the player has { [materialName]: quantity }
  *  - goals:           Progression targets
  *  - resin:           Resin tracker { resinCount, resinTimestamp }
@@ -75,7 +74,7 @@ const useStore = create(
         }
       },
 
-      importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [], craftQueue: data.craftQueue || [] }),
+      importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [] }),
       importGoodData: (goodPayload) => set((state) => {
         // 1. Materials
         const newInventory = { ...state.inventory };
@@ -167,7 +166,6 @@ const useStore = create(
         set({
           roster: {},
           trackedWeapons: [],
-          craftQueue: [],
           inventory: {},
           goals: [],
           resinCount: 200,

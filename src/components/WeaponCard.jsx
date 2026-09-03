@@ -43,7 +43,7 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
 
   const getSortWeight = (matId, category) => {
     const catWeight = {
-      'experience': 1, 'weaponAscMats': 2, 'eliteMob': 3, 'mob': 4, 'Crafting Material': 5
+      'experience': 1, 'weaponAscMats': 2, 'eliteMob': 3, 'mob': 4, 'Forging Material': 5
     }[category] || 99;
     let tierWeight = 0;
     if (matId.includes('1_star')) tierWeight = 1;

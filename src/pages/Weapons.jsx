@@ -3,7 +3,7 @@ import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
 import BatchAddWeaponModal from '../components/BatchAddWeaponModal'
 import BulkEditWeaponModal from '../components/BulkEditWeaponModal'
-import CraftQueuePanel from '../components/CraftQueuePanel'
+import ForgingQueuePanel from '../components/ForgingQueuePanel'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../utils/characters'
 import useStore from '../store/useStore'
@@ -53,7 +53,7 @@ export default function Weapons() {
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
   const bulkUpdateWeapons   = useStore((s) => s.bulkUpdateWeapons)
 
-  const [pageTab,      setPageTab]      = useState('armory') // 'armory' | 'craft'
+  const [pageTab,      setPageTab]      = useState('armory') // 'armory' | 'forge'
   const [search,       setSearch]       = useState('')
   const [typeFilter,   setTypeFilter]   = useState('All')
   const [rarityFilter, setRarityFilter] = useState('All')
@@ -154,9 +154,9 @@ export default function Weapons() {
       <div className="sticky top-16 z-40 bg-[var(--bg)]/80 backdrop-blur-xl pb-4 pt-2 mb-6 border-b border-[var(--border)] shadow-sm flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <img src={pageTab === 'armory' ? '/Weapons.png' : '/Forging.png'} alt={pageTab === 'armory' ? 'My Armory' : 'To Craft'} className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
+            <img src={pageTab === 'armory' ? '/Weapons.png' : '/Forging.png'} alt={pageTab === 'armory' ? 'My Armory' : 'To Forge'} className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
             <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">
-              {pageTab === 'armory' ? 'My Armory' : 'To Craft'}
+              {pageTab === 'armory' ? 'My Armory' : 'To Forge'}
             </h1>
           </div>
           <p className="text-[var(--muted)] text-sm ml-11">
@@ -176,11 +176,11 @@ export default function Weapons() {
               🗡️ My Armory
             </button>
             <button
-              id="weapons-tab-craft"
-              onClick={() => setPageTab('craft')}
-              className={`px-3 py-1.5 text-xs font-semibold transition-colors ${pageTab === 'craft' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
+              id="weapons-tab-forge"
+              onClick={() => setPageTab('forge')}
+              className={`px-3 py-1.5 text-xs font-semibold transition-colors ${pageTab === 'forge' ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
             >
-              ⚒️ To Craft
+              ⚒️ To Forge
             </button>
           </div>
           {/* Armory-only controls */}
@@ -234,8 +234,8 @@ export default function Weapons() {
         </div>
       </div>
 
-      {/* ── To Craft tab ── */}
-      {pageTab === 'craft' && <CraftQueuePanel />}
+      {/* ── To Forge tab ── */}
+      {pageTab === 'forge' && <ForgingQueuePanel />}
 
       {/* ── My Armory tab ── */}
       {pageTab === 'armory' && (

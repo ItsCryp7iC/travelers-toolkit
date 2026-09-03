@@ -109,7 +109,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
   const [currentRefinement, setCurrentRefinement] = useState(existingWeapon ? (existingWeapon.currentRefinement ?? 1) : 1)
   const [targetRefinement, setTargetRefinement] = useState(existingWeapon ? (existingWeapon.targetRefinement ?? 1) : 1)
   const [assignedTo,     setAssignedTo]     = useState(existingWeapon ? (existingWeapon.assignedTo || '') : '')
-  const [planningToCraft, setPlanningToCraft] = useState(existingWeapon ? (existingWeapon.currentRefinement === 0) : false)
+  const [planningToForge, setplanningToForge] = useState(existingWeapon ? (existingWeapon.currentRefinement === 0) : false)
 
   // Sync state when navigating between duplicate weapons
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
       setTargetAscension(existingWeapon.targetAscension ?? 6)
       setCurrentRefinement(existingWeapon.currentRefinement ?? 1)
       setTargetRefinement(existingWeapon.targetRefinement ?? 1)
-      setPlanningToCraft(existingWeapon.currentRefinement === 0)
+      setplanningToForge(existingWeapon.currentRefinement === 0)
       setAssignedTo(existingWeapon.assignedTo || '')
     }
   }, [existingWeapon, currentIndex])
@@ -196,22 +196,22 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
     if (existingWeapon) {
       updateTrackedWeapon(existingWeapon.id, {
-        level: planningToCraft ? 1 : level,
-        ascension: planningToCraft ? 0 : ascension,
-        targetLevel: planningToCraft ? 90 : targetLevel,
-        targetAscension: planningToCraft ? 6 : targetAscension,
-        currentRefinement: planningToCraft ? 0 : currentRefinement,
-        targetRefinement: planningToCraft ? Math.max(1, targetRefinement) : targetRefinement,
+        level: planningToForge ? 1 : level,
+        ascension: planningToForge ? 0 : ascension,
+        targetLevel: planningToForge ? 90 : targetLevel,
+        targetAscension: planningToForge ? 6 : targetAscension,
+        currentRefinement: planningToForge ? 0 : currentRefinement,
+        targetRefinement: planningToForge ? Math.max(1, targetRefinement) : targetRefinement,
         assignedTo: assignedTo || null
       })
     } else {
       const newId = addTrackedWeapon(selectedWeapon.name, assignedTo || null, {
-        currentLevel: planningToCraft ? 1 : level,
-        currentAscension: planningToCraft ? 0 : ascension,
-        targetLevel: planningToCraft ? 90 : targetLevel,
-        targetAscension: planningToCraft ? 6 : targetAscension,
-        currentRefinement: planningToCraft ? 0 : currentRefinement,
-        targetRefinement: planningToCraft ? Math.max(1, targetRefinement) : targetRefinement
+        currentLevel: planningToForge ? 1 : level,
+        currentAscension: planningToForge ? 0 : ascension,
+        targetLevel: planningToForge ? 90 : targetLevel,
+        targetAscension: planningToForge ? 6 : targetAscension,
+        currentRefinement: planningToForge ? 0 : currentRefinement,
+        targetRefinement: planningToForge ? Math.max(1, targetRefinement) : targetRefinement
       })
     }
     onClose()
@@ -357,18 +357,18 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
               <div className="space-y-4">
                 {(() => {
                   const theme = getWeaponTheme(selectedWeapon.rarity);
-                  const isCraftable = !!(forgingData[selectedWeapon.id] || forgingData[selectedWeapon.name]);
+                  const isForgeable = !!(forgingData[selectedWeapon.id] || forgingData[selectedWeapon.name]);
                   return (
                     <div className="flex flex-col gap-4">
-                      {isCraftable && (
+                      {isForgeable && (
                         <div className="flex items-center gap-3 p-4 rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5">
                           <input
                             type="checkbox"
-                            id="planningToCraftToggle"
-                            checked={planningToCraft}
+                            id="planningToForgeToggle"
+                            checked={planningToForge}
                             onChange={(e) => {
                               const checked = e.target.checked;
-                              setPlanningToCraft(checked);
+                              setplanningToForge(checked);
                               if (checked) {
                                 setAscension(0);
                                 setLevel(1);
@@ -377,14 +377,14 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                             }}
                             className="w-4 h-4 accent-[var(--gold)] cursor-pointer"
                           />
-                          <label htmlFor="planningToCraftToggle" className="text-sm font-semibold text-[var(--gold)] cursor-pointer select-none flex-1">
-                            Planning to craft (I don't own this yet)
+                          <label htmlFor="planningToForgeToggle" className="text-sm font-semibold text-[var(--gold)] cursor-pointer select-none flex-1">
+                            Planning to forge (I don't own this yet)
                           </label>
                         </div>
                       )}
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-2">
-                        <div className={`modal-state-panel ${planningToCraft ? 'opacity-40 pointer-events-none' : ''}`}>
+                        <div className={`modal-state-panel ${planningToForge ? 'opacity-40 pointer-events-none' : ''}`}>
                           <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
                           <AscensionSelector 
                             value={ascension} 
@@ -447,7 +447,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                               }} 
                               label="Ascension" 
                               elementColor={theme.elementColor}
-                              minValid={planningToCraft ? 0 : ascension} 
+                              minValid={planningToForge ? 0 : ascension} 
                             />
                             <div className="mt-4">
                               <LevelSlider 
@@ -456,19 +456,19 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                                 ascension={targetAscension} 
                                 label="Level" 
                                 elementColor={theme.elementColor}
-                                minOverride={targetAscension === ascension && !planningToCraft ? level : undefined} 
+                                minOverride={targetAscension === ascension && !planningToForge ? level : undefined} 
                               />
                             </div>
-                          <div className={`mt-4 pt-4 border-t border-[var(--border)] ${!isCraftable ? 'opacity-40 pointer-events-none' : ''}`}>
+                          <div className={`mt-4 pt-4 border-t border-[var(--border)] ${!isForgeable ? 'opacity-40 pointer-events-none' : ''}`}>
                             <div className="flex justify-between items-end mb-2">
                               <label className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase">
                                 Target Refinement
                               </label>
                               <div className="flex items-baseline gap-1">
                                 <span className="text-xl font-bold leading-none" style={{ color: theme.elementColor }}>
-                                  {isCraftable ? targetRefinement : '—'}
+                                  {isForgeable ? targetRefinement : '—'}
                                 </span>
-                                {isCraftable && <span className="text-xs text-[var(--muted)]">/ 5</span>}
+                                {isForgeable && <span className="text-xs text-[var(--muted)]">/ 5</span>}
                               </div>
                             </div>
                             <input
@@ -479,7 +479,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                               onChange={(e) => setTargetRefinement(parseInt(e.target.value, 10))}
                               className="level-slider w-full"
                               style={{ '--slider-color': theme.elementColor, '--pct': `${((targetRefinement - 1) / 4) * 100}%` }}
-                              disabled={!isCraftable}
+                              disabled={!isForgeable}
                             />
                           </div>
                         </div>

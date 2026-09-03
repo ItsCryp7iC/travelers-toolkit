@@ -188,7 +188,7 @@ export function computeToFarm(totals, inventory) {
     weeklyBoss: filterCategory('weeklyBoss'),
     weaponAscMats: filterCategory('weaponAscMats'),
     eliteMob: filterCategory('eliteMob'),
-    craftingMats: allItems.filter(item => item.category === 'billet' || item.category === 'forgingOre' || item.category === 'Crafting Material'),
+    forgingMats: allItems.filter(item => item.category === 'billet' || item.category === 'forgingOre' || item.category === 'Forging Material'),
     totalItems: allItems.length,
     allDone: allItems.length === 0,
   }
@@ -238,7 +238,7 @@ export function calculateForgingCost(weapon, currentRefinement, targetRefinement
  *     - 'forgingOre' for regional ores (Crystal Chunk, Amethyst Lump, etc.)
  *     - 'mora'       for Mora cost
  */
-export function getCraftingCosts(trackedWeapons, forgingData) {
+export function getForgingCosts(trackedWeapons, forgingData) {
   const grandTotalCosts = {}
   const grandTotalCategories = {}
   const grandTotalRarities = {}

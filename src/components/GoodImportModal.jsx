@@ -57,8 +57,8 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           group = 'Local Specialties';
         } else if (cat === 'Character Ascension Gem') {
           group = 'Character Gems';
-        } else if (cat === 'Crafting Material' || cat === 'billet' || cat === 'forgingOre') {
-          group = 'Crafting Mats';
+        } else if (cat === 'Forging Material' || cat === 'billet' || cat === 'forgingOre') {
+          group = 'Forging Mats';
         }
       }
       return { 
@@ -77,7 +77,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
 
   // Derived state for material tabs
   const materialGroups = [
-    'Currency & Exp', 'Boss Drops', 'Enemy Drops', 'Talent Mats', 'Weapon Asc Mats', 'Crafting Mats', 'Local Specialties', 'Character Gems', 'Other'
+    'Currency & Exp', 'Boss Drops', 'Enemy Drops', 'Talent Mats', 'Weapon Asc Mats', 'Forging Mats', 'Local Specialties', 'Character Gems', 'Other'
   ];
   
   useEffect(() => {

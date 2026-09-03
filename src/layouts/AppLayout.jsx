@@ -26,7 +26,7 @@ const PLANNER_TABS = [
  { id: 'weapon_ascension', label: 'Weapon Mats', icon: '/WeaponAscMats.png' },
  { id: 'local_specialty', label: 'Local Specialty', icon: '/LocalSpecialties.png' },
  { id: 'character_gem', label: 'Gems', icon: '/Gems.png' },
- { id: 'crafting_materials', label: 'Crafting Mats', icon: '/Forging.png' },
+ { id: 'forging_materials', label: 'Forging Mats', icon: '/Forging.png' },
  { id: 'per_character', label: 'Characters', icon: '/Characters.png' },
  { id: 'per_weapon', label: 'Weapons', icon: '/Weapons.png' }
 ];
@@ -39,7 +39,7 @@ const INVENTORY_TABS = [
  { id: 'weapon_asc', label: 'Weapon Asc', icon: '/WeaponAscMats.png' },
  { id: 'local_spec', label: 'Local Spec', icon: '/LocalSpecialties.png' },
  { id: 'character_gems', label: 'Character Gems', icon: '/Gems.png' },
- { id: 'crafting_mats', label: 'Crafting Mats', icon: '/Forging.png' },
+ { id: 'forging_mats', label: 'Forging Mats', icon: '/Forging.png' },
 ];
 
 const devItems = [

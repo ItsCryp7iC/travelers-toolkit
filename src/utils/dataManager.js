@@ -6,7 +6,7 @@ import weeklyBoss from '../data/weekly_boss.json'
 import commonEnemy from '../data/common_enemy.json'
 import eliteEnemy from '../data/elite_enemy.json'
 import localSpecialty from '../data/local_specialty.json'
-import craftingMaterials from '../data/crafting_materials.json'
+import forgingMaterials from '../data/forging_materials.json'
 import talentMaterials from '../data/talent_materials.json'
 import weaponAscension from '../data/weapon_ascension.json'
 import characterGems from '../data/character_gems.json'
@@ -174,9 +174,9 @@ export const getPrimaryInventoryList = () => {
   );
 
   const formattedLocal = flattenAndFormatMaterials(localSpecialty, 'Local Specialty', null, () => 'Local Specialty', () => 'Local Specialty', () => 1);
-  const formattedCrafting = flattenAndFormatMaterials(craftingMaterials, 'Crafting Material', null, 
+  const formattedForging = flattenAndFormatMaterials(forgingMaterials, 'Forging Material', null, 
     (item) => item.kind === 'billet' ? 'Billet' : 'Forging Ore', 
-    () => 'Crafting Material', 
+    () => 'Forging Material', 
     (item) => item.kind === 'billet' ? 4 : 1
   ).map(item => ({ ...item, subCategory: item.sublabel }));
 
@@ -205,7 +205,7 @@ export const getPrimaryInventoryList = () => {
     ...formattedCommonEnemy,
     ...formattedEliteEnemy,
     ...formattedLocal,
-    ...formattedCrafting,
+    ...formattedForging,
     ...formattedWeapon,
     ...formattedTalent,
     ...formattedGems

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import useStore from '../store/useStore'
-import { aggregateRosterCosts, getCraftingCosts, computeToFarm } from '../utils/aggregator'
+import { aggregateRosterCosts, getForgingCosts, computeToFarm } from '../utils/aggregator'
 import { formatNumber, formatItemName } from '../utils/calculator'
 import { formatName } from '../utils/gameData'
 import { getMaterialIcon } from '../utils/assetHelper'
@@ -307,20 +307,20 @@ export default function Planner() {
   const [weaponSearchQuery, setWeaponSearchQuery] = useState('')
 
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
-  const craftingTotals = useMemo(() => getCraftingCosts(trackedWeapons, weaponForgingData), [trackedWeapons])
+  const forgingTotals = useMemo(() => getForgingCosts(trackedWeapons, weaponForgingData), [trackedWeapons])
   
   const combinedTotals = useMemo(() => {
     const combinedCosts = { ...totals.totalCosts }
-    for (const [k, v] of Object.entries(craftingTotals.totalCosts || {})) {
+    for (const [k, v] of Object.entries(forgingTotals.totalCosts || {})) {
       combinedCosts[k] = (combinedCosts[k] || 0) + v
     }
     return {
       totalCosts: combinedCosts,
-      categories: { ...totals.categories, ...craftingTotals.categories },
-      rarities: { ...totals.rarities, ...craftingTotals.rarities },
-      breakdown: [...(totals.breakdown || []), ...(craftingTotals.breakdown || [])]
+      categories: { ...totals.categories, ...forgingTotals.categories },
+      rarities: { ...totals.rarities, ...forgingTotals.rarities },
+      breakdown: [...(totals.breakdown || []), ...(forgingTotals.breakdown || [])]
     }
-  }, [totals, craftingTotals])
+  }, [totals, forgingTotals])
 
   const toFarm = useMemo(() => computeToFarm(combinedTotals, inventory), [combinedTotals, inventory])
 
@@ -1046,14 +1046,14 @@ export default function Planner() {
             : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All boss drops covered</div>
         )}
 
-        {activeTab === 'crafting_materials' && (
-          toFarm.craftingMats?.length > 0
+        {activeTab === 'forging_materials' && (
+          toFarm.forgingMats?.length > 0
             ? (
               <>
                 <ToFarmCategory 
                   icon="📜"
                   title="Billets"
-                  items={toFarm.craftingMats.filter(i => i.category === 'billet' || i.name.toLowerCase().includes('billet'))}
+                  items={toFarm.forgingMats.filter(i => i.category === 'billet' || i.name.toLowerCase().includes('billet'))}
                   accent="var(--gold)"
                   emptyMsg="All billets covered"
                   maxCols={3}
@@ -1061,14 +1061,14 @@ export default function Planner() {
                 <ToFarmCategory 
                   icon="💎"
                   title="Forging Ores"
-                  items={toFarm.craftingMats.filter(i => i.category === 'forgingOre' || (!i.name.toLowerCase().includes('billet') && i.name !== 'mora'))}
+                  items={toFarm.forgingMats.filter(i => i.category === 'forgingOre' || (!i.name.toLowerCase().includes('billet') && i.name !== 'mora'))}
                   accent="#A855F7"
                   emptyMsg="All forging ores covered"
                   maxCols={3}
                 />
               </>
             )
-            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All crafting materials covered</div>
+            : <div className="text-center py-6 text-[var(--muted)] text-xs border border-dashed border-[var(--border)] rounded-xl mt-2">All forging materials covered</div>
         )}
 
         {activeTab === 'elite_enhancement' && (

@@ -269,8 +269,8 @@ export default function WeaponsTable({
             const wp = row.original;
             const refine = getValue();
             const originalWeapon = weaponsData.find(w => w.name === wp.weaponName);
-            const isCraftable = originalWeapon ? !!(forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : false;
-            if (!isCraftable) return <span className="text-gray-500/50 text-xs" title="Not a craftable weapon">—</span>;
+            const isForgeable = originalWeapon ? !!(forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : false;
+            if (!isForgeable) return <span className="text-gray-500/50 text-xs" title="Not a forgeable weapon">—</span>;
             return (
               <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
                 <InlineNumberInput value={refine} min={0} max={5} onChangeSubmit={(val) => updateWeapon(wp.id, { targetRefinement: val })} className="text-xs text-[var(--gold)]" />

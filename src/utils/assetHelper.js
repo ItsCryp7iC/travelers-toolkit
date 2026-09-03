@@ -49,7 +49,7 @@ export function getWeaponTypeIcon(type) {
 }
 
 /**
- * Icon for a craftable weapon billet item (Northlander/Midlander/Borderland Sword Billet, etc.)
+ * Icon for a forgeable weapon billet item (Northlander/Midlander/Borderland Sword Billet, etc.)
  * Uses the new `billet_items/` CDN folder — distinct from `billets/` which holds weapon-type icons.
  * e.g. "Northlander Sword Billet" → billet_items/NorthladerSwordBillet.png
  */
@@ -74,7 +74,7 @@ import localSpecialty from '../data/local_specialty.json';
 import talentMaterials from '../data/talent_materials.json';
 import weaponAscension from '../data/weapon_ascension.json';
 import characterGems from '../data/character_gems.json';
-import craftingMaterials from '../data/crafting_materials.json';
+import forgingMaterials from '../data/forging_materials.json';
 
 let categoryMapCache = null;
 function getResolvedCategory(fileName) {
@@ -97,7 +97,7 @@ function getResolvedCategory(fileName) {
     mapTiers(weaponAscension, 'Weapon Ascension Mats');
     mapTiers(localSpecialty, 'Local Specialties');
     mapTiers(characterGems, 'Character Ascension Gems');
-    mapTiers(craftingMaterials, 'Crafting Material');
+    mapTiers(forgingMaterials, 'Forging Material');
   }
   return categoryMapCache[fileName];
 }
@@ -137,8 +137,8 @@ export function getMaterialIcon(materialName, category) {
     folder = 'local_specialties';
   } else if (resolvedCategory === 'Character Ascension Gems' || resolvedCategory === 'Character Ascension Gem') {
     folder = 'character_ascension_gems';
-  } else if (resolvedCategory === 'Crafting Material' || resolvedCategory === 'billet' || resolvedCategory === 'forgingOre') {
-    folder = 'crafting_materials';
+  } else if (resolvedCategory === 'Forging Material' || resolvedCategory === 'billet' || resolvedCategory === 'forgingOre') {
+    folder = 'forging_materials';
   }
 
   return `${BASE_URL}/${folder}/${fileName}.png`;
