@@ -154,7 +154,7 @@ export default function Weapons() {
       <div className="sticky top-16 z-40 bg-[var(--bg)]/80 backdrop-blur-xl pb-4 pt-2 mb-6 border-b border-[var(--border)] shadow-sm flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-2xl">{pageTab === 'armory' ? '🗡️' : '⚒️'}</span>
+            <img src={pageTab === 'armory' ? '/Weapons.png' : '/Forging.png'} alt={pageTab === 'armory' ? 'My Armory' : 'To Craft'} className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
             <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">
               {pageTab === 'armory' ? 'My Armory' : 'To Craft'}
             </h1>

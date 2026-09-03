@@ -183,7 +183,7 @@ export default function Dashboard() {
  <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
  <div>
  <div className="flex items-center gap-3 mb-1">
- <span className="text-2xl">🌍</span>
+ <img src="/Dashboard.png" alt="Dashboard" className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
  <h1 className=" text-2xl md:text-3xl text-[var(--text)]">
  Dashboard
  </h1>
@@ -282,7 +282,7 @@ export default function Dashboard() {
  {/* ── Stats Strip ────────────────────────────── */}
  {activeTab === 'characters' ? (
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
- <StatCard icon="👥" label="Total Characters" value={charactersData.length} />
+ <StatCard icon={<img src="/Characters.png" alt="Characters" className="w-6 h-6 object-contain" />} label="Total Characters" value={charactersData.length} />
  <StatCard icon="🟡" label="5★ Characters" value={total5StarChars} accent="#FFD700" />
  <StatCard icon="🟣" label="4★ Characters" value={total4StarChars} accent="#B07FE8" />
  <StatCard icon="📋" label="In My Roster" value={rosterCount} accent="#4EC9B0" />

@@ -157,7 +157,7 @@ export default function Characters() {
       <div className="sticky top-16 z-40 bg-[var(--bg)]/80 backdrop-blur-xl pb-4 pt-2 mb-6 border-b border-[var(--border)] shadow-sm flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-2xl">⚔️</span>
+            <img src="/Characters.png" alt="My Roster" className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
             <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">My Roster</h1>
           </div>
           <p className="text-[var(--muted)] text-sm ml-11">

@@ -921,7 +921,7 @@ export default function Planner() {
     <div className="animate-fade-in">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
-          <span className="text-2xl">📋</span>
+          <img src="/Planner.png" alt="Planner" className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
           <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">Planner</h1>
         </div>
       </div>
@@ -935,7 +935,7 @@ export default function Planner() {
       {/* ── Page Header ── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
-          <span className="text-2xl">📋</span>
+          <img src="/Planner.png" alt="Planner" className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
           <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">Resource Planner</h1>
         </div>
         <p className="text-[var(--muted)] text-sm ml-11">
@@ -945,9 +945,9 @@ export default function Planner() {
 
       {/* ── Grand Total Stats ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <PlannerStat icon="👥" label="Tracked Characters" value={totals.trackedCount} accent="#4EC9B0" />
-        <PlannerStat icon="🪙" label="Total Mora" value={formatNumber(remainingTotals.mora)} accent="#FAB632" />
-        <PlannerStat icon="👑" label="Crowns Needed" value={remainingTotals.crowns} accent="#FBBF24"
+        <PlannerStat icon={<img src="/Characters.png" alt="Tracked Characters" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Tracked Characters" value={totals.trackedCount} accent="#4EC9B0" />
+        <PlannerStat icon={<img src="/CurrencyExp.png" alt="Total Mora" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Total Mora" value={formatNumber(remainingTotals.mora)} accent="#FAB632" />
+        <PlannerStat icon={<img src="/CrownOfInsight.png" alt="Crowns Needed" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Crowns Needed" value={remainingTotals.crowns} accent="#FBBF24"
           sub={remainingTotals.crowns > 0 ? 'Crown of Insight' : 'None needed'} />
         <PlannerStat icon="🎒" label="Still to Farm" value={formatNumber(remainingTotals.sumItems)}
           accent={toFarm.allDone ? '#4ADE80' : '#F97316'}

@@ -122,9 +122,9 @@ function QuickStats() {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
       {[
-        { label: 'Materials Tracked', value: filledCount,                   icon: '📦', accent: '#C8A96E' },
-        { label: 'Mora',              value: moraQty.toLocaleString(),       icon: '🪙', accent: '#FAB632' },
-        { label: "Hero's Wit",        value: witsQty,                        icon: '📚', accent: '#60A5FA' },
+        { label: 'Materials Tracked', value: filledCount,                   icon: <img src="/Inventory.png" alt="Materials Tracked" className="w-5 h-5 object-contain" />, accent: '#C8A96E' },
+        { label: 'Mora',              value: moraQty.toLocaleString(),       icon: <img src="/CurrencyExp.png" alt="Mora" className="w-5 h-5 object-contain" />, accent: '#FAB632' },
+        { label: "Hero's Wit",        value: witsQty,                        icon: <img src="/HerosWit.png" alt="Hero's Wit" className="w-5 h-5 object-contain" />, accent: '#60A5FA' },
         { label: 'Total Slots',       value: Object.keys(inventory).length,  icon: '🗂️', accent: '#A855F7' },
       ].map(({ label, value, icon, accent }) => (
         <div key={label} className="stat-card">
@@ -196,7 +196,7 @@ export default function Inventory() {
       {/* ── Page Header ── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-1">
-          <span className="text-2xl">📦</span>
+          <img src="/Inventory.png" alt="Inventory" className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
           <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)]">
             Inventory
           </h1>

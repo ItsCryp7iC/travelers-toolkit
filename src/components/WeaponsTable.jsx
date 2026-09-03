@@ -283,7 +283,7 @@ export default function WeaponsTable({
     // ──────────────── FORGING ────────────────
     {
       id: 'Forging',
-      header: 'Forging',
+      header: () => <div className="flex items-center justify-center gap-1.5"><img src="/Forging.png" alt="Forging" className="w-4 h-4 object-contain drop-shadow-md" /><span>Forging</span></div>,
       meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[#d8b575] border-r border-[var(--border)]" },
       columns: [
         {
@@ -432,7 +432,7 @@ export default function WeaponsTable({
     // ──────────────── ASCENSION ────────────────
     {
       id: 'Ascension',
-      header: 'Weapon Ascension Material',
+      header: () => <div className="flex items-center justify-center gap-1.5"><img src="/WeaponAscMats.png" alt="Ascension" className="w-4 h-4 object-contain drop-shadow-md" /><span>Weapon Ascension Material</span></div>,
       meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-blue-400 border-r border-[var(--border)]" },
       columns: [
         {
@@ -480,7 +480,7 @@ export default function WeaponsTable({
     // ──────────────── ELITE ────────────────
     {
       id: 'Elite',
-      header: 'Elite Enhancement Material',
+      header: () => <div className="flex items-center justify-center gap-1.5"><img src="/EliteEnemy.png" alt="Elite" className="w-4 h-4 object-contain drop-shadow-md" /><span>Elite Enhancement Material</span></div>,
       meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]" },
       columns: [
         {
@@ -518,7 +518,7 @@ export default function WeaponsTable({
     // ──────────────── COMMON ────────────────
     {
       id: 'Common',
-      header: 'Common Enhancement Material',
+      header: () => <div className="flex items-center justify-center gap-1.5"><img src="/CommonEnemy.png" alt="Common" className="w-4 h-4 object-contain drop-shadow-md" /><span>Common Enhancement Material</span></div>,
       meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]" },
       columns: [
         {
@@ -678,9 +678,11 @@ export default function WeaponsTable({
 
                   const renderTotalItem = (val, iconOrNameKey, colorClass, isGameIcon, align = 'center') => {
                     const justify = align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center';
-                    const imgContent = isGameIcon 
-                      ? <GenshinImage src={getMaterialIcon(iconOrNameKey, 'others')} alt={iconOrNameKey} className="w-6 h-6 object-contain shrink-0" />
-                      : <span className="text-[14px] leading-none">{iconOrNameKey}</span>;
+                    const imgContent = typeof iconOrNameKey === 'string' && iconOrNameKey.includes('.png')
+                      ? <img src={iconOrNameKey} alt="icon" className="w-5 h-5 object-contain shrink-0 drop-shadow-md" />
+                      : isGameIcon 
+                        ? <GenshinImage src={getMaterialIcon(iconOrNameKey, 'others')} alt={iconOrNameKey} className="w-6 h-6 object-contain shrink-0" />
+                        : <span className="text-[14px] leading-none">{iconOrNameKey}</span>;
                       
                     return (
                       <div className={`flex items-center ${justify} gap-1.5 text-xs font-bold ${colorClass}`}>
@@ -700,7 +702,7 @@ export default function WeaponsTable({
                       const matEntries = Object.entries(totals.forging).filter(([k,v]) => k.includes('billet'));
                       if (matEntries.length > 0) {
                         const total = matEntries.reduce((acc, [k, v]) => acc + v, 0);
-                        cellContent = renderTotalItem(total, '📜', 'text-amber-300', false);
+                        cellContent = renderTotalItem(total, '/Forging.png', 'text-amber-300', false);
                       }
                       break;
                     }
@@ -727,16 +729,16 @@ export default function WeaponsTable({
                     case 'normal_ore': cellContent = renderTotalItem(totals.costs.normal_ore, 'EnhancementOre', 'text-gray-400', true); break;
                     case 'wasted_exp': cellContent = renderTotalItem(totals.costs.wasted_exp, '🗑️', 'text-gray-400', false); break;
                     case 'total_mora': cellContent = renderTotalItem(totals.costs.total_mora, 'Mora', 'text-blue-400', true, 'right'); break;
-                    case 'asc_5': cellContent = renderTotalItem(totals.costs['5_star_ascension_material'], '🏺', 'text-amber-400', false); break;
-                    case 'asc_4': cellContent = renderTotalItem(totals.costs['4_star_ascension_material'], '🏺', 'text-purple-400', false); break;
-                    case 'asc_3': cellContent = renderTotalItem(totals.costs['3_star_ascension_material'], '🏺', 'text-blue-400', false); break;
-                    case 'asc_2': cellContent = renderTotalItem(totals.costs['2_star_ascension_material'], '🏺', 'text-green-400', false); break;
-                    case 'elite_4': cellContent = renderTotalItem(totals.costs['4_star_enhancement_material'], '⚔️', 'text-purple-400', false); break;
-                    case 'elite_3': cellContent = renderTotalItem(totals.costs['3_star_enhancement_material'], '⚔️', 'text-blue-400', false); break;
-                    case 'elite_2': cellContent = renderTotalItem(totals.costs['2_star_enhancement_material'], '⚔️', 'text-green-400', false); break;
-                    case 'mob_3': cellContent = renderTotalItem(totals.costs['3_star_enemy_material'], '🎭', 'text-blue-400', false); break;
-                    case 'mob_2': cellContent = renderTotalItem(totals.costs['2_star_enemy_material'], '🎭', 'text-green-400', false); break;
-                    case 'mob_1': cellContent = renderTotalItem(totals.costs['1_star_enemy_material'], '🎭', 'text-gray-400', false); break;
+                    case 'asc_5': cellContent = renderTotalItem(totals.costs['5_star_ascension_material'], '/WeaponAscMats.png', 'text-amber-400', false); break;
+                    case 'asc_4': cellContent = renderTotalItem(totals.costs['4_star_ascension_material'], '/WeaponAscMats.png', 'text-purple-400', false); break;
+                    case 'asc_3': cellContent = renderTotalItem(totals.costs['3_star_ascension_material'], '/WeaponAscMats.png', 'text-blue-400', false); break;
+                    case 'asc_2': cellContent = renderTotalItem(totals.costs['2_star_ascension_material'], '/WeaponAscMats.png', 'text-green-400', false); break;
+                    case 'elite_4': cellContent = renderTotalItem(totals.costs['4_star_enhancement_material'], '/EliteEnemy.png', 'text-purple-400', false); break;
+                    case 'elite_3': cellContent = renderTotalItem(totals.costs['3_star_enhancement_material'], '/EliteEnemy.png', 'text-blue-400', false); break;
+                    case 'elite_2': cellContent = renderTotalItem(totals.costs['2_star_enhancement_material'], '/EliteEnemy.png', 'text-green-400', false); break;
+                    case 'mob_3': cellContent = renderTotalItem(totals.costs['3_star_enemy_material'], '/CommonEnemy.png', 'text-blue-400', false); break;
+                    case 'mob_2': cellContent = renderTotalItem(totals.costs['2_star_enemy_material'], '/CommonEnemy.png', 'text-green-400', false); break;
+                    case 'mob_1': cellContent = renderTotalItem(totals.costs['1_star_enemy_material'], '/CommonEnemy.png', 'text-gray-400', false); break;
                     default: cellContent = null;
                   }
 

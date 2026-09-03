@@ -7,39 +7,39 @@ import ResinTracker from '../components/ResinTracker'
 import RealmCurrencyTracker from '../components/RealmCurrencyTracker'
 
 const navItems = [
- { to: '/', label: 'Dashboard', icon: '🏠', id: 'nav-dashboard' },
- { to: '/characters', label: 'Characters', icon: '⚔️', id: 'nav-characters' },
- { to: '/weapons', label: 'Weapons', icon: '🗡️', id: 'nav-weapons' },
- { to: '/planner', label: 'Planner', icon: '📋', id: 'nav-planner' },
- { to: '/inventory', label: 'Inventory', icon: '📦', id: 'nav-inventory' },
+ { to: '/', label: 'Dashboard', icon: '/Dashboard.png', id: 'nav-dashboard' },
+ { to: '/characters', label: 'Characters', icon: '/Characters.png', id: 'nav-characters' },
+ { to: '/weapons', label: 'Weapons', icon: '/Weapons.png', id: 'nav-weapons' },
+ { to: '/planner', label: 'Planner', icon: '/Planner.png', id: 'nav-planner' },
+ { to: '/inventory', label: 'Inventory', icon: '/Inventory.png', id: 'nav-inventory' },
  { to: '/settings', label: 'Settings', icon: '⚙️', id: 'nav-settings' },
 ]
 
 const PLANNER_TABS = [
  { id: 'daily_action', label: 'Daily Action', icon: '📅' },
- { id: 'currency_exp', label: 'Currency & EXP', icon: '🪙' },
- { id: 'normal_boss', label: 'Normal Boss', icon: '🐉' },
- { id: 'weekly_boss', label: 'Weekly Boss', icon: '👑' },
- { id: 'talent', label: 'Talents', icon: '📖' },
- { id: 'common_enhancement', label: 'Common Mats', icon: '⚔️' },
- { id: 'elite_enhancement', label: 'Elite Mats', icon: '🛡️' },
- { id: 'weapon_ascension', label: 'Weapon Mats', icon: '🔗' },
- { id: 'local_specialty', label: 'Local Specialty', icon: '🌸' },
- { id: 'character_gem', label: 'Gems', icon: '💎' },
- { id: 'crafting_materials', label: 'Crafting Mats', icon: '🔨' },
- { id: 'per_character', label: 'Characters', icon: '👥' },
- { id: 'per_weapon', label: 'Weapons', icon: '🗡️' }
+ { id: 'currency_exp', label: 'Currency & EXP', icon: '/CurrencyExp.png' },
+ { id: 'normal_boss', label: 'Normal Boss', icon: '/NormalBoss.png' },
+ { id: 'weekly_boss', label: 'Weekly Boss', icon: '/WeeklyBoss.png' },
+ { id: 'talent', label: 'Talents', icon: '/TalentMats.png' },
+ { id: 'common_enhancement', label: 'Common Mats', icon: '/CommonEnemy.png' },
+ { id: 'elite_enhancement', label: 'Elite Mats', icon: '/EliteEnemy.png' },
+ { id: 'weapon_ascension', label: 'Weapon Mats', icon: '/WeaponAscMats.png' },
+ { id: 'local_specialty', label: 'Local Specialty', icon: '/LocalSpecialties.png' },
+ { id: 'character_gem', label: 'Gems', icon: '/Gems.png' },
+ { id: 'crafting_materials', label: 'Crafting Mats', icon: '/Forging.png' },
+ { id: 'per_character', label: 'Characters', icon: '/Characters.png' },
+ { id: 'per_weapon', label: 'Weapons', icon: '/Weapons.png' }
 ];
 
 const INVENTORY_TABS = [
- { id: 'currency_exp', label: 'Currency & Exp', icon: '🪙' },
- { id: 'boss_drops', label: 'Boss Drops', icon: '🐉' },
- { id: 'talent_mats', label: 'Talent Mats', icon: '📚' },
- { id: 'enemy_drops', label: 'Enemy Drops', icon: '⚔️' },
- { id: 'weapon_asc', label: 'Weapon Asc', icon: '🗡️' },
- { id: 'local_spec', label: 'Local Spec', icon: '🌸' },
- { id: 'character_gems', label: 'Character Gems', icon: '💎' },
- { id: 'crafting_mats', label: 'Crafting Mats', icon: '🔨' },
+ { id: 'currency_exp', label: 'Currency & Exp', icon: '/CurrencyExp.png' },
+ { id: 'boss_drops', label: 'Boss Drops', icon: '/NormalBoss.png' },
+ { id: 'talent_mats', label: 'Talent Mats', icon: '/TalentMats.png' },
+ { id: 'enemy_drops', label: 'Enemy Drops', icon: '/CommonEnemy.png' },
+ { id: 'weapon_asc', label: 'Weapon Asc', icon: '/WeaponAscMats.png' },
+ { id: 'local_spec', label: 'Local Spec', icon: '/LocalSpecialties.png' },
+ { id: 'character_gems', label: 'Character Gems', icon: '/Gems.png' },
+ { id: 'crafting_mats', label: 'Crafting Mats', icon: '/Forging.png' },
 ];
 
 const devItems = [
@@ -188,15 +188,17 @@ export default function AppLayout() {
           <RealmCurrencyTracker syncData={syncPayload.realm_currency} variant="compact" />
         </>
       )}
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)]">
-        <span className="text-xs">🗡️</span>
-        <span className="text-xs text-[var(--muted)]">My Armory:</span>
-        <span className="text-xs text-primary">{trackedWeapons.length}</span>
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="My Armory">
+        <img src="/Weapons.png" alt="My Armory" className="w-5 h-5 object-contain" />
+        <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
+          {trackedWeapons.length}
+        </span>
       </div>
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)]">
-        <span className="text-xs">⚔️</span>
-        <span className="text-xs text-[var(--muted)]">Roster:</span>
-        <span className="text-xs text-primary ">{rosterCount}</span>
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="Roster">
+        <img src="/Characters.png" alt="Roster" className="w-5 h-5 object-contain" />
+        <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
+          {rosterCount}
+        </span>
       </div>
     </div>
 
@@ -267,7 +269,9 @@ export default function AppLayout() {
              className={`sidebar-nav-link cursor-pointer flex items-center justify-center ${location.pathname.startsWith('/planner') ? 'active' : ''}`}
              onClick={() => setActiveFlyout(activeFlyout === 'planner' ? null : 'planner')}
            >
-             <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
+             <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
              <span className="hidden">{item.label}</span>
            </div>
             {activeFlyout === 'planner' && (
@@ -282,7 +286,7 @@ export default function AppLayout() {
                    className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors"
                    onClick={() => setActiveFlyout(null)}
                  >
-                   <span>{tab.icon}</span>
+                   <span className="w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
                    <span>{tab.label}</span>
                  </Link>
                ))}
@@ -298,7 +302,9 @@ export default function AppLayout() {
            onClick={() => setIsPlannerOpen(!isPlannerOpen)}
          >
            <div className="flex items-center">
-             <span className="nav-icon text-base w-5 text-center mr-2">{item.icon}</span>
+             <span className="nav-icon text-base w-5 text-center mr-2 flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
              <span>{item.label}</span>
            </div>
            <span className={`text-xs text-gray-500 transition-transform ${isPlannerOpen ? 'rotate-180' : ''}`}>▼</span>
@@ -316,7 +322,7 @@ export default function AppLayout() {
                    }`}
                    onClick={() => setSidebarOpen(false)}
                  >
-                   <span className="opacity-70">{tab.icon}</span>
+                   <span className="opacity-70 w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
                    <span>{tab.label}</span>
                  </Link>
                )
@@ -336,7 +342,9 @@ export default function AppLayout() {
              className={`sidebar-nav-link cursor-pointer flex items-center justify-center ${location.pathname.startsWith('/inventory') ? 'active' : ''}`}
              onClick={() => setActiveFlyout(activeFlyout === 'inventory' ? null : 'inventory')}
            >
-             <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
+             <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
              <span className="hidden">{item.label}</span>
            </div>
             {activeFlyout === 'inventory' && (
@@ -351,7 +359,7 @@ export default function AppLayout() {
                    className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors"
                    onClick={() => setActiveFlyout(null)}
                  >
-                   <span>{tab.icon}</span>
+                   <span className="w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
                    <span>{tab.label}</span>
                  </Link>
                ))}
@@ -367,7 +375,9 @@ export default function AppLayout() {
            onClick={() => setIsInventoryOpen(!isInventoryOpen)}
          >
            <div className="flex items-center">
-             <span className="nav-icon text-base w-5 text-center mr-2">{item.icon}</span>
+             <span className="nav-icon text-base w-5 text-center mr-2 flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
              <span>{item.label}</span>
            </div>
            <span className={`text-xs text-gray-500 transition-transform ${isInventoryOpen ? 'rotate-180' : ''}`}>▼</span>
@@ -385,7 +395,7 @@ export default function AppLayout() {
                    }`}
                    onClick={() => setSidebarOpen(false)}
                  >
-                   <span className="opacity-70">{tab.icon}</span>
+                   <span className="opacity-70 w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
                    <span>{tab.label}</span>
                  </Link>
                )
@@ -408,7 +418,9 @@ export default function AppLayout() {
        }
        onClick={() => setSidebarOpen(false)}
      >
-       <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
+       <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
+         {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+       </span>
        <span>{item.label}</span>
      </NavLink>
    )
@@ -432,7 +444,9 @@ export default function AppLayout() {
  }
  onClick={() => setSidebarOpen(false)}
  >
- <span className="nav-icon text-base w-5 text-center">{item.icon}</span>
+ <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
+   {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+ </span>
  <span>{item.label}</span>
  </NavLink>
  ))}

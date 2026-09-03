@@ -502,7 +502,7 @@ export default function CharactersTable({
     // ──────────────── TALENT REQUIREMENTS ────────────────
     {
       id: 'Talent Requirements',
-      header: 'Talent Requirements',
+      header: () => <div className="flex items-center justify-center gap-1.5"><img src="/TalentMats.png" alt="Talent Requirements" className="w-4 h-4 object-contain drop-shadow-md" /><span>Talent Requirements</span></div>,
       meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[#A07840] border-r border-[var(--border)]" },
       columns: [
         {
@@ -859,9 +859,11 @@ export default function CharactersTable({
 
                   const renderTotalItem = (val, iconOrNameKey, colorClass, isGameIcon, align = 'center') => {
                     const justify = align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center';
-                    const imgContent = isGameIcon 
-                      ? <GenshinImage src={getMaterialIcon(iconOrNameKey, 'others')} alt={iconOrNameKey} className="w-6 h-6 object-contain shrink-0" />
-                      : <span className="text-[14px] leading-none">{iconOrNameKey}</span>;
+                    const imgContent = typeof iconOrNameKey === 'string' && iconOrNameKey.includes('.png') 
+                      ? <img src={iconOrNameKey} alt="icon" className="w-5 h-5 object-contain shrink-0 drop-shadow-md" />
+                      : isGameIcon 
+                        ? <GenshinImage src={getMaterialIcon(iconOrNameKey, 'others')} alt={iconOrNameKey} className="w-6 h-6 object-contain shrink-0" />
+                        : <span className="text-[14px] leading-none">{iconOrNameKey}</span>;
                       
                     return (
                       <div className={`flex items-center ${justify} gap-1.5 text-xs font-bold ${colorClass}`}>
@@ -877,34 +879,34 @@ export default function CharactersTable({
                   let cellContent = null;
                   switch(column.id) {
                     case 'asc_wit': cellContent = renderTotalItem(totals.ascCosts.heros_wit, 'HerosWit', 'text-purple-400', true); break;
-                    case 'asc_nboss': cellContent = renderTotalItem(totals.ascCosts.boss_material, '👹', 'text-purple-400', false); break;
-                    case 'asc_local': cellContent = renderTotalItem(totals.ascCosts.local_specialty, '🌸', 'text-gray-400', false); break;
-                    case 'asc_gem_5': cellContent = renderTotalItem(totals.ascCosts.gem_gemstone, '💎', 'text-amber-400', false); break;
-                    case 'asc_gem_4': cellContent = renderTotalItem(totals.ascCosts.gem_chunk, '💎', 'text-purple-400', false); break;
-                    case 'asc_gem_3': cellContent = renderTotalItem(totals.ascCosts.gem_fragment, '💎', 'text-blue-400', false); break;
-                    case 'asc_gem_2': cellContent = renderTotalItem(totals.ascCosts.gem_sliver, '💎', 'text-green-400', false); break;
-                    case 'asc_enh3': cellContent = renderTotalItem(totals.ascCosts['3_star_enemy_material'], '🎭', 'text-blue-400', false); break;
-                    case 'asc_enh2': cellContent = renderTotalItem(totals.ascCosts['2_star_enemy_material'], '🎭', 'text-green-400', false); break;
-                    case 'asc_enh1': cellContent = renderTotalItem(totals.ascCosts['1_star_enemy_material'], '🎭', 'text-gray-400', false); break;
+                    case 'asc_nboss': cellContent = renderTotalItem(totals.ascCosts.boss_material, '/NormalBoss.png', 'text-purple-400', false); break;
+                    case 'asc_local': cellContent = renderTotalItem(totals.ascCosts.local_specialty, '/LocalSpecialties.png', 'text-gray-400', false); break;
+                    case 'asc_gem_5': cellContent = renderTotalItem(totals.ascCosts.gem_gemstone, '/Gems.png', 'text-amber-400', false); break;
+                    case 'asc_gem_4': cellContent = renderTotalItem(totals.ascCosts.gem_chunk, '/Gems.png', 'text-purple-400', false); break;
+                    case 'asc_gem_3': cellContent = renderTotalItem(totals.ascCosts.gem_fragment, '/Gems.png', 'text-blue-400', false); break;
+                    case 'asc_gem_2': cellContent = renderTotalItem(totals.ascCosts.gem_sliver, '/Gems.png', 'text-green-400', false); break;
+                    case 'asc_enh3': cellContent = renderTotalItem(totals.ascCosts['3_star_enemy_material'], '/CommonEnemy.png', 'text-blue-400', false); break;
+                    case 'asc_enh2': cellContent = renderTotalItem(totals.ascCosts['2_star_enemy_material'], '/CommonEnemy.png', 'text-green-400', false); break;
+                    case 'asc_enh1': cellContent = renderTotalItem(totals.ascCosts['1_star_enemy_material'], '/CommonEnemy.png', 'text-gray-400', false); break;
                     case 'asc_stella': cellContent = renderTotalItem(totals.ascCosts.masterless_stella_fortuna, 'MasterlessStellaFortuna', 'text-amber-400', true); break;
                     case 'asc_mora': cellContent = renderTotalItem(totals.ascCosts.mora, 'Mora', 'text-blue-400', true, 'right'); break;
                     
-                    case 'tal_4': cellContent = renderTotalItem(totals.talentCosts['4_star_talent_material'], '📚', 'text-purple-400', false); break;
-                    case 'tal_3': cellContent = renderTotalItem(totals.talentCosts['3_star_talent_material'], '📚', 'text-blue-400', false); break;
-                    case 'tal_2': cellContent = renderTotalItem(totals.talentCosts['2_star_talent_material'], '📚', 'text-green-400', false); break;
-                    case 'tal_wk': cellContent = renderTotalItem(totals.talentCosts.weekly_boss_material, '👹', 'text-amber-400', false); break;
+                    case 'tal_4': cellContent = renderTotalItem(totals.talentCosts['4_star_talent_material'], '/TalentMats.png', 'text-purple-400', false); break;
+                    case 'tal_3': cellContent = renderTotalItem(totals.talentCosts['3_star_talent_material'], '/TalentMats.png', 'text-blue-400', false); break;
+                    case 'tal_2': cellContent = renderTotalItem(totals.talentCosts['2_star_talent_material'], '/TalentMats.png', 'text-green-400', false); break;
+                    case 'tal_wk': cellContent = renderTotalItem(totals.talentCosts.weekly_boss_material, '/WeeklyBoss.png', 'text-amber-400', false); break;
                     case 'tal_crown': cellContent = renderTotalItem(totals.talentCosts.crown, 'CrownOfInsight', 'text-amber-400', true); break;
-                    case 'tal_enh3': cellContent = renderTotalItem(totals.talentCosts['3_star_enemy_material'], '🎭', 'text-blue-400', false); break;
-                    case 'tal_enh2': cellContent = renderTotalItem(totals.talentCosts['2_star_enemy_material'], '🎭', 'text-green-400', false); break;
-                    case 'tal_enh1': cellContent = renderTotalItem(totals.talentCosts['1_star_enemy_material'], '🎭', 'text-gray-400', false); break;
+                    case 'tal_enh3': cellContent = renderTotalItem(totals.talentCosts['3_star_enemy_material'], '/CommonEnemy.png', 'text-blue-400', false); break;
+                    case 'tal_enh2': cellContent = renderTotalItem(totals.talentCosts['2_star_enemy_material'], '/CommonEnemy.png', 'text-green-400', false); break;
+                    case 'tal_enh1': cellContent = renderTotalItem(totals.talentCosts['1_star_enemy_material'], '/CommonEnemy.png', 'text-gray-400', false); break;
                     case 'tal_na_mora': cellContent = renderTotalItem(totals.talentCosts.mora_na, 'Mora', 'text-blue-400', true, 'right'); break;
                     case 'tal_skill_mora': cellContent = renderTotalItem(totals.talentCosts.mora_skill, 'Mora', 'text-blue-400', true, 'right'); break;
                     case 'tal_burst_mora': cellContent = renderTotalItem(totals.talentCosts.mora_burst, 'Mora', 'text-blue-400', true, 'right'); break;
                     case 'tal_mora': cellContent = renderTotalItem(totals.talentCosts.mora, 'Mora', 'text-blue-400', true, 'right'); break;
                     
-                    case 'grand_enh3': cellContent = renderTotalItem((totals.ascCosts['3_star_enemy_material']||0) + (totals.talentCosts['3_star_enemy_material']||0), '🎭', 'text-blue-400', false); break;
-                    case 'grand_enh2': cellContent = renderTotalItem((totals.ascCosts['2_star_enemy_material']||0) + (totals.talentCosts['2_star_enemy_material']||0), '🎭', 'text-green-400', false); break;
-                    case 'grand_enh1': cellContent = renderTotalItem((totals.ascCosts['1_star_enemy_material']||0) + (totals.talentCosts['1_star_enemy_material']||0), '🎭', 'text-[#9CA3AF]', false); break;
+                    case 'grand_enh3': cellContent = renderTotalItem((totals.ascCosts['3_star_enemy_material']||0) + (totals.talentCosts['3_star_enemy_material']||0), '/CommonEnemy.png', 'text-blue-400', false); break;
+                    case 'grand_enh2': cellContent = renderTotalItem((totals.ascCosts['2_star_enemy_material']||0) + (totals.talentCosts['2_star_enemy_material']||0), '/CommonEnemy.png', 'text-green-400', false); break;
+                    case 'grand_enh1': cellContent = renderTotalItem((totals.ascCosts['1_star_enemy_material']||0) + (totals.talentCosts['1_star_enemy_material']||0), '/CommonEnemy.png', 'text-[#9CA3AF]', false); break;
                     case 'grand_mora': cellContent = renderTotalItem((totals.ascCosts.mora||0) + (totals.talentCosts.mora||0), 'Mora', 'text-blue-400', true, 'right'); break;
                     default: cellContent = null;
                   }
