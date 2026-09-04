@@ -4,6 +4,7 @@ import { ASCENSION_CAPS } from '../utils/calculator'
 import { LevelSlider, AscensionSelector, TalentRow } from './CharacterModal'
 import CustomSelect from './CustomSelect'
 import { RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg, WEAPON_TYPES } from '../utils/gameData'
+import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import { getWeaponIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
 import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
@@ -73,7 +74,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
       document.body.style.overflow = 'hidden'
       const initAssignments = {}
       selectedIds.forEach(id => {
-        initAssignments[id] = roster[id]?.equippedWeaponId || ''
+        initAssignments[id] = getTravelerAwareWeaponId(id, roster[id], trackedWeapons) || ''
       })
       setAssignments(initAssignments)
     } else {
@@ -132,7 +133,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
       let hasAssignmentChanges = false;
       const payloads = selectedIds.map(id => {
         const payload = { name: id, ...patch }
-        const oldWeapon = roster[id]?.equippedWeaponId || ''
+        const oldWeapon = getTravelerAwareWeaponId(id, roster[id], trackedWeapons) || ''
         const newWeapon = assignments[id] || ''
         if (oldWeapon !== newWeapon) {
           payload.equippedWeaponId = newWeapon ? newWeapon : null
@@ -293,7 +294,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
                       .filter(([id, wId]) => id !== c.id && wId !== '')
                       .map(([_, wId]) => wId)
 
-                    const initialAssignedWeapon = roster[c.id]?.equippedWeaponId || '';
+                    const initialAssignedWeapon = getTravelerAwareWeaponId(c.id, roster[c.id], trackedWeapons) || '';
                     const compatibleWeapons = trackedWeapons.filter((w) => {
                       const wData = weaponsData.find(wd => wd.name === w.weaponName)
                       if (!wData || wData.type !== c.data.weapon_type) return false;

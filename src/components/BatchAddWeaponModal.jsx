@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../utils/characters'
 import useStore from '../store/useStore'
@@ -473,7 +474,7 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
                                     { id: '', name: '— Unassigned (Standalone) —', icon: null, rarity: 0 },
                                     ...compatibleChars.map((c) => {
                                       const entry = roster[c.name]
-                                      const hasWeapon = entry?.equippedWeaponId
+                                      const hasWeapon = getTravelerAwareWeaponId(c.name, entry, trackedWeapons)
                                       const equippedWeaponName = hasWeapon ? trackedWeapons.find(w => w.id === hasWeapon)?.weaponName : null
                                       const charData = charactersData.find(cd => cd.name === c.name)
                                       return {

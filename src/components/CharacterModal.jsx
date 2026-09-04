@@ -9,6 +9,7 @@ import {
 import GenshinImage from './GenshinImage'
 import CustomSelect from './CustomSelect'
 import { getElementIcon, getCharacterAvatar, getWeaponTypeIcon, getWeaponIcon } from '../utils/assetHelper'
+import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import {
   clampLevel, getLevelRange, ASCENSION_CAPS
 } from '../utils/calculator'
@@ -188,7 +189,9 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
   const [burstTo, setBurstTo] = useState(rosterEntry?.targetTalents?.burst ?? 10)
 
   // ── Weapon state — local draft mirrors equippedWeaponId until Save ──────────
-  const [localWeaponId, setLocalWeaponId] = useState(rosterEntry?.equippedWeaponId ?? null)
+  const [localWeaponId, setLocalWeaponId] = useState(
+    () => getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons)
+  )
 
   // Derive display data from localWeaponId against the live trackedWeapons list
   const trackedWeapon = localWeaponId ? trackedWeapons.find((w) => w.id === localWeaponId) : null

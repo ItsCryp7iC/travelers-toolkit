@@ -6,6 +6,7 @@ import forgingData from '../data/weapon_forging.json'
 import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg, getWeaponTheme } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
+import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import CustomSelect from './CustomSelect'
 import { getWeaponIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
 import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
@@ -183,7 +184,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
     if (!selectedWeapon) return
 
     const charEntry = assignedTo ? roster[assignedTo] : null
-    const charAlreadyHasWeapon = charEntry?.equippedWeaponId
+    const charAlreadyHasWeapon = getTravelerAwareWeaponId(assignedTo, charEntry, trackedWeapons)
 
     if (assignedTo && charAlreadyHasWeapon && existingWeapon?.id !== charAlreadyHasWeapon) {
       const existingEquip = trackedWeapons.find((w) => w.id === charAlreadyHasWeapon)
@@ -503,7 +504,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                       { id: '', name: '— Unassigned (Standalone) —', icon: null, rarity: 0 },
                       ...compatibleChars.map((c) => {
                         const entry = roster[c.name]
-                        const hasWeapon = entry?.equippedWeaponId
+                        const hasWeapon = getTravelerAwareWeaponId(c.name, entry, trackedWeapons)
                         const equippedWeaponName = hasWeapon ? trackedWeapons.find(w => w.id === hasWeapon)?.weaponName : null
                         const charData = charactersData.find(cd => cd.name === c.name)
                         return {

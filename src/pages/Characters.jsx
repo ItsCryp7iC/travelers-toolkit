@@ -8,6 +8,7 @@ import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
 import useStore from '../store/useStore'
+import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import { resolveCharacterMaterials } from '../utils/dataManager'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import { getCharacterAvatar, getElementIcon, getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
@@ -82,8 +83,9 @@ export default function Characters() {
 
         // Weapon
         let eqWeapon = null
-        if (entry.equippedWeaponId) {
-          const tracked = trackedWeapons.find((w) => w.id === entry.equippedWeaponId)
+        const awareWeaponId = getTravelerAwareWeaponId(data.name, entry, trackedWeapons)
+        if (awareWeaponId) {
+          const tracked = trackedWeapons.find((w) => w.id === awareWeaponId)
           if (tracked) {
             const wData = weaponsData.find((w) => w.name === tracked.weaponName)
             eqWeapon = { tracked, data: wData }

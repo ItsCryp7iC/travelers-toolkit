@@ -7,6 +7,7 @@ import charactersData from '../utils/characters'
 import { RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
 import CustomSelect from './CustomSelect'
+import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
 export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSave }) {
   // Store
@@ -250,7 +251,7 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
                                 { id: '', name: '— Unassigned (Standalone) —', icon: null, rarity: 0 },
                                 ...compatibleChars.map((c) => {
                                   const entry = roster[c.name]
-                                  const hasWeapon = entry?.equippedWeaponId
+                                  const hasWeapon = getTravelerAwareWeaponId(c.name, entry, trackedWeapons)
                                   const equippedWeaponName = hasWeapon ? trackedWeapons.find(w => w.id === hasWeapon)?.weaponName : null
                                   return {
                                     id: c.name,

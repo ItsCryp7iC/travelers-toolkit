@@ -7,6 +7,7 @@ import GenshinImage from './GenshinImage'
 import { getCharacterAvatar, getElementIcon, getWeaponIcon, getWeaponTypeIcon, getMaterialIcon, toPascalCase } from '../utils/assetHelper'
 import { calculateProgressionCost, calculateTalentCost, formatNumber, formatItemName } from '../utils/calculator'
 import { resolveSpecificItem } from '../utils/resolver'
+import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 
 /**
  * CharacterCard (Rich Layout)
@@ -22,8 +23,9 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const inventory = useStore((s) => s.inventory)
 
-  const equippedWeapon = rosterEntry?.equippedWeaponId
-    ? trackedWeapons.find((w) => w.id === rosterEntry.equippedWeaponId)
+  const awareWeaponId = getTravelerAwareWeaponId(characterName, rosterEntry, trackedWeapons);
+  const equippedWeapon = awareWeaponId
+    ? trackedWeapons.find((w) => w.id === awareWeaponId)
     : null
   const equippedWeaponData = equippedWeapon
     ? weaponsData.find((w) => w.name === equippedWeapon.weaponName)
