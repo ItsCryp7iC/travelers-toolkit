@@ -23,7 +23,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const inventory = useStore((s) => s.inventory)
 
-  const awareWeaponId = getTravelerAwareWeaponId(characterName, rosterEntry, trackedWeapons);
+  const awareWeaponId = getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
   const equippedWeapon = awareWeaponId
     ? trackedWeapons.find((w) => w.id === awareWeaponId)
     : null

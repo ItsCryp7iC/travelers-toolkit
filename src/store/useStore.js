@@ -74,15 +74,23 @@ const useStore = create(
       })),
       clearGoogleSession: () => set({ googleAccessToken: null, tokenExpiry: null, googleUser: null }),
       
+      // ─── HOYOLAB CREDENTIALS ───────────────────────────────────────────
+      hoyolabLtuid: '',
+      hoyolabLtoken: '',
+      setHoyolabCredentials: (ltuid, ltoken) => set({ hoyolabLtuid: ltuid, hoyolabLtoken: ltoken }),
+      clearHoyolabCredentials: () => set({ hoyolabLtuid: '', hoyolabLtoken: '' }),
+
       // ─── SYNC PAYLOAD ──────────────────────────────────────────────────
       syncPayload: null,
       isSyncing: false,
       setSyncPayload: (payload) => set({ syncPayload: payload }),
       setIsSyncing: (val) => set({ isSyncing: val }),
       handleSyncNotes: async (isAuto = false) => {
-        const ltuid = localStorage.getItem('hoyolab_ltuid');
-        const ltoken = localStorage.getItem('hoyolab_ltoken');
-        if (!ltuid || !ltoken) return { error: 'no_cookie' };
+        const { hoyolabLtuid, hoyolabLtoken, clearHoyolabCredentials } = get();
+        if (!hoyolabLtuid || !hoyolabLtoken) return { error: 'no_cookie' };
+
+        const ltuid = hoyolabLtuid.trim();
+        const ltoken = hoyolabLtoken.trim();
 
         set({ isSyncing: true });
         try {
@@ -92,12 +100,13 @@ const useStore = create(
             body: JSON.stringify({ ltuid, ltoken })
           });
           if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            const errMsg = errData?.detail || 'Authentication failed.';
             if (res.status === 401) {
-              localStorage.removeItem('hoyolab_ltuid');
-              localStorage.removeItem('hoyolab_ltoken');
-              throw new Error('auth_failed');
+              clearHoyolabCredentials();
+              return { error: 'auth_failed', message: errMsg };
             }
-            throw new Error(await res.text());
+            throw new Error(errMsg);
           }
           const data = await res.json();
           const now = Date.now();
@@ -785,6 +794,8 @@ const useStore = create(
         googleAccessToken: state.googleAccessToken,
         tokenExpiry: state.tokenExpiry,
         googleUser: state.googleUser,
+        hoyolabLtuid: state.hoyolabLtuid,
+        hoyolabLtoken: state.hoyolabLtoken,
       }),
     }
   )

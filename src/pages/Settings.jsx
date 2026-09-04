@@ -33,13 +33,20 @@ export default function Settings() {
   const [lastSyncedTime, setLastSyncedTime] = useState(null);
   const [cloudBackups, setCloudBackups] = useState([]);
 
-  // HoYoLAB State
-  const [hoyolabLtuid, setHoyolabLtuid] = useState(localStorage.getItem('hoyolab_ltuid') || '');
-  const [hoyolabLtoken, setHoyolabLtoken] = useState(localStorage.getItem('hoyolab_ltoken') || '');
+  const globalHoyolabLtuid = useStore((s) => s.hoyolabLtuid);
+  const globalHoyolabLtoken = useStore((s) => s.hoyolabLtoken);
+  const setHoyolabCredentials = useStore((s) => s.setHoyolabCredentials);
+
+  const [hoyolabLtuid, setHoyolabLtuid] = useState(globalHoyolabLtuid);
+  const [hoyolabLtoken, setHoyolabLtoken] = useState(globalHoyolabLtoken);
+
+  React.useEffect(() => {
+    setHoyolabLtuid(globalHoyolabLtuid);
+    setHoyolabLtoken(globalHoyolabLtoken);
+  }, [globalHoyolabLtuid, globalHoyolabLtoken]);
 
   const handleSaveHoyolab = () => {
-    localStorage.setItem('hoyolab_ltuid', hoyolabLtuid);
-    localStorage.setItem('hoyolab_ltoken', hoyolabLtoken);
+    setHoyolabCredentials(hoyolabLtuid, hoyolabLtoken);
     alert('HoYoLAB credentials saved locally!');
   };
 

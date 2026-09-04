@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
+import useStore from '../store/useStore'
 
 export default function CookiePromptModal({ onClose, onSaveAndSync }) {
-  const [ltuid, setLtuid] = useState(localStorage.getItem('hoyolab_ltuid') || '')
-  const [ltoken, setLtoken] = useState(localStorage.getItem('hoyolab_ltoken') || '')
+  const globalLtuid = useStore((s) => s.hoyolabLtuid)
+  const globalLtoken = useStore((s) => s.hoyolabLtoken)
+  const setHoyolabCredentials = useStore((s) => s.setHoyolabCredentials)
+
+  const [ltuid, setLtuid] = useState(globalLtuid)
+  const [ltoken, setLtoken] = useState(globalLtoken)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -11,9 +16,8 @@ export default function CookiePromptModal({ onClose, onSaveAndSync }) {
       return
     }
     
-    // Save to local storage
-    localStorage.setItem('hoyolab_ltuid', ltuid)
-    localStorage.setItem('hoyolab_ltoken', ltoken)
+    // Save to global store
+    setHoyolabCredentials(ltuid, ltoken)
     
     // Trigger sync
     onSaveAndSync(ltuid, ltoken)

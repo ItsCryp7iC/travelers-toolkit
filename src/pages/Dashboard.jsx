@@ -47,7 +47,9 @@ function StatCard({ icon, label, value, accent }) {
 
 export default function Dashboard() {
  const navigate = useNavigate();
- const hasCookie = Boolean(localStorage.getItem('hoyolab_ltuid') && localStorage.getItem('hoyolab_ltoken'));
+ const hoyolabLtuid = useStore((s) => s.hoyolabLtuid);
+ const hoyolabLtoken = useStore((s) => s.hoyolabLtoken);
+ const hasCookie = Boolean(hoyolabLtuid && hoyolabLtoken);
  const roster = useStore((s) => s.roster)
  const batchAddCharacters = useStore((s) => s.batchAddCharacters)
  const trackedWeapons = useStore((s) => s.trackedWeapons) || []
@@ -68,7 +70,7 @@ export default function Dashboard() {
          setIsCookieModalOpen(true);
        }
        if (res.error === 'auth_failed' && !isCookieModalOpen && !isAuto) {
-         alert("Authentication failed. Please check your cookies.");
+         alert(res.message || "Authentication failed. Please check your cookies.");
        }
      } else {
        if (!isCookieModalOpen && !isAuto) {
@@ -467,7 +469,7 @@ export default function Dashboard() {
  {isCookieModalOpen && (
  <CookiePromptModal
  onClose={() => setIsCookieModalOpen(false)}
- onSaveAndSync={performSync}
+ onSaveAndSync={() => handleSyncNotes(false)}
  />
  )}
  </div>
