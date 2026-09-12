@@ -218,10 +218,21 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           {/* Characters Tab */}
           {activeTab === 'characters' && (
             <div className="flex flex-col">
-              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
-                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)] flex items-center justify-between gap-3">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1">
                   {characters.filter(c => c.checked).length} selected / {characters.length} total characters
                 </div>
+                {characters.length > 0 && (
+                  <button
+                    onClick={() => {
+                      const allSelected = characters.every(c => c.checked);
+                      setCharacters(characters.map(c => ({ ...c, checked: !allSelected })));
+                    }}
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0"
+                  >
+                    {characters.every(c => c.checked) ? 'Deselect All' : 'Select All'}
+                  </button>
+                )}
               </div>
               <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-5 pt-4">
               {characters.map((char, index) => (
@@ -274,17 +285,42 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           {/* Weapons Tab */}
           {activeTab === 'weapons' && (
             <div className="flex flex-col">
-              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
-                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)] flex items-center justify-between gap-3">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1">
                   {weapons.filter(w => w.checked).length} selected / {weapons.length} total weapons
                 </div>
+                {weapons.length > 0 && (
+                  <button
+                    onClick={() => {
+                      const allSelected = weapons.every(w => w.checked);
+                      setWeapons(weapons.map(w => ({ ...w, checked: !allSelected })));
+                    }}
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0"
+                  >
+                    {weapons.every(w => w.checked) ? 'Deselect All' : 'Select All'}
+                  </button>
+                )}
               </div>
               <div className="flex flex-col gap-6 p-5 pt-4">
               {/* Equipped Weapons */}
               <div>
-                <h3 className="text-sm font-bold text-[var(--gold)] mb-3 border-b border-[var(--border)] pb-1 flex items-center gap-2">
-                  Equipped Weapons
-                </h3>
+                <div className="flex justify-between items-center mb-3 border-b border-[var(--border)] pb-1">
+                  <h3 className="text-sm font-bold text-[var(--gold)] flex items-center gap-2">
+                    Equipped Weapons
+                  </h3>
+                  {weapons.filter(w => w.location).length > 0 && (
+                    <button
+                      onClick={() => {
+                        const equipped = weapons.filter(w => w.location);
+                        const allSelected = equipped.every(w => w.checked);
+                        setWeapons(weapons.map(w => w.location ? { ...w, checked: !allSelected } : w));
+                      }}
+                      className="text-xs font-bold text-[var(--color-text-muted)] hover:text-white transition-colors px-2 py-0.5 rounded border border-transparent hover:border-[var(--border)] bg-[var(--surface)]"
+                    >
+                      {weapons.filter(w => w.location).every(w => w.checked) ? 'Deselect All' : 'Select All'}
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
                   {weapons.filter(w => w.location).map((w, index) => renderWeaponCard(w, index, weapons.indexOf(w)))}
                   {weapons.filter(w => w.location).length === 0 && <p className="text-xs text-[var(--color-text-muted)] italic px-4">None found.</p>}
@@ -293,9 +329,23 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
 
               {/* Unequipped Weapons */}
               <div>
-                <h3 className="text-sm font-bold text-[var(--color-text-muted)] mb-3 border-b border-[var(--border)] pb-1 flex items-center gap-2">
-                  Unequipped Weapons
-                </h3>
+                <div className="flex justify-between items-center mb-3 border-b border-[var(--border)] pb-1">
+                  <h3 className="text-sm font-bold text-[var(--color-text-muted)] flex items-center gap-2">
+                    Unequipped Weapons
+                  </h3>
+                  {weapons.filter(w => !w.location).length > 0 && (
+                    <button
+                      onClick={() => {
+                        const unequipped = weapons.filter(w => !w.location);
+                        const allSelected = unequipped.every(w => w.checked);
+                        setWeapons(weapons.map(w => !w.location ? { ...w, checked: !allSelected } : w));
+                      }}
+                      className="text-xs font-bold text-[var(--color-text-muted)] hover:text-white transition-colors px-2 py-0.5 rounded border border-transparent hover:border-[var(--border)] bg-[var(--surface)]"
+                    >
+                      {weapons.filter(w => !w.location).every(w => w.checked) ? 'Deselect All' : 'Select All'}
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
                   {weapons.filter(w => !w.location).map((w, index) => renderWeaponCard(w, index, weapons.indexOf(w)))}
                   {weapons.filter(w => !w.location).length === 0 && <p className="text-xs text-[var(--color-text-muted)] italic px-4">None found.</p>}
@@ -352,8 +402,21 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
               )}
 
               {/* Materials List */}
-              <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20">
-                {activeMaterials.filter(m => m.checked).length} selected / {activeMaterials.length} total materials
+              <div className="flex items-center justify-between gap-3 mt-2">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1">
+                  {activeMaterials.filter(m => m.checked).length} selected / {activeMaterials.length} total materials
+                </div>
+                {activeMaterials.length > 0 && (
+                  <button
+                    onClick={() => {
+                      const allSelected = activeMaterials.every(m => m.checked);
+                      setMaterials(materials.map(m => activeMaterials.includes(m) ? { ...m, checked: !allSelected } : m));
+                    }}
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0"
+                  >
+                    {activeMaterials.every(m => m.checked) ? 'Deselect All' : 'Select All'}
+                  </button>
+                )}
               </div>
               </div>
               <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-5 pt-4">

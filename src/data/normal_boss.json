@@ -16,28 +16,20 @@
     "sortOrder": 2.002
   },
   {
-    "id": "HoarfrostCore",
-    "name": "Hoarfrost Core",
-    "type": "normal_boss",
-    "boss_name": "Cryo Regisvine",
-    "region": "Mondstadt",
-    "sortOrder": 2.003
-  },
-  {
-    "id": "CrystallineBloom",
-    "name": "Crystalline Bloom",
-    "type": "normal_boss",
-    "boss_name": "Cryo Hypostasis",
-    "region": "Mondstadt",
-    "sortOrder": 2.004
-  },
-  {
     "id": "BasaltPillar",
     "name": "Basalt Pillar",
     "type": "normal_boss",
     "boss_name": "Geo Hypostasis",
     "region": "Liyue",
-    "sortOrder": 2.005
+    "sortOrder": 2.003
+  },
+  {
+    "id": "HoarfrostCore",
+    "name": "Hoarfrost Core",
+    "type": "normal_boss",
+    "boss_name": "Cryo Regisvine",
+    "region": "Mondstadt",
+    "sortOrder": 2.004
   },
   {
     "id": "EverflameSeed",
@@ -45,7 +37,7 @@
     "type": "normal_boss",
     "boss_name": "Pyro Regisvine",
     "region": "Liyue",
-    "sortOrder": 2.006
+    "sortOrder": 2.005
   },
   {
     "id": "CleansingHeart",
@@ -53,7 +45,7 @@
     "type": "normal_boss",
     "boss_name": "Oceanid",
     "region": "Liyue",
-    "sortOrder": 2.007
+    "sortOrder": 2.006
   },
   {
     "id": "JuvenileJade",
@@ -61,6 +53,14 @@
     "type": "normal_boss",
     "boss_name": "Primo Geovishap",
     "region": "Liyue",
+    "sortOrder": 2.007
+  },
+  {
+    "id": "CrystallineBloom",
+    "name": "Crystalline Bloom",
+    "type": "normal_boss",
+    "boss_name": "Cryo Hypostasis",
+    "region": "Mondstadt",
     "sortOrder": 2.008
   },
   {
