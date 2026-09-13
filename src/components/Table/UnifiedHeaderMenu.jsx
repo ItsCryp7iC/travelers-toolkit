@@ -7,7 +7,7 @@ export const universalFilterFn = (row, columnId, filterValue) => {
   if (!filterValue) return true;
   
   const val = row.getValue(columnId);
-  const { text, min, max, selection } = filterValue;
+  const { text, min, max, selection, equippedStatus } = filterValue;
   
   const isArr = Array.isArray(val);
 
@@ -31,6 +31,14 @@ export const universalFilterFn = (row, columnId, filterValue) => {
       if (!val.some(v => selection.includes(v))) return false;
     } else {
       if (!selection.includes(val)) return false;
+    }
+  }
+  
+  if (equippedStatus) {
+    if (equippedStatus === 'equipped') {
+      if (!val || val === 'None') return false;
+    } else if (equippedStatus === 'unequipped') {
+      if (val && val !== 'None') return false;
     }
   }
   
@@ -78,6 +86,10 @@ export function UnifiedHeaderMenu({ column, table, closeMenu, anchorEl, menuRef 
       }
     });
     const arr = Array.from(values);
+    if (column.id === 'equipped_char') {
+      const idx = arr.indexOf('None');
+      if (idx !== -1) arr.splice(idx, 1);
+    }
     if (arr.length > 0 && typeof arr[0] === 'number') {
        return arr.sort((a,b) => a - b);
     }
@@ -86,7 +98,7 @@ export function UnifiedHeaderMenu({ column, table, closeMenu, anchorEl, menuRef 
 
   const updateFilter = (updates) => {
     const newState = { ...filterValue, ...updates };
-    if (!newState.text && !newState.min && !newState.max && !newState.selection) {
+    if (!newState.text && !newState.min && !newState.max && !newState.selection && !newState.equippedStatus) {
       column.setFilterValue(undefined);
     } else {
       column.setFilterValue(newState);
@@ -112,7 +124,7 @@ export function UnifiedHeaderMenu({ column, table, closeMenu, anchorEl, menuRef 
     return <GenshinImage src={getMaterialIcon(val)} alt={val} className="w-5 h-5 object-contain shrink-0" />;
   };
 
-  const hasActiveFilter = filterValue.text || (filterValue.min !== undefined && filterValue.min !== '') || (filterValue.max !== undefined && filterValue.max !== '') || (filterValue.selection && filterValue.selection.length > 0);
+  const hasActiveFilter = filterValue.text || (filterValue.min !== undefined && filterValue.min !== '') || (filterValue.max !== undefined && filterValue.max !== '') || (filterValue.selection && filterValue.selection.length > 0) || filterValue.equippedStatus;
 
   return createPortal(
     <div ref={menuRef} className="fixed bg-[var(--elevated)] border border-[var(--border)] rounded-xl p-3 shadow-2xl z-[9999] min-w-[180px] animate-fade-in flex flex-col gap-2 cursor-default" style={style} onClick={e => e.stopPropagation()}>
@@ -172,6 +184,30 @@ export function UnifiedHeaderMenu({ column, table, closeMenu, anchorEl, menuRef 
           placeholder="Search..."
           className="w-full bg-[var(--surface)] border border-[var(--border)] rounded px-2 py-1.5 text-xs text-[var(--text)] outline-none focus:border-[var(--gold)]"
         />
+      )}
+
+      {column.id === 'equipped_char' && (
+        <div className="flex flex-col gap-1 mt-1">
+          <label className="flex items-center gap-2 px-2 py-1.5 hover:bg-[var(--surface)] rounded cursor-pointer transition-colors">
+            <input
+              type="checkbox"
+              checked={filterValue.equippedStatus === 'equipped'}
+              onChange={() => updateFilter({ equippedStatus: filterValue.equippedStatus === 'equipped' ? undefined : 'equipped' })}
+              className="rounded border-gray-600 bg-gray-800/50 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
+            />
+            <span className="text-xs text-[var(--text)] font-semibold">Equipped</span>
+          </label>
+          <label className="flex items-center gap-2 px-2 py-1.5 hover:bg-[var(--surface)] rounded cursor-pointer transition-colors">
+            <input
+              type="checkbox"
+              checked={filterValue.equippedStatus === 'unequipped'}
+              onChange={() => updateFilter({ equippedStatus: filterValue.equippedStatus === 'unequipped' ? undefined : 'unequipped' })}
+              className="rounded border-gray-600 bg-gray-800/50 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
+            />
+            <span className="text-xs text-[var(--text)] font-semibold">Unequipped</span>
+          </label>
+          {uniqueValues.length > 0 && <hr className="border-[var(--border)] my-1" />}
+        </div>
       )}
 
       {filterType && (
