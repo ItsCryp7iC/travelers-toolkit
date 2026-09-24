@@ -768,6 +768,30 @@
     "release_order": 4.129
   },
   {
+    "id": "NewBough",
+    "name": "New Bough",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "CellaredSpiritualNectar",
+      "enhancement_material_family_id": "WildwoodLeshy",
+      "enemy_material_family_id": "AberrantChimericMonsters"
+    },
+    "release_order": 4.13
+  },
+  {
+    "id": "SilverLight",
+    "name": "Silver Light",
+    "rarity": "★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "Aerosiderite",
+      "enhancement_material_family_id": "Vishap",
+      "enemy_material_family_id": "FatuiSkirmisher"
+    },
+    "release_order": 4.131
+  },
+  {
     "id": "FavoniusGreatsword",
     "name": "Favonius Greatsword",
     "rarity": "★★★★",
@@ -1716,6 +1740,18 @@
     "release_order": 4.427
   },
   {
+    "id": "WintersHeavyHeart",
+    "name": "Winter's Heavy Heart",
+    "rarity": "★★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "TheFrostEmperor",
+      "enhancement_material_family_id": "WildwoodLeshy",
+      "enemy_material_family_id": "SnowlandFae"
+    },
+    "release_order": 4.428
+  },
+  {
     "id": "FavoniusWarbow",
     "name": "Favonius Warbow",
     "rarity": "★★★★",
@@ -2076,6 +2112,18 @@
     "release_order": 4.53
   },
   {
+    "id": "BreezeborneRefrain",
+    "name": "Breezeborne Refrain",
+    "rarity": "★★★★",
+    "type": "Bow",
+    "materials": {
+      "ascension_material_family_id": "TheFrostEmperor",
+      "enhancement_material_family_id": "VolkodlakBrute",
+      "enemy_material_family_id": "AberrantChimericMonsters"
+    },
+    "release_order": 4.531
+  },
+  {
     "id": "AquilaFavonia",
     "name": "Aquila Favonia",
     "rarity": "★★★★★",
@@ -2278,6 +2326,18 @@
       "enemy_material_family_id": "AberrantChimericMonsters"
     },
     "release_order": 5.117
+  },
+  {
+    "id": "BeyondTheChrysalis",
+    "name": "Beyond the Chrysalis",
+    "rarity": "★★★★★",
+    "type": "Sword",
+    "materials": {
+      "ascension_material_family_id": "PaleStarArmy",
+      "enhancement_material_family_id": "WildwoodLeshy",
+      "enemy_material_family_id": "AberrantChimericMonsters"
+    },
+    "release_order": 5.118
   },
   {
     "id": "SkywardPride",
@@ -2794,6 +2854,18 @@
       "enemy_material_family_id": "Landcruisers"
     },
     "release_order": 5.419
+  },
+  {
+    "id": "HymnOfTheMaelstrom",
+    "name": "Hymn of the Maelstrom",
+    "rarity": "★★★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "CellaredSpiritualNectar",
+      "enhancement_material_family_id": "VolkodlakBrute",
+      "enemy_material_family_id": "SnowlandFae"
+    },
+    "release_order": 5.42
   },
   {
     "id": "SkywardHarp",

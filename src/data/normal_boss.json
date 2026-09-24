@@ -208,20 +208,20 @@
     "sortOrder": 2.026
   },
   {
-    "id": "FontemerUnihorn",
-    "name": "Fontemer Unihorn",
-    "type": "normal_boss",
-    "boss_name": "Millennial Pearl Seahorse",
-    "region": "Fontaine",
-    "sortOrder": 2.028
-  },
-  {
     "id": "TourbillonDevice",
     "name": "Tourbillon Device",
     "type": "normal_boss",
     "boss_name": "Prototype Cal. Breguet",
     "region": "Fontaine",
     "sortOrder": 2.027
+  },
+  {
+    "id": "FontemerUnihorn",
+    "name": "Fontemer Unihorn",
+    "type": "normal_boss",
+    "boss_name": "Millennial Pearl Seahorse",
+    "region": "Fontaine",
+    "sortOrder": 2.028
   },
   {
     "id": "WaterThatFailedToTranscend",
@@ -374,5 +374,13 @@
     "boss_name": "Chimeric Winged Lion",
     "region": "Snezhnaya",
     "sortOrder": 2.047
+  },
+  {
+    "id": "VagabondsCrackedArmor",
+    "name": "Vagabond's Cracked Armor",
+    "type": "normal_boss",
+    "boss_name": "Guardian Blade of Drifting Snow",
+    "region": "Snezhnaya",
+    "sortOrder": 2.048
   }
 ]
