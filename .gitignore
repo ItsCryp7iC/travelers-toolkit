@@ -9,3 +9,6 @@ npm-debug.log*
 .idea/
 .DS_Store
 update_db.cjs
+
+# Local backend environment secrets
+backend/.env

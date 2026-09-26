@@ -75,10 +75,50 @@ const useStore = create(
       clearGoogleSession: () => set({ googleAccessToken: null, tokenExpiry: null, googleUser: null }),
       
       // ─── HOYOLAB CREDENTIALS ───────────────────────────────────────────
-      hoyolabLtuid: '',
-      hoyolabLtoken: '',
-      setHoyolabCredentials: (ltuid, ltoken) => set({ hoyolabLtuid: ltuid, hoyolabLtoken: ltoken }),
-      clearHoyolabCredentials: () => set({ hoyolabLtuid: '', hoyolabLtoken: '' }),
+      hoyolabConnected: false,
+      setHoyolabConnected: (val) => set({ hoyolabConnected: val }),
+      checkHoyolabSession: async () => {
+        try {
+          const res = await fetch('/api/hoyolab/session');
+          if (res.ok) {
+            const data = await res.json();
+            set({ hoyolabConnected: data.connected });
+            return data.connected;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        set({ hoyolabConnected: false });
+        return false;
+      },
+      connectHoyolabSession: async (ltuid, ltoken) => {
+        try {
+          const res = await fetch('/api/hoyolab/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ltuid, ltoken })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            set({ hoyolabConnected: data.connected });
+            return { success: true };
+          } else {
+            const errData = await res.json().catch(() => ({}));
+            return { error: 'auth_failed', message: errData.detail || 'Authentication failed.' };
+          }
+        } catch (err) {
+          console.error(err);
+          return { error: err.message };
+        }
+      },
+      disconnectHoyolabSession: async () => {
+        try {
+          await fetch('/api/hoyolab/session', { method: 'DELETE' });
+        } catch (err) {
+          console.error(err);
+        }
+        set({ hoyolabConnected: false });
+      },
 
       // ─── SYNC PAYLOAD ──────────────────────────────────────────────────
       syncPayload: null,
@@ -86,24 +126,21 @@ const useStore = create(
       setSyncPayload: (payload) => set({ syncPayload: payload }),
       setIsSyncing: (val) => set({ isSyncing: val }),
       handleSyncNotes: async (isAuto = false) => {
-        const { hoyolabLtuid, hoyolabLtoken, clearHoyolabCredentials } = get();
-        if (!hoyolabLtuid || !hoyolabLtoken) return { error: 'no_cookie' };
-
-        const ltuid = hoyolabLtuid.trim();
-        const ltoken = hoyolabLtoken.trim();
+        const { hoyolabConnected, setHoyolabConnected } = get();
+        if (!hoyolabConnected) return { error: 'no_cookie' };
 
         set({ isSyncing: true });
         try {
           const res = await fetch('/api/notes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ltuid, ltoken })
+            body: JSON.stringify({})
           });
           if (!res.ok) {
             const errData = await res.json().catch(() => ({}));
             const errMsg = errData?.detail || 'Authentication failed.';
             if (res.status === 401) {
-              clearHoyolabCredentials();
+              setHoyolabConnected(false);
               return { error: 'auth_failed', message: errMsg };
             }
             throw new Error(errMsg);
@@ -226,6 +263,7 @@ const useStore = create(
           googleAccessToken: null,
           tokenExpiry: null,
           googleUser: null,
+          hoyolabConnected: false,
         })
       },
 
@@ -725,7 +763,7 @@ const useStore = create(
     }),
     {
       name: 'travelers-toolkit-store',
-      version: 4, // bump if you need another migration
+      version: 5, // bumped to remove auth/session persistence
       migrate: (persistedState, fromVersion) => {
         // v1 → v2: convert old string `equippedWeapon` fields into `trackedWeapons` entries
         if (fromVersion < 2) {
@@ -779,6 +817,15 @@ const useStore = create(
             }))
           }
         }
+        // v4 → v5: remove authentication/session properties from persisted state
+        if (fromVersion < 5) {
+          persistedState = { ...persistedState }
+          delete persistedState.googleAccessToken
+          delete persistedState.tokenExpiry
+          delete persistedState.googleUser
+          delete persistedState.hoyolabLtuid
+          delete persistedState.hoyolabLtoken
+        }
         return persistedState
       },
       partialize: (state) => ({
@@ -791,11 +838,6 @@ const useStore = create(
         serverRegion: state.serverRegion,
         showDbBuilder: state.showDbBuilder,
         autoBackupEnabled: state.autoBackupEnabled,
-        googleAccessToken: state.googleAccessToken,
-        tokenExpiry: state.tokenExpiry,
-        googleUser: state.googleUser,
-        hoyolabLtuid: state.hoyolabLtuid,
-        hoyolabLtoken: state.hoyolabLtoken,
       }),
     }
   )

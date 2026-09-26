@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import Dashboard from './pages/Dashboard'
@@ -13,6 +13,21 @@ import useStore from './store/useStore'
 
 export default function App() {
   const showDbBuilder = useStore((s) => s.showDbBuilder)
+  const checkHoyolabSession = useStore((s) => s.checkHoyolabSession)
+  const handleSyncNotes = useStore((s) => s.handleSyncNotes)
+  const isInitializing = useRef(true)
+
+  useEffect(() => {
+    if (isInitializing.current) {
+      isInitializing.current = false;
+      checkHoyolabSession().then((isConnected) => {
+        if (isConnected) {
+          handleSyncNotes(true);
+        }
+      });
+    }
+  }, [checkHoyolabSession, handleSyncNotes]);
+
   return (
     <BrowserRouter>
       <Routes>

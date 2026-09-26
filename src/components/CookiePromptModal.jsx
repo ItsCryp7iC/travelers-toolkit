@@ -2,25 +2,31 @@ import React, { useState } from 'react'
 import useStore from '../store/useStore'
 
 export default function CookiePromptModal({ onClose, onSaveAndSync }) {
-  const globalLtuid = useStore((s) => s.hoyolabLtuid)
-  const globalLtoken = useStore((s) => s.hoyolabLtoken)
-  const setHoyolabCredentials = useStore((s) => s.setHoyolabCredentials)
+  const connectHoyolabSession = useStore((s) => s.connectHoyolabSession)
 
-  const [ltuid, setLtuid] = useState(globalLtuid)
-  const [ltoken, setLtoken] = useState(globalLtoken)
+  const [ltuid, setLtuid] = useState('')
+  const [ltoken, setLtoken] = useState('')
+  const [isConnecting, setIsConnecting] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!ltuid || !ltoken) {
       alert("Please provide both ltuid and ltoken.")
       return
     }
     
-    // Save to global store
-    setHoyolabCredentials(ltuid, ltoken)
+    setIsConnecting(true)
+    const res = await connectHoyolabSession(ltuid, ltoken)
+    setIsConnecting(false)
     
-    // Trigger sync
-    onSaveAndSync(ltuid, ltoken)
+    if (res.success) {
+      setLtuid('')
+      setLtoken('')
+      // Trigger sync
+      onSaveAndSync()
+    } else {
+      alert(`Connection failed: ${res.message || res.error}`)
+    }
   }
 
   return (
@@ -40,7 +46,7 @@ export default function CookiePromptModal({ onClose, onSaveAndSync }) {
         </div>
 
         <p className="text-sm text-[var(--color-text-muted)] mb-6">
-          Please provide your HoYoLAB cookies to sync live data. These are stored locally in your browser.
+          Please provide your HoYoLAB cookies to sync live data. These are securely managed by the server.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -77,8 +83,9 @@ export default function CookiePromptModal({ onClose, onSaveAndSync }) {
             <button 
               type="submit" 
               className="genshin-btn px-6 py-2"
+              disabled={isConnecting}
             >
-              Save & Sync
+              {isConnecting ? 'Connecting...' : 'Connect & Sync'}
             </button>
           </div>
         </form>

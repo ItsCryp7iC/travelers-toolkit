@@ -47,9 +47,9 @@ function StatCard({ icon, label, value, accent }) {
 
 export default function Dashboard() {
  const navigate = useNavigate();
- const hoyolabLtuid = useStore((s) => s.hoyolabLtuid);
- const hoyolabLtoken = useStore((s) => s.hoyolabLtoken);
- const hasCookie = Boolean(hoyolabLtuid && hoyolabLtoken);
+ const hoyolabConnected = useStore((s) => s.hoyolabConnected);
+
+ const hasCookie = hoyolabConnected;
  const roster = useStore((s) => s.roster)
  const batchAddCharacters = useStore((s) => s.batchAddCharacters)
  const trackedWeapons = useStore((s) => s.trackedWeapons) || []

@@ -9,6 +9,7 @@ click==8.5.0
 fastapi==0.141.1
 frozenlist==1.8.0
 genshin==1.7.29
+cryptography==50.0.1
 h11==0.16.0
 idna==3.19
 multidict==6.7.1

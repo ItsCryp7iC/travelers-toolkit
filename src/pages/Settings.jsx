@@ -33,21 +33,34 @@ export default function Settings() {
   const [lastSyncedTime, setLastSyncedTime] = useState(null);
   const [cloudBackups, setCloudBackups] = useState([]);
 
-  const globalHoyolabLtuid = useStore((s) => s.hoyolabLtuid);
-  const globalHoyolabLtoken = useStore((s) => s.hoyolabLtoken);
-  const setHoyolabCredentials = useStore((s) => s.setHoyolabCredentials);
+  const hoyolabConnected = useStore((s) => s.hoyolabConnected);
+  const connectHoyolabSession = useStore((s) => s.connectHoyolabSession);
+  const disconnectHoyolabSession = useStore((s) => s.disconnectHoyolabSession);
 
-  const [hoyolabLtuid, setHoyolabLtuid] = useState(globalHoyolabLtuid);
-  const [hoyolabLtoken, setHoyolabLtoken] = useState(globalHoyolabLtoken);
+  const [hoyolabLtuid, setHoyolabLtuid] = useState('');
+  const [hoyolabLtoken, setHoyolabLtoken] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
 
-  React.useEffect(() => {
-    setHoyolabLtuid(globalHoyolabLtuid);
-    setHoyolabLtoken(globalHoyolabLtoken);
-  }, [globalHoyolabLtuid, globalHoyolabLtoken]);
+  const handleConnectHoyolab = async () => {
+    if (!hoyolabLtuid || !hoyolabLtoken) {
+      alert('Please enter both ltuid and ltoken.');
+      return;
+    }
+    setIsConnecting(true);
+    const res = await connectHoyolabSession(hoyolabLtuid, hoyolabLtoken);
+    setIsConnecting(false);
+    if (res.success) {
+      setHoyolabLtuid('');
+      setHoyolabLtoken('');
+      alert('HoYoLAB connected successfully!');
+    } else {
+      alert(`Connection failed: ${res.message || res.error}`);
+    }
+  };
 
-  const handleSaveHoyolab = () => {
-    setHoyolabCredentials(hoyolabLtuid, hoyolabLtoken);
-    alert('HoYoLAB credentials saved locally!');
+  const handleDisconnectHoyolab = async () => {
+    await disconnectHoyolabSession();
+    alert('HoYoLAB disconnected.');
   };
 
   const loginForSync = useGoogleLogin({
@@ -215,10 +228,16 @@ export default function Settings() {
     setPendingImportData(null);
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (window.confirm('Are you sure you want to delete all data? This action cannot be undone.')) {
-      resetStore();
-      alert('Data reset successfully.');
+      try {
+        await disconnectHoyolabSession();
+      } catch (error) {
+        console.error("Failed to disconnect from HoYoLAB during reset", error);
+      } finally {
+        resetStore();
+        alert('Data reset successfully.');
+      }
     }
   };
 
@@ -425,37 +444,57 @@ export default function Settings() {
         <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
           HoYoLAB API Configuration
         </h2>
-        <p className="text-sm text-[var(--color-text-muted)]">
-          Provide your HoYoLAB cookies to enable live sync for Resin and Realm Currency. Your credentials are saved locally in your browser.
-        </p>
-        <div className="flex flex-col gap-3 mt-2">
+        {hoyolabConnected ? (
           <div>
-            <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltuid_v2 (or ltuid)</label>
-            <input 
-              type="password" 
-              className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
-              value={hoyolabLtuid}
-              onChange={(e) => setHoyolabLtuid(e.target.value)}
-              placeholder="Enter ltuid"
-            />
+            <p className="text-sm font-semibold text-green-500 mb-2">Connected</p>
+            <p className="text-sm text-[var(--color-text-muted)] mb-4">
+              Live Resin & Realm Currency sync enabled
+            </p>
+            <button 
+              className="genshin-btn w-full" 
+              onClick={handleDisconnectHoyolab}
+            >
+              Disconnect
+            </button>
           </div>
-          <div>
-            <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltoken_v2 (or ltoken)</label>
-            <input 
-              type="password" 
-              className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
-              value={hoyolabLtoken}
-              onChange={(e) => setHoyolabLtoken(e.target.value)}
-              placeholder="Enter ltoken"
-            />
-          </div>
-          <button 
-            className="genshin-btn w-full mt-2" 
-            onClick={handleSaveHoyolab}
-          >
-            Save Credentials
-          </button>
-        </div>
+        ) : (
+          <>
+            <p className="text-sm text-[var(--color-text-muted)]">
+              Provide your HoYoLAB cookies to enable live sync for Resin and Realm Currency. Your credentials will be securely managed by the server.
+            </p>
+            <div className="flex flex-col gap-3 mt-2">
+              <div>
+                <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltuid_v2 (or ltuid)</label>
+                <input 
+                  type="password" 
+                  className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+                  value={hoyolabLtuid}
+                  onChange={(e) => setHoyolabLtuid(e.target.value)}
+                  placeholder="Enter ltuid"
+                  disabled={isConnecting}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltoken_v2 (or ltoken)</label>
+                <input 
+                  type="password" 
+                  className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+                  value={hoyolabLtoken}
+                  onChange={(e) => setHoyolabLtoken(e.target.value)}
+                  placeholder="Enter ltoken"
+                  disabled={isConnecting}
+                />
+              </div>
+              <button 
+                className="genshin-btn w-full mt-2" 
+                onClick={handleConnectHoyolab}
+                disabled={isConnecting}
+              >
+                {isConnecting ? 'Connecting...' : 'Connect'}
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {pendingImportData && (

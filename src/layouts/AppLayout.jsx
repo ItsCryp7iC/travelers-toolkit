@@ -57,9 +57,8 @@ export default function AppLayout() {
   const handleSyncNotes = useStore((s) => s.handleSyncNotes)
   const syncPayload = useStore((s) => s.syncPayload)
   const trackedWeapons = useStore((s) => s.trackedWeapons) || []
-  const hoyolabLtuid = useStore((s) => s.hoyolabLtuid);
-  const hoyolabLtoken = useStore((s) => s.hoyolabLtoken);
-  const hasCookie = Boolean(hoyolabLtuid && hoyolabLtoken);
+  const hoyolabConnected = useStore((s) => s.hoyolabConnected);
+  const hasCookie = hoyolabConnected;
 
   useEffect(() => {
     handleSyncNotes(true)
