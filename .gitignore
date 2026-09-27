@@ -12,3 +12,29 @@ update_db.cjs
 
 # Local backend environment secrets
 backend/.env
+
+# Python cache / compiled bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+ENV/
+
+# Temp / Bak files
+*.orig
+*.bak
+*.rej
+*~
+*.swp
+*.swo
+
+# OS / Editor
+Thumbs.db
+Desktop.ini
+
+# Code Coverage
+coverage/
