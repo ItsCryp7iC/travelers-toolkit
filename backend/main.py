@@ -1,16 +1,17 @@
+from dotenv import load_dotenv
+load_dotenv()
 from fastapi import FastAPI, HTTPException, Response, Request, Cookie
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import genshin
 import os
-from dotenv import load_dotenv
 import traceback
 import json
 from cryptography.fernet import Fernet
 from cryptography.fernet import InvalidToken
 from pydantic import BaseModel
+from google_api import router as google_router, GoogleAuthError
 
-load_dotenv()  # Load environment variables from .env file
 
 HOYOLAB_SESSION_KEY = os.getenv("HOYOLAB_SESSION_KEY")
 if not HOYOLAB_SESSION_KEY:
@@ -26,6 +27,21 @@ frontend_origins = [origin.strip() for origin in frontend_origins_str.split(",")
 
 app = FastAPI(title="Traveler's Toolkit Backend")
 
+@app.exception_handler(GoogleAuthError)
+async def google_auth_exception_handler(request: Request, exc: GoogleAuthError):
+    response = JSONResponse(
+        status_code=401,
+        content={"detail": exc.detail}
+    )
+    if exc.clear_cookie:
+        response.delete_cookie(
+            key="tt_google_session",
+            path="/",
+            samesite="lax",
+            secure=is_production
+        )
+    return response
+
 # Add CORS middleware with explicit origins
 app.add_middleware(
     CORSMiddleware,
@@ -34,6 +50,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(google_router)
 
 class AuthPayload(BaseModel):
     ltuid: str

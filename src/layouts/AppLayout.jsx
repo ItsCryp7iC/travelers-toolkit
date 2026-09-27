@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
 import useStore from '../store/useStore'
-import { uploadBackupToDrive } from '../utils/driveSync'
-import { useGoogleLogin } from '@react-oauth/google'
+import { upsertAutoBackupToDrive } from '../utils/driveSync'
+import { triggerGoogleAuth } from '../utils/googleAuthHelper'
+import { getBackupPayload, isLocalUserDataEmpty, restoreLatestRecoveryBackup } from '../utils/backupUtils'
 import ResinTracker from '../components/ResinTracker'
 import RealmCurrencyTracker from '../components/RealmCurrencyTracker'
 
@@ -67,7 +68,7 @@ export default function AppLayout() {
   useEffect(() => {
     localStorage.setItem('tt-desktop-sidebar-collapsed', isDesktopCollapsed);
   }, [isDesktopCollapsed])
-  
+
  const [activeFlyout, setActiveFlyout] = useState(null)
 
  useEffect(() => {
@@ -91,69 +92,112 @@ export default function AppLayout() {
  const [isInventoryOpen, setIsInventoryOpen] = useState(location.pathname === '/inventory')
  const rosterCount = useStore((s) => Object.keys(s.roster).length)
  const showDbBuilder = useStore((s) => s.showDbBuilder)
- 
- const autoBackupEnabled = useStore((s) => s.autoBackupEnabled)
- const googleAccessToken = useStore((s) => s.googleAccessToken)
- const tokenExpiry = useStore((s) => s.tokenExpiry)
  const googleUser = useStore((s) => s.googleUser)
- const setGoogleSession = useStore((s) => s.setGoogleSession)
- const clearGoogleSession = useStore((s) => s.clearGoogleSession)
+ const disconnectGoogleSession = useStore((s) => s.disconnectGoogleSession)
 
  const [dropdownOpen, setDropdownOpen] = useState(false)
 
- const login = useGoogleLogin({
-   onSuccess: async (tokenResponse) => {
-     try {
-       const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + tokenResponse.access_token, {
-         headers: { Authorization: `Bearer ${tokenResponse.access_token}`, Accept: 'application/json' }
-       });
-       const userInfo = await userInfoRes.json();
-       setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in, userInfo);
-     } catch (err) {
-       setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
-     }
-   },
-   scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
- });
+ const login = () => {
+   triggerGoogleAuth();
+ };
+
+ const backupTimeoutRef = useRef(null);
+
+ const saveLocalSnapshot = (state) => {
+   const dataToExport = getBackupPayload(state);
+   try {
+     localStorage.setItem('tt-local-backup', JSON.stringify(dataToExport));
+     console.log('Local snapshot saved.');
+   } catch (e) {
+     console.error('Failed to save local snapshot', e);
+   }
+ };
+
+ const performCloudBackup = (state) => {
+   if (state.googleConnected) {
+     const dataToExport = getBackupPayload(state);
+     upsertAutoBackupToDrive(dataToExport).then(() => {
+       console.log('Silent auto-backup to Google Drive succeeded.');
+       window.dispatchEvent(new Event('google_auto_backup_updated'));
+     }).catch(err => {
+       console.error('Silent auto-backup to Google Drive failed:', err);
+     });
+   }
+ };
 
  useEffect(() => {
- if (autoBackupEnabled) {
- const currentState = useStore.getState();
- 
- const dataToExport = {
- roster: currentState.roster,
- trackedWeapons: currentState.trackedWeapons,
- inventory: currentState.inventory,
- serverRegion: currentState.serverRegion,
- showDbBuilder: currentState.showDbBuilder
- };
- 
- // Local snapshot
- try {
- localStorage.setItem('tt-local-backup', JSON.stringify(dataToExport));
- console.log('Local snapshot saved.');
- } catch (e) {
- console.error('Failed to save local snapshot', e);
- }
+   const handleInteractiveLogin = async () => {
+     if (backupTimeoutRef.current) {
+       clearTimeout(backupTimeoutRef.current);
+       backupTimeoutRef.current = null;
+     }
+     const currentState = useStore.getState();
 
- // Cloud silent backup
- if (googleAccessToken && tokenExpiry && Date.now() < tokenExpiry) {
- uploadBackupToDrive(googleAccessToken, dataToExport).then(() => {
- console.log('Silent auto-backup to Google Drive succeeded.');
- }).catch(err => {
- console.error('Silent auto-backup to Google Drive failed:', err);
- });
- }
- }
+     if (isLocalUserDataEmpty(currentState)) {
+        try {
+          const success = await restoreLatestRecoveryBackup(currentState.importData);
+          if (success) {
+            alert('Latest cloud state restored successfully.');
+            return;
+          }
+        } catch (e) {
+          alert('Restore failed: ' + e.message);
+          return;
+        }
+     }
+
+     if (currentState.autoBackupEnabled) {
+       // CLOUD ONLY
+       performCloudBackup(currentState);
+     }
+   };
+   window.addEventListener('google_interactive_login', handleInteractiveLogin);
+   return () => window.removeEventListener('google_interactive_login', handleInteractiveLogin);
  }, []);
- 
+
+ useEffect(() => {
+   const unsub = useStore.subscribe((state, prevState) => {
+     if (!state.autoBackupEnabled) {
+       if (backupTimeoutRef.current) {
+         clearTimeout(backupTimeoutRef.current);
+         backupTimeoutRef.current = null;
+       }
+       return;
+     }
+
+     const dataChanged =
+       state.roster !== prevState.roster ||
+       state.trackedWeapons !== prevState.trackedWeapons ||
+       state.inventory !== prevState.inventory ||
+       state.serverRegion !== prevState.serverRegion ||
+       state.showDbBuilder !== prevState.showDbBuilder;
+
+     if (dataChanged) {
+       if (backupTimeoutRef.current) {
+         clearTimeout(backupTimeoutRef.current);
+       }
+       backupTimeoutRef.current = setTimeout(() => {
+         backupTimeoutRef.current = null;
+         const currentState = useStore.getState();
+         saveLocalSnapshot(currentState);
+         performCloudBackup(currentState);
+       }, 4000);
+     }
+   });
+
+   return () => {
+     unsub();
+     if (backupTimeoutRef.current) clearTimeout(backupTimeoutRef.current);
+   };
+ }, []);
+
  const currentTab = new URLSearchParams(location.search).get('tab');
  const plannerTab = location.pathname === '/planner' ? currentTab || 'daily_action' : null;
  const inventoryTab = location.pathname === '/inventory' ? currentTab || 'currency_exp' : null;
 
  return (
  <div className={`bg-[url('/bg.png')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full ${isDesktopCollapsed ? 'desktop-collapsed' : ''}`}>
- 
+
   {/* ── Top Bar (Full Width) ────────────────────────────────── */}
   <header className="topbar" id="app-topbar">
     {/* Brand */}
@@ -233,7 +277,7 @@ export default function AppLayout() {
           <button
             className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors"
             onClick={() => {
-              clearGoogleSession();
+              disconnectGoogleSession();
               setDropdownOpen(false);
             }}
           >
@@ -252,7 +296,7 @@ export default function AppLayout() {
     <p className="nav-section-title text-xs text-[var(--muted)] tracking-widest uppercase m-0">
       Navigation
     </p>
-    <button 
+    <button
       className="nav-toggle-btn hidden md:flex w-8 h-8 rounded-md items-center justify-center text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors cursor-pointer flex-shrink-0"
       onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
       title={isDesktopCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -298,7 +342,7 @@ export default function AppLayout() {
      }
      return (
        <div key={item.to} className="flex flex-col">
-         <div 
+         <div
            className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/planner' ? 'active' : ''}`}
            onClick={() => setIsPlannerOpen(!isPlannerOpen)}
          >
@@ -371,7 +415,7 @@ export default function AppLayout() {
      }
      return (
        <div key={item.to} className="flex flex-col">
-         <div 
+         <div
            className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/inventory' ? 'active' : ''}`}
            onClick={() => setIsInventoryOpen(!isInventoryOpen)}
          >

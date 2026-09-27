@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import useStore from '../store/useStore';
-import { useGoogleLogin } from '@react-oauth/google';
-import { uploadBackupToDrive, downloadBackupFromDrive, listBackupsFromDrive } from '../utils/driveSync';
+import { uploadBackupToDrive, downloadBackupFromDrive, listBackupsFromDrive, getAutoBackupStatus } from '../utils/driveSync';
 import { parseGoodData } from '../utils/goodParser';
+import { getBackupPayload } from '../utils/backupUtils';
+import { triggerGoogleAuth } from '../utils/googleAuthHelper';
 import GoodImportModal from '../components/GoodImportModal';
 
 export default function Settings() {
@@ -16,7 +17,6 @@ export default function Settings() {
     setShowDbBuilder,
     autoBackupEnabled,
     setAutoBackupEnabled,
-    setGoogleSession,
     importData,
     importGoodData,
     resetStore
@@ -24,14 +24,34 @@ export default function Settings() {
 
   const fileInputRef = useRef(null);
   const goodFileInputRef = useRef(null);
-  
+
   const [pendingImportData, setPendingImportData] = useState(null);
-  
+
   // Cloud Sync State
   const [isSyncing, setIsSyncing] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [lastSyncedTime, setLastSyncedTime] = useState(null);
   const [cloudBackups, setCloudBackups] = useState([]);
+  const [autoBackupStatus, setAutoBackupStatus] = useState(null);
+
+  const googleConnected = useStore((s) => s.googleConnected);
+  const disconnectGoogleSession = useStore((s) => s.disconnectGoogleSession);
+
+  useEffect(() => {
+    if (googleConnected) {
+      fetchBackups();
+    }
+  }, [googleConnected]);
+
+  useEffect(() => {
+    const handleAutoBackupUpdated = () => {
+      if (googleConnected) {
+        fetchBackups();
+      }
+    };
+    window.addEventListener('google_auto_backup_updated', handleAutoBackupUpdated);
+    return () => window.removeEventListener('google_auto_backup_updated', handleAutoBackupUpdated);
+  }, [googleConnected]);
 
   const hoyolabConnected = useStore((s) => s.hoyolabConnected);
   const connectHoyolabSession = useStore((s) => s.connectHoyolabSession);
@@ -63,64 +83,36 @@ export default function Settings() {
     alert('HoYoLAB disconnected.');
   };
 
-  const loginForSync = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + tokenResponse.access_token, {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}`, Accept: 'application/json' }
-        });
-        const userInfo = await userInfoRes.json();
-        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in, userInfo);
-      } catch (err) {
-        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
-      }
-      await handleCloudBackup(tokenResponse.access_token);
-      await fetchBackups(tokenResponse.access_token);
-    },
-    scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-  });
 
-  const loginForRestore = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + tokenResponse.access_token, {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}`, Accept: 'application/json' }
-        });
-        const userInfo = await userInfoRes.json();
-        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in, userInfo);
-      } catch (err) {
-        setGoogleSession(tokenResponse.access_token, tokenResponse.expires_in);
-      }
-      await fetchBackups(tokenResponse.access_token);
-    },
-    scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-  });
 
-  const fetchBackups = async (token) => {
+  const fetchBackups = async () => {
     try {
-      const backups = await listBackupsFromDrive(token);
+      const backups = await listBackupsFromDrive();
       setCloudBackups(backups);
+
+      const autoStatus = await getAutoBackupStatus();
+      setAutoBackupStatus(autoStatus);
     } catch (error) {
       console.error(error);
+      if (error.status === 401) {
+        disconnectGoogleSession();
+      }
       alert('Failed to fetch backups from Google Drive.');
     }
   };
 
-  const handleCloudBackup = async (token) => {
+  const handleCloudBackup = async () => {
     try {
       setIsSyncing(true);
-      const dataToExport = {
-        roster,
-        trackedWeapons,
-        inventory,
-        serverRegion,
-        showDbBuilder
-      };
-      await uploadBackupToDrive(token, dataToExport);
+      const dataToExport = getBackupPayload(useStore.getState());
+      await uploadBackupToDrive(dataToExport);
       setLastSyncedTime(new Date().toLocaleString());
       alert('Cloud sync successful!');
     } catch (error) {
       console.error(error);
+      if (error.status === 401) {
+        disconnectGoogleSession();
+      }
       alert('Failed to sync to Google Drive.');
     } finally {
       setIsSyncing(false);
@@ -128,15 +120,14 @@ export default function Settings() {
   };
 
   const handleCloudRestore = async (fileId) => {
-    const token = useStore.getState().googleAccessToken;
-    if (!token) {
+    if (!useStore.getState().googleConnected) {
       alert('Please connect to Google Drive first.');
       return;
     }
-    
+
     try {
       setIsRestoring(true);
-      const data = await downloadBackupFromDrive(token, fileId);
+      const data = await downloadBackupFromDrive(fileId);
       if (data) {
         importData(data);
         alert('Cloud restore successful!');
@@ -145,6 +136,9 @@ export default function Settings() {
       }
     } catch (error) {
       console.error(error);
+      if (error.status === 401) {
+        disconnectGoogleSession();
+      }
       alert('Failed to restore from Google Drive.');
     } finally {
       setIsRestoring(false);
@@ -152,13 +146,7 @@ export default function Settings() {
   };
 
   const handleExport = () => {
-    const dataToExport = {
-      roster,
-      trackedWeapons,
-      inventory,
-      serverRegion,
-      showDbBuilder
-    };
+    const dataToExport = getBackupPayload(useStore.getState());
     const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -262,18 +250,18 @@ export default function Settings() {
           <p className="text-sm text-[var(--color-text-muted)]">
             Seamlessly sync your progression data to your Google Drive's hidden AppData folder. Maintain up to 5 rolling backups.
           </p>
-          
+
           <div className="flex items-center justify-between mt-2">
             <div>
               <p className="text-sm font-semibold text-[var(--color-text-main)]">Auto-Backup</p>
               <p className="text-xs text-[var(--color-text-muted)]">
-                Sync on app open (requires recent login).
+                Automatically backs up changes when Google Drive is connected.
               </p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                className="sr-only peer" 
+              <input
+                type="checkbox"
+                className="sr-only peer"
                 checked={autoBackupEnabled}
                 onChange={(e) => setAutoBackupEnabled(e.target.checked)}
               />
@@ -281,27 +269,58 @@ export default function Settings() {
             </label>
           </div>
 
+          {autoBackupStatus !== null && googleConnected && (
+            <div className="mt-1">
+              <p className="text-sm font-semibold text-[var(--color-text-main)]">Latest automatic backup:</p>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                {autoBackupStatus.exists
+                  ? new Date(autoBackupStatus.modifiedTime).toLocaleString()
+                  : 'No automatic backup yet.'}
+              </p>
+            </div>
+          )}
+
           {lastSyncedTime && (
             <p className="text-xs text-[var(--color-text-muted)] italic">
               Last manually synced: {lastSyncedTime}
             </p>
           )}
-          
+
           <div className="flex flex-col gap-3 mt-2">
-            <button 
-              className="genshin-btn w-full flex justify-center items-center gap-2" 
-              onClick={() => loginForSync()}
+            <button
+              className="genshin-btn w-full flex justify-center items-center gap-2"
+              onClick={async () => {
+                if (useStore.getState().googleConnected) {
+                  await handleCloudBackup();
+                  await fetchBackups();
+                } else {
+                  const connected = await triggerGoogleAuth();
+                  if (connected) {
+                    await handleCloudBackup();
+                    await fetchBackups();
+                  }
+                }
+              }}
               disabled={isSyncing || isRestoring}
             >
-              <span>{isSyncing ? '⏳' : '☁️'}</span> 
+              <span>{isSyncing ? '⏳' : '☁️'}</span>
               {isSyncing ? 'Syncing...' : 'Sync to Google Drive'}
             </button>
-            <button 
-              className="genshin-btn-ghost w-full flex justify-center items-center gap-2" 
-              onClick={() => loginForRestore()}
+            <button
+              className="genshin-btn-ghost w-full flex justify-center items-center gap-2"
+              onClick={async () => {
+                if (useStore.getState().googleConnected) {
+                  await fetchBackups();
+                } else {
+                  const connected = await triggerGoogleAuth();
+                  if (connected) {
+                    await fetchBackups();
+                  }
+                }
+              }}
               disabled={isSyncing || isRestoring}
             >
-              <span>{isRestoring ? '⏳' : '🌩️'}</span> 
+              <span>{isRestoring ? '⏳' : '🌩️'}</span>
               {isRestoring ? 'Restoring...' : 'Connect to View Backups'}
             </button>
           </div>
@@ -309,7 +328,7 @@ export default function Settings() {
           {cloudBackups.length > 0 && (
             <div className="mt-4 flex flex-col gap-2">
               <h3 className="text-sm font-semibold text-[var(--color-text-main)] border-b border-[var(--border)] pb-1">
-                Available Backups
+                Manual Backups
               </h3>
               {cloudBackups.map((backup) => (
                 <div key={backup.id} className="flex justify-between items-center bg-[var(--elevated)] p-2 rounded border border-[var(--border)]">
@@ -321,7 +340,7 @@ export default function Settings() {
                       {backup.name}
                     </span>
                   </div>
-                  <button 
+                  <button
                     className="text-xs bg-primary text-[#0d0f1a] px-3 py-1 rounded hover:opacity-90 font-bold transition-opacity"
                     onClick={() => handleCloudRestore(backup.id)}
                     disabled={isRestoring}
@@ -333,7 +352,7 @@ export default function Settings() {
             </div>
           )}
         </div>
-        
+
         {/* Local Data Management Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
@@ -347,12 +366,12 @@ export default function Settings() {
               <span>📥</span> Export Backup (.json)
             </button>
             <div className="flex gap-3">
-              <input 
-                type="file" 
-                accept=".json" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                style={{ display: 'none' }} 
+              <input
+                type="file"
+                accept=".json"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
               />
               <button className="genshin-btn-ghost flex-1 flex justify-center items-center gap-2" onClick={handleImportClick}>
                 <span>📤</span> Import Backup
@@ -374,12 +393,12 @@ export default function Settings() {
             Sync your characters, weapons, and materials using a GOOD format JSON file exported from Inventory Kamera.
           </p>
           <div className="flex flex-col gap-3 mt-2">
-            <input 
-              type="file" 
-              accept=".json" 
-              ref={goodFileInputRef} 
-              onChange={handleGoodFileChange} 
-              style={{ display: 'none' }} 
+            <input
+              type="file"
+              accept=".json"
+              ref={goodFileInputRef}
+              onChange={handleGoodFileChange}
+              style={{ display: 'none' }}
             />
             <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={handleGoodImportClick}>
               <span>🔄</span> Import GOOD Format JSON
@@ -395,13 +414,13 @@ export default function Settings() {
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
             Planner Preferences
           </h2>
-          
+
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-[var(--color-text-main)]">Server Region</label>
             <p className="text-xs text-[var(--color-text-muted)] mb-1">
               Determines daily domain material rotations.
             </p>
-            <select 
+            <select
               className="bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
               value={serverRegion}
               onChange={(e) => setServerRegion(e.target.value)}
@@ -427,9 +446,9 @@ export default function Settings() {
               </p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                className="sr-only peer" 
+              <input
+                type="checkbox"
+                className="sr-only peer"
                 checked={showDbBuilder}
                 onChange={(e) => setShowDbBuilder(e.target.checked)}
               />
@@ -450,8 +469,8 @@ export default function Settings() {
             <p className="text-sm text-[var(--color-text-muted)] mb-4">
               Live Resin & Realm Currency sync enabled
             </p>
-            <button 
-              className="genshin-btn w-full" 
+            <button
+              className="genshin-btn w-full"
               onClick={handleDisconnectHoyolab}
             >
               Disconnect
@@ -465,8 +484,8 @@ export default function Settings() {
             <div className="flex flex-col gap-3 mt-2">
               <div>
                 <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltuid_v2 (or ltuid)</label>
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
                   value={hoyolabLtuid}
                   onChange={(e) => setHoyolabLtuid(e.target.value)}
@@ -476,8 +495,8 @@ export default function Settings() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltoken_v2 (or ltoken)</label>
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
                   value={hoyolabLtoken}
                   onChange={(e) => setHoyolabLtoken(e.target.value)}
@@ -485,8 +504,8 @@ export default function Settings() {
                   disabled={isConnecting}
                 />
               </div>
-              <button 
-                className="genshin-btn w-full mt-2" 
+              <button
+                className="genshin-btn w-full mt-2"
                 onClick={handleConnectHoyolab}
                 disabled={isConnecting}
               >
@@ -498,10 +517,10 @@ export default function Settings() {
       </div>
 
       {pendingImportData && (
-        <GoodImportModal 
-          parsedData={pendingImportData} 
-          onConfirm={handleGoodImportConfirm} 
-          onCancel={() => setPendingImportData(null)} 
+        <GoodImportModal
+          parsedData={pendingImportData}
+          onConfirm={handleGoodImportConfirm}
+          onCancel={() => setPendingImportData(null)}
         />
       )}
     </div>

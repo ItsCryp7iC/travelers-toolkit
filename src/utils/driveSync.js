@@ -1,98 +1,67 @@
-export async function listBackupsFromDrive(accessToken) {
-  const searchRes = await fetch(
-    "https://www.googleapis.com/drive/v3/files?q=name contains 'travelers-toolkit-backup' and 'appDataFolder' in parents&spaces=appDataFolder&fields=files(id, name, createdTime)&orderBy=createdTime desc",
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  if (!searchRes.ok) {
-    throw new Error('Failed to query Google Drive');
+export async function listBackupsFromDrive() {
+  const res = await fetch('/api/google/backups');
+  if (!res.ok) {
+    const error = new Error('Failed to query Google Drive');
+    error.status = res.status;
+    throw error;
   }
-
-  const searchData = await searchRes.json();
-  return searchData.files || [];
+  return res.json();
 }
 
-export async function uploadBackupToDrive(accessToken, backupData) {
-  const metadata = {
-    name: `travelers-toolkit-backup-${Date.now()}.json`,
-    parents: ['appDataFolder'],
-  };
-
-  const form = new FormData();
-  form.append(
-    'metadata',
-    new Blob([JSON.stringify(metadata)], { type: 'application/json' })
-  );
-  form.append(
-    'file',
-    new Blob([JSON.stringify(backupData)], { type: 'application/json' })
-  );
-
-  const url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
-
-  const uploadRes = await fetch(url, {
+export async function uploadBackupToDrive(backupData) {
+  const res = await fetch('/api/google/backups/manual', {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: form,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(backupData)
   });
-
-  if (!uploadRes.ok) {
-    throw new Error('Failed to upload backup to Google Drive');
+  if (!res.ok) {
+    const error = new Error('Failed to upload backup to Google Drive');
+    error.status = res.status;
+    throw error;
   }
-
-  const uploadData = await uploadRes.json();
-
-  // Enforce max 5 backups
-  const backups = await listBackupsFromDrive(accessToken);
-  if (backups.length > 5) {
-    const filesToDelete = backups.slice(5);
-    for (const file of filesToDelete) {
-      try {
-        await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-      } catch (err) {
-        console.error(`Failed to delete old backup ${file.id}`, err);
-      }
-    }
-  }
-
-  return uploadData;
+  return res.json();
 }
 
-export async function downloadBackupFromDrive(accessToken, fileId) {
-  let targetFileId = fileId;
-
-  if (!targetFileId) {
-    // If no specific file is requested, get the latest one
-    const backups = await listBackupsFromDrive(accessToken);
-    if (backups.length === 0) {
-      return null;
-    }
-    targetFileId = backups[0].id;
+export async function upsertAutoBackupToDrive(backupData) {
+  const res = await fetch('/api/google/backups/auto', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(backupData)
+  });
+  if (!res.ok) {
+    const error = new Error('Failed to auto-backup to Google Drive');
+    error.status = res.status;
+    throw error;
   }
+  return res.json();
+}
 
-  const downloadRes = await fetch(
-    `https://www.googleapis.com/drive/v3/files/${targetFileId}?alt=media`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  if (!downloadRes.ok) {
-    throw new Error('Failed to download backup from Google Drive');
+export async function downloadBackupFromDrive(fileId) {
+  const res = await fetch(`/api/google/backups/${fileId}`);
+  if (!res.ok) {
+    const error = new Error('Failed to download backup from Google Drive');
+    error.status = res.status;
+    throw error;
   }
+  return res.json();
+}
 
-  return downloadRes.json();
+export async function downloadRecoveryBackupFromDrive() {
+  const res = await fetch('/api/google/backups/recovery');
+  if (!res.ok) {
+    const error = new Error('Failed to download recovery backup from Google Drive');
+    error.status = res.status;
+    throw error;
+  }
+  return res.json();
+}
+
+export async function getAutoBackupStatus() {
+  const res = await fetch('/api/google/backups/auto/status');
+  if (!res.ok) {
+    const error = new Error('Failed to fetch auto backup status');
+    error.status = res.status;
+    throw error;
+  }
+  return res.json();
 }

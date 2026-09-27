@@ -15,6 +15,7 @@ export default function App() {
   const showDbBuilder = useStore((s) => s.showDbBuilder)
   const checkHoyolabSession = useStore((s) => s.checkHoyolabSession)
   const handleSyncNotes = useStore((s) => s.handleSyncNotes)
+  const checkGoogleSession = useStore((s) => s.checkGoogleSession)
   const isInitializing = useRef(true)
 
   useEffect(() => {
@@ -25,8 +26,9 @@ export default function App() {
           handleSyncNotes(true);
         }
       });
+      checkGoogleSession();
     }
-  }, [checkHoyolabSession, handleSyncNotes]);
+  }, [checkHoyolabSession, handleSyncNotes, checkGoogleSession]);
 
   return (
     <BrowserRouter>

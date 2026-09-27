@@ -64,15 +64,30 @@ const useStore = create(
       setShowDbBuilder: (show) => set({ showDbBuilder: show }),
       autoBackupEnabled: false,
       setAutoBackupEnabled: (val) => set({ autoBackupEnabled: val }),
-      googleAccessToken: null,
-      tokenExpiry: null,
+      googleConnected: false,
       googleUser: null,
-      setGoogleSession: (token, expiresIn, user = null) => set((state) => ({ 
-        googleAccessToken: token, 
-        tokenExpiry: Date.now() + expiresIn * 1000,
-        googleUser: user || state.googleUser 
-      })),
-      clearGoogleSession: () => set({ googleAccessToken: null, tokenExpiry: null, googleUser: null }),
+      checkGoogleSession: async () => {
+        try {
+          const res = await fetch('/api/google/session');
+          if (res.ok) {
+            const data = await res.json();
+            set({ googleConnected: data.connected, googleUser: data.user || null });
+            return data.connected;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        set({ googleConnected: false, googleUser: null });
+        return false;
+      },
+      disconnectGoogleSession: async () => {
+        try {
+          await fetch('/api/google/session', { method: 'DELETE' });
+        } catch (err) {
+          console.error(err);
+        }
+        set({ googleConnected: false, googleUser: null });
+      },
       
       // ─── HOYOLAB CREDENTIALS ───────────────────────────────────────────
       hoyolabConnected: false,
@@ -260,8 +275,7 @@ const useStore = create(
           serverRegion: 'Asia',
           showDbBuilder: false,
           autoBackupEnabled: false,
-          googleAccessToken: null,
-          tokenExpiry: null,
+          googleConnected: false,
           googleUser: null,
           hoyolabConnected: false,
         })
