@@ -199,7 +199,7 @@ export default function Settings() {
       try {
         const parsedData = JSON.parse(event.target.result);
         const goodData = parseGoodData(parsedData);
-        
+
         const hasKnown = goodData.characters.length > 0 || goodData.weapons.length > 0 || Object.keys(goodData.materials).length > 0;
         if (!hasKnown) {
           alert("No recognized Traveler's Toolkit data was found in this GOOD file.");

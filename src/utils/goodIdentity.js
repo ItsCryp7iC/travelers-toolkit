@@ -14,12 +14,12 @@ export const resolveGoodMaterialKey = (goodKey) => {
       materialsLookup.set(mat.matKey, mat.matKey);
     });
   }
-  
+
   if (materialsLookup.has(goodKey)) return materialsLookup.get(goodKey);
   if (MATERIAL_ALIASES[goodKey] && materialsLookup.has(MATERIAL_ALIASES[goodKey])) {
     return materialsLookup.get(MATERIAL_ALIASES[goodKey]);
   }
-  return null; 
+  return null;
 };
 
 const CHARACTER_ALIASES = {
@@ -64,40 +64,40 @@ const buildWeaponMaps = () => {
 export const resolveGoodCharacterKey = (goodKey) => {
   let char = charactersData.find(c => c.id === goodKey);
   if (char) return char.name;
-  
+
   if (CHARACTER_ALIASES[goodKey]) {
     let aliasChar = charactersData.find(c => c.name === CHARACTER_ALIASES[goodKey]);
     if (aliasChar) return aliasChar.name;
   }
-  
+
   let exactMatch = charactersData.find(c => c.name === goodKey);
   if (exactMatch) return exactMatch.name;
-  
+
   buildCharacterMaps();
   const normGoodKey = normalizeIdentity(goodKey);
   const matches = normalizedCharacters.get(normGoodKey);
-  
+
   if (matches && matches.length === 1) {
     return matches[0];
   }
-  
+
   return null;
 };
 
 export const resolveGoodWeaponKey = (goodKey) => {
   let weapon = weaponsData.find(w => w.id === goodKey);
   if (weapon) return weapon.name;
-  
+
   let exactMatch = weaponsData.find(w => w.name === goodKey);
   if (exactMatch) return exactMatch.name;
-  
+
   buildWeaponMaps();
   const normGoodKey = normalizeIdentity(goodKey);
   const matches = normalizedWeapons.get(normGoodKey);
-  
+
   if (matches && matches.length === 1) {
     return matches[0];
   }
-  
+
   return null;
 };
