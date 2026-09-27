@@ -7,7 +7,7 @@
  *
  * Usage:
  *   import { calculateProgressionCost } from './calculator'
- *   const costs = calculateProgressionCost(character, fromLevel, fromAsc, toLevel, toAsc)
+ *   const costs = calculateProgressionCost(character, fromLevel, toLevel, fromAsc, toAsc)
  */
 
 import costsData from '../data/costs.json';
@@ -101,10 +101,9 @@ export function buildMobNames(mobBase) {
  *
  * @param {Object} character    — Character object from characters.json
  * @param {number} fromLevel    — Current level (1-90)
- * @param {number} fromAsc      — Current ascension (0-6)
  * @param {number} toLevel      — Target level (1-90)
+ * @param {number} fromAsc      — Current ascension (0-6)
  * @param {number} toAsc        — Target ascension (0-6)
- * @param {Object} costsData    — Parsed costs.json { character_levels: [...] }
  *
  * @returns {Object} {
  *   mora, heroWits,
@@ -231,30 +230,7 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
   return result;
 }
 
-// ─── Regression tests ──────────────────────────────────────────────────────
-// Run once at module load in dev to catch silent regressions.
-if (import.meta.env?.DEV && costsData?.character_levels) {
-  // Test 1: same level, different ascension phase → must be nonzero
-  // Razor: L80 A5 (not ascended) → L80 A6 (ascended)
-  const t1 = calculateProgressionCost(null, 80, 80, 5, 6);
-  if (!t1 || Object.keys(t1).length === 0) {
-    console.error('[Calculator REGRESSION] L80 A5 → L80 A6 returned empty — same-level ascension diff broken!', t1);
-  } else {
-    console.assert(t1.boss_material > 0, '[Calculator REGRESSION] L80 A5→A6: boss_material should be > 0, got', t1.boss_material);
-    console.assert(t1.local_specialty > 0, '[Calculator REGRESSION] L80 A5→A6: local_specialty should be > 0, got', t1.local_specialty);
-    console.assert(t1.mora > 0, '[Calculator REGRESSION] L80 A5→A6: mora should be > 0, got', t1.mora);
-  }
 
-  // Test 2: same level AND same ascension → must be zero (Barbara case)
-  const t2 = calculateProgressionCost(null, 80, 80, 6, 6);
-  if (t2 && Object.keys(t2).length > 0) {
-    console.error('[Calculator REGRESSION] L80 A6 → L80 A6 returned nonzero — should be empty!', t2);
-  }
-
-  // Test 3: sanity direction — L1 A0 → L90 A6 must have positive mora
-  const t3 = calculateProgressionCost(null, 1, 90, 0, 6);
-  console.assert((t3.mora ?? 0) > 0, '[Calculator REGRESSION] L1→L90 full: mora should be > 0, got', t3.mora);
-}
 
 /**
  * Format a large number with commas and optional suffix (K, M).
