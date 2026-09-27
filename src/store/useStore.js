@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
 import { calculateProgressionCost, calculateAllTalentsCost, calculateWeaponCost } from '../utils/calculator'
+import { getPrimaryInventoryList } from '../utils/dataManager'
 
 /**
  * Helper to keep Traveler ascension synchronized.
@@ -184,8 +185,11 @@ const useStore = create(
       importGoodData: (goodPayload) => set((state) => {
         // 1. Materials
         const newInventory = { ...state.inventory };
+        const canonicalMats = new Set(getPrimaryInventoryList().map(m => m.matKey));
         Object.entries(goodPayload.materials || {}).forEach(([matKey, qty]) => {
-          newInventory[matKey] = qty; 
+          if (canonicalMats.has(matKey)) {
+            newInventory[matKey] = qty;
+          }
         });
 
         // 2. Roster

@@ -18,20 +18,18 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     setCharacters((parsedData.characters || []).map(c => ({ ...c, checked: true })));
     
     // 2. Weapons
-    setWeapons((parsedData.weapons || []).map(w => ({ ...w, checked: Boolean(w.location) })));
+    setWeapons((parsedData.weapons || []).map(w => ({ ...w, checked: true })));
     
     // 3. Materials
     const inventoryList = getPrimaryInventoryList();
     const inventoryMap = {};
     
-    const normalizeKey = (k) => String(k).replace(/[_ ']/g, '').toLowerCase();
-
     inventoryList.forEach(item => {
-      inventoryMap[normalizeKey(item.matKey)] = item;
+      inventoryMap[item.matKey] = item;
     });
 
     const mats = Object.entries(parsedData.materials || {}).map(([key, quantity]) => {
-      const dbItem = inventoryMap[normalizeKey(key)];
+      const dbItem = inventoryMap[key];
       let group = 'Other';
       let subGroup = '';
       let category = '';

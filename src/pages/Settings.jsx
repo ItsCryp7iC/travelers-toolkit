@@ -199,6 +199,13 @@ export default function Settings() {
       try {
         const parsedData = JSON.parse(event.target.result);
         const goodData = parseGoodData(parsedData);
+        
+        const hasKnown = goodData.characters.length > 0 || goodData.weapons.length > 0 || Object.keys(goodData.materials).length > 0;
+        if (!hasKnown) {
+          alert("No recognized Traveler's Toolkit data was found in this GOOD file.");
+          return;
+        }
+
         setPendingImportData(goodData);
       } catch (error) {
         alert('Failed to parse GOOD data. Please ensure it is a valid format.');
@@ -214,7 +221,22 @@ export default function Settings() {
     const matCount = Object.keys(finalData.materials || {}).length;
     const charCount = (finalData.characters || []).length;
     const weaponCount = (finalData.weapons || []).length;
-    alert(`GOOD Data Synced!\nImported ${matCount} materials, ${charCount} characters, and ${weaponCount} weapons.`);
+
+    let msg = `GOOD Data Synced!\nImported ${matCount} materials, ${charCount} characters, and ${weaponCount} weapons.`;
+
+    if (pendingImportData?.unresolved) {
+      const u = pendingImportData.unresolved;
+      const totalUnknown = u.characters.length + u.weapons.length + u.materials.length + u.locations.length;
+      if (totalUnknown > 0) {
+        msg += `\n\nSome entries were skipped because they were unsupported or invalid:\n`;
+        if (u.materials.length > 0) msg += `- ${u.materials.length} materials\n`;
+        if (u.characters.length > 0) msg += `- ${u.characters.length} characters\n`;
+        if (u.weapons.length > 0) msg += `- ${u.weapons.length} weapons\n`;
+        if (u.locations.length > 0) msg += `- ${u.locations.length} locations\n`;
+      }
+    }
+
+    alert(msg);
     setPendingImportData(null);
   };
 
