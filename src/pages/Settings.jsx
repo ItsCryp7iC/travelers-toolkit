@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { uploadBackupToDrive, downloadBackupFromDrive, listBackupsFromDrive, getAutoBackupStatus } from '../utils/driveSync';
 import { parseGoodData } from '../utils/goodParser';
-import { getBackupPayload } from '../utils/backupUtils';
+import { getBackupPayload, normalizeBackupForImport } from '../utils/backupUtils';
 import { triggerGoogleAuth } from '../utils/googleAuthHelper';
 import GoodImportModal from '../components/GoodImportModal';
 
@@ -129,7 +129,8 @@ export default function Settings() {
       setIsRestoring(true);
       const data = await downloadBackupFromDrive(fileId);
       if (data) {
-        importData(data);
+        const normalized = normalizeBackupForImport(data);
+        importData(normalized);
         alert('Cloud restore successful!');
       } else {
         alert('No backup found in Google Drive.');
@@ -171,11 +172,12 @@ export default function Settings() {
       try {
         const parsedData = JSON.parse(event.target.result);
         if (parsedData) {
-          importData(parsedData);
+          const normalized = normalizeBackupForImport(parsedData);
+          importData(normalized);
           alert('Data imported successfully!');
         }
       } catch (error) {
-        alert('Failed to import data. Invalid JSON file.');
+        alert(error.message || 'Failed to import data. Invalid JSON file.');
       }
     };
     reader.readAsText(file);

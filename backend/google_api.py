@@ -8,9 +8,9 @@ import urllib.parse
 from fastapi import APIRouter, Request, Response, HTTPException, Depends
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from cryptography.fernet import Fernet, InvalidToken
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 import time
-from typing import Optional, Any
+from typing import Optional, Any, Literal
 
 router = APIRouter()
 
@@ -35,12 +35,22 @@ class GoogleAuthError(Exception):
         self.detail = detail
         self.clear_cookie = clear_cookie
 
-class BackupPayload(BaseModel):
-    roster: Optional[Any] = None
-    trackedWeapons: Optional[Any] = None
-    inventory: Optional[Any] = None
-    serverRegion: Optional[Any] = None
-    showDbBuilder: Optional[Any] = None
+class BackupData(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    roster: dict = Field(default_factory=dict)
+    trackedWeapons: list = Field(default_factory=list)
+    inventory: dict = Field(default_factory=dict)
+    serverRegion: str = "Asia"
+    showDbBuilder: bool = False
+
+class BackupEnvelope(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    app: Literal["travelers-toolkit"]
+    schemaVersion: Literal[1]
+    createdAt: str
+    data: BackupData
 
 def get_google_fernet():
     if not google_fernet:
@@ -213,7 +223,7 @@ async def disconnect_google_session(response: Response):
     return {"connected": False}
 
 @router.post("/api/google/backups/manual")
-async def create_manual_backup(request: Request, response: Response, payload: BackupPayload):
+async def create_manual_backup(request: Request, response: Response, payload: BackupEnvelope):
     access_token = await get_valid_access_token(request, response)
 
     metadata = {
@@ -261,7 +271,7 @@ async def create_manual_backup(request: Request, response: Response, payload: Ba
     return {"success": True}
 
 @router.put("/api/google/backups/auto")
-async def create_auto_backup(request: Request, response: Response, payload: BackupPayload):
+async def create_auto_backup(request: Request, response: Response, payload: BackupEnvelope):
     access_token = await get_valid_access_token(request, response)
 
     async with httpx.AsyncClient() as client:

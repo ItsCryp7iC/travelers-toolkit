@@ -174,7 +174,13 @@ const useStore = create(
         }
       },
 
-      importData: (data) => set({ ...data, trackedWeapons: data.trackedWeapons || [] }),
+      importData: (data) => set({
+        roster: data.roster || {},
+        trackedWeapons: data.trackedWeapons || [],
+        inventory: data.inventory || {},
+        serverRegion: data.serverRegion || 'Asia',
+        showDbBuilder: data.showDbBuilder ?? false,
+      }),
       importGoodData: (goodPayload) => set((state) => {
         // 1. Materials
         const newInventory = { ...state.inventory };
