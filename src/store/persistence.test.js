@@ -94,4 +94,67 @@ describe('Zustand Persistence Migrations', () => {
     expect(migrated.hoyolabLtuid).toBeUndefined();
     expect(migrated.hoyolabLtoken).toBeUndefined();
   });
+
+  it('migrates v1 -> v2 without trackedWeapons array', () => {
+    const legacyState = {
+      roster: {}
+    };
+    const migrated = migrateStore(legacyState, 1);
+    expect(Array.isArray(migrated.trackedWeapons)).toBe(true);
+    expect(migrated.trackedWeapons.length).toBe(0);
+  });
+
+  it('migrates v1 -> v2 does not duplicate if equippedWeaponId exists', () => {
+    const legacyState = {
+      roster: {
+        'Amber': {
+          equippedWeapon: 'Hunters Bow',
+          equippedWeaponId: 'existing-id'
+        }
+      },
+      trackedWeapons: []
+    };
+    const migrated = migrateStore(legacyState, 1);
+    expect(migrated.trackedWeapons.length).toBe(0);
+  });
+
+  it('migrates v2 -> v3 initializes craftQueue and v4 removes it', () => {
+    const legacyState = {};
+    const migrated = migrateStore(legacyState, 2);
+    // craftQueue is initialized in v3 but removed in v4
+    expect(migrated.craftQueue).toBeUndefined();
+  });
+
+  it('partializeStore returns exactly the persisted whitelist', () => {
+    const fullState = {
+      autoBackupEnabled: true,
+      goals: [],
+      inventory: {},
+      resinCount: 160,
+      resinTimestamp: 1000,
+      roster: {},
+      serverRegion: 'Europe',
+      showDbBuilder: true,
+      trackedWeapons: [],
+      // Extra auth fields
+      googleConnected: true,
+      googleUser: { name: 'Test' },
+      googleAccessToken: 'secret',
+      hoyolabConnected: true,
+      syncPayload: 'data'
+    };
+    const result = partializeStore(fullState);
+    const keys = Object.keys(result).sort();
+    expect(keys).toEqual([
+      'autoBackupEnabled',
+      'goals',
+      'inventory',
+      'resinCount',
+      'resinTimestamp',
+      'roster',
+      'serverRegion',
+      'showDbBuilder',
+      'trackedWeapons'
+    ]);
+  });
 });

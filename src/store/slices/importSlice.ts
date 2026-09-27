@@ -4,7 +4,36 @@ import { getPrimaryInventoryList } from '../../utils/dataManager';
 import { calculateWeaponCost } from '../../utils/calculator';
 import { syncTravelerAscension, recalculateCharacterCosts } from '../helpers/rosterHelpers';
 
-export const createImportSlice = (set, get) => ({
+import type { NormalizedBackupData } from '../../types/backup';
+import type { NormalizedGoodPayload } from '../../types/good';
+import type { Roster, TrackedWeapon, Inventory, RosterEntry, WeaponCalculatedCosts } from '../../types/domain';
+
+// "Minimal Zustand set/get structural types"
+export interface ImportSliceState {
+  roster: Roster;
+  trackedWeapons: TrackedWeapon[];
+  inventory: Inventory;
+  goals: unknown[];
+  resinCount: number;
+  resinTimestamp: number;
+  serverRegion: string;
+  showDbBuilder: boolean;
+  autoBackupEnabled: boolean;
+  googleConnected: boolean;
+  googleUser: unknown | null;
+  hoyolabConnected: boolean;
+}
+
+type StateUpdater<S> = Partial<S> | ((state: S) => Partial<S>);
+type SetState<S> = (update: StateUpdater<S>) => void;
+
+export interface ImportSliceActions {
+  importData: (data: NormalizedBackupData) => void;
+  importGoodData: (goodPayload: NormalizedGoodPayload) => void;
+  resetStore: () => void;
+}
+
+export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown): ImportSliceActions => ({
   importData: (data) => set({
     roster: data.roster || {},
     trackedWeapons: data.trackedWeapons || [],
@@ -14,16 +43,16 @@ export const createImportSlice = (set, get) => ({
   }),
   importGoodData: (goodPayload) => set((state) => {
     // 1. Materials
-    const newInventory = { ...state.inventory };
-    const canonicalMats = new Set(getPrimaryInventoryList().map(m => m.matKey));
-    Object.entries(goodPayload.materials || {}).forEach(([matKey, qty]) => {
+    const newInventory: Inventory = { ...state.inventory };
+    const canonicalMats = new Set(getPrimaryInventoryList().map((m: { matKey: string }) => m.matKey));
+    Object.entries(goodPayload.materials ?? {}).forEach(([matKey, qty]) => {
       if (canonicalMats.has(matKey)) {
         newInventory[matKey] = qty;
       }
     });
 
     // 2. Roster
-    const newRoster = { ...state.roster };
+    const newRoster: Roster = { ...state.roster };
     (goodPayload.characters || []).forEach(char => {
       const existing = newRoster[char.name] || {
         targetLevel: 90,
@@ -34,8 +63,7 @@ export const createImportSlice = (set, get) => ({
         calculatedCosts: null
       };
 
-      newRoster[char.name] = {
-        ...existing,
+      const entryUpdate: RosterEntry = {
         level: char.level,
         ascension: char.ascension,
         talents: char.talents,
@@ -43,18 +71,24 @@ export const createImportSlice = (set, get) => ({
         targetLevel: existing.targetLevel,
         targetAscension: existing.targetAscension,
         targetTalents: existing.targetTalents,
+        equippedWeaponId: existing.equippedWeaponId,
+        tracked: existing.tracked,
+        calculatedCosts: existing.calculatedCosts
       };
 
+      newRoster[char.name] = entryUpdate;
+
+      // Note: recalculateCharacterCosts mutates the entry
       recalculateCharacterCosts(char.name, newRoster[char.name]);
     });
 
     // 3. Weapons
-    let newWeapons = [];
+    const newWeapons: TrackedWeapon[] = [];
     (goodPayload.weapons || []).forEach(w => {
        // Attempt to preserve target levels for weapons by matching name and assignment
        const existing = state.trackedWeapons.find(ew => ew.weaponName === w.weaponName && ew.assignedTo === w.location);
        const id = existing ? existing.id : crypto.randomUUID();
-       const newWeapon = {
+       const newWeapon: TrackedWeapon = {
          id,
          weapon_id: w.weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
          weaponName: w.weaponName,
@@ -67,7 +101,7 @@ export const createImportSlice = (set, get) => ({
        };
 
        // Calculate weapon costs if possible
-       const wData = weaponsData.find(wd => wd.name === newWeapon.weaponName);
+       const wData = weaponsData.find((wd: { name: string }) => wd.name === newWeapon.weaponName);
        if (wData) {
          newWeapon.costs = calculateWeaponCost(
             wData,
@@ -77,7 +111,7 @@ export const createImportSlice = (set, get) => ({
             newWeapon.targetAscension,
             newWeapon.hasEventBonus,
             Object.values(newRoster)
-         );
+         ) as WeaponCalculatedCosts;
        }
 
        newWeapons.push(newWeapon);
@@ -109,6 +143,6 @@ export const createImportSlice = (set, get) => ({
       googleConnected: false,
       googleUser: null,
       hoyolabConnected: false,
-    })
+    });
   },
 });

@@ -24,6 +24,13 @@ export interface TalentLevels {
  */
 export type CostMap = Record<MaterialKey, number>;
 
+export interface CharacterCalculatedCosts {
+  ascCosts: CostMap;
+  talentCosts: CostMap;
+}
+
+export type WeaponCalculatedCosts = Record<string, number | boolean | string | null | undefined>;
+
 /**
  * Roster Entry represents a character currently saved in the user's toolkit.
  * It contains levels, ascension, talents and their target equivalents.
@@ -37,7 +44,7 @@ export interface RosterEntry {
   targetTalents: TalentLevels;
   equippedWeaponId: TrackedWeaponId | null;
   tracked: boolean;
-  calculatedCosts: CostMap | null;
+  calculatedCosts: CharacterCalculatedCosts | null;
 }
 
 /**
@@ -53,14 +60,13 @@ export type Inventory = Record<MaterialKey, number>;
 
 /**
  * TrackedWeapon represents a weapon assigned to the armory.
- * `currentRefinement` and `targetRefinement` might be missing on older
- * imports, hence they are optional.
+ * `createdAt` and `weapon_id` might be missing in historical migrated state.
  * `costs` might be undefined if not yet calculated.
  * `assignedTo` is the character name, or null if unassigned.
  */
 export interface TrackedWeapon {
   id: TrackedWeaponId;
-  weapon_id: string; // The normalized ID string
+  weapon_id?: string; // The normalized ID string, historically optional
   weaponName: WeaponName;
   level: CharacterLevel;
   ascension: AscensionLevel;
@@ -69,8 +75,8 @@ export interface TrackedWeapon {
   currentRefinement?: RefinementLevel;
   targetRefinement?: RefinementLevel;
   assignedTo: CharacterName | null;
-  createdAt: number;
-  costs?: CostMap;
+  createdAt?: number; // Historically optional
+  costs?: WeaponCalculatedCosts;
   hasEventBonus?: boolean;
 }
 

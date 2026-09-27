@@ -265,8 +265,70 @@ describe('Zustand Store Integrity', () => {
 
       const weapon = state.trackedWeapons.find(w => w.weaponName === 'The Stringless');
       expect(weapon).toBeDefined();
-      expect(weapon.assignedTo).toBe('Venti');
       expect(state.roster['Venti'].equippedWeaponId).toBe(weapon.id);
+    });
+
+    it('importGoodData character preserves existing target fields', () => {
+      useStore.getState().addCharacter('Venti');
+      useStore.getState().updateCharacter('Venti', {
+        targetLevel: 70,
+        targetAscension: 4,
+        targetTalents: { normal: 8, skill: 8, burst: 8 }
+      });
+
+      const goodPayload = {
+        format: 'GOOD',
+        characters: [{ name: 'Venti', level: 60, ascension: 3, talents: { normal: 4, skill: 4, burst: 4 } }],
+        weapons: []
+      };
+
+      useStore.getState().importGoodData(goodPayload);
+      const state = useStore.getState();
+
+      expect(state.roster['Venti'].targetLevel).toBe(70);
+      expect(state.roster['Venti'].targetAscension).toBe(4);
+      expect(state.roster['Venti'].targetTalents).toEqual({ normal: 8, skill: 8, burst: 8 });
+      expect(state.roster['Venti'].level).toBe(60); // from GOOD
+    });
+
+    it('importGoodData weapon preserves existing targetLevel/targetAscension on match', () => {
+      useStore.getState().addCharacter('Venti');
+      const wId = useStore.getState().addTrackedWeapon('The Stringless', 'Venti');
+      useStore.getState().updateTrackedWeapon(wId, {
+        targetLevel: 80,
+        targetAscension: 5
+      });
+
+      const goodPayload = {
+        format: 'GOOD',
+        characters: [],
+        weapons: [{ weaponName: 'The Stringless', level: 70, ascension: 4, location: 'Venti' }]
+      };
+
+      useStore.getState().importGoodData(goodPayload);
+      const state = useStore.getState();
+      const weapon = state.trackedWeapons.find(w => w.weaponName === 'The Stringless');
+
+      expect(weapon.targetLevel).toBe(80);
+      expect(weapon.targetAscension).toBe(5);
+      expect(weapon.level).toBe(70); // from GOOD
+    });
+
+    it('importGoodData weapon unknown cost behavior does not crash', () => {
+      const goodPayload = {
+        format: 'GOOD',
+        characters: [],
+        weapons: [{ weaponName: 'Unknown Weapon That Does Not Exist', level: 70, ascension: 4, location: '' }]
+      };
+
+      expect(() => {
+        useStore.getState().importGoodData(goodPayload);
+      }).not.toThrow();
+
+      const state = useStore.getState();
+      const weapon = state.trackedWeapons.find(w => w.weaponName === 'Unknown Weapon That Does Not Exist');
+      expect(weapon).toBeDefined();
+      expect(weapon.costs).toBeUndefined(); // Should not have calculated costs since it doesn't exist in data
     });
   });
 

@@ -1,10 +1,44 @@
+import type { PersistedStore } from '../types/domain';
+
 export const STORE_NAME = 'travelers-toolkit-store';
 export const STORE_VERSION = 5;
 
-export const migrateStore = (persistedState, fromVersion) => {
+export interface LegacyRosterEntry extends Record<string, unknown> {
+  equippedWeapon?: string;
+  weaponLevel?: number;
+  weaponAscension?: number;
+  targetWeaponLevel?: number;
+  targetWeaponAscension?: number;
+  equippedWeaponId?: string | null;
+}
+
+export interface LegacyTrackedWeapon extends Record<string, unknown> {
+  currentRefinement?: number;
+  targetRefinement?: number;
+}
+
+export interface LegacyPersistedState extends Record<string, unknown> {
+  trackedWeapons?: LegacyTrackedWeapon[];
+  roster?: Record<string, LegacyRosterEntry>;
+  craftQueue?: unknown[];
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+export const migrateStore = (persistedState: unknown, fromVersion: number): unknown => {
+  // Defensive boundary: Zustand persisted state must be an object.
+  // We explicitly normalize malformed non-object inputs (like strings or arrays) to {}
+  // instead of spreading them, which differs slightly from historical JS behavior ({ ..."abc" })
+  // but safely prevents corrupted index-based properties.
+  let state: LegacyPersistedState = isRecord(persistedState)
+    ? (persistedState as LegacyPersistedState)
+    : {};
+
   // v1 → v2: convert old string `equippedWeapon` fields into `trackedWeapons` entries
   if (fromVersion < 2) {
-    const migrated = { ...persistedState }
+    const migrated = { ...state }
     migrated.trackedWeapons = migrated.trackedWeapons ?? []
     const roster = migrated.roster ?? {}
 
@@ -25,7 +59,7 @@ export const migrateStore = (persistedState, fromVersion) => {
       })
 
       // Update the roster entry to use the new ID
-      migrated.roster[charName] = {
+      migrated.roster![charName] = {
         ...entry,
         equippedWeaponId: id,
         // Remove legacy flat fields
@@ -36,18 +70,18 @@ export const migrateStore = (persistedState, fromVersion) => {
         targetWeaponAscension: undefined,
       }
     }
-    persistedState = migrated
+    state = migrated
   }
   // v2 → v3: introduce craftQueue slice
   if (fromVersion < 3) {
-    persistedState = { ...persistedState, craftQueue: persistedState.craftQueue ?? [] }
+    state = { ...state, craftQueue: state.craftQueue ?? [] }
   }
   // v3 → v4: migrate to refinement tracking, remove craftQueue
   if (fromVersion < 4) {
-    persistedState = { ...persistedState }
-    delete persistedState.craftQueue
-    if (persistedState.trackedWeapons) {
-      persistedState.trackedWeapons = persistedState.trackedWeapons.map((w) => ({
+    state = { ...state }
+    delete state.craftQueue
+    if (state.trackedWeapons) {
+      state.trackedWeapons = state.trackedWeapons.map((w) => ({
         ...w,
         currentRefinement: w.currentRefinement ?? 1,
         targetRefinement: w.targetRefinement ?? 1,
@@ -56,17 +90,17 @@ export const migrateStore = (persistedState, fromVersion) => {
   }
   // v4 → v5: remove authentication/session properties from persisted state
   if (fromVersion < 5) {
-    persistedState = { ...persistedState }
-    delete persistedState.googleAccessToken
-    delete persistedState.tokenExpiry
-    delete persistedState.googleUser
-    delete persistedState.hoyolabLtuid
-    delete persistedState.hoyolabLtoken
+    state = { ...state }
+    delete state.googleAccessToken
+    delete state.tokenExpiry
+    delete state.googleUser
+    delete state.hoyolabLtuid
+    delete state.hoyolabLtoken
   }
-  return persistedState
+  return state
 }
 
-export const partializeStore = (state) => ({
+export const partializeStore = (state: PersistedStore & Record<string, unknown>): PersistedStore => ({
   roster: state.roster,
   trackedWeapons: state.trackedWeapons,
   inventory: state.inventory,
