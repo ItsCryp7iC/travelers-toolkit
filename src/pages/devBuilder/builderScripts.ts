@@ -1,4 +1,4 @@
-export function generateNodeScript(stagedUpdates) {
+export function generateNodeScript(stagedUpdates: Record<string, unknown[]>): string {
   const stagedStr = JSON.stringify(stagedUpdates, null, 2);
   return `const fs = require('fs');
 const path = require('path');
@@ -37,7 +37,7 @@ Object.keys(stagedData).forEach(filename => {
 `;
 }
 
-export function generateAssetScript(stagedUpdates) {
+export function generateAssetScript(stagedUpdates: Record<string, unknown[]>): string {
   const stagedStr = JSON.stringify(stagedUpdates, null, 2);
   return `const fs = require('fs');
 const path = require('path');

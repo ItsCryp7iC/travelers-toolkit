@@ -58,4 +58,76 @@ describe('Backup Normalization', () => {
     };
     expect(() => normalizeBackupForImport(raw)).toThrow(/newer version/);
   });
+
+  it('rejects wrong app', () => {
+    const raw = {
+      app: 'wrong-app',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+      }
+    };
+    expect(() => normalizeBackupForImport(raw)).toThrow(/not a Traveler's Toolkit backup/);
+  });
+
+  it('rejects invalid createdAt', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: 'invalid-date',
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+      }
+    };
+    expect(() => normalizeBackupForImport(raw)).toThrow(/invalid or corrupted/);
+  });
+
+  it('rejects non-array trackedWeapons', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: {}, // Should be array
+        inventory: {},
+      }
+    };
+    expect(() => normalizeBackupForImport(raw)).toThrow(/invalid or corrupted/);
+  });
+
+  it('rejects non-string serverRegion', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        serverRegion: 123 // Should be string
+      }
+    };
+    expect(() => normalizeBackupForImport(raw)).toThrow(/invalid or corrupted/);
+  });
+
+  it('rejects non-boolean showDbBuilder', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        showDbBuilder: 'true' // Should be boolean
+      }
+    };
+    expect(() => normalizeBackupForImport(raw)).toThrow(/invalid or corrupted/);
+  });
 });
