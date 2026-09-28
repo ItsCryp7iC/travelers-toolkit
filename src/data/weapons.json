@@ -2609,9 +2609,9 @@
     "rarity": "★★★★★",
     "type": "Polearm",
     "materials": {
-      "ascension_material_family_id": "BlazingSacrificialHearts",
-      "enhancement_material_family_id": "FurnaceShellMountainWeasel",
-      "enemy_material_family_id": "NatlanSaurian"
+      "ascension_material_family_id": "LongNightFlints",
+      "enhancement_material_family_id": "WastelandWildHunt",
+      "enemy_material_family_id": "FatuiOprichniki"
     },
     "release_order": 5.312
   },
