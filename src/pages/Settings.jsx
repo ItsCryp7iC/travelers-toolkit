@@ -416,7 +416,36 @@ export default function Settings() {
           <p className="text-sm text-[var(--color-text-muted)]">
             Sync your characters, weapons, and materials using a GOOD format JSON file exported from Inventory Kamera.
           </p>
-          <div className="flex flex-col gap-3 mt-2">
+
+          <div className="bg-[var(--elevated)] p-4 rounded-lg border border-[var(--border)] mt-2">
+            <h3 className="text-sm font-bold text-[var(--color-text-main)] mb-1">Need a GOOD file?</h3>
+            <p className="text-xs text-[var(--color-text-muted)] mb-4 leading-relaxed">
+              Use the Traveler’s Toolkit-compatible Inventory Kamera fork to scan your Genshin characters, weapons, and materials and export them as a GOOD JSON file.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://github.com/ItsCryp7iC/Inventory_Kamera/releases/latest"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="genshin-btn flex-1 flex justify-center items-center gap-2 text-center"
+              >
+                <span>⬇️</span> Get Inventory Kamera
+              </a>
+              <a
+                href="https://github.com/ItsCryp7iC/Inventory_Kamera"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="genshin-btn-ghost flex-1 flex justify-center items-center gap-2 text-center"
+              >
+                <span>🔗</span> View on GitHub
+              </a>
+            </div>
+            <p className="text-[10px] text-[var(--color-text-muted)] mt-4 opacity-80 text-center">
+              Based on the open-source <a href="https://github.com/Andrewthe13th/Inventory_Kamera" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary transition-colors">Inventory Kamera project</a> and maintained for Traveler’s Toolkit compatibility.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 mt-1">
             <input
               type="file"
               accept=".json"
@@ -427,7 +456,7 @@ export default function Settings() {
             <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={handleGoodImportClick}>
               <span>🔄</span> Import GOOD Format JSON
             </button>
-            <p className="text-xs text-[var(--color-text-muted)] italic">
+            <p className="text-xs text-[var(--color-text-muted)] italic text-center">
               Note: This preserves your existing target levels and talents.
             </p>
           </div>
