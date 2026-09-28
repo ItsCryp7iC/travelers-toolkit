@@ -9,6 +9,7 @@ import Weapons from './pages/Weapons'
 import PlaceholderPage from './pages/PlaceholderPage'
 import Settings from './pages/Settings'
 import DevBuilder from './pages/DevBuilder'
+import Changelog from './pages/Changelog'
 import useStore from './store/useStore'
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
           />
           <Route path="planner"   element={<Planner />} />
           <Route path="inventory" element={<Inventory />} />
+          <Route path="changelog" element={<Changelog />} />
           <Route path="settings" element={<Settings />} />
           <Route path="builder" element={showDbBuilder ? <DevBuilder /> : <Navigate to="/" replace />} />
           {/* Catch-all redirect */}

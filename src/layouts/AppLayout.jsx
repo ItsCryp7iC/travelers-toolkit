@@ -13,6 +13,7 @@ const navItems = [
  { to: '/weapons', label: 'Weapons', icon: '/Weapons.png', id: 'nav-weapons' },
  { to: '/planner', label: 'Planner', icon: '/Planner.png', id: 'nav-planner' },
  { to: '/inventory', label: 'Inventory', icon: '/Inventory.png', id: 'nav-inventory' },
+ { to: '/changelog', label: 'Changelog', icon: '📝', id: 'nav-changelog' },
  { to: '/settings', label: 'Settings', icon: '⚙️', id: 'nav-settings' },
 ]
 

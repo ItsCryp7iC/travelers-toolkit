@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "changelog:generate": "node scripts/generate_changelog.cjs"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",
