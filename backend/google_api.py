@@ -1,31 +1,27 @@
-import os
-from dotenv import load_dotenv
-load_dotenv()
 import json
 import secrets
 import httpx
 import urllib.parse
 from fastapi import APIRouter, Request, Response, HTTPException, Depends
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
-from cryptography.fernet import Fernet, InvalidToken
+from cryptography.fernet import InvalidToken
 from pydantic import BaseModel, Field, ConfigDict
 import time
 from typing import Optional, Any, Literal
 
+from config import (
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    GOOGLE_REDIRECT_URI,
+    GOOGLE_REDIRECT_ORIGIN,
+    require_google_config,
+    get_cookie_set_options,
+    get_cookie_delete_options,
+    STATE_COOKIE_MAX_AGE,
+    GOOGLE_FERNET
+)
+
 router = APIRouter()
-
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
-GOOGLE_SESSION_KEY = os.getenv("GOOGLE_SESSION_KEY")
-
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-is_production = ENVIRONMENT.lower() == "production"
-
-if GOOGLE_SESSION_KEY:
-    google_fernet = Fernet(GOOGLE_SESSION_KEY.encode())
-else:
-    google_fernet = None
 
 COOKIE_NAME = "tt_google_session"
 STATE_COOKIE_NAME = "tt_google_oauth_state"
@@ -53,10 +49,8 @@ class BackupEnvelope(BaseModel):
     data: BackupData
 
 def get_google_fernet():
-    if not google_fernet:
-        raise HTTPException(status_code=500, detail="Google session key not configured")
-    return google_fernet
-
+    require_google_config()
+    return GOOGLE_FERNET
 
 
 async def get_valid_access_token(request: Request, response: Response):
@@ -105,17 +99,14 @@ async def get_valid_access_token(request: Request, response: Response):
             response.set_cookie(
                 key=COOKIE_NAME,
                 value=new_encrypted,
-                max_age=30 * 24 * 60 * 60,
-                httponly=True,
-                samesite="lax",
-                path="/",
-                secure=is_production
+                **get_cookie_set_options()
             )
 
     return access_token
 
 @router.get("/api/google/auth/start")
 async def start_google_auth(response: Response):
+    require_google_config()
     state = secrets.token_urlsafe(32)
     response = RedirectResponse(
         url=f"https://accounts.google.com/o/oauth2/v2/auth?client_id={GOOGLE_CLIENT_ID}&redirect_uri={urllib.parse.quote(GOOGLE_REDIRECT_URI)}&response_type=code&scope=https://www.googleapis.com/auth/drive.appdata%20https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/userinfo.email&access_type=offline&prompt=consent&state={state}"
@@ -123,11 +114,7 @@ async def start_google_auth(response: Response):
     response.set_cookie(
         key=STATE_COOKIE_NAME,
         value=state,
-        max_age=600,
-        httponly=True,
-        samesite="lax",
-        path="/",
-        secure=is_production
+        **get_cookie_set_options(max_age=STATE_COOKIE_MAX_AGE)
     )
     return response
 
@@ -136,9 +123,9 @@ async def google_auth_callback(request: Request, response: Response, code: str =
     expected_state = request.cookies.get(STATE_COOKIE_NAME)
 
     html_response = HTMLResponse(
-        content=f'<script>window.opener.postMessage({{type: "google_auth", success: false}}, "{urllib.parse.urlparse(GOOGLE_REDIRECT_URI).scheme}://{urllib.parse.urlparse(GOOGLE_REDIRECT_URI).netloc}"); window.close();</script>'
+        content=f'<script>window.opener.postMessage({{type: "google_auth", success: false}}, {json.dumps(GOOGLE_REDIRECT_ORIGIN)}); window.close();</script>'
     )
-    html_response.delete_cookie(key=STATE_COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+    html_response.delete_cookie(key=STATE_COOKIE_NAME, **get_cookie_delete_options())
 
     if error or not code or not state or not expected_state or not secrets.compare_digest(state, expected_state):
         return html_response
@@ -174,20 +161,15 @@ async def google_auth_callback(request: Request, response: Response, code: str =
         encrypted_session = fernet.encrypt(json.dumps(session_data).encode()).decode()
 
         success_response = HTMLResponse(
-            content=f'<script>window.opener.postMessage({{type: "google_auth", success: true}}, "{urllib.parse.urlparse(GOOGLE_REDIRECT_URI).scheme}://{urllib.parse.urlparse(GOOGLE_REDIRECT_URI).netloc}"); window.close();</script>'
+            content=f'<script>window.opener.postMessage({{type: "google_auth", success: true}}, {json.dumps(GOOGLE_REDIRECT_ORIGIN)}); window.close();</script>'
         )
-        success_response.delete_cookie(key=STATE_COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+        success_response.delete_cookie(key=STATE_COOKIE_NAME, **get_cookie_delete_options())
         success_response.set_cookie(
             key=COOKIE_NAME,
             value=encrypted_session,
-            max_age=30 * 24 * 60 * 60,
-            httponly=True,
-            samesite="lax",
-            path="/",
-            secure=is_production
+            **get_cookie_set_options()
         )
         return success_response
-
 @router.get("/api/google/session")
 async def check_google_session(request: Request, response: Response):
     try:
@@ -208,18 +190,18 @@ async def check_google_session(request: Request, response: Response):
                     }
                 }
             elif user_res.status_code == 401:
-                response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+                response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
                 return {"connected": False, "user": None}
             else:
                 return {"connected": False, "user": None}
     except GoogleAuthError as exc:
         if exc.clear_cookie:
-            response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+            response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
         return {"connected": False, "user": None}
 
 @router.delete("/api/google/session")
 async def disconnect_google_session(response: Response):
-    response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+    response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
     return {"connected": False}
 
 @router.post("/api/google/backups/manual")

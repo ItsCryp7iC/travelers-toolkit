@@ -1,5 +1,7 @@
 import useStore from '../store/useStore';
 
+const AUTH_TIMEOUT_MS = 2 * 60 * 1000;
+
 export const triggerGoogleAuth = () => {
   return new Promise((resolve) => {
     const width = 500;
@@ -17,7 +19,7 @@ export const triggerGoogleAuth = () => {
 
     const cleanup = () => {
       window.removeEventListener('message', handleMessage);
-      clearInterval(closePoll);
+      clearTimeout(authTimeout);
     };
 
     const finish = (result) => {
@@ -48,10 +50,8 @@ export const triggerGoogleAuth = () => {
 
     window.addEventListener('message', handleMessage);
 
-    const closePoll = setInterval(() => {
-      if (popup.closed) {
-        finish(false);
-      }
-    }, 500);
+    const authTimeout = setTimeout(() => {
+      finish(false);
+    }, AUTH_TIMEOUT_MS);
   });
 };

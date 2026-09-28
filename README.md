@@ -100,6 +100,16 @@ Requires Node.js and Python 3.x.
    python -m uvicorn main:app --reload
    ```
 
+### Production Configuration
+
+When deploying the backend to production, ensure the following environment variables are securely set. Note that session encryption keys (`HOYOLAB_SESSION_KEY`, `GOOGLE_SESSION_KEY`) must be valid Fernet keys, which can be securely generated using `cryptography.fernet.Fernet.generate_key()`.
+
+```dotenv
+ENVIRONMENT=production
+FRONTEND_ORIGINS=https://<your-frontend-domain>
+GOOGLE_REDIRECT_URI=https://<your-frontend-domain>/api/google/auth/callback
+```
+
 ---
 
 ## 🤖 Acknowledgments

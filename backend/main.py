@@ -1,31 +1,27 @@
-from dotenv import load_dotenv
-load_dotenv()
 from fastapi import FastAPI, HTTPException, Response, Request, Cookie
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import genshin
-import os
 import traceback
 import json
-from cryptography.fernet import Fernet
 from cryptography.fernet import InvalidToken
 from pydantic import BaseModel
 from google_api import router as google_router, GoogleAuthError
 
+from config import (
+    IS_PRODUCTION,
+    FRONTEND_ORIGINS,
+    HOYOLAB_FERNET,
+    get_cookie_set_options,
+    get_cookie_delete_options
+)
 
-HOYOLAB_SESSION_KEY = os.getenv("HOYOLAB_SESSION_KEY")
-if not HOYOLAB_SESSION_KEY:
-    raise ValueError("HOYOLAB_SESSION_KEY environment variable is missing. It must be a valid Fernet key.")
-
-fernet = Fernet(HOYOLAB_SESSION_KEY.encode())
-
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-is_production = ENVIRONMENT.lower() == "production"
-
-frontend_origins_str = os.getenv("FRONTEND_ORIGINS", "http://localhost:5173")
-frontend_origins = [origin.strip() for origin in frontend_origins_str.split(",") if origin.strip()]
-
-app = FastAPI(title="Traveler's Toolkit Backend")
+app = FastAPI(
+    title="Traveler's Toolkit Backend",
+    docs_url=None if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
+    openapi_url=None if IS_PRODUCTION else "/openapi.json"
+)
 
 @app.exception_handler(GoogleAuthError)
 async def google_auth_exception_handler(request: Request, exc: GoogleAuthError):
@@ -36,19 +32,17 @@ async def google_auth_exception_handler(request: Request, exc: GoogleAuthError):
     if exc.clear_cookie:
         response.delete_cookie(
             key="tt_google_session",
-            path="/",
-            samesite="lax",
-            secure=is_production
+            **get_cookie_delete_options()
         )
     return response
 
 # Add CORS middleware with explicit origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=frontend_origins,
+    allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 
 app.include_router(google_router)
@@ -56,10 +50,10 @@ app.include_router(google_router)
 class AuthPayload(BaseModel):
     ltuid: str
     ltoken: str
-    uid: int = None
+    uid: int | None = None
 
 class NotesPayload(BaseModel):
-    uid: int = None
+    uid: int | None = None
 
 COOKIE_NAME = "tt_hoyolab_session"
 COOKIE_MAX_AGE = 30 * 24 * 60 * 60 # 30 days in seconds
@@ -69,7 +63,7 @@ def auth_failure_response(detail: str):
         status_code=401,
         content={"detail": detail}
     )
-    response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+    response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
     return response
 
 @app.post("/api/hoyolab/session")
@@ -97,7 +91,7 @@ async def connect_hoyolab_session(payload: AuthPayload, response: Response):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal server error.")
         
     # If successful, encrypt the credentials
     session_data = {
@@ -105,16 +99,12 @@ async def connect_hoyolab_session(payload: AuthPayload, response: Response):
         "ltuid": ltuid,
         "ltoken": ltoken
     }
-    encrypted_session = fernet.encrypt(json.dumps(session_data).encode()).decode()
+    encrypted_session = HOYOLAB_FERNET.encrypt(json.dumps(session_data).encode()).decode()
     
     response.set_cookie(
         key=COOKIE_NAME,
         value=encrypted_session,
-        max_age=COOKIE_MAX_AGE,
-        httponly=True,
-        samesite="lax",
-        path="/",
-        secure=is_production
+        **get_cookie_set_options(max_age=COOKIE_MAX_AGE)
     )
     
     return {"connected": True}
@@ -126,22 +116,22 @@ async def check_hoyolab_session(request: Request, response: Response):
         return {"connected": False}
         
     try:
-        decrypted_data = fernet.decrypt(encrypted_session.encode()).decode()
+        decrypted_data = HOYOLAB_FERNET.decrypt(encrypted_session.encode()).decode()
         session_data = json.loads(decrypted_data)
         if not session_data.get("ltuid") or not session_data.get("ltoken"):
-            response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+            response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
             return {"connected": False}
         return {"connected": True}
     except InvalidToken:
-        response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+        response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
         return {"connected": False}
     except Exception:
-        response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+        response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
         return {"connected": False}
 
 @app.delete("/api/hoyolab/session")
 async def disconnect_hoyolab_session(response: Response):
-    response.delete_cookie(key=COOKIE_NAME, path="/", samesite="lax", secure=is_production)
+    response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
     return {"connected": False}
 
 @app.post("/api/notes")
@@ -151,7 +141,7 @@ async def get_real_time_notes(request: Request, response: Response, payload: Not
         raise HTTPException(status_code=401, detail="No HoYoLAB session found.")
         
     try:
-        decrypted_data = fernet.decrypt(encrypted_session.encode()).decode()
+        decrypted_data = HOYOLAB_FERNET.decrypt(encrypted_session.encode()).decode()
         session_data = json.loads(decrypted_data)
         ltuid = session_data.get("ltuid")
         ltoken = session_data.get("ltoken")
@@ -199,4 +189,8 @@ async def get_real_time_notes(request: Request, response: Response, payload: Not
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal server error.")
+
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok"}
