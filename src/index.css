@@ -983,3 +983,14 @@ body {
 .animate-swipe-prev {
   animation: swipeInPrev 0.25s ease-out forwards;
 }
+/* ──────────────────────────────────────────────
+   Table native horizontal scroll hiding
+─────────────────────────────────────────────── */
+.table-horizontal-scroll-source {
+  scrollbar-width: none;
+}
+
+.table-horizontal-scroll-source::-webkit-scrollbar {
+  height: 0;
+  display: none;
+}

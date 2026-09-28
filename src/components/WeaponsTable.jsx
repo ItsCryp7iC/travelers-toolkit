@@ -14,6 +14,7 @@ import forgingData from '../data/weapon_forging.json';
 import { calculateForgingCost } from '../utils/aggregator';
 import weaponsData from '../data/weapons.json';
 import useWeaponColumns from './Table/weapons/useWeaponColumns';
+import { FloatingHorizontalScrollbar } from './Table/FloatingHorizontalScrollbar';
 
 export default function WeaponsTable({
   data,
@@ -26,6 +27,7 @@ export default function WeaponsTable({
   const [activeMenu, setActiveMenu] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const menuRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   useEffect(() => {
     const handleDocumentClick = (e) => {
@@ -96,7 +98,7 @@ export default function WeaponsTable({
 
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-md relative pb-10">
-      <div className="overflow-x-auto custom-scrollbar">
+      <div className="overflow-x-auto custom-scrollbar table-horizontal-scroll-source" ref={scrollContainerRef}>
         <table className="w-full text-sm border-collapse whitespace-nowrap min-w-max">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
@@ -273,6 +275,7 @@ export default function WeaponsTable({
           </tbody>
         </table>
       </div>
+      <FloatingHorizontalScrollbar scrollContainerRef={scrollContainerRef} />
     </div>
   );
 }

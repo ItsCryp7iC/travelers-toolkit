@@ -11,6 +11,7 @@ import GenshinImage from './GenshinImage';
 import { formatNumber } from '../utils/calculator';
 import { UnifiedHeaderMenu } from './Table/UnifiedHeaderMenu';
 import useCharacterColumns from './Table/characters/useCharacterColumns';
+import { FloatingHorizontalScrollbar } from './Table/FloatingHorizontalScrollbar';
 
 export default function CharactersTable({
   data,
@@ -23,6 +24,7 @@ export default function CharactersTable({
   const [activeMenu, setActiveMenu] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const menuRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   useEffect(() => {
     const handleDocumentClick = (e) => {
@@ -120,7 +122,7 @@ export default function CharactersTable({
 
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-md relative pb-10">
-      <div className="overflow-x-auto custom-scrollbar">
+      <div className="overflow-x-auto custom-scrollbar table-horizontal-scroll-source" ref={scrollContainerRef}>
         <table className="w-full text-sm border-collapse whitespace-nowrap min-w-max">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
@@ -273,6 +275,7 @@ export default function CharactersTable({
           <div className="p-8 text-center text-[var(--muted)]">No characters found matching current filters.</div>
         )}
       </div>
+      <FloatingHorizontalScrollbar scrollContainerRef={scrollContainerRef} />
     </div>
   );
 }
