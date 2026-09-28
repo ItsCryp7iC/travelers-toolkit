@@ -291,8 +291,8 @@ export default function AppLayout() {
 
  {/* ── Sidebar ────────────────────────────────── */}
  <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`} id="app-sidebar">
- {/* Navigation */}
- <nav className="flex-1 py-4" aria-label="Main navigation">
+  {/* Navigation */}
+  <nav className={`sidebar-main-nav flex-1 min-h-0 py-4 ${isDesktopCollapsed ? 'max-md:overflow-y-auto max-md:overflow-x-hidden md:overflow-visible' : 'overflow-y-auto overflow-x-hidden'}`} aria-label="Main navigation">
   <div className="nav-header px-5 mb-2 flex items-center justify-between">
     <p className="nav-section-title text-xs text-[var(--muted)] tracking-widest uppercase m-0">
       Navigation
@@ -475,7 +475,7 @@ export default function AppLayout() {
 
  {/* Dev Tools */}
  {showDbBuilder && (
- <nav className="pb-2 border-b border-[var(--border)]" aria-label="Dev navigation">
+ <nav className="sidebar-dev-nav shrink-0 pt-2 pb-2 border-t border-b border-[var(--border)] bg-[#00041e]/90 relative z-10" aria-label="Dev navigation">
  <p className="nav-section-title px-5 mb-2 text-xs text-primary/60 tracking-widest uppercase">
  Dev Tools
  </p>

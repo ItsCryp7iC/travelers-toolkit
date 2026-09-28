@@ -994,3 +994,30 @@ body {
   height: 0;
   display: none;
 }
+
+/* ──────────────────────────────────────────────
+   Sidebar Navigation Scrollbar
+─────────────────────────────────────────────── */
+.sidebar-main-nav {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light) transparent;
+  /* Add tiny right padding so scrollbar doesn't overlap text/icons */
+  padding-right: 4px;
+}
+
+.sidebar-main-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-main-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-main-nav::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 999px;
+}
+
+.sidebar-main-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
