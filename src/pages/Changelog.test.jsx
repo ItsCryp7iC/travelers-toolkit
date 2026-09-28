@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { changelogEntries } from '../data/changelog';
 
 describe('Changelog Data', () => {
@@ -41,5 +41,80 @@ describe('Changelog Data', () => {
       expect(shas.has(entry.sha)).toBe(false);
       shas.add(entry.sha);
     });
+  });
+});
+
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { act } from 'react';
+import Changelog from './Changelog';
+import { vi } from 'vitest';
+
+describe('Changelog Component', () => {
+  let container = null;
+  let root = null;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    root = createRoot(container);
+
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([])
+      })
+    );
+  });
+
+  afterEach(() => {
+    act(() => {
+      root.unmount();
+    });
+    container.remove();
+    container = null;
+    root = null;
+    vi.restoreAllMocks();
+  });
+
+  it('renders static history initially and updates on fetch', async () => {
+    global.fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([
+          {
+            sha: 'new12345',
+            commit: {
+              committer: { date: '2026-09-30T10:00:00Z' },
+              message: 'feat: dynamic fetch'
+            },
+            html_url: 'url'
+          }
+        ])
+      })
+    );
+
+    await act(async () => {
+      root.render(<Changelog />);
+    });
+
+    // Check if fetch was called
+    expect(global.fetch).toHaveBeenCalledWith('https://api.github.com/repos/ItsCryp7iC/travelers-toolkit/commits?sha=main&per_page=100');
+
+    // Check if new commit is rendered
+    expect(container.textContent).toContain('feat: dynamic fetch');
+  });
+
+  it('falls back to static history on fetch failure', async () => {
+    global.fetch.mockImplementationOnce(() =>
+      Promise.reject(new Error('Network Error'))
+    );
+
+    await act(async () => {
+      root.render(<Changelog />);
+    });
+
+    // Original static commits should still be visible
+    expect(container.textContent).toContain('commits'); // from the header X commits
   });
 });

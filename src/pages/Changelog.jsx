@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { changelogEntries } from '../data/changelog';
+import { normalizeGitHubCommit, mergeChangelogEntries } from '../utils/changelogUtils';
 
 const typeStyles = {
   added: 'bg-green-500/20 text-green-400 border-green-500/30',
@@ -12,6 +13,35 @@ const typeStyles = {
 };
 
 export default function Changelog() {
+  const [mergedEntries, setMergedEntries] = useState(changelogEntries);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetch('https://api.github.com/repos/ItsCryp7iC/travelers-toolkit/commits?sha=main&per_page=100')
+      .then(res => {
+        if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (!isMounted || !Array.isArray(data)) return;
+
+        const remoteEntries = data
+          .map(normalizeGitHubCommit)
+          .filter(Boolean);
+
+        const newlyMerged = mergeChangelogEntries(changelogEntries, remoteEntries);
+        setMergedEntries(newlyMerged);
+      })
+      .catch(err => {
+        console.warn('Failed to fetch recent GitHub commits:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const dateFormatter = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'long',
@@ -26,7 +56,7 @@ export default function Changelog() {
 
   const groupedEntries = useMemo(() => {
     const groups = {};
-    changelogEntries.forEach(entry => {
+    mergedEntries.forEach(entry => {
       const dateObj = new Date(entry.timestamp);
       const dateKey = dateFormatter.format(dateObj);
       if (!groups[dateKey]) {
@@ -39,7 +69,7 @@ export default function Changelog() {
       groups[dateKey].entries.push(entry);
     });
     return Object.values(groups).sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
-  }, []);
+  }, [mergedEntries]);
 
   return (
     <div className="max-w-4xl mx-auto pb-12">
@@ -49,7 +79,7 @@ export default function Changelog() {
           Complete development history of Traveler's Toolkit.
         </p>
         <p className="text-sm text-[var(--muted)]/70">
-          {changelogEntries.length} commits
+          {mergedEntries.length} commits
         </p>
       </header>
 
