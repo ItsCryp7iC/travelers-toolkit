@@ -171,32 +171,124 @@ describe('Calculator Talent Regressions', () => {
 
 describe('Calculator Weapon Regressions', () => {
 
-  it('weapon exact no-op L90 A6 → L90 A6 returns no total_mora', () => {
-    const weapon = weaponsData.find(w => w.id === 'DullBlade');
-    expect(weapon).toBeDefined();
-    const cost = calculateWeaponCost(weapon, 90, 90, 6, 6, false, []);
-    expect(cost.total_mora).toBe(0);
-  });
+  const harbinger = weaponsData.find(w => w.id === 'HarbingerOfDawn');
+  const favonius = weaponsData.find(w => w.rarity === '★★★★');
+  const aquila = weaponsData.find(w => w.rarity === '★★★★★' && w.type === 'Sword');
+  const skywardHarp = weaponsData.find(w => w.rarity === '★★★★★' && w.type === 'Bow');
 
-  it('weapon normal progression L1 A0 → L90 A6', () => {
-    const weapon = weaponsData.find(w => w.id === 'DullBlade');
-    const cost = calculateWeaponCost(weapon, 1, 90, 0, 6, false, []);
-    expect(cost.total_mora).toBeGreaterThan(0);
-    expect(cost.mystic_ore).toBeGreaterThan(0);
+  it('3★ Harbinger of Dawn L80 A6 -> L90 A6 exact expected numbers', () => {
+    const cost = calculateWeaponCost(harbinger, 80, 90, 6, 6, false, {});
+    expect(cost.mystic_ore).toBe(163);
+    expect(cost.fine_ore).toBe(2);
+    expect(cost.normal_ore).toBe(2);
+    expect(cost.wasted_exp).toBe(325);
+    expect(cost.total_mora).toBe(163448);
+
+    // No ascension materials
+    expect(cost['3_star_ascension_material']).toBeUndefined();
+    expect(cost['4_star_enhancement_material']).toBeUndefined();
+    expect(cost['3_star_enemy_material']).toBeUndefined();
     assertValidQuantities(cost);
   });
 
-  it('weapon same-level ascension L80 A5 → L80 A6 (if supported)', () => {
-    const weapon = weaponsData.find(w => w.id === 'DullBlade');
-    const cost = calculateWeaponCost(weapon, 80, 80, 5, 6, false, []);
-    expect(cost.total_mora).toBeGreaterThan(0);
-    expect(cost.mystic_ore).toBe(0); // No ore needed for same level
+  it('4★ representative weapon L80 A6 -> L90 A6 no ascension materials', () => {
+    const cost = calculateWeaponCost(favonius, 80, 90, 6, 6, false, {});
+    expect(cost.mystic_ore).toBeGreaterThan(0);
+    expect(cost['4_star_ascension_material']).toBeUndefined();
+    expect(cost['5_star_ascension_material']).toBeUndefined();
+    assertValidQuantities(cost);
   });
 
-  it('weapon event bonus reduces exp needed', () => {
-    const weapon = weaponsData.find(w => w.id === 'DullBlade');
-    const costNormal = calculateWeaponCost(weapon, 1, 90, 0, 6, false, []);
-    const costBonus = calculateWeaponCost(weapon, 1, 90, 0, 6, true, []);
+  it('5★ representative weapon L80 A6 -> L90 A6 no ascension materials', () => {
+    const cost = calculateWeaponCost(aquila, 80, 90, 6, 6, false, {});
+    expect(cost.mystic_ore).toBeGreaterThan(0);
+    expect(cost['5_star_ascension_material']).toBeUndefined();
+    assertValidQuantities(cost);
+  });
+
+  it('Same-level ascension: L80 A5 -> L80 A6 zero ore, correct phase materials, correct ascension Mora', () => {
+    const cost = calculateWeaponCost(aquila, 80, 80, 5, 6, false, {});
+    expect(cost.mystic_ore).toBe(0);
+    expect(cost.fine_ore).toBe(0);
+    expect(cost.normal_ore).toBe(0);
+    expect(cost.total_mora).toBe(65000); // 5★ A6 is 65k
+    expect(cost['5_star_ascension_material']).toBe(6);
+    expect(cost['4_star_enhancement_material']).toBe(27);
+    expect(cost['3_star_enemy_material']).toBe(18);
+    assertValidQuantities(cost);
+  });
+
+  it('Earlier milestone: L40 A2 -> L50 A2 no ascension materials', () => {
+    const cost = calculateWeaponCost(aquila, 40, 50, 2, 2, false, {});
+    expect(cost.mystic_ore).toBeGreaterThan(0);
+    expect(cost['3_star_ascension_material']).toBeUndefined();
+    assertValidQuantities(cost);
+  });
+
+  it('Pre-ascension: L40 A1 -> L50 A2 exactly A1->A2 materials + enhancement', () => {
+    const cost = calculateWeaponCost(aquila, 40, 50, 1, 2, false, {});
+    expect(cost.mystic_ore).toBeGreaterThan(0);
+    expect(cost['3_star_ascension_material']).toBe(5);
+    expect(cost['2_star_enhancement_material']).toBe(18);
+    expect(cost['1_star_enemy_material']).toBe(12);
+    assertValidQuantities(cost);
+  });
+
+  it('Full progression: L1 A0 -> L90 A6 all phases once', () => {
+    const cost = calculateWeaponCost(aquila, 1, 90, 0, 6, false, {});
+    expect(cost.mystic_ore).toBeGreaterThan(0);
+    // 5+0+0+0+0+0
+    expect(cost['2_star_ascension_material']).toBe(5);
+    // 0+5+9+0+0+0
+    expect(cost['3_star_ascension_material']).toBe(14);
+    // 0+0+0+5+9+0
+    expect(cost['4_star_ascension_material']).toBe(14);
+    // 0+0+0+0+0+6
+    expect(cost['5_star_ascension_material']).toBe(6);
+    assertValidQuantities(cost);
+  });
+
+  it('Exact no-op: L90 A6 -> L90 A6', () => {
+    const cost = calculateWeaponCost(aquila, 90, 90, 6, 6, false, {});
+    expect(cost).toEqual({}); // The updated calculation correctly returns early
+  });
+
+  it('Event bonus reduces exp needed', () => {
+    const costNormal = calculateWeaponCost(aquila, 1, 90, 0, 6, false, {});
+    const costBonus = calculateWeaponCost(aquila, 1, 90, 0, 6, true, {});
     expect(costBonus.mystic_ore).toBeLessThan(costNormal.mystic_ore);
+    expect(costBonus.total_mora).toBeLessThan(costNormal.total_mora);
+  });
+
+  it('Passive discount: Raiden reduces Sword ascension mora by 50%', () => {
+    const costNormal = calculateWeaponCost(aquila, 80, 80, 5, 6, false, {});
+    const costDiscounted = calculateWeaponCost(aquila, 80, 80, 5, 6, false, { 'Raiden Shogun': {} });
+    expect(costDiscounted.total_mora).toBe(Math.ceil(costNormal.total_mora / 2));
+    expect(costDiscounted.has_ascension_discount).toBe(true);
+    expect(costDiscounted.discount_source).toBe('Raiden Shogun');
+  });
+
+  it('Passive discount: Wanderer reduces Bow ascension mora by 50%', () => {
+    const costNormal = calculateWeaponCost(skywardHarp, 80, 80, 5, 6, false, {});
+    const costDiscounted = calculateWeaponCost(skywardHarp, 80, 80, 5, 6, false, { 'Wanderer': {} });
+    expect(costDiscounted.total_mora).toBe(Math.ceil(costNormal.total_mora / 2));
+    expect(costDiscounted.has_ascension_discount).toBe(true);
+    expect(costDiscounted.discount_source).toBe('Wanderer');
+  });
+
+  it('Passive discount: Wanderer does NOT reduce Sword ascension mora', () => {
+    const costNormal = calculateWeaponCost(aquila, 80, 80, 5, 6, false, {});
+    const costDiscounted = calculateWeaponCost(aquila, 80, 80, 5, 6, false, { 'Wanderer': {} });
+    expect(costDiscounted.total_mora).toBe(costNormal.total_mora);
+    expect(costDiscounted.has_ascension_discount).toBe(false);
+  });
+
+  it('Invalid reverse progression returns empty object', () => {
+    const cost1 = calculateWeaponCost(aquila, 90, 80, 6, 5, false, {});
+    const cost2 = calculateWeaponCost(aquila, 80, 80, 6, 5, false, {});
+    const cost3 = calculateWeaponCost(aquila, 50, 40, 2, 2, false, {});
+    expect(cost1).toEqual({});
+    expect(cost2).toEqual({});
+    expect(cost3).toEqual({});
   });
 });

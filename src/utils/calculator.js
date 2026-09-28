@@ -121,7 +121,7 @@ function calculateDifference(startObj, targetObj, isDescending = true) {
   if (!startObj || !targetObj) return result;
   Object.keys(startObj).forEach(key => {
     if (key !== 'level') {
-      const diff = isDescending 
+      const diff = isDescending
         ? (startObj[key] || 0) - (targetObj[key] || 0)
         : (targetObj[key] || 0) - (startObj[key] || 0);
       if (diff > 0) result[key] = diff;
@@ -134,10 +134,10 @@ function calculateDifference(startObj, targetObj, isDescending = true) {
  * Milestone levels where an ascension gating exists.
  * At these levels, being "ascended" means lookup should use level+1
  * (the ascension materials are encoded in the gap between these rows).
- * 
+ *
  * EFFECTIVE LEVEL RULE (applied independently to both sides):
  *   effectiveLookupLevel = rawLevel + (1 if ascended past this milestone)
- * 
+ *
  * costs.json is a DESCENDING cumulative-remaining table:
  *   row[80] = total cost remaining from L80 pre-ascension to L90
  *   row[81] = total cost remaining from L80 post-ascension to L90
@@ -239,7 +239,7 @@ export function formatNumber(num) {
   if (num === undefined || num === null || isNaN(Number(num))) {
     return '0';
   }
-  
+
   const n = Number(num);
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
   if (n >= 10_000)    return n.toLocaleString()
@@ -320,20 +320,20 @@ export function calculateTalentCost(character, fromLv, toLv) {
   const tLv = extractLevel(toLv);
 
   const books = character?.materials?.talent_material_family_ids;
-  
+
   if (books && books.length === 3) {
     const total = {};
     for (let i = sLv; i < tLv; i++) {
        const cost = TALENT_LEVEL_COSTS[i - 1]; // since index 0 is 1->2
        if (!cost) continue;
-       
+
        total.mora = (total.mora || 0) + cost.mora;
        if (cost.mob[0]) total['1_star_enemy_material'] = (total['1_star_enemy_material'] || 0) + cost.mob[0];
        if (cost.mob[1]) total['2_star_enemy_material'] = (total['2_star_enemy_material'] || 0) + cost.mob[1];
        if (cost.mob[2]) total['3_star_enemy_material'] = (total['3_star_enemy_material'] || 0) + cost.mob[2];
        if (cost.weekly) total['weekly_boss_material'] = (total['weekly_boss_material'] || 0) + cost.weekly;
        if (cost.crown) total['crown'] = (total['crown'] || 0) + cost.crown;
-       
+
        if (cost.bookQty > 0) {
            const bookIndex = (i - 1) % 3;
            const bookFamily = books[bookIndex];
@@ -354,19 +354,19 @@ export function calculateAllTalentsCost(character, talents) {
   const auto = calculateTalentCost(character, talents?.auto?.current, talents?.auto?.target);
   const skill = calculateTalentCost(character, talents?.skill?.current, talents?.skill?.target);
   const burst = calculateTalentCost(character, talents?.burst?.current, talents?.burst?.target);
-  
+
   const total = {};
   [auto, skill, burst].forEach(tObj => {
     Object.entries(tObj).forEach(([k, v]) => {
       total[k] = (total[k] || 0) + v;
     });
   });
-  
+
   // Track individual mora for table breakdown
   total.mora_na = auto.mora || 0;
   total.mora_skill = skill.mora || 0;
   total.mora_burst = burst.mora || 0;
-  
+
   return total;
 }
 
@@ -407,7 +407,7 @@ export const DOMAIN_MAPPINGS = {
   'Contention': 'Blazing Ruins',
   'Kindling': 'Blazing Ruins',
   'Conflict': 'Blazing Ruins',
-  
+
   // Weapon Materials
   'Decarabian': 'Cecilia Garden',
   'BorealWolf': 'Cecilia Garden',
@@ -427,7 +427,7 @@ export const DOMAIN_MAPPINGS = {
   'SacrificialHeart': 'Ancient Watchtower',
   'DeliriousDecadence': 'Ancient Watchtower',
   'BlazingSacrificialHeart': 'Ancient Watchtower',
-  
+
   // Handling the grouped constants from WEAPON_MAT_GROUPS just in case:
   'GalesongQuill': 'Echoes of the Deep Tides',
 }
@@ -495,36 +495,70 @@ export function getDayLabel(day) {
 // ore:   Mystic Enhancement Ore equivalent (1 Mystic = 3 Fine = 9 Basic)
 
 const WEAPON_ASCENSION_5STAR = [
-  // A0→A1
-  { mora: 10000,  ascMat: [3,0,0,0], elite: [3,0,0], mob: [2,0,0] },
-  // A1→A2
-  { mora: 20000,  ascMat: [0,3,0,0], elite: [0,3,0], mob: [0,4,0] },
-  // A2→A3
-  { mora: 30000,  ascMat: [0,6,0,0], elite: [0,6,0], mob: [0,6,0] },
-  // A3→A4
-  { mora: 45000,  ascMat: [0,0,3,0], elite: [0,0,3], mob: [0,0,3] },
-  // A4→A5
-  { mora: 55000,  ascMat: [0,0,6,0], elite: [0,0,6], mob: [0,0,6] },
-  // A5→A6
-  { mora: 65000,  ascMat: [0,0,0,4], elite: [0,0,4], mob: [0,0,9] },
+  // A0→A1: T1 asc (5), T1 elite (5), T1 mob (3)
+  { mora: 10000,  ascMat: [5,0,0,0], elite: [5,0,0], mob: [3,0,0] },
+  // A1→A2: T2 asc (5), T1 elite (18), T1 mob (12)
+  { mora: 20000,  ascMat: [0,5,0,0], elite: [18,0,0], mob: [12,0,0] },
+  // A2→A3: T2 asc (9), T2 elite (9), T2 mob (9)
+  { mora: 30000,  ascMat: [0,9,0,0], elite: [0,9,0], mob: [0,9,0] },
+  // A3→A4: T3 asc (5), T2 elite (18), T2 mob (14)
+  { mora: 45000,  ascMat: [0,0,5,0], elite: [0,18,0], mob: [0,14,0] },
+  // A4→A5: T3 asc (9), T3 elite (14), T3 mob (9)
+  { mora: 55000,  ascMat: [0,0,9,0], elite: [0,0,14], mob: [0,0,9] },
+  // A5→A6: T4 asc (6), T3 elite (27), T3 mob (18)
+  { mora: 65000,  ascMat: [0,0,0,6], elite: [0,0,27], mob: [0,0,18] },
 ]
 
 const WEAPON_ASCENSION_4STAR = [
-  { mora: 5000,   ascMat: [3,0,0,0], elite: [2,0,0], mob: [1,0,0] },
-  { mora: 15000,  ascMat: [0,3,0,0], elite: [0,2,0], mob: [0,3,0] },
-  { mora: 20000,  ascMat: [0,6,0,0], elite: [0,4,0], mob: [0,5,0] },
-  { mora: 30000,  ascMat: [0,0,3,0], elite: [0,0,2], mob: [0,0,2] },
-  { mora: 35000,  ascMat: [0,0,6,0], elite: [0,0,4], mob: [0,0,4] },
-  { mora: 45000,  ascMat: [0,0,0,4], elite: [0,0,3], mob: [0,0,6] },
+  // Phase 0: T1 asc (3), T1 elite (3), T1 mob (2)
+  { mora: 5000,   ascMat: [3,0,0,0], elite: [3,0,0], mob: [2,0,0] },
+  // Phase 1: T2 asc (3), T1 elite (12), T1 mob (8)
+  { mora: 15000,  ascMat: [0,3,0,0], elite: [12,0,0], mob: [8,0,0] },
+  // Phase 2: T2 asc (6), T2 elite (6), T2 mob (6)
+  { mora: 20000,  ascMat: [0,6,0,0], elite: [0,6,0], mob: [0,6,0] },
+  // Phase 3: T3 asc (3), T2 elite (12), T2 mob (9)
+  { mora: 30000,  ascMat: [0,0,3,0], elite: [0,12,0], mob: [0,9,0] },
+  // Phase 4: T3 asc (6), T3 elite (9), T3 mob (6)
+  { mora: 35000,  ascMat: [0,0,6,0], elite: [0,0,9], mob: [0,0,6] },
+  // Phase 5: T4 asc (4), T3 elite (18), T3 mob (12)
+  { mora: 45000,  ascMat: [0,0,0,4], elite: [0,0,18], mob: [0,0,12] },
 ]
 
 const WEAPON_ASCENSION_3STAR = [
-  { mora: 5000,   ascMat: [2,0,0,0], elite: [1,0,0], mob: [1,0,0] },
-  { mora: 10000,  ascMat: [0,2,0,0], elite: [0,2,0], mob: [0,2,0] },
-  { mora: 15000,  ascMat: [0,4,0,0], elite: [0,3,0], mob: [0,3,0] },
-  { mora: 20000,  ascMat: [0,0,2,0], elite: [0,0,1], mob: [0,0,1] },
-  { mora: 25000,  ascMat: [0,0,4,0], elite: [0,0,2], mob: [0,0,3] },
-  { mora: 30000,  ascMat: [0,0,0,3], elite: [0,0,2], mob: [0,0,4] },
+  // Phase 0: T1 asc (2), T1 elite (2), T1 mob (1)
+  { mora: 5000,   ascMat: [2,0,0,0], elite: [2,0,0], mob: [1,0,0] },
+  // Phase 1: T2 asc (2), T1 elite (8), T1 mob (5)
+  { mora: 10000,  ascMat: [0,2,0,0], elite: [8,0,0], mob: [5,0,0] },
+  // Phase 2: T2 asc (4), T2 elite (4), T2 mob (4)
+  { mora: 15000,  ascMat: [0,4,0,0], elite: [0,4,0], mob: [0,4,0] },
+  // Phase 3: T3 asc (2), T2 elite (8), T2 mob (6)
+  { mora: 20000,  ascMat: [0,0,2,0], elite: [0,8,0], mob: [0,6,0] },
+  // Phase 4: T3 asc (4), T3 elite (6), T3 mob (4)
+  { mora: 25000,  ascMat: [0,0,4,0], elite: [0,0,6], mob: [0,0,4] },
+  // Phase 5: T4 asc (3), T3 elite (12), T3 mob (8)
+  { mora: 30000,  ascMat: [0,0,0,3], elite: [0,0,12], mob: [0,0,8] },
+]
+
+const WEAPON_ASCENSION_2STAR = [
+  // Phase 0: T1 asc (1), T1 elite (1), T1 mob (1)
+  { mora: 5000,   ascMat: [1,0,0,0], elite: [1,0,0], mob: [1,0,0] },
+  // Phase 1: T2 asc (1), T1 elite (5), T1 mob (4)
+  { mora: 10000,  ascMat: [0,1,0,0], elite: [5,0,0], mob: [4,0,0] },
+  // Phase 2: T2 asc (3), T2 elite (3), T2 mob (3)
+  { mora: 15000,  ascMat: [0,3,0,0], elite: [0,3,0], mob: [0,3,0] },
+  // Phase 3: T3 asc (1), T2 elite (5), T2 mob (4)
+  { mora: 20000,  ascMat: [0,0,1,0], elite: [0,5,0], mob: [0,4,0] },
+]
+
+const WEAPON_ASCENSION_1STAR = [
+  // Phase 0: T1 asc (1), T1 elite (1), T1 mob (1)
+  { mora: 5000,   ascMat: [1,0,0,0], elite: [1,0,0], mob: [1,0,0] },
+  // Phase 1: T2 asc (1), T1 elite (4), T1 mob (2)
+  { mora: 10000,  ascMat: [0,1,0,0], elite: [4,0,0], mob: [2,0,0] },
+  // Phase 2: T2 asc (2), T2 elite (2), T2 mob (2)
+  { mora: 15000,  ascMat: [0,2,0,0], elite: [0,2,0], mob: [0,2,0] },
+  // Phase 3: T3 asc (1), T2 elite (4), T2 mob (3)
+  { mora: 20000,  ascMat: [0,0,1,0], elite: [0,4,0], mob: [0,3,0] },
 ]
 
 // Weapon leveling mora cost (cumulative from 1 to each level — the delta approach)
@@ -634,7 +668,7 @@ export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
  *   hasAnyCost: boolean,
  * }
  */
-export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEventBonus = false, charactersRoster = []) {
+export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEventBonus = false, charactersRoster = {}) {
   let rarityNum = 5;
   if (weapon?.rarity) {
     rarityNum = typeof weapon.rarity === 'string' ? (weapon.rarity.match(/★/g) || []).length || parseInt(weapon.rarity) || 5 : weapon.rarity;
@@ -643,23 +677,41 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
   if (!costsData?.weapon_levels?.[rarity]) return {};
   const sLv = extractLevel(fromLv);
   const tLv = extractLevel(toLv);
+  const sAsc = fromAsc ?? 0;
+  const tAsc = toAsc ?? 6;
+
+  if (sLv > tLv || (sLv === tLv && sAsc >= tAsc)) {
+    return {};
+  }
+
   const arr = costsData.weapon_levels[rarity];
   const sObj = arr.find(x => x.level === sLv) || arr[0];
   const tObj = arr.find(x => x.level === tLv) || arr[arr.length - 1];
-  const result = calculateDifference(sObj, tObj, false); // Weapons ascend, so cost goes up
 
-  // Calculate precise ore distribution
+  // Base level differences (total_exp)
+  const result = calculateDifference(sObj, tObj, false);
+
+  // 1. Strip all stale ascension materials and mora from the cumulative level difference calculation
+  const keysToRemove = [
+    '5_star_ascension_material', '4_star_ascension_material', '3_star_ascension_material', '2_star_ascension_material',
+    '4_star_enhancement_material', '3_star_enhancement_material', '2_star_enhancement_material',
+    '3_star_enemy_material', '2_star_enemy_material', '1_star_enemy_material',
+    'mora', 'mystic_ore'
+  ];
+  keysToRemove.forEach(k => delete result[k]);
+
+  // 2. Calculate precise ore distribution and wasted exp
   let totalExpNeeded = result.total_exp || 0;
   if (hasEventBonus) {
     totalExpNeeded = Math.ceil(totalExpNeeded / 1.5);
   }
-  
+
   if (totalExpNeeded > 0) {
     const mysticOre = Math.floor(totalExpNeeded / 10000);
     const fineOre = Math.floor((totalExpNeeded % 10000) / 2000);
     const normalOre = Math.ceil((totalExpNeeded % 2000) / 400);
     const totalProvidedExp = (mysticOre * 10000) + (fineOre * 2000) + (normalOre * 400);
-    
+
     result.mystic_ore = mysticOre;
     result.fine_ore = fineOre;
     result.normal_ore = normalOre;
@@ -673,21 +725,38 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
 
   const enhancementMora = Math.ceil(totalExpNeeded / 10);
   let ascensionMora = 0;
-  
-  if (fromAsc !== undefined && toAsc !== undefined && toAsc > fromAsc) {
+
+  // 3. Add genuine ascension phase costs
+  if (sAsc < tAsc) {
     let ascArray = WEAPON_ASCENSION_5STAR;
     if (rarityNum === 4) ascArray = WEAPON_ASCENSION_4STAR;
-    if (rarityNum <= 3) ascArray = WEAPON_ASCENSION_3STAR;
-    
-    for (let i = fromAsc; i < toAsc; i++) {
-      if (ascArray[i]) {
-        ascensionMora += ascArray[i].mora || 0;
-      }
+    if (rarityNum === 3) ascArray = WEAPON_ASCENSION_3STAR;
+    if (rarityNum === 2) ascArray = WEAPON_ASCENSION_2STAR;
+    if (rarityNum === 1) ascArray = WEAPON_ASCENSION_1STAR;
+
+    for (let i = sAsc; i < tAsc; i++) {
+      const phase = ascArray[i];
+      if (!phase) continue;
+
+      ascensionMora += phase.mora || 0;
+
+      if (phase.ascMat[0]) result['2_star_ascension_material'] = (result['2_star_ascension_material'] || 0) + phase.ascMat[0];
+      if (phase.ascMat[1]) result['3_star_ascension_material'] = (result['3_star_ascension_material'] || 0) + phase.ascMat[1];
+      if (phase.ascMat[2]) result['4_star_ascension_material'] = (result['4_star_ascension_material'] || 0) + phase.ascMat[2];
+      if (phase.ascMat[3]) result['5_star_ascension_material'] = (result['5_star_ascension_material'] || 0) + phase.ascMat[3];
+
+      if (phase.elite[0]) result['2_star_enhancement_material'] = (result['2_star_enhancement_material'] || 0) + phase.elite[0];
+      if (phase.elite[1]) result['3_star_enhancement_material'] = (result['3_star_enhancement_material'] || 0) + phase.elite[1];
+      if (phase.elite[2]) result['4_star_enhancement_material'] = (result['4_star_enhancement_material'] || 0) + phase.elite[2];
+
+      if (phase.mob[0]) result['1_star_enemy_material'] = (result['1_star_enemy_material'] || 0) + phase.mob[0];
+      if (phase.mob[1]) result['2_star_enemy_material'] = (result['2_star_enemy_material'] || 0) + phase.mob[1];
+      if (phase.mob[2]) result['3_star_enemy_material'] = (result['3_star_enemy_material'] || 0) + phase.mob[2];
     }
   }
 
-  const hasRaiden = Object.keys(charactersRoster).includes('Raiden Shogun');
-  const hasWanderer = Object.keys(charactersRoster).includes('Wanderer');
+  const hasRaiden = charactersRoster && Object.keys(charactersRoster).includes('Raiden Shogun');
+  const hasWanderer = charactersRoster && Object.keys(charactersRoster).includes('Wanderer');
 
   let ascensionMultiplier = 1;
   let discountSource = null;
@@ -702,7 +771,7 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
 
   result.has_ascension_discount = !!discountSource;
   result.discount_source = discountSource;
-  
+
   ascensionMora = Math.ceil(ascensionMora * ascensionMultiplier);
 
   result.total_mora = enhancementMora + ascensionMora;
@@ -717,7 +786,7 @@ export const toggleMilestoneAscension = (level, currentAscension) => {
   if (level === 60) return currentAscension === 3 ? 4 : 3;
   if (level === 70) return currentAscension === 4 ? 5 : 4;
   if (level === 80) return currentAscension === 5 ? 6 : 5;
-  return currentAscension; 
+  return currentAscension;
 };
 
 export const isMilestone = (level) => [20, 40, 50, 60, 70, 80].includes(Number(level));
