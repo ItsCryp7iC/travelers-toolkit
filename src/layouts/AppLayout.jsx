@@ -35,13 +35,16 @@ const PLANNER_TABS = [
 
 const INVENTORY_TABS = [
  { id: 'currency_exp', label: 'Currency & Exp', icon: '/CurrencyExp.png' },
- { id: 'boss_drops', label: 'Boss Drops', icon: '/NormalBoss.png' },
+ { id: 'normal_boss', label: 'Normal Boss', icon: '/NormalBoss.png' },
+ { id: 'weekly_boss', label: 'Weekly Boss', icon: '/WeeklyBoss.png' },
  { id: 'talent_mats', label: 'Talent Mats', icon: '/TalentMats.png' },
- { id: 'enemy_drops', label: 'Enemy Drops', icon: '/CommonEnemy.png' },
+ { id: 'common_mats', label: 'Common Mats', icon: '/CommonEnemy.png' },
+ { id: 'elite_mats', label: 'Elite Mats', icon: '/EliteEnemy.png' },
  { id: 'weapon_asc', label: 'Weapon Asc', icon: '/WeaponAscMats.png' },
  { id: 'local_spec', label: 'Local Spec', icon: '/LocalSpecialties.png' },
  { id: 'character_gems', label: 'Character Gems', icon: '/Gems.png' },
- { id: 'forging_mats', label: 'Forging Mats', icon: '/Forging.png' },
+ { id: 'billet', label: 'Billet', icon: '/Forging.png' },
+ { id: 'forging_ore', label: 'Forging Ore', icon: '/Forging.png' },
 ];
 
 const devItems = [

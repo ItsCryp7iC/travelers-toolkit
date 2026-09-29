@@ -1,11 +1,11 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { getPrimaryInventoryList } from '../utils/dataManager'
 import { getRarityBg } from '../utils/gameData'
 import { getMaterialIcon } from '../utils/assetHelper'
 import GenshinImage from '../components/GenshinImage'
-
+import { getInventoryTabId, filterMaterialsByTab } from '../utils/inventoryFilters'
 // ─── Element / Gemstone Color Map ──────────────────────────────────────────
 const GEM_COLORS = {
   AgnidusAgate:     { color: '#F97316', label: 'Pyro',    emoji: '🔥' },
@@ -143,53 +143,18 @@ function QuickStats() {
 
 // ─── Main Inventory Page ─────────────────────────────────────────────────
 
-const TAB_MAP = {
-  'currency_exp': 'Currency & Experience',
-  'boss_drops': 'Boss Drops',
-  'talent_mats': 'Talent Materials',
-  'enemy_drops': 'Enemy Drops',
-  'weapon_asc': 'Weapon Ascension Material',
-  'local_spec': 'Local Specialty',
-  'character_gems': 'Character Ascension Gem',
-  'forging_mats': 'Forging Material',
-}
-
-const SUB_TABS = {
-  'Boss Drops': ['Normal Boss', 'Weekly Boss'],
-  'Enemy Drops': ['Common Enhancement Material', 'Elite Enhancement Material'],
-  'Forging Material': ['Billet', 'Forging Ore'],
-}
-
 export default function Inventory() {
   const [searchParams] = useSearchParams()
-  const tabParam = searchParams.get('tab') || 'currency_exp'
-  const activeTab = TAB_MAP[tabParam] || 'Currency & Experience'
-  
-  const [activeSubTab, setActiveSubTab] = useState('')
-
-  useEffect(() => {
-    if (SUB_TABS[activeTab]) {
-      setActiveSubTab(SUB_TABS[activeTab][0])
-    } else {
-      setActiveSubTab('')
-    }
-  }, [activeTab])
+  const tabParam = searchParams.get('tab')
+  const activeTabId = getInventoryTabId(tabParam)
 
   // Generate an exhaustive categorized list of all materials in the game
   const allMaterials = useMemo(() => getPrimaryInventoryList(), [])
 
   // Filter items based on active tabs
   const filteredMats = useMemo(() => {
-    return allMaterials.filter(mat => {
-      if (activeTab === 'Currency & Experience') {
-        return mat.category === 'Currency' || mat.category === 'Experience'
-      }
-      if (activeTab === 'Boss Drops' || activeTab === 'Enemy Drops' || activeTab === 'Forging Material') {
-        return mat.subCategory === activeSubTab
-      }
-      return mat.category === activeTab
-    })
-  }, [allMaterials, activeTab, activeSubTab])
+    return filterMaterialsByTab(allMaterials, activeTabId)
+  }, [allMaterials, activeTabId])
 
   return (
     <div className="animate-fade-in">
@@ -208,34 +173,6 @@ export default function Inventory() {
 
       {/* ── Quick Stats ── */}
       <QuickStats />
-
-
-      {/* ── Secondary Tabs ── */}
-      {SUB_TABS[activeTab] && (
-        <div className="flex flex-wrap gap-2 mb-6 justify-center">
-          {SUB_TABS[activeTab].map((sub) => (
-            <button
-              key={sub}
-              onClick={() => setActiveSubTab(sub)}
-              className="px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200"
-              style={
-                activeSubTab === sub
-                  ? {
-                      background: 'var(--gold)',
-                      color: '#000',
-                    }
-                  : {
-                      background: 'var(--surface)',
-                      color: 'var(--muted)',
-                      border: '1px solid var(--border)',
-                    }
-              }
-            >
-              {sub}
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* ── Content Grid ── */}
       <div className="animate-fade-in grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-6">
