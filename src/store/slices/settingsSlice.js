@@ -5,4 +5,6 @@ export const createSettingsSlice = (set, get) => ({
   setShowDbBuilder: (show) => set({ showDbBuilder: show }),
   autoBackupEnabled: false,
   setAutoBackupEnabled: (val) => set({ autoBackupEnabled: val }),
+  displayTimeZone: 'auto',
+  setDisplayTimeZone: (zone) => set({ displayTimeZone: zone }),
 });

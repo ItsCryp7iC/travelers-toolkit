@@ -5,7 +5,7 @@ import type { PersistedStore } from '../types/domain';
 export const BACKUP_SCHEMA_VERSION = 1 as const;
 export const BACKUP_APP_ID = 'travelers-toolkit' as const;
 
-export function getBackupPayload(state: Pick<PersistedStore, 'roster' | 'trackedWeapons' | 'inventory' | 'serverRegion' | 'showDbBuilder'>): BackupPayloadV1 {
+export function getBackupPayload(state: Pick<PersistedStore, 'roster' | 'trackedWeapons' | 'inventory' | 'serverRegion' | 'showDbBuilder' | 'displayTimeZone'>): BackupPayloadV1 {
   return {
     app: BACKUP_APP_ID,
     schemaVersion: BACKUP_SCHEMA_VERSION,
@@ -16,6 +16,7 @@ export function getBackupPayload(state: Pick<PersistedStore, 'roster' | 'tracked
       inventory: state.inventory,
       serverRegion: state.serverRegion,
       showDbBuilder: state.showDbBuilder,
+      displayTimeZone: state.displayTimeZone,
     }
   };
 }
@@ -26,6 +27,7 @@ interface ShallowValidatedBackupData {
   inventory: Record<string, unknown>;
   serverRegion?: string;
   showDbBuilder?: boolean;
+  displayTimeZone?: string;
 }
 
 function validateBackupData(data: unknown): asserts data is ShallowValidatedBackupData {
@@ -49,6 +51,9 @@ function validateBackupData(data: unknown): asserts data is ShallowValidatedBack
     throw new Error('The backup file is invalid or corrupted.');
   }
   if (d.showDbBuilder !== undefined && typeof d.showDbBuilder !== 'boolean') {
+    throw new Error('The backup file is invalid or corrupted.');
+  }
+  if (d.displayTimeZone !== undefined && typeof d.displayTimeZone !== 'string') {
     throw new Error('The backup file is invalid or corrupted.');
   }
 }
@@ -76,6 +81,7 @@ export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
       inventory: raw.inventory as NormalizedBackupData['inventory'],
       serverRegion: raw.serverRegion || 'Asia',
       showDbBuilder: raw.showDbBuilder ?? false,
+      displayTimeZone: raw.displayTimeZone || 'auto',
     };
   }
 
@@ -116,6 +122,7 @@ export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
     inventory: rawObj.data.inventory as NormalizedBackupData['inventory'],
     serverRegion: rawObj.data.serverRegion || 'Asia',
     showDbBuilder: rawObj.data.showDbBuilder ?? false,
+    displayTimeZone: rawObj.data.displayTimeZone || 'auto',
   };
 }
 

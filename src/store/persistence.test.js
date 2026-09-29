@@ -141,12 +141,14 @@ describe('Zustand Persistence Migrations', () => {
       googleUser: { name: 'Test' },
       googleAccessToken: 'secret',
       hoyolabConnected: true,
-      syncPayload: 'data'
+      syncPayload: 'data',
+      displayTimeZone: 'auto'
     };
     const result = partializeStore(fullState);
     const keys = Object.keys(result).sort();
     expect(keys).toEqual([
       'autoBackupEnabled',
+      'displayTimeZone',
       'goals',
       'inventory',
       'resinCount',

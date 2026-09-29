@@ -5,6 +5,7 @@ import { parseGoodData } from '../utils/goodParser';
 import { getBackupPayload, normalizeBackupForImport } from '../utils/backupUtils';
 import { triggerGoogleAuth } from '../utils/googleAuthHelper';
 import GoodImportModal from '../components/GoodImportModal';
+import { buildTimeZoneOptions, getTimeZoneDisplayLabel } from '../utils/timeZoneUtils';
 
 export default function Settings() {
   const {
@@ -19,13 +20,17 @@ export default function Settings() {
     setAutoBackupEnabled,
     importData,
     importGoodData,
-    resetStore
+    resetStore,
+    displayTimeZone,
+    setDisplayTimeZone
   } = useStore();
 
   const fileInputRef = useRef(null);
   const goodFileInputRef = useRef(null);
 
   const [pendingImportData, setPendingImportData] = useState(null);
+
+  const timeZoneOptions = buildTimeZoneOptions();
 
   // Cloud Sync State
   const [isSyncing, setIsSyncing] = useState(false);
@@ -462,10 +467,10 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Planner Preferences Card */}
+        {/* Regional Preferences Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
-            Planner Preferences
+            Regional Preferences
           </h2>
 
           <div className="flex flex-col gap-2">
@@ -483,6 +488,30 @@ export default function Settings() {
               <option value="EU">Europe</option>
               <option value="TW/HK/MO">TW, HK, MO</option>
             </select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-[var(--color-text-main)]">Display Time Zone</label>
+            <p className="text-xs text-[var(--color-text-muted)] mb-1">
+              Controls the exact fill times shown for Resin and Realm Currency.
+            </p>
+            <select
+              className="bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+              value={displayTimeZone}
+              onChange={(e) => setDisplayTimeZone(e.target.value)}
+            >
+              <option value="auto">Auto — Device time zone</option>
+              {timeZoneOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-[var(--color-text-muted)] mt-1">
+              {displayTimeZone === 'auto'
+                ? `Detected: ${getTimeZoneDisplayLabel(displayTimeZone)}`
+                : `Selected: ${getTimeZoneDisplayLabel(displayTimeZone)}`}
+            </p>
           </div>
         </div>
 

@@ -93,4 +93,5 @@ export interface PersistedStore {
   serverRegion: string;
   showDbBuilder: boolean;
   autoBackupEnabled: boolean;
+  displayTimeZone: string;
 }

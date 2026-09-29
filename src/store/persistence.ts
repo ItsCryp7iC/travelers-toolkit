@@ -1,7 +1,7 @@
 import type { PersistedStore } from '../types/domain';
 
 export const STORE_NAME = 'travelers-toolkit-store';
-export const STORE_VERSION = 5;
+export const STORE_VERSION = 6;
 
 export interface LegacyRosterEntry extends Record<string, unknown> {
   equippedWeapon?: string;
@@ -97,6 +97,10 @@ export const migrateStore = (persistedState: unknown, fromVersion: number): unkn
     delete state.hoyolabLtuid
     delete state.hoyolabLtoken
   }
+  // v5 → v6: add displayTimeZone setting
+  if (fromVersion < 6) {
+    state = { ...state, displayTimeZone: state.displayTimeZone ?? 'auto' }
+  }
   return state
 }
 
@@ -110,4 +114,5 @@ export const partializeStore = (state: PersistedStore & Record<string, unknown>)
   serverRegion: state.serverRegion,
   showDbBuilder: state.showDbBuilder,
   autoBackupEnabled: state.autoBackupEnabled,
+  displayTimeZone: state.displayTimeZone,
 })

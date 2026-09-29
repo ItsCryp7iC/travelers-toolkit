@@ -19,6 +19,7 @@ export interface ImportSliceState {
   serverRegion: string;
   showDbBuilder: boolean;
   autoBackupEnabled: boolean;
+  displayTimeZone: string;
   googleConnected: boolean;
   googleUser: unknown | null;
   hoyolabConnected: boolean;
@@ -40,6 +41,7 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
     inventory: data.inventory || {},
     serverRegion: data.serverRegion || 'Asia',
     showDbBuilder: data.showDbBuilder ?? false,
+    displayTimeZone: data.displayTimeZone || 'auto',
   }),
   importGoodData: (goodPayload) => set((state) => {
     // 1. Materials
@@ -140,6 +142,7 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
       serverRegion: 'Asia',
       showDbBuilder: false,
       autoBackupEnabled: false,
+      displayTimeZone: 'auto',
       googleConnected: false,
       googleUser: null,
       hoyolabConnected: false,

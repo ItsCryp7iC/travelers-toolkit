@@ -9,6 +9,7 @@ export interface BackupDataV1 {
   inventory: Inventory;
   serverRegion: string;
   showDbBuilder: boolean;
+  displayTimeZone?: string;
 }
 
 /**
@@ -30,9 +31,9 @@ export interface LegacyBackupV0 {
   schemaVersion?: undefined;
   roster: Roster;
   trackedWeapons: TrackedWeapon[];
-  inventory: Inventory;
   serverRegion?: string;
   showDbBuilder?: boolean;
+  displayTimeZone?: string;
 }
 
 /**
@@ -45,4 +46,5 @@ export interface NormalizedBackupData {
   inventory: Inventory;
   serverRegion: string;
   showDbBuilder: boolean;
+  displayTimeZone: string;
 }
