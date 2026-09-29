@@ -351,7 +351,7 @@ export default function PlannerTabContent({
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {totals.breakdown
                   .filter(entry => !entry.character && formatName(entry.name).toLowerCase().includes(weaponSearchQuery.toLowerCase()))
-                  .map((entry) => <WeaponPlanCard key={entry.name} entryObj={entry} inventory={inventory} categories={totals.categories} />)}
+                  .map((entry) => <WeaponPlanCard key={entry.entry.id} entryObj={entry} inventory={inventory} categories={totals.categories} />)}
               </div>
             )
             : <div className="text-center py-12 text-[var(--muted)]"><p>No stand-alone weapons match your search or have active goals yet.</p></div>

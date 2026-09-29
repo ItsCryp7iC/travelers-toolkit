@@ -510,8 +510,6 @@ export default function FarmableToday() {
   const weeklyNeeded  = toFarm.weeklyBoss || []
 
   if (Object.keys(roster).length === 0) return null
-
-  console.log("FarmableToday toFarm prop:", toFarm);
   return (
     <div
       className="rounded-2xl border overflow-hidden bg-[var(--surface)]"
