@@ -4,6 +4,8 @@ import CharactersTable from '../components/CharactersTable'
 import CharacterModal from '../components/CharacterModal'
 import AddCharacterModal from '../components/AddCharacterModal'
 import BulkEditCharacterModal from '../components/BulkEditCharacterModal'
+import SortDirectionButton from '../components/SortDirectionButton'
+import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
@@ -45,6 +47,7 @@ export default function Characters() {
   const [weaponFilter,  setWeaponFilter]  = useState('All')
   const [rarityFilter,  setRarityFilter]  = useState('All')
   const [sortOrder,     setSortOrder]     = useState('Release')
+  const [sortDirection, setSortDirection] = useState('asc')
   const [viewMode,      setViewMode]      = useState('table') // 'table' | 'card'
 
   const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
@@ -59,10 +62,10 @@ export default function Characters() {
       .map((name) => {
         const data = charactersData.find((c) => c.name === name)
         if (!data) return null
-        
+
         const sl_no = charactersData.findIndex((c) => c.name === name) + 1
         const entry = roster[name]
-        
+
         // Progression Math
         const fromLevel = entry.level ?? 1
         const fromAsc = entry.ascension ?? 0
@@ -70,11 +73,11 @@ export default function Characters() {
         const toAsc = entry.targetAscension ?? 6
 
         const ascCosts = calculateProgressionCost(data, fromLevel, toLevel, fromAsc, toAsc)
-        
+
         // Talent Math
         const talents = entry.talents || { normal: 1, skill: 1, burst: 1 }
         const targetTalents = entry.targetTalents || { normal: 1, skill: 1, burst: 1 }
-        
+
         const talentCosts = calculateAllTalentsCost(data, {
           auto: { current: talents.normal, target: targetTalents.normal },
           skill: { current: talents.skill, target: targetTalents.skill },
@@ -119,32 +122,31 @@ export default function Characters() {
         return cRarity === rFilterNum
       })
     }
-    
+
+    const dirMult = sortDirection === 'asc' ? 1 : -1;
     return [...list].sort((a, b) => {
       if (sortOrder === 'Release') {
-        const orderA = a.release_order ?? 999;
-        const orderB = b.release_order ?? 999;
-        return orderA - orderB;
-      }
-      if (sortOrder === 'Name') return a.name.localeCompare(b.name);
-      if (sortOrder === 'Rarity') {
+        return compareNullableNumber(a.release_order, b.release_order, sortDirection);
+      } else if (sortOrder === 'Name') {
+        return compareNullableString(a.name, b.name, sortDirection);
+      } else if (sortOrder === 'Rarity') {
         const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
         const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0);
-        return rarityB - rarityA; // Descending: 5-star to 4-star
-      }
-      if (sortOrder === 'Element') return (a.element || '').localeCompare(b.element || '');
-      if (sortOrder === 'Weapon') {
+        return (rarityA - rarityB) * dirMult;
+      } else if (sortOrder === 'Element') {
+        return compareNullableString(a.element, b.element, sortDirection);
+      } else if (sortOrder === 'Weapon') {
         const wA = a.weapon || a.weapon_type || '';
         const wB = b.weapon || b.weapon_type || '';
-        return wA.localeCompare(wB);
+        return compareNullableString(wA, wB, sortDirection);
       }
       return 0;
     });
-  }, [rostered, search, elementFilter, weaponFilter, rarityFilter, sortOrder])
+  }, [rostered, search, elementFilter, weaponFilter, rarityFilter, sortOrder, sortDirection])
 
   return (
     <div className="animate-fade-in">
-      <BulkEditCharacterModal 
+      <BulkEditCharacterModal
         isOpen={bulkModalOpen}
         onClose={() => setBulkModalOpen(false)}
         selectedIds={selectedNames}
@@ -231,8 +233,9 @@ export default function Characters() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm pointer-events-none">🔍</span>
                 <input type="search" placeholder="Search roster…" className="search-input w-full" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search roster" />
               </div>
-              
+
               {/* Sort dropdown */}
+              <div className="flex items-center gap-2">
               <div className="relative">
                 <select
                   id="sort-select"
@@ -249,7 +252,9 @@ export default function Characters() {
                 </select>
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
               </div>
-              
+              <SortDirectionButton direction={sortDirection} onToggle={setSortDirection} />
+              </div>
+
               <span className="text-[var(--muted)] text-xs whitespace-nowrap">{filtered.length} / {rostered.length} shown</span>
             </div>
 
@@ -313,13 +318,13 @@ export default function Characters() {
 
           {/* ── Table View ── */}
           {viewMode === 'table' && (
-            <CharactersTable 
-              data={filtered} 
-              selectedNames={selectedNames} 
-              setSelectedNames={setSelectedNames} 
-              setEditingChar={setEditingChar} 
-              updateCharacter={updateCharacter} 
-              removeCharacter={removeCharacter} 
+            <CharactersTable
+              data={filtered}
+              selectedNames={selectedNames}
+              setSelectedNames={setSelectedNames}
+              setEditingChar={setEditingChar}
+              updateCharacter={updateCharacter}
+              removeCharacter={removeCharacter}
             />
           )}
 

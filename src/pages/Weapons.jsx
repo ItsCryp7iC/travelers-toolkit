@@ -3,6 +3,8 @@ import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
 import BatchAddWeaponModal from '../components/BatchAddWeaponModal'
 import BulkEditWeaponModal from '../components/BulkEditWeaponModal'
+import SortDirectionButton from '../components/SortDirectionButton'
+import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import ForgingQueuePanel from '../components/ForgingQueuePanel'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../utils/characters'
@@ -58,6 +60,7 @@ export default function Weapons() {
   const [typeFilter,   setTypeFilter]   = useState('All')
   const [rarityFilter, setRarityFilter] = useState('All')
   const [sortOrder,    setSortOrder]    = useState('Release')
+  const [sortDirection, setSortDirection] = useState('asc')
   const [viewMode,     setViewMode]     = useState('table') // 'table' | 'card'
   const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
   const [bulkModalOpen, setBulkModalOpen] = useState(false)
@@ -99,40 +102,37 @@ export default function Weapons() {
       })
     }
     
+    const dirMult = sortDirection === 'asc' ? 1 : -1;
     return [...list].sort((a, b) => {
       if (sortOrder === 'Release') {
-        const orderA = a.data?.release_order ?? 999;
-        const orderB = b.data?.release_order ?? 999;
-        return orderA - orderB;
-      }
-      if (sortOrder === 'Name') return a.weaponName.localeCompare(b.weaponName);
-      if (sortOrder === 'Rarity') {
+        return compareNullableNumber(a.data?.release_order, b.data?.release_order, sortDirection);
+      } else if (sortOrder === 'Name') {
+        return compareNullableString(a.weaponName, b.weaponName, sortDirection);
+      } else if (sortOrder === 'Rarity') {
         const rarityA = typeof a.data?.rarity === 'string' ? (a.data.rarity.match(/★/g)?.length || parseInt(a.data.rarity) || 0) : (a.data?.rarity || 0);
         const rarityB = typeof b.data?.rarity === 'string' ? (b.data.rarity.match(/★/g)?.length || parseInt(b.data.rarity) || 0) : (b.data?.rarity || 0);
-        return rarityB - rarityA;
-      }
-      if (sortOrder === 'Type') return (a.data?.type || '').localeCompare(b.data?.type || '');
-      if (sortOrder === 'Character') {
+        return (rarityA - rarityB) * dirMult;
+      } else if (sortOrder === 'Type') {
+        return compareNullableString(a.data?.type, b.data?.type, sortDirection);
+      } else if (sortOrder === 'Character') {
         const charA_Name = a.assignedTo;
         const charB_Name = b.assignedTo;
 
-        if (!charA_Name && !charB_Name) return (a.data?.release_order ?? 999) - (b.data?.release_order ?? 999);
+        if (!charA_Name && !charB_Name) return compareNullableNumber(a.data?.release_order, b.data?.release_order, sortDirection);
         if (!charA_Name) return 1;
         if (!charB_Name) return -1;
 
         const charA = charactersData.find(c => c.name === charA_Name) || {};
         const charB = charactersData.find(c => c.name === charB_Name) || {};
         
-        const orderA = charA.release_order ?? 999;
-        const orderB = charB.release_order ?? 999;
+        const charOrderComp = compareNullableNumber(charA.release_order, charB.release_order, sortDirection);
+        if (charOrderComp !== 0) return charOrderComp;
         
-        if (orderA !== orderB) return orderA - orderB;
-        
-        return (a.data?.release_order ?? 999) - (b.data?.release_order ?? 999);
+        return compareNullableNumber(a.data?.release_order, b.data?.release_order, sortDirection);
       }
       return 0;
     })
-  }, [enriched, search, typeFilter, rarityFilter, sortOrder])
+  }, [enriched, search, typeFilter, rarityFilter, sortOrder, sortDirection])
 
   return (
     <div className="animate-fade-in">
@@ -260,6 +260,7 @@ export default function Weapons() {
               </div>
               
               {/* Sort dropdown */}
+              <div className="flex items-center gap-2">
               <div className="relative">
                 <select
                   id="sort-select"
@@ -275,6 +276,8 @@ export default function Weapons() {
                   <option value="Character">by Character</option>
                 </select>
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
+              </div>
+              <SortDirectionButton direction={sortDirection} onToggle={setSortDirection} />
               </div>
               
               <span className="text-[var(--muted)] text-xs whitespace-nowrap">{filtered.length} / {trackedWeapons.length} shown</span>

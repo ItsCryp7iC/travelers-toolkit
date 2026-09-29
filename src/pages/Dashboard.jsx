@@ -13,6 +13,8 @@ import useStore from '../store/useStore'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import GenshinImage from '../components/GenshinImage'
 import { getElementIcon, getWeaponTypeIcon, getCharacterAvatar } from '../utils/assetHelper'
+import SortDirectionButton from '../components/SortDirectionButton'
+import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 
 const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
 const ALL_WEAPONS = ['All', ...Object.keys(WEAPON_TYPES)]
@@ -104,9 +106,11 @@ export default function Dashboard() {
  const [weaponFilter, setWeaponFilter] = useState('All')
  const [rarityFilter, setRarityFilter] = useState('All')
  const [sortBy, setSortBy] = useState('Release') // 'Release' | 'Name' | 'Rarity' | 'Element'
+ const [sortDirection, setSortDirection] = useState('desc')
 
  // Filtered + sorted characters
  const filtered = useMemo(() => {
+ const dirMult = sortDirection === 'asc' ? 1 : -1;
  if (activeTab === 'characters') {
  let list = [...charactersData]
 
@@ -126,22 +130,20 @@ export default function Dashboard() {
 
  list.sort((a, b) => {
  if (sortBy === 'Release') {
- const orderA = parseFloat(a.release_order) || 0;
- const orderB = parseFloat(b.release_order) || 0;
- return orderB - orderA;
- }
- if (sortBy === 'Rarity') {
+ return compareNullableNumber(a.release_order, b.release_order, sortDirection);
+ } else if (sortBy === 'Rarity') {
  const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
  const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0);
- return rarityB - rarityA;
- }
- if (sortBy === 'Element') return (a.element || '').localeCompare(b.element || '')
- if (sortBy === 'Weapon') {
+ return (rarityA - rarityB) * dirMult;
+ } else if (sortBy === 'Element') {
+ return compareNullableString(a.element, b.element, sortDirection);
+ } else if (sortBy === 'Weapon') {
  const wA = a.weapon || a.weapon_type || '';
  const wB = b.weapon || b.weapon_type || '';
- return wA.localeCompare(wB);
+ return compareNullableString(wA, wB, sortDirection);
+ } else if (sortBy === 'Name') {
+ return compareNullableString(a.name, b.name, sortDirection);
  }
- if (sortBy === 'Name') return a.name.localeCompare(b.name)
  return 0;
  })
 
@@ -158,18 +160,20 @@ export default function Dashboard() {
  return matchesRarity;
  })
  list.sort((a, b) => {
- if (sortBy === 'Rarity' || sortBy === 'Release') {
- return (b.rarity || 0) - (a.rarity || 0)
+ if (sortBy === 'Release') {
+ return compareNullableNumber(a.release_order, b.release_order, sortDirection);
+ } else if (sortBy === 'Rarity') {
+ return ((a.rarity || 0) - (b.rarity || 0)) * dirMult;
+ } else if (sortBy === 'Weapon') {
+ return compareNullableString(a.type, b.type, sortDirection);
+ } else if (sortBy === 'Name') {
+ return compareNullableString(a.name, b.name, sortDirection);
  }
- if (sortBy === 'Weapon') {
- return (a.type || '').localeCompare(b.type || '')
- }
- if (sortBy === 'Name') return a.name.localeCompare(b.name)
  return 0;
  })
  return list
  }
- }, [activeTab, search, elementFilter, weaponFilter, rarityFilter, sortBy])
+ }, [activeTab, search, elementFilter, weaponFilter, rarityFilter, sortBy, sortDirection])
 
  // Stats
  const total5StarChars = charactersData.filter((c) => Number(c.rarity?.length || c.rarity || 0) === 5).length
@@ -318,6 +322,7 @@ export default function Dashboard() {
  </div>
 
  {/* Sort dropdown */}
+ <div className="flex items-center gap-2">
  <div className="relative">
  <select
  id="sort-select"
@@ -333,6 +338,8 @@ export default function Dashboard() {
  <option value="Weapon">by Weapon</option>
  </select>
  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
+ </div>
+ <SortDirectionButton direction={sortDirection} onToggle={setSortDirection} />
  </div>
 
  {/* Result count */}
