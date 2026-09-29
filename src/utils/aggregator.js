@@ -10,6 +10,7 @@ import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
 import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost, WEAPON_ORE_KEY } from './calculator'
 import { resolveSpecificItem } from './resolver'
+import { getOwnedQty } from './inventoryUtils'
 
 // Build a fast character lookup
 const CHAR_MAP = Object.fromEntries(charactersData.map((c) => [c.name, c]))
@@ -169,7 +170,7 @@ export function computeToFarm(totals, inventory) {
 
   const allItems = Object.entries(totalCosts)
     .map(([name, required]) => {
-      const owned = inv[name] || 0
+      const owned = getOwnedQty(inv, name)
       const toFarm = Math.max(0, required - owned)
       return {
         name,
@@ -189,11 +190,11 @@ export function computeToFarm(totals, inventory) {
   const filterCategory = (cat) => allItems.filter(item => item.category === cat)
 
   return {
-    mora: allItems.find(i => i.name === 'mora'),
-    heroWits: allItems.find(i => i.name === 'heros_wit'),
-    crown: allItems.find(i => i.name === 'crown_of_insight'),
-    mysticOre: allItems.find(i => i.name === 'mystic_enhancement_ore'),
-    stellaFortuna: allItems.find(i => i.name === 'masterless_stella_fortuna'),
+    mora: allItems.find(i => i.name === 'Mora'),
+    heroWits: allItems.find(i => i.name === 'HerosWit'),
+    crown: allItems.find(i => i.name === 'CrownOfInsight'),
+    mysticOre: allItems.find(i => i.name === 'MysticEnhancementOre'),
+    stellaFortuna: allItems.find(i => i.name === 'MasterlessStellaFortuna'),
     gemstones: filterCategory('gemstones'),
     worldBoss: filterCategory('worldBoss'),
     localSpecialty: filterCategory('localSpecialty'),
@@ -204,7 +205,7 @@ export function computeToFarm(totals, inventory) {
     eliteMob: filterCategory('eliteMob'),
     forgingMats: allItems.filter(item => item.category === 'billet' || item.category === 'forgingOre' || item.category === 'Forging Material'),
     totalItems: allItems.length,
-    allDone: allItems.length === 0,
+    allDone: allItems.every(i => i.toFarm === 0),
   }
 }
 
@@ -234,7 +235,7 @@ export function calculateForgingCost(weapon, currentRefinement, targetRefinement
     if (oreQty > 0) costs[ore.id] = oreQty;
   }
   if (recipe.mora) {
-    costs['mora'] = recipe.mora * delta;
+    costs['Mora'] = recipe.mora * delta;
   }
 
   return costs;
@@ -250,7 +251,7 @@ export function calculateForgingCost(weapon, currentRefinement, targetRefinement
  *   Category values for new material types:
  *     - 'billet'     for billet items (Northlander/Midlander/Borderland * type)
  *     - 'forgingOre' for regional ores (Crystal Chunk, Amethyst Lump, etc.)
- *     - 'mora'       for Mora cost
+ *     - 'Mora'       for Mora cost
  */
 export function getForgingCosts(trackedWeapons, forgingData) {
   const grandTotalCosts = {}
@@ -286,9 +287,9 @@ export function getForgingCosts(trackedWeapons, forgingData) {
         grandTotalRarities[ore.id] = 1
       }
     }
-    if (totalCosts['mora']) {
-      grandTotalCategories['mora'] = 'mora'
-      grandTotalRarities['mora'] = 1
+    if (totalCosts['Mora']) {
+      grandTotalCategories['Mora'] = 'mora'
+      grandTotalRarities['Mora'] = 1
     }
 
     // ── Merge into grand totals ─────────────────────────────────────────────

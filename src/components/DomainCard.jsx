@@ -34,11 +34,12 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
       {/* Body: Tier List */}
       <div className="p-3 space-y-3 flex-1">
         {familyData.tiers.map(tier => {
-          let required = globalCosts[tier.id] || 0;
+          let required = globalCosts[tier.id] ?? 0;
           if (items[tier.id]) {
-            required = items[tier.id].item.required || items[tier.id].item.toFarm || globalCosts[tier.id];
+            required = items[tier.id].item.required ?? items[tier.id].item.toFarm ?? globalCosts[tier.id] ?? 0;
           }
-          const owned = inventory[tier.id] || 0;
+          const owned = inventory[tier.id] ?? 0;
+          const toFarm = Math.max(0, required - owned);
 
           if (required === 0 && owned === 0 && familyObj.type !== 'currency') return null;
 
@@ -64,7 +65,7 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
                 <div className="flex items-center gap-3 text-xs flex-shrink-0">
                   <span className="text-[var(--muted)]">Need: <span className="font-bold text-[var(--text)]">{required}</span></span>
                   <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-bold">{owned}</span></span>
-                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
+                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: toFarm > 0 ? accent : 'var(--muted)' }}>{toFarm}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">

@@ -137,33 +137,42 @@ export const groupGemstones = (gemstones, totals, trackedWeapons) => {
   const allGems = gemstones || [];
 
   allGems.forEach(item => {
-    const rawName = item.name.toLowerCase();
-    const prefixMatch = rawName.match(/^(.*?)(sliver|fragment|chunk|gemstone)$/);
-    if (!prefixMatch) return;
+    let matchedFamily = null;
+    let matchedTierId = null;
 
-    const prefix = prefixMatch[1];
-    const cleanName = prefix.replace(/_+/g, ' ').trim();
-    const formattedFamilyName = cleanName.replace(/\b\w/g, l => l.toUpperCase());
-    const baseKey = formattedFamilyName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    for (const family of characterGemsData) {
+      if (matchedFamily) break;
+      for (const tierObj of Object.values(family.tiers)) {
+        if (tierObj.id === item.name) {
+          matchedFamily = family;
+          matchedTierId = tierObj.id;
+          break;
+        }
+      }
+    }
 
-    if (!groups[baseKey]) {
-      const jsonEntry = characterGemsData.find(g => g.id === baseKey);
+    if (!matchedFamily) return;
+
+    const familyKey = matchedFamily.id;
+    const familyName = matchedFamily.name;
+
+    if (!groups[familyKey]) {
       let jsonSortOrder = 999;
-      if (jsonEntry && jsonEntry.tiers) {
-        jsonSortOrder = Math.min(...Object.values(jsonEntry.tiers).map(t => t.sortOrder || 999));
+      if (matchedFamily.tiers) {
+        jsonSortOrder = Math.min(...Object.values(matchedFamily.tiers).map(t => t.sortOrder ?? 999));
       }
 
-      groups[baseKey] = {
-        familyName: formattedFamilyName,
-        familyKey: baseKey,
+      groups[familyKey] = {
+        familyName,
+        familyKey,
         jsonSortOrder,
         type: 'gemstones',
         familyData: {
           tiers: [
-            { id: `${prefix}sliver`, name: `${formattedFamilyName} Sliver`, rarity: 1 },
-            { id: `${prefix}fragment`, name: `${formattedFamilyName} Fragment`, rarity: 2 },
-            { id: `${prefix}chunk`, name: `${formattedFamilyName} Chunk`, rarity: 3 },
-            { id: `${prefix}gemstone`, name: `${formattedFamilyName} Gemstone`, rarity: 4 }
+            { id: matchedFamily.tiers['1_star'].id, name: matchedFamily.tiers['1_star'].name, rarity: 2 },
+            { id: matchedFamily.tiers['2_star'].id, name: matchedFamily.tiers['2_star'].name, rarity: 3 },
+            { id: matchedFamily.tiers['3_star'].id, name: matchedFamily.tiers['3_star'].name, rarity: 4 },
+            { id: matchedFamily.tiers['4_star'].id, name: matchedFamily.tiers['4_star'].name, rarity: 5 }
           ]
         },
         items: {},
@@ -171,13 +180,13 @@ export const groupGemstones = (gemstones, totals, trackedWeapons) => {
       };
     }
 
-    const neededBy = getNeededBy({ matKey: item.name, type: 'gemstones', totals, trackedWeapons });
+    const neededBy = getNeededBy({ matKey: matchedTierId, type: 'gemstones', totals, trackedWeapons });
 
-    groups[baseKey].items[item.name] = { item, neededBy };
+    groups[familyKey].items[matchedTierId] = { item, neededBy };
 
     neededBy.forEach(entity => {
-      if (!groups[baseKey].neededBy.find(e => e.name === entity.name)) {
-        groups[baseKey].neededBy.push(entity);
+      if (!groups[familyKey].neededBy.find(e => e.name === entity.name)) {
+        groups[familyKey].neededBy.push(entity);
       }
     });
   });
@@ -190,8 +199,7 @@ export const groupWeeklyBosses = (weeklyBoss, totals, trackedWeapons) => {
   const weeklyNeeded = weeklyBoss || [];
 
   weeklyNeeded.forEach(item => {
-    const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const bossData = weeklyBossData.find(b => b.id === normalizedKey || b.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
+    const bossData = weeklyBossData.find(b => b.id === item.name);
 
     if (!bossData) return;
     const bossName = bossData.boss_name || 'Unknown Boss';
@@ -236,8 +244,7 @@ export const groupNormalBosses = (worldBoss, totals, trackedWeapons) => {
   const bossNeeded = worldBoss || [];
 
   bossNeeded.forEach(item => {
-    const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const bossData = normalBossData.find(b => b.id === normalizedKey || b.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
+    const bossData = normalBossData.find(b => b.id === item.name);
 
     if (!bossData) return;
     const bossName = bossData.boss_name || 'Unknown Boss';
@@ -276,8 +283,7 @@ export const groupLocalSpecialties = (localSpecialty, totals, trackedWeapons) =>
   const localNeeded = localSpecialty || [];
 
   localNeeded.forEach(item => {
-    const normalizedKey = item.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const specialtyData = localSpecialtyData.find(s => s.id === normalizedKey || s.name.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedKey);
+    const specialtyData = localSpecialtyData.find(s => s.id === item.name);
 
     if (!specialtyData) return;
     const region = specialtyData.region || 'Unknown Region';
@@ -324,7 +330,7 @@ export const groupEliteEnemies = (eliteMob, totals, trackedWeapons) => {
     for (const enemy of eliteEnemyData) {
       if (matchedEnemy) break;
       for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
-        if (tierObj.name === item.name || tierObj.id.toLowerCase() === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
+        if (tierObj.id === item.name) {
           matchedEnemy = enemy;
           matchedTierId = tierObj.id;
           break;
@@ -377,7 +383,7 @@ export const groupCommonEnemies = (mob, totals, trackedWeapons) => {
     for (const enemy of commonEnemyData) {
       if (matchedEnemy) break;
       for (const [tierKey, tierObj] of Object.entries(enemy.tiers)) {
-        if (tierObj.name === item.name || tierObj.id.toLowerCase() === item.name.toLowerCase().replace(/[^a-z0-9]/g, '')) {
+        if (tierObj.id === item.name) {
           matchedEnemy = enemy;
           matchedTierId = tierObj.id;
           break;

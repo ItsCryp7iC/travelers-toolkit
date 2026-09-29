@@ -3,6 +3,8 @@ import weaponsData from '../data/weapons.json';
 import { getPrimaryInventoryList } from './dataManager';
 import type { MaterialKey, CharacterName, WeaponName } from '../types/domain';
 
+const normalizeIdentity = (value: unknown): string => String(value).replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
 let materialsLookup: Map<string, string> | null = null;
 
 const MATERIAL_ALIASES: Record<string, MaterialKey> = {};
@@ -13,10 +15,18 @@ export const resolveGoodMaterialKey = (goodKey: string): MaterialKey | null => {
     materialsLookup = new Map<string, string>();
     materials.forEach(mat => {
       materialsLookup!.set(mat.matKey, mat.matKey);
+      const normKey = normalizeIdentity(mat.matKey);
+      if (!materialsLookup!.has(normKey)) {
+        materialsLookup!.set(normKey, mat.matKey);
+      }
     });
   }
 
   if (materialsLookup.has(goodKey)) return materialsLookup.get(goodKey) as MaterialKey;
+
+  const normGoodKey = normalizeIdentity(goodKey);
+  if (materialsLookup.has(normGoodKey)) return materialsLookup.get(normGoodKey) as MaterialKey;
+
   if (MATERIAL_ALIASES[goodKey] && materialsLookup.has(MATERIAL_ALIASES[goodKey])) {
     return materialsLookup.get(MATERIAL_ALIASES[goodKey]) as MaterialKey;
   }
@@ -33,7 +43,7 @@ const CHARACTER_ALIASES: Record<string, CharacterName> = {
   'TravelerCryo': 'Traveler Cryo'
 };
 
-const normalizeIdentity = (value: unknown): string => String(value).replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
 
 let normalizedCharacters: Map<string, string[]> | null = null;
 let normalizedWeapons: Map<string, string[]> | null = null;

@@ -44,11 +44,11 @@ const getRarity = (key) => {
 export function resolveSpecificItem(genericKey, character = null, weapon = null, isAscension = false) {
   const rarity = getRarity(genericKey);
   
-  if (genericKey === 'mora') return { id: 'mora', category: 'mora', name: 'Mora', rarity: 3 }
-  if (genericKey === 'heros_wit') return { id: 'heros_wit', category: 'heroWits', name: "Hero's Wit", rarity: 4 }
-  if (genericKey === 'crown') return { id: 'crown_of_insight', category: 'crown', name: 'Crown of Insight', rarity: 5 }
-  if (genericKey === 'mystic_ore') return { id: 'mystic_enhancement_ore', category: 'mysticOre', name: 'Mystic Enhancement Ore', rarity: 3 }
-  if (genericKey === 'masterless_stella_fortuna') return { id: 'masterless_stella_fortuna', category: 'stellaFortuna', name: 'Masterless Stella Fortuna', rarity: 5 }
+  if (genericKey === 'mora') return { id: 'Mora', category: 'mora', name: 'Mora', rarity: 3 }
+  if (genericKey === 'heros_wit') return { id: 'HerosWit', category: 'heroWits', name: "Hero's Wit", rarity: 4 }
+  if (genericKey === 'crown') return { id: 'CrownOfInsight', category: 'crown', name: 'Crown of Insight', rarity: 5 }
+  if (genericKey === 'mystic_ore') return { id: 'MysticEnhancementOre', category: 'mysticOre', name: 'Mystic Enhancement Ore', rarity: 3 }
+  if (genericKey === 'masterless_stella_fortuna') return { id: 'MasterlessStellaFortuna', category: 'stellaFortuna', name: 'Masterless Stella Fortuna', rarity: 5 }
 
   // Character specific
   if (character && character.materials) {
@@ -65,20 +65,20 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null,
       const family = DB.gems[mats.gem_family_id]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
-        return { id: toSnakeCase(item.name), category: 'gemstones', name: item.name, rarity }
+        return { id: item.id || toSnakeCase(item.name), category: 'gemstones', name: item.name, rarity }
       }
     }
     
     // Normal Boss
     if (genericKey === 'boss_material') {
       const boss = DB.normal[mats.world_boss_material_id]
-      if (boss) return { id: toSnakeCase(boss.name), category: 'worldBoss', name: boss.name, rarity }
+      if (boss) return { id: boss.id || toSnakeCase(boss.name), category: 'worldBoss', name: boss.name, rarity }
     }
     
     // Local Specialty
     if (genericKey === 'local_specialty') {
       const local = DB.local[mats.local_specialty_id]
-      if (local) return { id: toSnakeCase(local.name), category: 'localSpecialty', name: local.name, rarity }
+      if (local) return { id: local.id || toSnakeCase(local.name), category: 'localSpecialty', name: local.name, rarity }
     }
     
     // Common Enemy (Character)
@@ -92,7 +92,7 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null,
       const family = DB.common[familyId]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
-        return { id: toSnakeCase(item.name), category: 'mob', name: item.name, rarity }
+        return { id: item.id || toSnakeCase(item.name), category: 'mob', name: item.name, rarity }
       }
     }
     
@@ -123,7 +123,7 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null,
     // Weekly Boss
     if (genericKey === 'weekly_boss_material') {
       const weekly = DB.weekly[mats.weekly_boss_material_id]
-      if (weekly) return { id: toSnakeCase(weekly.name), category: 'weeklyBoss', name: weekly.name, rarity }
+      if (weekly) return { id: weekly.id || toSnakeCase(weekly.name), category: 'weeklyBoss', name: weekly.name, rarity }
     }
   }
 
@@ -159,7 +159,7 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null,
       let family = DB.elite[mats.enhancement_material_family_id]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
-        return { id: toSnakeCase(item.name), category: 'eliteMob', name: item.name, rarity }
+        return { id: item.id || toSnakeCase(item.name), category: 'eliteMob', name: item.name, rarity }
       }
       return { id: genericKey, category: 'eliteMob', name: genericKey, rarity }
     }
@@ -174,7 +174,7 @@ export function resolveSpecificItem(genericKey, character = null, weapon = null,
       let family = DB.common[mats.enemy_material_family_id] || DB.elite[mats.enemy_material_family_id]
       if (family && family.tiers[tierMap[genericKey]]) {
         const item = family.tiers[tierMap[genericKey]]
-        return { id: toSnakeCase(item.name), category: 'mob', name: item.name, rarity }
+        return { id: item.id || toSnakeCase(item.name), category: 'mob', name: item.name, rarity }
       }
       return { id: genericKey, category: 'mob', name: genericKey, rarity }
     }

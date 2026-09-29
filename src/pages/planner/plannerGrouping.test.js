@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getNeededBy, groupTalentBooks } from './plannerGrouping';
+import { getNeededBy, groupTalentBooks, groupGemstones } from './plannerGrouping';
 
 describe('plannerGrouping', () => {
   describe('getNeededBy', () => {
@@ -113,6 +113,84 @@ describe('plannerGrouping', () => {
       // Should not contain undefined/Unknown regions or throw
       expect(grouped).not.toHaveProperty('undefined');
       expect(grouped).not.toHaveProperty('Unknown Region');
+    });
+  });
+
+  describe('groupGemstones', () => {
+    it('groups canonical gem tiers exactly', () => {
+      const gemstones = [
+        {
+          name: 'ShivadaJadeChunk',
+          required: 9,
+          owned: 5,
+          toFarm: 4,
+          category: 'gemstones'
+        }
+      ];
+      const totals = { breakdown: [] };
+      const trackedWeapons = [];
+
+      const grouped = groupGemstones(gemstones, totals, trackedWeapons);
+
+      expect(grouped).toHaveProperty('ShivadaJade');
+      const group = grouped['ShivadaJade'];
+
+      expect(group.familyName).toBe('Shivada Jade');
+      expect(group.type).toBe('gemstones');
+
+      // Tiers should be exact canonical IDs
+      const tierIds = group.familyData.tiers.map(t => t.id);
+      expect(tierIds).toEqual([
+        'ShivadaJadeSliver',
+        'ShivadaJadeFragment',
+        'ShivadaJadeChunk',
+        'ShivadaJadeGemstone'
+      ]);
+
+      // Items should be keyed by exact canonical ID
+      expect(group.items).toHaveProperty('ShivadaJadeChunk');
+      expect(group.items).not.toHaveProperty('shivadajadechunk');
+      expect(group.items).not.toHaveProperty('shivada_jade_chunk');
+    });
+
+    it('groups multiple families and preserves sort order', () => {
+      const gemstones = [
+        { name: 'ShivadaJadeChunk' },
+        { name: 'VajradaAmethystGemstone' }
+      ];
+      const totals = { breakdown: [] };
+      const trackedWeapons = [];
+
+      const grouped = groupGemstones(gemstones, totals, trackedWeapons);
+
+      expect(grouped).toHaveProperty('ShivadaJade');
+      expect(grouped).toHaveProperty('VajradaAmethyst');
+
+      const vajrada = grouped['VajradaAmethyst'];
+      expect(vajrada.items).toHaveProperty('VajradaAmethystGemstone');
+      expect(vajrada.jsonSortOrder).toBeDefined();
+    });
+
+    it('groups BrilliantDiamond safely', () => {
+      const gemstones = [
+        { name: 'BrilliantDiamondChunk' }
+      ];
+      const totals = { breakdown: [] };
+      const trackedWeapons = [];
+
+      const grouped = groupGemstones(gemstones, totals, trackedWeapons);
+
+      expect(grouped).toHaveProperty('BrilliantDiamond');
+      const diamond = grouped['BrilliantDiamond'];
+      expect(diamond.familyName).toBe('Brilliant Diamond');
+      const tierIds = diamond.familyData.tiers.map(t => t.id);
+      expect(tierIds).toEqual([
+        'BrilliantDiamondSliver',
+        'BrilliantDiamondFragment',
+        'BrilliantDiamondChunk',
+        'BrilliantDiamondGemstone'
+      ]);
+      expect(diamond.items).toHaveProperty('BrilliantDiamondChunk');
     });
   });
 });

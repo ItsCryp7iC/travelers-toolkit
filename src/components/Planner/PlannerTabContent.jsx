@@ -6,6 +6,7 @@ import CharacterPlanCard from '../CharacterPlanCard';
 import WeaponPlanCard from '../WeaponPlanCard';
 import { formatName } from '../../utils/gameData';
 import { REGION_ORDER, getScheduleWeight } from '../../pages/planner/plannerGrouping';
+import { buildCurrencyExpItems } from '../../utils/currencyUtils';
 
 export default function PlannerTabContent({
   activeTab,
@@ -183,44 +184,23 @@ export default function PlannerTabContent({
 
       {activeTab === 'currency_exp' && (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          {[
-            toFarm.mora || { name: 'mora', required: 0, owned: inventory['mora'] || 0, toFarm: 0, rarity: 3 },
-            toFarm.heroWits || { name: 'heros_wit', required: 0, owned: inventory['heros_wit'] || 0, toFarm: 0, rarity: 4 },
-            toFarm.mysticOre || { name: 'mystic_enhancement_ore', required: 0, owned: inventory['mystic_enhancement_ore'] || 0, toFarm: 0, rarity: 3 },
-            toFarm.crown || { name: 'crown_of_insight', required: 0, owned: inventory['crown_of_insight'] || 0, toFarm: 0, rarity: 5 },
-            toFarm.stellaFortuna || { name: 'masterless_stella_fortuna', required: 0, owned: inventory['masterless_stella_fortuna'] || 0, toFarm: 0, rarity: 4 }
-          ].map(item => {
-            const getDomainName = (name) => {
-              if (name === 'mora') return 'Common Currencies';
-              if (name === 'heros_wit') return 'Character Exp';
-              if (name === 'mystic_enhancement_ore') return 'Weapon Exp';
-              if (name === 'crown_of_insight') return 'Character Talent Materials';
-              if (name === 'masterless_stella_fortuna') return 'Character Awakening Materials';
-              return name.toUpperCase();
-            };
-            const getFolder = (name) => {
-              if (name === 'heros_wit' || name === 'mystic_enhancement_ore') return 'experience';
-              return 'others';
-            };
-
-            return (
-              <DomainCard
-                key={item.name}
-                domainName={getDomainName(item.name)}
-                familyObj={{
-                  type: 'currency',
-                  familyName: item.name,
-                  familyData: { tiers: [{ id: item.name, name: item.name, rarity: item.rarity || 4 }] },
-                  items: { [item.name]: { item: item } },
-                  neededBy: []
-                }}
-                accent="#FAB632"
-                globalCosts={totals.totalCosts}
-                inventory={inventory}
-                itemFolder={getFolder(item.name)}
-              />
-            )
-          })}
+          {buildCurrencyExpItems(toFarm, inventory).map(({ config, item }) => (
+            <DomainCard
+              key={config.id}
+              domainName={config.domainName}
+              familyObj={{
+                type: 'currency',
+                familyName: config.displayName,
+                familyData: { tiers: [{ id: config.id, name: config.displayName, rarity: config.rarity }] },
+                items: { [config.id]: { item: item } },
+                neededBy: []
+              }}
+              accent="#FAB632"
+              globalCosts={totals.totalCosts}
+              inventory={inventory}
+              itemFolder={config.folder}
+            />
+          ))}
         </div>
       )}
 
