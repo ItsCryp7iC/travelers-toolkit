@@ -1261,7 +1261,7 @@ Execution note: Although Phase A is listed first as the data/schema workstream, 
 
 ### Phase A — Data Research & Canonical Schema
 
-Status: Next active phase.
+Status: Complete — research and schema finalized.
 
 Goals:
 
@@ -1283,6 +1283,18 @@ Exit criteria:
 - source provenance documented;
 - validator strategy established;
 - no ambiguous identity decisions remain.
+
+Phase A Research Decisions:
+
+- **Primary Source**: `genshin-db-dist` via HTTP (avoids `npm` dependency). Provides highly structured data derived from Raw GenshinData.
+- **Secondary Source**: `Dimbreath/AnimeGameData` for manual ground-truth verification.
+- **Licensing/Provenance**: The `genshin-db` parser scripts are MIT, but the generated data originates from HoYoVerse game data. We will attribute ownership accordingly and treat this as derivative data.
+- **Canonical Achievement ID**: The numeric game ID. Multi-stage achievements (provided as ID arrays in `genshin-db`) will be **unrolled** into separate individual canonical achievement records to strictly maintain game identity. Scanner exports (like Akasha Scanner) use this exact canonical ID space.
+- **Canonical Category ID**: The numeric game category ID (`achievementGroupId` in `genshin-db`).
+- **HoYoLAB Mapping Strategy**: Direct 1:1 mapping. The canonical category ID perfectly matches the HoYoLAB ID (verified `set(genshinDbGroupIds) === set(hoyolabIds)` for all 73 categories). The numeric canonical category ID itself will serve as the HoYoLAB reconciliation ID with no additional mapping needed. If a future version diverges, we will introduce an explicit mapping layer.
+- **Version Metadata Strategy**: Rely on the `version` field from `genshin-db`. This is **curated secondary metadata**, not native game data, but is highly reliable.
+- **Dataset Update Strategy**: An update script (Phase C) will consume pinned `genshin-db-dist` JSONs via HTTP (fetching exact commits/tags, not mutable `main`). It will unroll multi-stage achievements, extract integer `primogems` from rewards, enforce validation (unique IDs, observed 5/10/20 rewards), and output perfectly deterministic JSON files (`categories.json`, `achievements.json`) with no embedded timestamps inside the generation output. 
+- **Managed Risks**: Handled via strict schema validation before generation, pinned source tracking in the manifest, and explicit validation of HoYoLAB ID equality.
 
 ### Phase B — HoYoLAB Achievement Proof of Concept
 
