@@ -15,7 +15,7 @@ This document outlines the investigation into candidate data sources for the can
 | **Description** | YES (Localized) | NO (Requires `TextMap` join via `descTextMapHash`) |
 | **Reward** | YES (`reward: { id: 201, name: 'Primogem', count: 5 }`) | YES (`finishRewardId: 800001`) (Requires `RewardExcelConfigData` join) |
 | **Hidden Flag** | YES (`isHidden: true`) | YES (`isShow: 'SHOWTYPE_HIDE'`) |
-| **Version Introduced** | CURATED SECONDARY METADATA (`version: '7.1'`) | NO (Must be inferred from file history) |
+| **Version Introduced** | CURATED SECONDARY METADATA (Requires dual-source join) | NO (Must be inferred from file history) |
 | **Ordering** | YES (`sortOrder`) | YES (`orderId`) |
 | **Localization** | YES (All languages) | YES (Via `TextMap`) |
 | **Primary Suitability** | Excellent | Poor (Too raw) |
@@ -90,8 +90,18 @@ This document outlines the investigation into candidate data sources for the can
 - **Clarification:** `isHidden != !show_percent`. HoYoLAB's `show_percent` governs progress bar visibility, whereas `isHidden` governs whether the achievement is visible in-game prior to completion.
 
 ### 4. Version Metadata Semantics
-- **Flag:** `version: '7.1'`
-- **Clarification:** This is CURATED SECONDARY METADATA provided by the `genshin-db` authors. It is not natively present in the raw Genshin Excel tables. It is highly reliable but should be treated as derived metadata. If missing, a fallback to "Unknown" should be used.
+- **Origin:** The `version` metadata (e.g. `version: '7.1'`) is **not** natively serialized inside the `genshin-db-dist` minified achievement JSON arrays.
+- **Artifact:** `genshin-db` curates this as secondary metadata located explicitly at `src/data/version/achievements.json` in the `genshin-db` repository. This file is keyed by internal `genshin-db` string identifiers (e.g., `thewindandthestartraveler`), **not** canonical numeric IDs.
+- **Deterministic Pipeline:** The generator performs the following strict resolution:
+  1. Load pinned `genshin-db-dist` achievement definitions.
+  2. Acknowledge each source achievement has both an internal `genshin-db` identifier and canonical numeric game achievement ID(s).
+  3. Load curated version metadata keyed by the internal identifier from the pinned `genshin-db` metadata artifact.
+  4. Resolve the internal identifier against that SAME pinned source record.
+  5. Expand the version onto the canonical numeric ID(s).
+  6. Build `canonicalVersionMap` keyed exclusively by canonical numeric ID.
+  7. Canonical generation thereafter joins ONLY by canonical ID.
+- **Invariants:** Never join by display name. Never fuzzy-match. Unknown version identifiers, duplicate canonical version mappings, and ambiguous mappings must fail the pipeline. The internal string identifier is strictly discarded and never becomes a Traveler's Toolkit identity.
+- **Null Fallback:** If the `genshin-db` metadata artifact genuinely lacks a mapping for an identifier, it gracefully falls back to `null` to ensure schema stability without fabricating versions.
 
 ### 5. Ordering Semantics
 - **Category Order:** Determined by the source-native `sortOrder` field (which dictates in-game category display).
@@ -131,10 +141,21 @@ The updater must embed a top-level manifest to avoid duplication per record and 
 {
   "schemaVersion": 1,
   "gameVersion": "7.1",
-  "source": "genshin-db",
-  "sourceRevision": "fab708f",
-  "genshinDbVersion": "5.2.14",
-  "data": [ ... ]
+  "source": {
+    "definitions": {
+      "repository": "theBowja/genshin-db-dist",
+      "revision": "371c228cabc9e182995919e595d67409823a0bbe",
+      "genshinDbVersion": "5.2.14",
+      "groupsSha256": "...",
+      "achievementsSha256": "..."
+    },
+    "metadata": {
+      "repository": "theBowja/genshin-db",
+      "revision": "fab708f16795231fde199f39ecfb6ffb9eeb0b4e",
+      "versionsSha256": "..."
+    }
+  },
+  "artifacts": { ... }
 }
 ```
 *Note:* Generation must be perfectly deterministic. Do NOT use current date/time inside deterministic generated data if it makes identical builds differ (e.g. `generatedAt`).
@@ -144,7 +165,10 @@ The updater must embed a top-level manifest to avoid duplication per record and 
 ## 5. Updater Architecture (Phase C Design)
 
 **Target:** `scripts/update-achievements.js`
-- **Pinned-Source Strategy:** Phase C updater must NOT fetch mutable `main` as the canonical generation input. It must pin an exact `genshin-db` / `genshin-db-dist` release, tag, or commit. (For the currently researched source: `genshin-db v5.2.14`, game data version `7.1`).
+- **Pinned-Source Strategy:** Phase C updater must NOT fetch mutable `main` as the canonical generation input. It must pin two precise immutable revisions:
+  - **Definitions Source**: `genshin-db-dist` pinned commit (supplies canonical groups and achievements arrays)
+  - **Metadata Source**: `genshin-db` pinned commit (supplies curated version metadata file)
+  (For the currently researched source: `genshin-db-dist` commit `371c228`, `genshin-db` commit `fab708f`, game data version `7.1`).
 - **Dependency:** Fetch pinned raw JSON from `theBowja/genshin-db-dist` via HTTP during generation. **No npm dependency** (`dependencies` or `devDependencies`) will be added to Traveler's Toolkit, keeping the project light.
 - **Normalization steps:**
   1. Fetch `achievementgroups.json` and `achievements.json` from `genshin-db-dist` (pinned revision).

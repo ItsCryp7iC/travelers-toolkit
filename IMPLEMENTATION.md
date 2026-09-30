@@ -1335,20 +1335,23 @@ Exit criteria:
 
 ### Phase C — Achievement Static Data Pipeline
 
-Goals:
+**Status**: Complete — generation pipeline implemented, deterministic, validated, and awaiting commit.
 
-- implement canonical achievement/category files;
-- add dataset validator;
-- document update process;
-- ensure duplicate IDs are impossible;
-- establish deterministic sorting.
+**Generator Architecture & Validation**:
+- **Generator Script**: `scripts/update-achievements.mjs`
+- **Output Artifacts**: `src/data/achievements/{categories.json, achievements.json, manifest.json}`
+- **Modes Supported**: `--write` (default, writes to disk) and `--check` (generates in-memory and asserts identical byte-for-byte output against disk).
+- **Validation**: Enforces 73 category count constraint, validates ID uniqueness (including ID `0`), asserts expected primogem counts (`5, 10, 20`), and verifies stable categorical integrity.
 
-Exit criteria:
-
-- complete current-version dataset;
-- validator passes;
-- provenance documented;
-- tests added.
+**Snapshot Details**:
+- **Source Definitions**: Pinned `genshin-db-dist` commit `371c228cabc9e182995919e595d67409823a0bbe`.
+- **Source Metadata**: Pinned `genshin-db` commit `fab708f16795231fde199f39ecfb6ffb9eeb0b4e`.
+- **Game Version**: `7.1` (Toolkit database corresponds to `genshin-db v5.2.14`)
+- **Category Count**: 73 categories
+- **Achievement Count**: 1854 canonical records (unrolled from 1558 raw source objects: 1410 scalar, 148 multi-stage)
+- **Version Coverage**: 100% (1854 mapped, 0 null)
+- **Visibility**: 1002 hidden, 852 visible
+- **Reward Distribution**: 1281 (5 Primogems), 378 (10 Primogems), 195 (20 Primogems)
 
 ### Phase D — Achievement Store & Persistence
 

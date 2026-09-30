@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "7.1",
+  "source": {
+    "definitions": {
+      "repository": "theBowja/genshin-db-dist",
+      "revision": "371c228cabc9e182995919e595d67409823a0bbe",
+      "genshinDbVersion": "5.2.14",
+      "artifacts": {
+        "groups": {
+          "path": "data/gzips/english-achievementgroups.min.json.gzip",
+          "sha256": "33304b411ec25efdbf9bfcaabfdd1d06a3a11352b304aa45933600b2ebeb5370"
+        },
+        "achievements": {
+          "path": "data/gzips/english-achievements.min.json.gzip",
+          "sha256": "50b4729a66d81527884273d1ec5db4f3d026a8da231ca38a4dfc8136bb19436f"
+        }
+      }
+    },
+    "metadata": {
+      "repository": "theBowja/genshin-db",
+      "revision": "fab708f16795231fde199f39ecfb6ffb9eeb0b4e",
+      "artifacts": {
+        "versions": {
+          "path": "src/data/version/achievements.json",
+          "sha256": "8a98326bb94f2780c072ccf8defb943d3c94cf6fc413586296021fd9d39c115a"
+        }
+      }
+    }
+  },
+  "artifacts": {
+    "categories": {
+      "count": 73,
+      "sha256": "463dbeea42a767ab3a6331f9de1d37d8ce1c219f7d4da369d3893041904ddc6a"
+    },
+    "achievements": {
+      "count": 1854,
+      "sha256": "33285a71069816203784e27732af37e454a32a3c06a37eab63f386c0d849a1f9"
+    }
+  }
+}
