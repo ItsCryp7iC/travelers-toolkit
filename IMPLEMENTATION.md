@@ -1366,7 +1366,21 @@ Exit criteria:
 - **Migration Behavior**: Migrates `< v7` seamlessly by appending `achievementProgress: {}` idempotently.
 - **Backup Integration**: `achievementProgress` is normalized, validated against canonical IDs, and bundled into Schema v1 backups. Legacy v0 backups and backups missing the field import gracefully using `{}`.
 
-### Phase E — Base Achievements Page
+### Phase E — Base Achievements UI
+
+**Status**: Complete — local Achievements UI foundation implemented and validated; awaiting commit.
+
+**Implementation Details**:
+- **Route**: Added `/achievements` route in `App.jsx`.
+- **Navigation**: Added to sidebar (`navItems`) in `AppLayout.jsx` with a 🏆 icon, placed beneath Inventory.
+- **Derived Stats**: Created `src/utils/achievementStats.js` with pure functions to compute overall and category-level progress (counts, Primogems, percentages) using the canonical dataset.
+- **Overall Progress**: Displays total completed vs total canonical achievements, percentage, and total Primogems earned using local `achievementProgress`.
+- **Category Browsing**: Renders all 73 categories with progress bars, percentages, and handles the "0" ID ("Wonders of the World") securely. URL query params (`?category=id`) track the active selection.
+- **Achievement List**: Shows achievements for the selected category. Checkboxes directly interact with `setAchievementCompleted` from Zustand. Repeated toggling correctly adds or removes `completedAt`.
+- **Metadata Display**: Badges for "Secret" (hidden) and canonical version ("vX.X") are displayed alongside the Primogem reward value.
+- **Search & Filters**: Added basic client-side name/description search and a status filter (All, Incomplete, Completed).
+- **Responsive Layout**: Uses a two-column flex layout (categories on left, achievements on right) which stacks elegantly on mobile.
+- **Tests**: Created `src/pages/Achievements.test.jsx` verifying 14 key interaction constraints (routing, rendering, completion, filtering, metadata, empty states).
 
 Goals:
 

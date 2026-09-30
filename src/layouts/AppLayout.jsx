@@ -13,6 +13,7 @@ const navItems = [
  { to: '/weapons', label: 'Weapons', icon: '/Weapons.png', id: 'nav-weapons' },
  { to: '/planner', label: 'Planner', icon: '/Planner.png', id: 'nav-planner' },
  { to: '/inventory', label: 'Inventory', icon: '/Inventory.png', id: 'nav-inventory' },
+ { to: '/achievements', label: 'Achievements', icon: 'https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/achievements/achievements.png', id: 'nav-achievements' },
  { to: '/changelog', label: 'Changelog', icon: '📝', id: 'nav-changelog' },
  { to: '/settings', label: 'Settings', icon: '⚙️', id: 'nav-settings' },
 ]
