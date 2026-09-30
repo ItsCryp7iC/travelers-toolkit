@@ -1,7 +1,8 @@
 import type { PersistedStore } from '../types/domain';
+import { normalizeAchievementProgress } from '../utils/achievementProgress';
 
 export const STORE_NAME = 'travelers-toolkit-store';
-export const STORE_VERSION = 6;
+export const STORE_VERSION = 7;
 
 export interface LegacyRosterEntry extends Record<string, unknown> {
   equippedWeapon?: string;
@@ -101,6 +102,18 @@ export const migrateStore = (persistedState: unknown, fromVersion: number): unkn
   if (fromVersion < 6) {
     state = { ...state, displayTimeZone: state.displayTimeZone ?? 'auto' }
   }
+  // v6 → v7: add achievementProgress
+  if (fromVersion < 7) {
+    let safeProgress = {}
+    try {
+      if (state.achievementProgress) {
+        safeProgress = normalizeAchievementProgress(state.achievementProgress)
+      }
+    } catch {
+      safeProgress = {}
+    }
+    state = { ...state, achievementProgress: safeProgress }
+  }
   return state
 }
 
@@ -115,4 +128,5 @@ export const partializeStore = (state: PersistedStore & Record<string, unknown>)
   showDbBuilder: state.showDbBuilder,
   autoBackupEnabled: state.autoBackupEnabled,
   displayTimeZone: state.displayTimeZone,
+  achievementProgress: state.achievementProgress,
 })

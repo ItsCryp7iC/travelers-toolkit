@@ -125,6 +125,15 @@ describe('Zustand Persistence Migrations', () => {
     expect(migrated.craftQueue).toBeUndefined();
   });
 
+  it('migrates v6 -> v7 initializes achievementProgress', () => {
+    const legacyState = {
+      displayTimeZone: 'Asia/Tokyo'
+    };
+    const migrated = migrateStore(legacyState, 6);
+    expect(migrated.achievementProgress).toEqual({});
+    expect(migrated.displayTimeZone).toBe('Asia/Tokyo');
+  });
+
   it('partializeStore returns exactly the persisted whitelist', () => {
     const fullState = {
       autoBackupEnabled: true,
@@ -147,6 +156,7 @@ describe('Zustand Persistence Migrations', () => {
     const result = partializeStore(fullState);
     const keys = Object.keys(result).sort();
     expect(keys).toEqual([
+      'achievementProgress',
       'autoBackupEnabled',
       'displayTimeZone',
       'goals',

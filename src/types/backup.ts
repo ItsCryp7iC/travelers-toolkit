@@ -1,4 +1,4 @@
-import type { Roster, TrackedWeapon, Inventory } from './domain';
+import type { Roster, TrackedWeapon, Inventory, AchievementProgressMap } from './domain';
 
 /**
  * BackupDataV1 represents the core user data packaged into a v1 backup.
@@ -10,6 +10,7 @@ export interface BackupDataV1 {
   serverRegion: string;
   showDbBuilder: boolean;
   displayTimeZone?: string;
+  achievementProgress?: AchievementProgressMap;
 }
 
 /**
@@ -34,6 +35,7 @@ export interface LegacyBackupV0 {
   serverRegion?: string;
   showDbBuilder?: boolean;
   displayTimeZone?: string;
+  achievementProgress?: AchievementProgressMap;
 }
 
 /**
@@ -47,4 +49,5 @@ export interface NormalizedBackupData {
   serverRegion: string;
   showDbBuilder: boolean;
   displayTimeZone: string;
+  achievementProgress: AchievementProgressMap;
 }

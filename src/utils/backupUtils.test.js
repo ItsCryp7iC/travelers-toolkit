@@ -20,6 +20,7 @@ describe('Backup Normalization', () => {
     expect(result.trackedWeapons).toEqual([]);
     expect(result.inventory).toEqual({});
     expect(result.serverRegion).toBe('Asia');
+    expect(result.achievementProgress).toEqual({}); // Absent field normalizes to {}
   });
 
   it('normalizes valid legacy v0 backup', () => {
@@ -129,5 +130,107 @@ describe('Backup Normalization', () => {
       }
     };
     expect(() => normalizeBackupForImport(raw)).toThrow(/invalid or corrupted/);
+  });
+
+  it('normalizes valid achievement progress', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        achievementProgress: {
+          '80001': { completed: true, completedAt: null }
+        }
+      }
+    };
+    const result = normalizeBackupForImport(raw);
+    expect(result.achievementProgress['80001']).toEqual({ completed: true, completedAt: null });
+  });
+
+  it('rejects malformed achievement progress', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        achievementProgress: {
+          '80001': { completed: 'true' } // invalid
+        }
+      }
+    };
+    const result = normalizeBackupForImport(raw);
+    expect(result.achievementProgress).toEqual({});
+  });
+
+  it('normalizes valid achievement progress but drops unknown IDs', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        achievementProgress: {
+          '80001': { completed: true, completedAt: null },
+          '999999999': { completed: true, completedAt: null }
+        }
+      }
+    };
+    const result = normalizeBackupForImport(raw);
+    expect(result.achievementProgress['80001']).toBeDefined();
+    expect(result.achievementProgress['999999999']).toBeUndefined();
+  });
+
+  it('rejects top-level null achievementProgress', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        achievementProgress: null
+      }
+    };
+    expect(() => normalizeBackupForImport(raw)).toThrow(/invalid or corrupted/);
+  });
+
+  it('rejects top-level array achievementProgress', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        achievementProgress: []
+      }
+    };
+    expect(() => normalizeBackupForImport(raw)).toThrow(/invalid or corrupted/);
+  });
+
+  it('accepts explicitly empty achievementProgress object', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        achievementProgress: {}
+      }
+    };
+    const result = normalizeBackupForImport(raw);
+    expect(result.achievementProgress).toEqual({});
   });
 });

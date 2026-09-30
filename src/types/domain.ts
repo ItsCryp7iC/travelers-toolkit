@@ -9,6 +9,17 @@ export type MaterialKey = string;
 export type CharacterName = string;
 export type WeaponName = string;
 export type TrackedWeaponId = string;
+export type CanonicalAchievementId = string;
+
+/**
+ * Achievement Progress Entry
+ */
+export interface AchievementProgressEntry {
+  completed: boolean;
+  completedAt: string | null;
+}
+
+export type AchievementProgressMap = Record<CanonicalAchievementId, AchievementProgressEntry>;
 
 /**
  * Talent levels representation
@@ -94,4 +105,5 @@ export interface PersistedStore {
   showDbBuilder: boolean;
   autoBackupEnabled: boolean;
   displayTimeZone: string;
+  achievementProgress: AchievementProgressMap;
 }

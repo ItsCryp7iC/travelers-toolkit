@@ -20,6 +20,7 @@ export interface ImportSliceState {
   showDbBuilder: boolean;
   autoBackupEnabled: boolean;
   displayTimeZone: string;
+  achievementProgress: Record<string, unknown>;
   googleConnected: boolean;
   googleUser: unknown | null;
   hoyolabConnected: boolean;
@@ -42,6 +43,7 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
     serverRegion: data.serverRegion || 'Asia',
     showDbBuilder: data.showDbBuilder ?? false,
     displayTimeZone: data.displayTimeZone || 'auto',
+    achievementProgress: data.achievementProgress || {},
   }),
   importGoodData: (goodPayload) => set((state) => {
     // 1. Materials
@@ -146,6 +148,7 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
       googleConnected: false,
       googleUser: null,
       hoyolabConnected: false,
+      achievementProgress: {},
     });
   },
 });

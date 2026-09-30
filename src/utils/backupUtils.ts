@@ -1,11 +1,12 @@
 import { downloadRecoveryBackupFromDrive } from './driveSync';
+import { normalizeAchievementProgress } from './achievementProgress';
 import type { BackupPayloadV1, NormalizedBackupData } from '../types/backup';
 import type { PersistedStore } from '../types/domain';
 
 export const BACKUP_SCHEMA_VERSION = 1 as const;
 export const BACKUP_APP_ID = 'travelers-toolkit' as const;
 
-export function getBackupPayload(state: Pick<PersistedStore, 'roster' | 'trackedWeapons' | 'inventory' | 'serverRegion' | 'showDbBuilder' | 'displayTimeZone'>): BackupPayloadV1 {
+export function getBackupPayload(state: Pick<PersistedStore, 'roster' | 'trackedWeapons' | 'inventory' | 'serverRegion' | 'showDbBuilder' | 'displayTimeZone' | 'achievementProgress'>): BackupPayloadV1 {
   return {
     app: BACKUP_APP_ID,
     schemaVersion: BACKUP_SCHEMA_VERSION,
@@ -17,6 +18,7 @@ export function getBackupPayload(state: Pick<PersistedStore, 'roster' | 'tracked
       serverRegion: state.serverRegion,
       showDbBuilder: state.showDbBuilder,
       displayTimeZone: state.displayTimeZone,
+      achievementProgress: state.achievementProgress,
     }
   };
 }
@@ -28,6 +30,7 @@ interface ShallowValidatedBackupData {
   serverRegion?: string;
   showDbBuilder?: boolean;
   displayTimeZone?: string;
+  achievementProgress?: unknown;
 }
 
 function validateBackupData(data: unknown): asserts data is ShallowValidatedBackupData {
@@ -56,6 +59,9 @@ function validateBackupData(data: unknown): asserts data is ShallowValidatedBack
   if (d.displayTimeZone !== undefined && typeof d.displayTimeZone !== 'string') {
     throw new Error('The backup file is invalid or corrupted.');
   }
+  if (d.achievementProgress !== undefined && (typeof d.achievementProgress !== 'object' || d.achievementProgress === null || Array.isArray(d.achievementProgress))) {
+    throw new Error('The backup file is invalid or corrupted.');
+  }
 }
 
 export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
@@ -82,6 +88,7 @@ export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
       serverRegion: raw.serverRegion || 'Asia',
       showDbBuilder: raw.showDbBuilder ?? false,
       displayTimeZone: raw.displayTimeZone || 'auto',
+      achievementProgress: raw.achievementProgress ? normalizeAchievementProgress(raw.achievementProgress) : {},
     };
   }
 
@@ -123,6 +130,7 @@ export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
     serverRegion: rawObj.data.serverRegion || 'Asia',
     showDbBuilder: rawObj.data.showDbBuilder ?? false,
     displayTimeZone: rawObj.data.displayTimeZone || 'auto',
+    achievementProgress: rawObj.data.achievementProgress ? normalizeAchievementProgress(rawObj.data.achievementProgress) : {},
   };
 }
 

@@ -1355,29 +1355,16 @@ Exit criteria:
 
 ### Phase D — Achievement Store & Persistence
 
-Goals:
+**Status**: Complete — store integrated, persistence upgraded to v7, and tested.
 
-- add `achievementProgress`;
-- add actions/selectors;
-- integrate persistence;
-- perform store migration;
-- integrate backup/export/import;
-- integrate factory reset;
-- add tests.
-
-Likely persistence target:
-
-```text
-v7
-```
-
-but bump only after reviewing current store migration architecture.
-
-Exit criteria:
-
-- old users migrate safely;
-- backups round-trip;
-- no auth state persisted accidentally.
+**Architecture**:
+- **Persistence Version**: `v7`
+- **Persisted Fields**: `11` total (added `achievementProgress`). Auth/session state remains strictly unpersisted.
+- **AchievementProgress Schema**: `Record<CanonicalAchievementId, { completed: boolean, completedAt: string | null }>`
+- **Sparse Semantics**: Only completed achievements are stored. Default/reset state is `{}`. Marking an achievement incomplete deletes its key.
+- **completedAt Semantics**: Uses `new Date().toISOString()` when marked manually. Repeated completions preserve the original timestamp unless explicitly overwritten. Future imports can insert `null` for unknown historical timestamps.
+- **Migration Behavior**: Migrates `< v7` seamlessly by appending `achievementProgress: {}` idempotently.
+- **Backup Integration**: `achievementProgress` is normalized, validated against canonical IDs, and bundled into Schema v1 backups. Legacy v0 backups and backups missing the field import gracefully using `{}`.
 
 ### Phase E — Base Achievements Page
 
