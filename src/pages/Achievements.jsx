@@ -2,10 +2,52 @@ import React, { useState, useMemo, useEffect } from 'react';
 import useStore from '../store/useStore';
 import categoriesData from '../data/achievements/categories.json';
 import { getAchievementsByCategory, getOverallStats, getCategoryStats } from '../utils/achievementStats';
+import { getOverallReconciliation, getCategoryReconciliation } from '../utils/achievementReconciliation';
 
 export default function Achievements() {
   const achievementProgress = useStore((s) => s.achievementProgress);
   const setAchievementCompleted = useStore((s) => s.setAchievementCompleted);
+  const hoyolabConnected = useStore((s) => s.hoyolabConnected);
+
+  const [reconciliationStatus, setReconciliationStatus] = useState('idle');
+  const [hoyolabData, setHoyolabData] = useState(null);
+  const [hoyolabError, setHoyolabError] = useState(null);
+
+  const fetchHoyolabData = async () => {
+    if (!hoyolabConnected) return;
+    setReconciliationStatus('loading');
+    setHoyolabError(null);
+    try {
+      const res = await fetch('/api/hoyolab/achievements', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setHoyolabData(data);
+        setReconciliationStatus('success');
+      } else if (res.status === 401) {
+        setHoyolabError('Session expired. Please reconnect HoYoLAB.');
+        setReconciliationStatus('error');
+        useStore.getState().setHoyolabConnected(false);
+      } else if (res.status === 403) {
+        setHoyolabError("Achievement data isn't available from HoYoLAB. Check your Battle Chronicle privacy settings.");
+        setReconciliationStatus('error');
+      } else {
+        setHoyolabError("Couldn't load HoYoLAB achievement data. Try again.");
+        setReconciliationStatus('error');
+      }
+    } catch (err) {
+      setHoyolabError("Couldn't load HoYoLAB achievement data. Try again.");
+      setReconciliationStatus('error');
+    }
+  };
+
+  useEffect(() => {
+    if (hoyolabConnected && reconciliationStatus === 'idle') {
+      fetchHoyolabData();
+    }
+  }, [hoyolabConnected, reconciliationStatus]);
 
   // Initialize selected category from URL or default to '0' (Wonders of the World)
   const [selectedCategory, setSelectedCategory] = useState(() => {
@@ -33,8 +75,9 @@ export default function Achievements() {
 
   // Computed data
   const overallStats = useMemo(() => getOverallStats(achievementProgress), [achievementProgress]);
+  const overallRecon = useMemo(() => getOverallReconciliation(achievementProgress, hoyolabData), [achievementProgress, hoyolabData]);
   const achievementsByCat = useMemo(() => getAchievementsByCategory(), []);
-  
+
   const currentCategoryObj = useMemo(() => categoriesData.find(c => c.id === selectedCategory), [selectedCategory]);
   const currentCategoryAchievements = achievementsByCat[selectedCategory] || [];
 
@@ -75,6 +118,40 @@ export default function Achievements() {
             </span>
           </div>
         </div>
+
+        <div className="flex flex-col bg-black/20 p-4 rounded-lg border border-[var(--border)] max-w-sm mt-4 md:mt-0">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] text-[var(--muted)] font-semibold uppercase tracking-widest">HoYoLAB Sync</span>
+            {hoyolabConnected && (
+              <button
+                onClick={fetchHoyolabData}
+                disabled={reconciliationStatus === 'loading'}
+                className="text-[10px] bg-white/5 hover:bg-white/10 px-2 py-0.5 rounded border border-[var(--border)] transition-colors disabled:opacity-50"
+              >
+                Refresh HoYoLAB
+              </button>
+            )}
+          </div>
+          <div className="text-sm mt-1">
+            {!hoyolabConnected ? (
+              <span className="text-[var(--muted)]">Connect HoYoLAB to compare your achievement totals.</span>
+            ) : reconciliationStatus === 'loading' ? (
+              <span className="text-[var(--muted)]">Loading...</span>
+            ) : reconciliationStatus === 'error' ? (
+              <span className="text-red-400">{hoyolabError}</span>
+            ) : overallRecon ? (
+              overallRecon.difference === 0 ? (
+                <span className="text-green-400">Toolkit matches HoYoLAB</span>
+              ) : overallRecon.difference > 0 ? (
+                <span className="text-primary">HoYoLAB has {overallRecon.difference} more completed achievements</span>
+              ) : (
+                <span className="text-yellow-400">Toolkit is {-overallRecon.difference} ahead of HoYoLAB</span>
+              )
+            ) : (
+              <span className="text-[var(--muted)]">No data</span>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-[500px]">
@@ -84,7 +161,7 @@ export default function Achievements() {
             {categoriesData.map(category => {
               const stats = getCategoryStats(category.id, achievementProgress);
               const isSelected = selectedCategory === category.id;
-              
+
               return (
                 <button
                   key={category.id}
@@ -101,9 +178,18 @@ export default function Achievements() {
                     <span className="text-[11px] text-[var(--muted)] font-medium">
                       {stats.completedCount} / {stats.totalCount} <span className="opacity-70 ml-1">({stats.percentage.toFixed(0)}%)</span>
                     </span>
-                    {stats.completedCount === stats.totalCount && stats.totalCount > 0 && (
-                      <span className="text-[10px] text-green-400 font-bold tracking-wide uppercase">Done</span>
-                    )}
+                    {(() => {
+                      const catRecon = getCategoryReconciliation(category.id, achievementProgress, hoyolabData);
+                      if (catRecon) {
+                        if (catRecon.difference === 0) return <span className="text-[10px] text-green-400 font-bold tracking-wide uppercase">Matched</span>;
+                        if (catRecon.difference > 0) return <span className="text-[10px] text-primary font-bold tracking-wide uppercase">+{catRecon.difference} HoYoLAB</span>;
+                        return <span className="text-[10px] text-yellow-400 font-bold tracking-wide uppercase">Toolkit +{-catRecon.difference}</span>;
+                      }
+                      if (stats.completedCount === stats.totalCount && stats.totalCount > 0) {
+                        return <span className="text-[10px] text-green-400 font-bold tracking-wide uppercase">Done</span>;
+                      }
+                      return null;
+                    })()}
                   </div>
                   <div className="w-full h-1 bg-black/30 rounded-full mt-2.5 overflow-hidden">
                     <div className={`h-full transition-all duration-300 ${isSelected ? 'bg-primary' : 'bg-[var(--text)]/30'}`} style={{ width: `${stats.percentage}%` }} />
@@ -145,7 +231,7 @@ export default function Achievements() {
               </select>
             </div>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
             {filteredAchievements.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-[var(--muted)] py-12">
@@ -155,13 +241,13 @@ export default function Achievements() {
               <div className="flex flex-col gap-3">
                 {filteredAchievements.map(ach => {
                   const isCompleted = !!achievementProgress[ach.id]?.completed;
-                  
+
                   return (
                     <label
                       key={ach.id}
                       className={`relative flex gap-4 p-4 rounded-xl border transition-all cursor-pointer group ${
-                        isCompleted 
-                          ? 'bg-green-900/10 border-green-500/30 hover:border-green-500/40' 
+                        isCompleted
+                          ? 'bg-green-900/10 border-green-500/30 hover:border-green-500/40'
                           : 'bg-white/5 border-[var(--border)] hover:border-[var(--border-light)]'
                       }`}
                     >
@@ -181,7 +267,7 @@ export default function Achievements() {
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="flex-1 min-w-0 flex flex-col">
                         <div className="flex items-start justify-between gap-4 mb-1.5">
                           <div className={`font-semibold text-base transition-colors ${isCompleted ? 'text-[var(--text)]/60 line-through' : 'text-[var(--text)]'}`}>

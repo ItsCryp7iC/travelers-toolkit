@@ -1401,11 +1401,22 @@ Exit criteria:
 - UI responsive;
 - browser console clean.
 
-### Phase F — Search, Filters & Version Tracking
+### Phase F — HoYoLAB Reconciliation UI
+
+**Status**: Complete — implemented and validated; awaiting commit.
+
+**Implementation Details**:
+- **Reconciliation Helper**: Added `src/utils/achievementReconciliation.js` which derives exact, hoyolab-ahead, toolkit-ahead, and missing-category differences purely and safely without mutating progress.
+- **Overall UI**: Added a HoYoLAB Sync panel to `Achievements.jsx` that compares aggregate totals without fabricating underlying identities.
+- **Category Badges**: Rendered category-level matched/missing counts next to the local progress counts.
+- **Connection Prerequisites**: Enforces local-only view until the HoYoLAB session is valid. Shows privacy errors gracefully. Provides a Refresh action.
+- **Ephemeral State**: Explicitly avoided storing HoYoLAB data in Zustand's persisted state.
+
+### Phase G — Search, Filters & Version Tracking
 
 Goals:
 
-- search;
+- advanced search;
 - category filter;
 - version filter;
 - completion status;
@@ -1419,22 +1430,6 @@ Exit criteria:
 - deterministic filtering;
 - test coverage;
 - useful new-version workflow.
-
-### Phase G — HoYoLAB Reconciliation UI
-
-Goals:
-
-- surface total HoYoLAB completed count;
-- compare local vs HoYoLAB totals;
-- compare category counts;
-- display mismatch counts;
-- display matching/synced states;
-- handle disconnected/private/error states.
-
-Exit criteria:
-
-- no implication of individual automatic sync;
-- reconciliation remains accurate.
 
 ### Phase H — Achievement Import / Export
 
