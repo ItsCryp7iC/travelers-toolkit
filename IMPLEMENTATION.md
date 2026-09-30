@@ -1261,7 +1261,7 @@ Execution note: Although Phase A is listed first as the data/schema workstream, 
 
 ### Phase A — Data Research & Canonical Schema
 
-Status: Deferred until the Phase B HoYoLAB proof-of-concept has been reviewed.
+Status: Next active phase.
 
 Goals:
 
@@ -1286,7 +1286,20 @@ Exit criteria:
 
 ### Phase B — HoYoLAB Achievement Proof of Concept
 
-Status: Next active phase.
+Status: Complete — implemented, live-validated, and reviewed.
+
+Phase B Verified Findings:
+
+- HoYoLAB category ID "0" is VALID ("Wonders of the World").
+- ID "17" is "Memories of the Heart".
+- Category IDs are non-sequential and must be treated as opaque identifiers.
+- Do NOT infer category identity from list position or numeric ordering.
+- All 73 categories returned usable/non-empty icon values in the live response.
+- Normalized percentage was null only for ID "0" (Wonders) and "17" (Memories of the Heart); other categories exposed numeric percentages where `show_percent` was true.
+- Category ordering returned by HoYoLAB may be useful for display but MUST NOT be treated as identity.
+- The `genshin.py 1.7.29` package has no public Genshin achievement method. The internal `_request_genshin_record` method is used as the transport. This is a version-sensitive dependency that should be rechecked when genshin.py is upgraded.
+- Live-verified behavior: authenticated success path, UID/default account resolution, endpoint accessibility, total count, 73-category response, response field shape, category ID format, icon presence, percentage normalization behavior.
+- Tested through mocks/error handling only (not observed in live production): expired cookie, Battle Chronicle privacy disabled, HoYoLAB rate limit, malformed upstream schema.
 
 Goals:
 
@@ -1538,6 +1551,33 @@ until the user identifies/imports them.
 
 This is a critical product rule.
 
+HoYoLAB category ID "0" is valid.
+
+Never use truthiness to determine whether a HoYoLAB category ID exists.
+
+Bad conceptual logic:
+
+```python
+if not category_id:
+    reject
+```
+
+or JavaScript equivalent:
+
+```javascript
+if (!category.id)
+```
+
+Correct validation must distinguish:
+
+missing/null/undefined
+
+from:
+
+0 / "0"
+
+This rule must be clearly documented because "Wonders of the World" uses ID "0".
+
 ---
 
 ## 49. Source-of-Truth Hierarchy
@@ -1604,19 +1644,15 @@ Mark decisions clearly when they become final.
 
 ## 52. Immediate Next Step
 
-After this document is created and reviewed, the next implementation task is:
+After Phase B is finalized, the next implementation task is:
 
 ```text
-Phase B — HoYoLAB Achievement Proof of Concept
+Phase A — Data Research & Canonical Schema
 ```
 
 Reason:
 
-The application already has a working HoYoLAB session.
-
-Before designing permanent local category mappings, inspect the exact live achievement response returned for the user's connected Genshin account.
-
-No main Achievement UI should be implemented until that response and its category identity behavior have been reviewed.
+Phase B has now verified the real HoYoLAB achievement summary contract and category behavior. The next task is to research and select the canonical individual-achievement dataset, and design mapping schemas with those verified HoYoLAB facts in mind.
 
 ---
 

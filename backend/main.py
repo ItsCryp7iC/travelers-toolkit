@@ -7,6 +7,11 @@ import json
 from cryptography.fernet import InvalidToken
 from pydantic import BaseModel
 from google_api import router as google_router, GoogleAuthError
+from hoyolab_achievements import (
+    normalize_achievement_response,
+    build_diagnostic,
+    AchievementNormalizationError,
+)
 
 from config import (
     IS_PRODUCTION,
@@ -55,6 +60,9 @@ class AuthPayload(BaseModel):
 class NotesPayload(BaseModel):
     uid: int | None = None
 
+class AchievementPayload(BaseModel):
+    uid: int | None = None
+
 COOKIE_NAME = "tt_hoyolab_session"
 COOKIE_MAX_AGE = 30 * 24 * 60 * 60 # 30 days in seconds
 
@@ -65,6 +73,37 @@ def auth_failure_response(detail: str):
     )
     response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
     return response
+
+def _get_hoyolab_client(request: Request):
+    """Decrypt the HoYoLAB session cookie and return (client, error_response).
+
+    Returns:
+        (genshin.Client, None) on success.
+        (None, JSONResponse) on failure — caller should return the response.
+    """
+    encrypted_session = request.cookies.get(COOKIE_NAME)
+    if not encrypted_session:
+        return None, JSONResponse(
+            status_code=401,
+            content={"detail": "No HoYoLAB session found."}
+        )
+
+    try:
+        decrypted_data = HOYOLAB_FERNET.decrypt(encrypted_session.encode()).decode()
+        session_data = json.loads(decrypted_data)
+        ltuid = session_data.get("ltuid")
+        ltoken = session_data.get("ltoken")
+    except InvalidToken:
+        return None, auth_failure_response("Session corrupted or invalid.")
+    except Exception:
+        return None, auth_failure_response("Session parsing failed.")
+
+    if not ltuid or not ltoken:
+        return None, auth_failure_response("Session missing credentials.")
+
+    cookies = {"ltuid_v2": ltuid, "ltoken_v2": ltoken}
+    client = genshin.Client(cookies, game=genshin.Game.GENSHIN)
+    return client, None
 
 @app.post("/api/hoyolab/session")
 async def connect_hoyolab_session(payload: AuthPayload, response: Response):
@@ -136,25 +175,10 @@ async def disconnect_hoyolab_session(response: Response):
 
 @app.post("/api/notes")
 async def get_real_time_notes(request: Request, response: Response, payload: NotesPayload = None):
-    encrypted_session = request.cookies.get(COOKIE_NAME)
-    if not encrypted_session:
-        raise HTTPException(status_code=401, detail="No HoYoLAB session found.")
-        
-    try:
-        decrypted_data = HOYOLAB_FERNET.decrypt(encrypted_session.encode()).decode()
-        session_data = json.loads(decrypted_data)
-        ltuid = session_data.get("ltuid")
-        ltoken = session_data.get("ltoken")
-    except InvalidToken:
-        return auth_failure_response("Session corrupted or invalid.")
-    except Exception:
-        return auth_failure_response("Session parsing failed.")
-        
-    if not ltuid or not ltoken:
-        return auth_failure_response("Session missing credentials.")
+    client, err = _get_hoyolab_client(request)
+    if err is not None:
+        return err
 
-    cookies = {"ltuid_v2": ltuid, "ltoken_v2": ltoken}
-    client = genshin.Client(cookies, game=genshin.Game.GENSHIN)
     uid = payload.uid if payload else None
     
     try:
@@ -189,6 +213,80 @@ async def get_real_time_notes(request: Request, response: Response, payload: Not
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Internal server error.")
+
+@app.post("/api/hoyolab/achievements")
+async def get_achievement_summary(request: Request, payload: AchievementPayload = None):
+    """Phase B: HoYoLAB achievement summary proof of concept.
+
+    Returns a normalized achievement category summary from HoYoLAB.
+    Uses the existing encrypted session cookie — no credentials in the body.
+
+    IMPORTANT: DataNotPublic / privacy errors do NOT clear the session cookie.
+    Only genuine auth failures (InvalidCookies) clear the cookie.
+    """
+    client, err = _get_hoyolab_client(request)
+    if err is not None:
+        return err
+
+    uid = payload.uid if payload else None
+
+    try:
+        # NOTE: genshin.py 1.7.29 has no public Genshin achievement method.
+        # This internal transport (_request_genshin_record) is intentionally isolated here.
+        # It handles:
+        # - UID resolution (via _get_uid if uid is None)
+        # - Server recognition (via recognize_genshin_server)
+        # - DS signing and required headers
+        # - Proper base URL for overseas/Chinese regions
+        raw = await client._request_genshin_record(
+            "achievement",
+            uid,
+            method="POST",
+        )
+
+        normalized = normalize_achievement_response(raw)
+
+        result = normalized
+
+        # Development-only diagnostic: expose schema-level info
+        # for inspecting the actual HoYoLAB response shape.
+        # NEVER includes credentials or sensitive data.
+        if not IS_PRODUCTION:
+            diagnostic = build_diagnostic(raw)
+            if diagnostic is not None:
+                result["diagnostic"] = diagnostic
+
+        return result
+
+    except genshin.errors.InvalidCookies:
+        return auth_failure_response("Invalid or expired cookies.")
+    except genshin.errors.DataNotPublic:
+        # Privacy setting — do NOT clear the session cookie
+        raise HTTPException(
+            status_code=403,
+            detail="Achievement summary is unavailable. Check Battle Chronicle visibility settings."
+        )
+    except genshin.errors.TooManyRequests:
+        raise HTTPException(
+            status_code=429,
+            detail="HoYoLAB is temporarily rate limiting requests. Please try again later."
+        )
+    except genshin.errors.AccountNotFound:
+        raise HTTPException(
+            status_code=404,
+            detail="No Genshin Impact account found for this HoYoLAB session."
+        )
+    except AchievementNormalizationError as e:
+        raise HTTPException(
+            status_code=502,
+            detail=f"HoYoLAB achievement response could not be processed: {e}"
+        )
+    except genshin.errors.GenshinException as e:
+        if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
+            return auth_failure_response("Authentication failed. Please check your cookies.")
+        raise HTTPException(status_code=502, detail="HoYoLAB achievement service is temporarily unavailable.")
+    except Exception:
         raise HTTPException(status_code=500, detail="Internal server error.")
 
 @app.get("/api/health")
