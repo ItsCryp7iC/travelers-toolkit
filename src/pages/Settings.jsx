@@ -5,6 +5,7 @@ import { parseGoodData } from '../utils/goodParser';
 import { getBackupPayload, normalizeBackupForImport } from '../utils/backupUtils';
 import { triggerGoogleAuth } from '../utils/googleAuthHelper';
 import GoodImportModal from '../components/GoodImportModal';
+import AchievementData from '../components/Settings/AchievementData';
 import { buildTimeZoneOptions, getTimeZoneDisplayLabel } from '../utils/timeZoneUtils';
 
 export default function Settings() {
@@ -466,6 +467,8 @@ export default function Settings() {
             </p>
           </div>
         </div>
+
+        <AchievementData />
 
         {/* Regional Preferences Card */}
         <div className="genshin-card p-6 flex flex-col gap-4">

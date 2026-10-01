@@ -1412,24 +1412,22 @@ Exit criteria:
 - **Connection Prerequisites**: Enforces local-only view until the HoYoLAB session is valid. Shows privacy errors gracefully. Provides a Refresh action.
 - **Ephemeral State**: Explicitly avoided storing HoYoLAB data in Zustand's persisted state.
 
-### Phase G — Search, Filters & Version Tracking
+### Phase G — Achievement Import Compatibility
 
-Goals:
+**Status**: Complete — implemented and validated; awaiting commit.
 
-- advanced search;
-- category filter;
-- version filter;
-- completion status;
-- Primogem reward filter;
-- hidden/visible filter;
-- hide completed;
-- URL query state where appropriate.
-
-Exit criteria:
-
-- deterministic filtering;
-- test coverage;
-- useful new-version workflow.
+**Implementation Details**:
+- **GOODScanner-style extension supported**: Added safe import path for JSON files using the `{ "achievements": [...] }` format.
+- **Settings Integration**: Achievement import and export workflows are located in the Settings page under "Achievement Data" to preserve the primary tracker UI.
+- **Achievement-only JSON export**: Supported exporting completed canonical IDs as JSON numbers, sorted, and deduplicated.
+- **Import/export round-tripping**: Supported. An exported JSON can be natively imported back, restoring the exact completed ID set.
+- **Timestamp semantics**: Achievement-only exports do not retain timestamps. Imported entries enforce `completedAt: null`. Full Traveler's Toolkit backups (`travelers-toolkit-backup.json`) retain timestamped progress.
+- **Canonical ID parsing**: Accepts numeric and string-numeric IDs. Invalid/malformed types are cleanly rejected.
+- **Replace semantics**: A present `achievements` array (empty or not) replaces local progress after explicit confirmation.
+- **Absent-field preserve semantics**: If a JSON file (e.g., generic GOOD) is imported but lacks the `achievements` key, existing progress remains fully untouched.
+- **Unknown-ID skip/report behavior**: Any canonically unknown IDs in the import are skipped safely, not persisted, and explicitly reported to the user in the UI preview and success message.
+- **No HoYoLAB auto-completion**: Import functionality is entirely isolated from HoYoLAB. No HoYoLAB individual-completion inference occurs.
+- **Tests**: Comprehensive unit and integration test coverage implemented across parser, UI, and import/export round-trip behavior.
 
 ### Phase H — Achievement Import / Export
 
