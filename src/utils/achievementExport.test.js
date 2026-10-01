@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import useStore from '../useStore';
-import { parseAchievementImport } from '../../utils/achievementImport';
-import { exportAchievementData } from '../../utils/achievementExport';
+import useStore from '../store/useStore';
+import { parseAchievementImport } from './achievementImport';
+import { exportAchievementData, exportNativeAchievementData } from './achievementExport';
 
 describe('Achievement Export & Round-Trip Integration', () => {
   beforeEach(() => {
@@ -68,5 +68,33 @@ describe('Achievement Export & Round-Trip Integration', () => {
     // Imported entries have completedAt: null
     expect(finalState['80091'].completedAt).toBe(null);
     expect(finalState['80127'].completedAt).toBe(null);
+  });
+
+  it('exports native format correctly with deterministic ordering', () => {
+    const store = useStore.getState();
+    store.setAchievementProgress({
+      '80128': { completed: true, completedAt: null },
+      '80091': { completed: true, completedAt: '2026-09-30T00:00:00.000Z' },
+      '80127': { completed: true, completedAt: null },
+      '80129': { completed: false, completedAt: null }, // incomplete
+      '999999': { completed: true, completedAt: null } // unknown
+    }, { mode: 'replace' });
+
+    const exported = exportNativeAchievementData(useStore.getState().achievementProgress);
+
+    expect(exported.format).toBe('TRAVELERS_TOOLKIT_ACHIEVEMENTS');
+    expect(exported.version).toBe(1);
+    
+    const keys = Object.keys(exported.achievementProgress);
+    expect(keys).toEqual(['80091', '80127', '80128']); // Numerical ordering, unknowns/incompletes excluded
+    
+    expect(exported.achievementProgress['80091'].completedAt).toBe('2026-09-30T00:00:00.000Z');
+    expect(exported.achievementProgress['80128'].completedAt).toBe(null);
+  });
+  
+  it('exports empty native progress correctly', () => {
+    const exported = exportNativeAchievementData({});
+    expect(exported.format).toBe('TRAVELERS_TOOLKIT_ACHIEVEMENTS');
+    expect(exported.achievementProgress).toEqual({});
   });
 });

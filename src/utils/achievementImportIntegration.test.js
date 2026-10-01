@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import useStore from '../useStore';
-import { parseAchievementImport } from '../../utils/achievementImport';
+import useStore from '../store/useStore';
+import { parseAchievementImport } from './achievementImport';
 
 describe('Achievement Import Integration', () => {
   beforeEach(() => {

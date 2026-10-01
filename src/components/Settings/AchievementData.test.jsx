@@ -51,10 +51,14 @@ describe('AchievementData Settings Component', () => {
         root.render(<AchievementData />);
       });
 
-      const exportBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Export Achievements'));
-      
-      const createElementSpy = vi.spyOn(document, 'createElement');
-      
+      const exportBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Export GOOD'));
+
+      const originalCreateElement = document.createElement.bind(document);
+      const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
+        if (tag === 'a') return { click: vi.fn() };
+        return originalCreateElement(tag);
+      });
+
       act(() => {
         exportBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       });
@@ -62,7 +66,7 @@ describe('AchievementData Settings Component', () => {
       expect(global.URL.createObjectURL).toHaveBeenCalled();
       expect(global.URL.revokeObjectURL).toHaveBeenCalled();
       expect(createElementSpy).toHaveBeenCalledWith('a');
-      
+
       createElementSpy.mockRestore();
     });
 
@@ -75,20 +79,21 @@ describe('AchievementData Settings Component', () => {
         root.render(<AchievementData />);
       });
 
-      const exportBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Export Achievements'));
-      
+      const exportBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Export GOOD'));
+
       const mockAnchor = { click: vi.fn() };
+      const originalCreateElement = document.createElement.bind(document);
       const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
         if (tag === 'a') return mockAnchor;
-        return document.createElement(tag);
+        return originalCreateElement(tag);
       });
-      
+
       act(() => {
         exportBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       });
 
       expect(mockAnchor.download).toBe('2023-01-05_04-30-09_travelers-toolkit-achievements.json');
-      
+
       createElementSpy.mockRestore();
       vi.useRealTimers();
     });

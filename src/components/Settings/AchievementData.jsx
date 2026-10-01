@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
 import useStore from '../../store/useStore';
-import { parseAchievementImport } from '../../utils/achievementImport';
-import { exportAchievementData } from '../../utils/achievementExport';
+import { parseAchievementImport, mergeNativeAchievementProgress } from '../../utils/achievementImport';
+import { exportAchievementData, exportNativeAchievementData } from '../../utils/achievementExport';
 
 export default function AchievementData() {
   const setAchievementProgress = useStore((s) => s.setAchievementProgress);
   const achievementProgress = useStore((s) => s.achievementProgress);
-  
+
   const completedCount = Object.keys(achievementProgress || {}).length;
-  
+
   const [importStatus, setImportStatus] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -43,20 +43,31 @@ export default function AchievementData() {
     }
   };
 
-  const confirmImport = () => {
+  const confirmImport = (actionType = 'replace') => {
     if (importStatus?.type !== 'preview') return;
     const { result } = importStatus;
 
-    setAchievementProgress(result.progress, { mode: 'replace' });
+    if (actionType === 'merge' && result.format === 'NATIVE') {
+      const merged = mergeNativeAchievementProgress(achievementProgress, result.progress);
+      setAchievementProgress(merged, { mode: 'replace' });
 
-    if (result.validIds.length === 0) {
-      setImportStatus({ type: 'success', message: 'Achievement progress cleared.' });
-    } else {
-      let msg = `Imported ${result.validIds.length.toLocaleString()} completed achievements.`;
+      let msg = `Merged native achievements successfully.`;
       if (result.unknownIds.length > 0) {
         msg += ` ${result.unknownIds.length.toLocaleString()} unknown IDs were skipped.`;
       }
       setImportStatus({ type: 'success', message: msg });
+    } else {
+      setAchievementProgress(result.progress, { mode: 'replace' });
+
+      if (result.validIds.length === 0) {
+        setImportStatus({ type: 'success', message: 'Achievement progress cleared.' });
+      } else {
+        let msg = `Imported ${result.validIds.length.toLocaleString()} completed achievements.`;
+        if (result.unknownIds.length > 0) {
+          msg += ` ${result.unknownIds.length.toLocaleString()} unknown IDs were skipped.`;
+        }
+        setImportStatus({ type: 'success', message: msg });
+      }
     }
   };
 
@@ -64,12 +75,21 @@ export default function AchievementData() {
     setImportStatus(null);
   };
 
-  const handleExportClick = () => {
-    const dataToExport = exportAchievementData(achievementProgress);
+  const handleExportClick = (type) => {
+    let dataToExport;
+    let filenameSuffix = '';
+
+    if (type === 'native') {
+      dataToExport = exportNativeAchievementData(achievementProgress);
+      filenameSuffix = '-native';
+    } else {
+      dataToExport = exportAchievementData(achievementProgress);
+    }
+
     const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    
+
     const now = new Date();
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -77,9 +97,9 @@ export default function AchievementData() {
     const hh = String(now.getHours()).padStart(2, '0');
     const min = String(now.getMinutes()).padStart(2, '0');
     const ss = String(now.getSeconds()).padStart(2, '0');
-    
+
     a.href = url;
-    a.download = `${yyyy}-${mm}-${dd}_${hh}-${min}-${ss}_travelers-toolkit-achievements.json`;
+    a.download = `${yyyy}-${mm}-${dd}_${hh}-${min}-${ss}_travelers-toolkit-achievements${filenameSuffix}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -96,9 +116,14 @@ export default function AchievementData() {
       </p>
 
       <div className="flex flex-col gap-3 mt-2">
-        <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={handleExportClick}>
-          <span>📥</span> Export Achievements (.json)
-        </button>
+        <div className="flex gap-3">
+          <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={() => handleExportClick('native')}>
+            <span>📥</span> Export Native (.json)
+          </button>
+          <button className="genshin-btn-ghost w-full flex justify-center items-center gap-2" onClick={() => handleExportClick('good')}>
+            <span>📥</span> Export GOOD (.json)
+          </button>
+        </div>
         <div className="flex gap-3">
           <input
             type="file"
@@ -132,7 +157,9 @@ export default function AchievementData() {
           {importStatus.type === 'preview' && (
             <div className="flex flex-col gap-3">
               <div className="text-[var(--text)] text-sm">
-                {importStatus.result.validIds.length === 0 ? (
+                {importStatus.result.format === 'NATIVE' ? (
+                  <span className="text-primary font-medium">This is a native export file. You can merge it or replace your current state.</span>
+                ) : importStatus.result.validIds.length === 0 ? (
                   <span className="text-yellow-400 font-medium">This import will clear all local achievement completions.</span>
                 ) : (
                   <span className="text-primary font-medium">This import will replace your current local achievement completion state.</span>
@@ -161,8 +188,13 @@ export default function AchievementData() {
                 )}
               </div>
               <div className="flex items-center gap-3 mt-1">
-                <button onClick={confirmImport} className="bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-1.5 rounded transition-colors text-sm">
-                  Confirm Replacement
+                {importStatus.result.format === 'NATIVE' && (
+                  <button onClick={() => confirmImport('merge')} className="bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-1.5 rounded transition-colors text-sm">
+                    Merge Progress
+                  </button>
+                )}
+                <button onClick={() => confirmImport('replace')} className={`bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-1.5 rounded transition-colors text-sm ${importStatus.result.format === 'NATIVE' ? 'bg-red-500 hover:bg-red-600' : ''}`}>
+                  {importStatus.result.format === 'NATIVE' ? 'Replace Progress' : 'Confirm Replacement'}
                 </button>
                 <button onClick={cancelImport} className="bg-white/5 hover:bg-white/10 text-[var(--text)] px-4 py-1.5 rounded border border-[var(--border)] transition-colors text-sm">
                   Cancel

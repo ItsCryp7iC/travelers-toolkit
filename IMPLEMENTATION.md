@@ -1431,20 +1431,16 @@ Exit criteria:
 
 ### Phase H — Achievement Import / Export
 
-Goals:
+**Status**: Complete — native formats and merge algorithms implemented; awaiting commit.
 
-- native achievement export;
-- native import;
-- safe merge behavior;
-- potential compatible importer architecture;
-- imported historical timestamps remain null unless known.
-
-Exit criteria:
-
-- import idempotent;
-- invalid IDs handled safely;
-- backups unaffected;
-- tests cover merges.
+**Implementation Details**:
+- **Native File Format**: Introduced `TRAVELERS_TOOLKIT_ACHIEVEMENTS` format, version `1`, mapping canonical IDs directly to `{ completed: boolean, completedAt: string | null }`.
+- **Timestamp Semantics**: Native exports preserve precise ISO 8601 timestamps. Imported historical timestamps remain `null` unless explicitly known.
+- **Merge Conflict Policy**: Merging adds new completions. Existing timestamps always win over conflicting imported timestamps. An imported known timestamp successfully overrides an existing `null`. Both `null` remains `null`. Existing entries are preserved exactly.
+- **Replacement Behavior**: Replacing replaces the entire state, clearing any canonical IDs not present in the imported payload. Empty native payloads trigger a clear action.
+- **GOOD-Format Backward Compatibility**: Retained existing `achievements: [...]` replacement workflow unchanged.
+- **Full-Backup Independence**: The `TRAVELERS_TOOLKIT_ACHIEVEMENTS` interchange format is strictly achievement-centric and independent from the `v1` global application backup schema. Global backups remain unmodified.
+- **Validation and Test Coverage**: Verified native parsing, timestamp preservation, and merging. Unit tests augmented with `vi.useFakeTimers()` for filename validation. Added an integration test (`AchievementDataIntegration.test.jsx`) to confirm the entire native merge workflow securely manipulates actual Zustand store data without bugs.
 
 ### Phase I — Extended Metadata
 
