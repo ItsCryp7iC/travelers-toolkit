@@ -1444,16 +1444,16 @@ Exit criteria:
 
 ### Phase I — Extended Metadata
 
-Potential future scope:
+**Status**: Complete.
 
-- commission-linked achievements;
-- region grouping;
-- achievement chains;
-- prerequisites;
-- multi-stage UI grouping;
-- source hints.
-
-Only implement metadata supported by trustworthy data.
+**Implementation Details**:
+- **Research**: Investigated `genshin-db-dist` schema for potential metadata fields (chains, prerequisites, commission links, regions, hints).
+- **Multi-Stage Implementation**: Added `stageGroupId`, `stageIndex`, and `stageCount` natively derived from multi-element array groupings inside the pinned source arrays. Added robust invariant validation to ensure stage integrity.
+- **UI Grouping Integration**: Added structural grouping to the Achievements page so source-backed multi-stage achievements render as visually grouped cards (preserving independent completion, independent checkboxes, and independent version/reward badges for each stage). Applied grouping *after* status and search filters, preventing search mismatches from hiding related stages inappropriately or wrongly showing them.
+- **Sequential Completion Cascade**: Implemented strict forward/backward cascades for stage groups via `applyStageCompletionChange`. Checking Stage N marks all earlier stages in the group complete (inferred completions get `completedAt: null`). Unchecking Stage N unmarks all later stages. This correctly bounds valid completions to real sequential states and automatically updates total stats naturally through standard UI updates without mutating canonical or persistence schemas.
+- **Import Normalization**: Extracted sequential rules into `normalizeStageProgress` and injected them into the core parser `normalizeAchievementProgress`. This mathematically enforces that all historical GOOD parsing, native replacements, and native merges guarantee valid stage states instantly by inferring and appending omitted earlier stages with null timestamps (or preserving existing explicit timestamps).
+- **Deferred Metadata**: Explicitly rejected chains, prerequisites, commissions, and regions due to missing reliable provenance in the source files.
+- **Note**: The current grouping UI is structural and not the final Achievements visual redesign. No changes were made to underlying persistence or progress statistics semantics.
 
 ### Phase J — Scanner Compatibility
 

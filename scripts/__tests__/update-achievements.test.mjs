@@ -40,19 +40,25 @@ describe('Achievement Generator Logic', () => {
     expect(achs[0].primogems).toBe(5);
     expect(achs[0].hidden).toBe(true);
     expect(achs[0].version).toBe("1.5");
-    
+    expect(achs[0].stageGroupId).toBe("1001");
+    expect(achs[0].stageIndex).toBe(1);
+    expect(achs[0].stageCount).toBe(2);
+
     expect(achs[1].id).toBe("1002");
     expect(achs[1].primogems).toBe(10);
     expect(achs[1].version).toBe("1.5");
     expect(achs[1].hidden).toBe(true);
-    
+    expect(achs[1].stageGroupId).toBe("1001");
+    expect(achs[1].stageIndex).toBe(2);
+    expect(achs[1].stageCount).toBe(2);
+
     expect(stats.sourceObjects).toBe(1);
     expect(stats.multiStageSourceObjects).toBe(1);
     expect(stats.scalarSourceObjects).toBe(0);
     expect(stats.multiStageCanonicalRecords).toBe(2);
     expect(stats.canonicalRecords).toBe(2);
   });
-  
+
   it('follows null policy if version mapping is missing', () => {
     const rawAch = {
       data: {
@@ -68,7 +74,7 @@ describe('Achievement Generator Logic', () => {
     const achs = normalizeAchievements(rawAch, {}, {});
     expect(achs[0].version).toBeNull();
   });
-  
+
   it('rejects version dict with duplicate canonical IDs', () => {
     const rawAch = {
       data: {
@@ -81,7 +87,7 @@ describe('Achievement Generator Logic', () => {
     const versionDict = { ach1: '1.0', ach2: '1.1' };
     expect(() => normalizeAchievements(rawAch, versionDict, {})).toThrow(/Duplicate canonical ID/);
   });
-  
+
   it('rejects version dict with unknown string key', () => {
     const rawAch = {
       data: {
@@ -114,6 +120,43 @@ describe('Achievement Generator Logic', () => {
     expect(() => validateDataset(mockCats, achs)).toThrow(/Invalid category ID/);
   });
 
+  it('rejects malformed stage groups', () => {
+    const mockCats = Array.from({length: 73}, (_, i) => ({ id: String(i), name: "A", order: i }));
+
+    // Conflicting count
+    const achs1 = [
+      { id: "100", categoryId: "0", name: "X", primogems: 5, hidden: false, version: null, order: 1, stageGroupId: "100", stageIndex: 1, stageCount: 2 },
+      { id: "101", categoryId: "0", name: "Y", primogems: 5, hidden: false, version: null, order: 1, stageGroupId: "100", stageIndex: 2, stageCount: 3 }
+    ];
+    expect(() => validateDataset(mockCats, achs1)).toThrow(/Conflicting stageCount/);
+
+    // Missing members
+    const achs2 = [
+      { id: "100", categoryId: "0", name: "X", primogems: 5, hidden: false, version: null, order: 1, stageGroupId: "100", stageIndex: 1, stageCount: 2 }
+    ];
+    expect(() => validateDataset(mockCats, achs2)).toThrow(/expected 2/);
+
+    // Invalid index
+    const achs3 = [
+      { id: "100", categoryId: "0", name: "X", primogems: 5, hidden: false, version: null, order: 1, stageGroupId: "100", stageIndex: 1, stageCount: 2 },
+      { id: "101", categoryId: "0", name: "Y", primogems: 5, hidden: false, version: null, order: 1, stageGroupId: "100", stageIndex: 3, stageCount: 2 }
+    ];
+    expect(() => validateDataset(mockCats, achs3)).toThrow(/missing or duplicate index/);
+
+    // Incorrect group identity (stageGroupId does not match first member's canonical ID)
+    const achs4 = [
+      { id: "100", categoryId: "0", name: "X", primogems: 5, hidden: false, version: null, order: 1, stageGroupId: "999", stageIndex: 1, stageCount: 2 },
+      { id: "101", categoryId: "0", name: "Y", primogems: 5, hidden: false, version: null, order: 1, stageGroupId: "999", stageIndex: 2, stageCount: 2 }
+    ];
+    expect(() => validateDataset(mockCats, achs4)).toThrow(/Group identity mismatch/);
+
+    // Orphaned stage metadata
+    const achs5 = [
+      { id: "100", categoryId: "0", name: "X", primogems: 5, hidden: false, version: null, order: 1, stageIndex: 1 }
+    ];
+    expect(() => validateDataset(mockCats, achs5)).toThrow(/Orphaned stage metadata/);
+  });
+
   it('rejects invalid reward in normalization', () => {
     const rawAch = {
       data: {
@@ -141,7 +184,7 @@ describe('Achievement Generator Logic', () => {
     };
     expect(() => normalizeAchievements(rawAch, {}, {})).toThrow(/Stage count mismatch/);
   });
-  
+
   it('deterministic sorting for categories', () => {
     const rawGroups = {
       data: {

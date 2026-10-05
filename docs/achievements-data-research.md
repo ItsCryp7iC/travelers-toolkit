@@ -132,6 +132,9 @@ interface AchievementDefinition {
   hidden: boolean;     // `isHidden` flag
   version: string;     // Curated metadata (e.g. '1.0', '7.1')
   order: number;       // Source-native `sortOrder`
+  stageGroupId?: string; // Multi-stage group identifier (First canonical ID of the group)
+  stageIndex?: number;   // 1-based index within the multi-stage group
+  stageCount?: number;   // Total number of stages in the group
 }
 ```
 
@@ -195,3 +198,18 @@ While the architecture is sound, the following are managed risks:
 - Compare canonical category IDs against HoYoLAB when updating.
 - Review generated diffs carefully.
 - Preserve source attribution/provenance in the documentation and app UI.
+
+---
+
+## 7. Extended Metadata Research (Phase I)
+
+During Phase I, the canonical source data (`genshin-db-dist`) was evaluated for extended relationship metadata (chains, prerequisites, commission links, regions, hints).
+
+**Findings:**
+1. **Multi-stage achievements**: Fully supported. The source inherently groups stages into single records containing multiple canonical IDs (e.g., `id: [80212, 80213, 80214]`). This enables unambiguous reconstruction of `stageGroupId`, `stageIndex`, and `stageCount`.
+2. **Achievement chains**: Deferred. The source schema does not contain explicit chain groupings or ordering fields for distinct canonical achievements.
+3. **Prerequisites**: Deferred. No fields exist in the source JSON indicating prerequisite IDs.
+4. **Commission associations**: Deferred. No commission IDs or commission links are present in the source definitions.
+5. **Regional grouping & Source hints**: Deferred. No curated region IDs or reliable acquisition text are provided natively.
+
+**Conclusion**: Only multi-stage grouping was implemented. All other requested metadata fields have been deferred pending a reliable source.

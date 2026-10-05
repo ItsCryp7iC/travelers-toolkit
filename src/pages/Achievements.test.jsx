@@ -15,29 +15,34 @@ vi.mock('../data/achievements/achievements.json', () => ({
   default: [
     { id: '80001', categoryId: '0', name: 'Test Achievement 1', description: 'Desc 1', primogems: 5, hidden: false, version: '1.0', order: 1 },
     { id: '80002', categoryId: '0', name: 'Test Achievement 2', description: 'Desc 2', primogems: 10, hidden: true, version: '1.1', order: 2 },
-    { id: '80003', categoryId: '1', name: 'Test Achievement 3', description: 'Desc 3', primogems: 5, hidden: false, version: '1.2', order: 1 }
+    { id: '80003', categoryId: '1', name: 'Zoo Tycoon', description: 'Desc 3', primogems: 5, hidden: false, version: '1.2', order: 1, stageGroupId: '80003', stageIndex: 1, stageCount: 3 },
+    { id: '80004', categoryId: '1', name: 'Zoo Tycoon', description: 'Desc 4', primogems: 5, hidden: false, version: '1.2', order: 2, stageGroupId: '80003', stageIndex: 2, stageCount: 3 },
+    { id: '80005', categoryId: '1', name: 'Zoo Tycoon', description: 'Desc 5', primogems: 10, hidden: false, version: '1.2', order: 3, stageGroupId: '80003', stageIndex: 3, stageCount: 3 }
   ]
 }));
 
 describe('Achievements Page UI', () => {
   let mockSetAchievementCompleted;
+  let mockSetAchievementProgress;
   let container = null;
   let root = null;
 
   beforeEach(() => {
     window.history.replaceState(null, '', '/');
-    
+
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
-    
+
     mockSetAchievementCompleted = vi.fn();
+    mockSetAchievementProgress = vi.fn();
     useStore.mockImplementation((selector) => {
       const state = {
         achievementProgress: {
           '80001': { completed: true, completedAt: '2024-01-01T00:00:00.000Z' }
         },
         setAchievementCompleted: mockSetAchievementCompleted,
+        setAchievementProgress: mockSetAchievementProgress,
         hoyolabConnected: false
       };
       return selector(state);
@@ -57,10 +62,10 @@ describe('Achievements Page UI', () => {
     act(() => {
       root.render(<Achievements />);
     });
-    // 1 completed out of 3 total achievements
-    expect(container.textContent).toContain('1 / 3');
-    // 5 primogems earned out of 20 total
-    expect(container.textContent).toContain('5 / 20');
+    // 1 completed out of 5 total achievements
+    expect(container.textContent).toContain('1 / 5');
+    // 5 primogems earned out of 35 total
+    expect(container.textContent).toContain('5 / 35');
   });
 
   it('renders category list and allows selection', () => {
@@ -77,7 +82,7 @@ describe('Achievements Page UI', () => {
       categoryButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(container.textContent).toContain('Test Achievement 3');
+    expect(container.textContent).toContain('Zoo Tycoon');
     expect(container.textContent).not.toContain('Test Achievement 1');
   });
 
@@ -100,21 +105,74 @@ describe('Achievements Page UI', () => {
     act(() => {
       checkboxes[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(mockSetAchievementCompleted).toHaveBeenCalledWith('80002', true);
+    // Toggle triggers cascade function which calls setAchievementProgress
+    expect(mockSetAchievementProgress).toHaveBeenCalled();
 
     act(() => {
       checkboxes[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
-    expect(mockSetAchievementCompleted).toHaveBeenCalledWith('80001', false);
+    expect(mockSetAchievementProgress).toHaveBeenCalled();
   });
 
-  it('renders hidden indicators and version badges', () => {
+  it('renders hidden indicators, version badges, and stage badges', () => {
     act(() => {
       root.render(<Achievements />);
     });
     expect(container.textContent).toContain('Secret');
     expect(container.textContent).toContain('v1.0');
     expect(container.textContent).toContain('v1.1');
+
+    // Switch to category 1 to see stage badge
+    const buttons = Array.from(container.querySelectorAll('button'));
+    const categoryButton = buttons.find(b => b.textContent.includes('Mortal Travails: Series I'));
+    act(() => {
+      categoryButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.textContent).toContain('Stage 1/3');
+  });
+
+  it('renders grouped achievements properly', () => {
+    act(() => {
+      root.render(<Achievements />);
+    });
+
+    // Switch to category 1 to see grouped achievements
+    const buttons = Array.from(container.querySelectorAll('button'));
+    const categoryButton = buttons.find(b => b.textContent.includes('Mortal Travails: Series I'));
+    act(() => {
+      categoryButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    // "Zoo Tycoon" is the common name and should appear as a group header exactly once
+    const text = container.textContent;
+    // Count occurrences of "Zoo Tycoon": should be 1 (group header), the individual stages shouldn't repeat it
+    // Note: JS match returns array. The number of 'Zoo Tycoon' occurrences inside the list container:
+    const listContainer = container.querySelectorAll('.custom-scrollbar')[1];
+    const matches = listContainer.textContent.match(/Zoo Tycoon/g);
+    expect(matches).toHaveLength(1);
+
+    expect(listContainer.textContent).toContain('0 / 3 complete');
+    expect(listContainer.textContent).toContain('Stage 1/3');
+    expect(listContainer.textContent).toContain('Stage 2/3');
+    expect(listContainer.textContent).toContain('Stage 3/3');
+    expect(listContainer.textContent).toContain('Desc 3');
+    expect(listContainer.textContent).toContain('Desc 4');
+    expect(listContainer.textContent).toContain('Desc 5');
+
+    // Toggle Stage 2
+    const checkboxes = listContainer.querySelectorAll('input[type="checkbox"]');
+    expect(checkboxes.length).toBe(3); // 3 stages
+
+    act(() => {
+      checkboxes[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    // Using stage cascade: Checking Stage 2 (80004) should check 80003 and 80004
+    expect(mockSetAchievementProgress).toHaveBeenCalled();
+    const lastCall = mockSetAchievementProgress.mock.calls[0][0];
+    expect(lastCall['80004'].completed).toBe(true);
+    expect(lastCall['80003'].completed).toBe(true);
   });
 
   it('filters by search and completion status', () => {
@@ -151,6 +209,34 @@ describe('Achievements Page UI', () => {
     });
     expect(container.textContent).toContain('Test Achievement 1');
     expect(container.textContent).not.toContain('Test Achievement 2');
+  });
+
+  it('filters grouped achievements properly', () => {
+    act(() => {
+      root.render(<Achievements />);
+    });
+
+    const buttons = Array.from(container.querySelectorAll('button'));
+    const categoryButton = buttons.find(b => b.textContent.includes('Mortal Travails: Series I'));
+    act(() => {
+      categoryButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    const searchInput = container.querySelector('input[type="text"]');
+
+    act(() => {
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+      nativeInputValueSetter.call(searchInput, 'Desc 4'); // Matches only Stage 2
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    // The group header still shows "Zoo Tycoon" because it's a group, but only Stage 2 is rendered
+    const listContainer = container.querySelectorAll('.custom-scrollbar')[1];
+    expect(listContainer.textContent).toContain('Zoo Tycoon');
+    expect(listContainer.textContent).not.toContain('Desc 3');
+    expect(listContainer.textContent).toContain('Desc 4');
+    expect(listContainer.textContent).not.toContain('Desc 5');
+    expect(listContainer.textContent).toContain('Stage 2/3');
   });
 
   it('shows disconnected message when HoYoLAB is not connected', () => {

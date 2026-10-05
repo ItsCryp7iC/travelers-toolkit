@@ -134,6 +134,18 @@ describe('Zustand Persistence Migrations', () => {
     expect(migrated.displayTimeZone).toBe('Asia/Tokyo');
   });
 
+  it('rehydrates historical achievement states securely (re-normalization)', () => {
+    const legacyState = {
+      achievementProgress: {
+        '80129': { completed: true, completedAt: '2026-01-01T00:00:00.000Z' }
+      }
+    };
+    const migrated = migrateStore(legacyState, 6);
+    expect(migrated.achievementProgress['80127']).toEqual({ completed: true, completedAt: null });
+    expect(migrated.achievementProgress['80128']).toEqual({ completed: true, completedAt: null });
+    expect(migrated.achievementProgress['80129']).toEqual({ completed: true, completedAt: '2026-01-01T00:00:00.000Z' });
+  });
+
   it('partializeStore returns exactly the persisted whitelist', () => {
     const fullState = {
       autoBackupEnabled: true,

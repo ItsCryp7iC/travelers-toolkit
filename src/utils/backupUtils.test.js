@@ -23,6 +23,29 @@ describe('Backup Normalization', () => {
     expect(result.achievementProgress).toEqual({}); // Absent field normalizes to {}
   });
 
+  it('normalizes legacy full backup with staged achievement correctly', () => {
+    // 80129 is Stage 3 of a 3-stage achievement (80127, 80128, 80129)
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {},
+        serverRegion: 'Asia',
+        achievementProgress: {
+          '80129': { completed: true, completedAt: '2026-01-01T00:00:00.000Z' }
+        }
+      }
+    };
+    const result = normalizeBackupForImport(raw);
+    expect(result.achievementProgress['80127']).toEqual({ completed: true, completedAt: null });
+    expect(result.achievementProgress['80128']).toEqual({ completed: true, completedAt: null });
+    expect(result.achievementProgress['80129']).toEqual({ completed: true, completedAt: '2026-01-01T00:00:00.000Z' });
+    expect(result.serverRegion).toBe('Asia'); // unrelated fields unchanged
+  });
+
   it('normalizes valid legacy v0 backup', () => {
     const raw = {
       roster: {},

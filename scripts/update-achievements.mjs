@@ -66,7 +66,7 @@ function parseGzipJson(buffer) {
 export function normalizeCategories(rawGroups) {
   let groupsDict = rawGroups.data.English;
   if (groupsDict.achievementgroups) groupsDict = groupsDict.achievementgroups;
-  
+
   const categories = Object.values(groupsDict).map(g => {
     if (g.id === undefined || !g.name) {
       throw new Error(`Invalid category object: ${JSON.stringify(g)}`);
@@ -78,7 +78,7 @@ export function normalizeCategories(rawGroups) {
       icon: g.icon || null
     };
   });
-  
+
   categories.sort((a, b) => a.order - b.order);
   return categories;
 }
@@ -86,7 +86,7 @@ export function normalizeCategories(rawGroups) {
 export function normalizeAchievements(rawAchievements, versionDict, stats = {}) {
   let achDict = rawAchievements.data.English;
   if (achDict.achievements) achDict = achDict.achievements;
-  
+
   const canonicalVersionMap = new Map();
   for (const [stringKey, version] of Object.entries(versionDict || {})) {
     const rawData = achDict[stringKey];
@@ -113,15 +113,15 @@ export function normalizeAchievements(rawAchievements, versionDict, stats = {}) 
     stats.sourceObjects++;
     if (!raw.id || !Array.isArray(raw.id)) throw new Error(`Invalid id array for ${raw.name}`);
     if (raw.stages !== raw.id.length) throw new Error(`Stage count mismatch for ${raw.name}`);
-    
+
     if (raw.id.length === 1) stats.scalarSourceObjects++;
     else stats.multiStageSourceObjects++;
-    
+
     for (let i = 0; i < raw.stages; i++) {
       const stageKey = `stage${i + 1}`;
       const stageData = raw[stageKey];
       if (!stageData) throw new Error(`Missing stage ${stageKey} for ${raw.name}`);
-      
+
       let primogems = 0;
       if (stageData.reward) {
         if (stageData.reward.id !== 201) throw new Error(`Unexpected reward item ${stageData.reward.id} in ${raw.name}`);
@@ -130,12 +130,12 @@ export function normalizeAchievements(rawAchievements, versionDict, stats = {}) 
       } else {
         throw new Error(`Missing reward for ${raw.name} stage ${i+1}`);
       }
-      
+
       const canonicalId = raw.id[i].toString();
       let version = canonicalVersionMap.get(raw.id[i]);
       if (version === undefined) version = null; // null policy
 
-      achievements.push({
+      const achievementData = {
         id: canonicalId,
         categoryId: raw.achievementGroupId.toString(),
         name: stageData.title || raw.name,
@@ -144,19 +144,27 @@ export function normalizeAchievements(rawAchievements, versionDict, stats = {}) 
         hidden: raw.isHidden === true,
         version: version,
         order: raw.sortOrder
-      });
-      
+      };
+
+      if (raw.stages > 1) {
+        achievementData.stageGroupId = raw.id[0].toString();
+        achievementData.stageIndex = i + 1;
+        achievementData.stageCount = raw.stages;
+      }
+
+      achievements.push(achievementData);
+
       stats.canonicalRecords++;
       if (raw.id.length > 1) stats.multiStageCanonicalRecords++;
     }
   }
-  
+
   achievements.sort((a, b) => {
     if (a.categoryId !== b.categoryId) return parseInt(a.categoryId) - parseInt(b.categoryId);
     if (a.order !== b.order) return a.order - b.order;
     return parseInt(a.id) - parseInt(b.id);
   });
-  
+
   return achievements;
 }
 
@@ -165,14 +173,51 @@ export function validateDataset(categories, achievements) {
   const catIds = new Set(categories.map(c => c.id));
   if (catIds.size !== categories.length) throw new Error('Duplicate category IDs');
   if (!catIds.has("0")) throw new Error('Missing ID 0 in categories');
-  
+
   const achIds = new Set(achievements.map(a => a.id));
   if (achIds.size !== achievements.length) throw new Error('Duplicate achievement IDs');
-  
+
   for (const a of achievements) {
     if (!catIds.has(a.categoryId)) throw new Error(`Invalid category ID ${a.categoryId} on achievement ${a.id}`);
     if (!a.name) throw new Error(`Empty name on achievement ${a.id}`);
     if (typeof a.primogems !== 'number' || a.primogems < 0) throw new Error(`Invalid primogems on achievement ${a.id}`);
+  }
+
+  // Phase I Multi-stage validation
+  const groups = {};
+  for (const a of achievements) {
+    if (a.stageGroupId || a.stageIndex !== undefined || a.stageCount !== undefined) {
+      if (!a.stageGroupId || a.stageIndex === undefined || a.stageCount === undefined) {
+        throw new Error(`Orphaned stage metadata on ${a.id}`);
+      }
+    }
+
+    if (a.stageGroupId) {
+      if (typeof a.stageGroupId !== 'string' || !a.stageGroupId) throw new Error(`Invalid stageGroupId on ${a.id}`);
+      if (!Number.isInteger(a.stageIndex) || a.stageIndex < 1) throw new Error(`Invalid stageIndex on ${a.id}`);
+      if (!Number.isInteger(a.stageCount) || a.stageCount < 2) throw new Error(`Invalid stageCount on ${a.id}`);
+
+      if (!groups[a.stageGroupId]) {
+        groups[a.stageGroupId] = { count: a.stageCount, members: [] };
+      } else if (groups[a.stageGroupId].count !== a.stageCount) {
+        throw new Error(`Conflicting stageCount for group ${a.stageGroupId}`);
+      }
+
+      groups[a.stageGroupId].members.push({ id: a.id, index: a.stageIndex });
+    }
+  }
+
+  for (const [groupId, group] of Object.entries(groups)) {
+    if (group.members.length !== group.count) {
+      throw new Error(`Group ${groupId} has ${group.members.length} members but expected ${group.count}`);
+    }
+    const membersSorted = group.members.sort((x, y) => x.index - y.index);
+    if (membersSorted[0].id !== groupId) {
+      throw new Error(`Group identity mismatch: ${groupId} does not match first member ID ${membersSorted[0].id}`);
+    }
+    for (let i = 0; i < membersSorted.length; i++) {
+      if (membersSorted[i].index !== i + 1) throw new Error(`Group ${groupId} missing or duplicate index ${i + 1}`);
+    }
   }
 }
 
@@ -182,25 +227,25 @@ function sha256(str) {
 
 export async function runGenerator(isCheck = false) {
   console.log(`Fetching pinned sources...`);
-  
+
   const [groupsBuf, achBuf, versionDict] = await Promise.all([
     fetchGzipBuffer(GROUPS_URL),
     fetchGzipBuffer(ACHIEVEMENTS_URL),
     fetchJson(VERSION_URL)
   ]);
-  
+
   const rawGroups = parseGzipJson(groupsBuf);
   const rawAchievements = parseGzipJson(achBuf);
-  
+
   const categories = normalizeCategories(rawGroups);
   const stats = {};
   const achievements = normalizeAchievements(rawAchievements, versionDict, stats);
-  
+
   validateDataset(categories, achievements);
-  
+
   const catJson = JSON.stringify(categories, null, 2) + '\n';
   const achJson = JSON.stringify(achievements, null, 2) + '\n';
-  
+
   const manifest = {
     schemaVersion: 1,
     gameVersion: GAME_VERSION,
@@ -243,13 +288,13 @@ export async function runGenerator(isCheck = false) {
     }
   };
   const manJson = JSON.stringify(manifest, null, 2) + '\n';
-  
+
   if (isCheck) {
     try {
       const diskCat = await fs.readFile(path.join(OUTPUT_DIR, 'categories.json'), 'utf8');
       const diskAch = await fs.readFile(path.join(OUTPUT_DIR, 'achievements.json'), 'utf8');
       const diskMan = await fs.readFile(path.join(OUTPUT_DIR, 'manifest.json'), 'utf8');
-      
+
       if (diskCat !== catJson || diskAch !== achJson || diskMan !== manJson) {
         console.error('Data drift detected! Generated data does not match on-disk data.');
         process.exit(1);
@@ -265,10 +310,10 @@ export async function runGenerator(isCheck = false) {
     await fs.writeFile(path.join(OUTPUT_DIR, 'categories.json'), catJson);
     await fs.writeFile(path.join(OUTPUT_DIR, 'achievements.json'), achJson);
     await fs.writeFile(path.join(OUTPUT_DIR, 'manifest.json'), manJson);
-    
+
     const hiddenCount = achievements.filter(a => a.hidden).length;
     const versionCount = achievements.filter(a => a.version !== null).length;
-    
+
     console.log('--- Generation Snapshot ---');
     console.log(`Source Definitions: ${SOURCE_REPO} @ ${SOURCE_REVISION}`);
     console.log(`Source Metadata: ${METADATA_REPO} @ ${METADATA_REVISION}`);

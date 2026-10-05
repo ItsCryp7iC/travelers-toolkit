@@ -88,7 +88,7 @@ export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
       serverRegion: raw.serverRegion || 'Asia',
       showDbBuilder: raw.showDbBuilder ?? false,
       displayTimeZone: raw.displayTimeZone || 'auto',
-      achievementProgress: raw.achievementProgress ? normalizeAchievementProgress(raw.achievementProgress) : {},
+      achievementProgress: raw.achievementProgress ? normalizeAchievementProgress(raw.achievementProgress) as NormalizedBackupData['achievementProgress'] : {},
     };
   }
 
@@ -130,7 +130,7 @@ export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
     serverRegion: rawObj.data.serverRegion || 'Asia',
     showDbBuilder: rawObj.data.showDbBuilder ?? false,
     displayTimeZone: rawObj.data.displayTimeZone || 'auto',
-    achievementProgress: rawObj.data.achievementProgress ? normalizeAchievementProgress(rawObj.data.achievementProgress) : {},
+    achievementProgress: rawObj.data.achievementProgress ? normalizeAchievementProgress(rawObj.data.achievementProgress) as NormalizedBackupData['achievementProgress'] : {},
   };
 }
 

@@ -20,9 +20,9 @@ describe('Achievement Import Integration', () => {
     expect(useStore.getState().achievementProgress['80091'].completedAt).toBe('2025-01-01T00:00:00.000Z');
     expect(useStore.getState().achievementProgress['80127'].completed).toBe(true);
 
-    // 2. Parse an import containing one previously completed ID (80091) and one new ID (80128)
+    // 2. Parse an import containing one previously completed ID (80091) and one new ID (80092)
     const importData = {
-      achievements: [80091, 80128, 999999]
+      achievements: [80091, 80092, 999999]
     };
     const parsed = parseAchievementImport(importData);
 
@@ -37,11 +37,11 @@ describe('Achievement Import Integration', () => {
 
     // 6. Verify both imported achievements exist
     expect(state['80091']).toBeDefined();
-    expect(state['80128']).toBeDefined();
+    expect(state['80092']).toBeDefined();
 
     // 7. Verify both imported completedAt values are null
     expect(state['80091'].completedAt).toBe(null);
-    expect(state['80128'].completedAt).toBe(null);
+    expect(state['80092'].completedAt).toBe(null);
 
     // 8. Verify no unknown IDs entered the state
     expect(state['999999']).toBeUndefined();

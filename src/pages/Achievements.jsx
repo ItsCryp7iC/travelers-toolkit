@@ -3,10 +3,13 @@ import useStore from '../store/useStore';
 import categoriesData from '../data/achievements/categories.json';
 import { getAchievementsByCategory, getOverallStats, getCategoryStats } from '../utils/achievementStats';
 import { getOverallReconciliation, getCategoryReconciliation } from '../utils/achievementReconciliation';
+import { groupAchievements } from '../utils/achievementGrouping';
+import { applyStageCompletionChange } from '../utils/achievementStageProgress';
+import allAchievementsData from '../data/achievements/achievements.json';
 
 export default function Achievements() {
   const achievementProgress = useStore((s) => s.achievementProgress);
-  const setAchievementCompleted = useStore((s) => s.setAchievementCompleted);
+  const setAchievementProgress = useStore((s) => s.setAchievementProgress);
   const hoyolabConnected = useStore((s) => s.hoyolabConnected);
 
   const [reconciliationStatus, setReconciliationStatus] = useState('idle');
@@ -92,6 +95,21 @@ export default function Achievements() {
       return true;
     });
   }, [currentCategoryAchievements, achievementProgress, filterStatus, searchQuery]);
+
+  const renderableItems = useMemo(() => {
+    return groupAchievements(filteredAchievements);
+  }, [filteredAchievements]);
+
+  const handleToggle = (id, checked) => {
+    const nextProgress = applyStageCompletionChange(
+      achievementProgress,
+      allAchievementsData,
+      id,
+      checked,
+      new Date().toISOString()
+    );
+    setAchievementProgress(nextProgress, { mode: 'replace' });
+  };
 
   return (
     <div className="flex flex-col h-full space-y-6 max-w-[1600px] mx-auto">
@@ -233,68 +251,155 @@ export default function Achievements() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-            {filteredAchievements.length === 0 ? (
+            {renderableItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-[var(--muted)] py-12">
                 <p className="text-sm">No achievements found matching your criteria.</p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                {filteredAchievements.map(ach => {
-                  const isCompleted = !!achievementProgress[ach.id]?.completed;
+                {renderableItems.map(item => {
+                  if (item.isGroup) {
+                    const completedCount = item.stages.filter(s => achievementProgress[s.id]?.completed).length;
 
-                  return (
-                    <label
-                      key={ach.id}
-                      className={`relative flex gap-4 p-4 rounded-xl border transition-all cursor-pointer group ${
-                        isCompleted
-                          ? 'bg-green-900/10 border-green-500/30 hover:border-green-500/40'
-                          : 'bg-white/5 border-[var(--border)] hover:border-[var(--border-light)]'
-                      }`}
-                    >
-                      <div className="flex-shrink-0 pt-0.5">
-                        <div className="relative flex items-center justify-center w-5 h-5">
-                          <input
-                            type="checkbox"
-                            checked={isCompleted}
-                            onChange={(e) => setAchievementCompleted(ach.id, e.target.checked)}
-                            className={`w-5 h-5 rounded border-2 cursor-pointer appearance-none transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--elevated)] ${isCompleted ? 'bg-green-500 border-green-500 focus-visible:ring-green-500' : 'bg-black/30 border-gray-600 focus-visible:ring-primary group-hover:border-gray-500'}`}
-                            aria-label={`Mark ${ach.name} as complete`}
-                          />
-                          {isCompleted && (
-                            <svg className="absolute w-3.5 h-3.5 text-black pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
+                    return (
+                      <div key={`group-${item.stageGroupId}`} className="flex flex-col bg-white/5 border border-[var(--border)] rounded-xl overflow-hidden hover:border-[var(--border-light)] transition-all">
+                        {/* Group Header */}
+                        {item.commonName && (
+                          <div className="px-4 py-3 bg-black/20 border-b border-[var(--border)]/50 flex justify-between items-center">
+                            <span className="font-bold text-[var(--text)]">{item.commonName}</span>
+                            <span className="text-xs font-semibold text-[var(--muted)] bg-black/30 px-2 py-1 rounded">
+                              {completedCount} / {item.stages.length} complete
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Stages */}
+                        <div className="flex flex-col divide-y divide-[var(--border)]/30">
+                          {item.stages.map((ach, idx) => {
+                            const isCompleted = !!achievementProgress[ach.id]?.completed;
+                            return (
+                              <label
+                                key={ach.id}
+                                className={`relative flex gap-4 p-4 transition-all cursor-pointer group ${
+                                  isCompleted ? 'bg-green-900/5' : 'hover:bg-white/5'
+                                }`}
+                              >
+                                <div className="flex-shrink-0 pt-0.5">
+                                  <div className="relative flex items-center justify-center w-5 h-5">
+                                    <input
+                                      type="checkbox"
+                                      checked={isCompleted}
+                                      onChange={(e) => handleToggle(ach.id, e.target.checked)}
+                                      className={`w-5 h-5 rounded border-2 cursor-pointer appearance-none transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--elevated)] ${isCompleted ? 'bg-green-500 border-green-500 focus-visible:ring-green-500' : 'bg-black/30 border-gray-600 focus-visible:ring-primary group-hover:border-gray-500'}`}
+                                      aria-label={`Mark ${ach.name} as complete`}
+                                    />
+                                    {isCompleted && (
+                                      <svg className="absolute w-3.5 h-3.5 text-black pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                      </svg>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="flex-1 min-w-0 flex flex-col">
+                                  <div className="flex items-start justify-between gap-4 mb-1.5 flex-wrap">
+                                    {!item.commonName && (
+                                      <div className={`font-semibold text-base transition-colors ${isCompleted ? 'text-[var(--text)]/60 line-through' : 'text-[var(--text)]'}`}>
+                                        {ach.name}
+                                      </div>
+                                    )}
+                                    <div className={`flex items-center gap-2 shrink-0 ${!item.commonName ? '' : 'w-full justify-end'}`}>
+                                      {ach.hidden && (
+                                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border bg-purple-900/20 text-purple-300 border-purple-500/20 whitespace-nowrap">
+                                          Secret
+                                        </span>
+                                      )}
+                                      <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border bg-blue-900/20 text-blue-300 border-blue-500/20 whitespace-nowrap">
+                                        Stage {ach.stageIndex}/{ach.stageCount}
+                                      </span>
+                                      <div className="flex items-center gap-1 text-[#FDE047] font-semibold text-sm bg-black/20 px-2 py-0.5 rounded border border-[#FDE047]/20">
+                                        <span>{ach.primogems}</span>
+                                        <span className="text-xs">✦</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className={`text-sm leading-relaxed mb-3 ${isCompleted ? 'text-[var(--muted)]/60' : 'text-[var(--muted)]'}`}>
+                                    {ach.description}
+                                  </div>
+                                  <div className="flex items-center justify-between mt-auto pt-3 border-t border-[var(--border)] border-opacity-40">
+                                    <span className="text-[11px] text-[var(--muted)]/60 font-mono tracking-wide">ID: {ach.id}</span>
+                                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-black/20 border border-[var(--border)]/50 text-[var(--muted)]">v{ach.version}</span>
+                                  </div>
+                                </div>
+                              </label>
+                            );
+                          })}
                         </div>
                       </div>
+                    );
+                  } else {
+                    const ach = item.achievement;
+                    const isCompleted = !!achievementProgress[ach.id]?.completed;
 
-                      <div className="flex-1 min-w-0 flex flex-col">
-                        <div className="flex items-start justify-between gap-4 mb-1.5">
-                          <div className={`font-semibold text-base transition-colors ${isCompleted ? 'text-[var(--text)]/60 line-through' : 'text-[var(--text)]'}`}>
-                            {ach.name}
-                          </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            {ach.hidden && (
-                              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border bg-purple-900/20 text-purple-300 border-purple-500/20 whitespace-nowrap">
-                                Secret
-                              </span>
+                    return (
+                      <label
+                        key={ach.id}
+                        className={`relative flex gap-4 p-4 rounded-xl border transition-all cursor-pointer group ${
+                          isCompleted
+                            ? 'bg-green-900/10 border-green-500/30 hover:border-green-500/40'
+                            : 'bg-white/5 border-[var(--border)] hover:border-[var(--border-light)]'
+                        }`}
+                      >
+                        <div className="flex-shrink-0 pt-0.5">
+                          <div className="relative flex items-center justify-center w-5 h-5">
+                            <input
+                              type="checkbox"
+                              checked={isCompleted}
+                              onChange={(e) => handleToggle(ach.id, e.target.checked)}
+                              className={`w-5 h-5 rounded border-2 cursor-pointer appearance-none transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--elevated)] ${isCompleted ? 'bg-green-500 border-green-500 focus-visible:ring-green-500' : 'bg-black/30 border-gray-600 focus-visible:ring-primary group-hover:border-gray-500'}`}
+                              aria-label={`Mark ${ach.name} as complete`}
+                            />
+                            {isCompleted && (
+                              <svg className="absolute w-3.5 h-3.5 text-black pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
                             )}
-                            <div className="flex items-center gap-1 text-[#FDE047] font-semibold text-sm bg-black/20 px-2 py-0.5 rounded border border-[#FDE047]/20">
-                              <span>{ach.primogems}</span>
-                              <span className="text-xs">✦</span>
+                          </div>
+                        </div>
+
+                        <div className="flex-1 min-w-0 flex flex-col">
+                          <div className="flex items-start justify-between gap-4 mb-1.5 flex-wrap">
+                            <div className={`font-semibold text-base transition-colors ${isCompleted ? 'text-[var(--text)]/60 line-through' : 'text-[var(--text)]'}`}>
+                              {ach.name}
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
+                              {ach.hidden && (
+                                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border bg-purple-900/20 text-purple-300 border-purple-500/20 whitespace-nowrap">
+                                  Secret
+                                </span>
+                              )}
+                              {ach.stageGroupId && (
+                                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded border bg-blue-900/20 text-blue-300 border-blue-500/20 whitespace-nowrap">
+                                  Stage {ach.stageIndex}/{ach.stageCount}
+                                </span>
+                              )}
+                              <div className="flex items-center gap-1 text-[#FDE047] font-semibold text-sm bg-black/20 px-2 py-0.5 rounded border border-[#FDE047]/20">
+                                <span>{ach.primogems}</span>
+                                <span className="text-xs">✦</span>
+                              </div>
                             </div>
                           </div>
+                          <div className={`text-sm leading-relaxed mb-3 ${isCompleted ? 'text-[var(--muted)]/60' : 'text-[var(--muted)]'}`}>
+                            {ach.description}
+                          </div>
+                          <div className="flex items-center justify-between mt-auto pt-3 border-t border-[var(--border)] border-opacity-40">
+                            <span className="text-[11px] text-[var(--muted)]/60 font-mono tracking-wide">ID: {ach.id}</span>
+                            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-black/20 border border-[var(--border)]/50 text-[var(--muted)]">v{ach.version}</span>
+                          </div>
                         </div>
-                        <div className={`text-sm leading-relaxed mb-3 ${isCompleted ? 'text-[var(--muted)]/60' : 'text-[var(--muted)]'}`}>
-                          {ach.description}
-                        </div>
-                        <div className="flex items-center justify-between mt-auto pt-3 border-t border-[var(--border)] border-opacity-40">
-                          <span className="text-[11px] text-[var(--muted)]/60 font-mono tracking-wide">ID: {ach.id}</span>
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-black/20 border border-[var(--border)]/50 text-[var(--muted)]">v{ach.version}</span>
-                        </div>
-                      </div>
-                    </label>
-                  );
+                      </label>
+                    );
+                  }
                 })}
               </div>
             )}

@@ -1,4 +1,5 @@
 import achievementDefinitions from '../data/achievements/achievements.json';
+import { normalizeStageProgress } from './achievementStageProgress';
 
 const canonicalIds = new Set(achievementDefinitions.map((a) => a.id));
 
@@ -62,5 +63,7 @@ export function normalizeAchievementProgress(rawProgress) {
     };
   }
 
-  return normalized;
+  const stageNormalized = normalizeStageProgress(normalized, achievementDefinitions);
+
+  return stageNormalized;
 }
