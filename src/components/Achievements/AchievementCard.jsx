@@ -68,7 +68,7 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
           <div className="flex items-center gap-2">
             {ach.hidden && (
               <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-1.5 md:px-2 py-0.5 rounded-sm bg-purple-900/30 text-purple-300 border border-purple-500/20 whitespace-nowrap shadow-inner">
-                Secret
+                Hidden
               </span>
             )}
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-white/40">v{ach.version}</span>

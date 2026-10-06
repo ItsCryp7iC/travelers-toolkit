@@ -1513,6 +1513,19 @@ This is not required for initial release.
 **Release-Readiness Decision**:
 The Achievements feature is stable, thoroughly tested, backwards-compatible, and mathematically verified. It is explicitly cleared for production release.
 
+### Phase M — Search, Filters, HoYoLAB Totals & Commission Metadata
+
+**Status**: Implemented.
+
+**Implementation Details**:
+- **HoYoLAB Completed Totals**: `AchievementHero` and `CategoryHeader` updated to display the exact HoYoLAB completion count derived from `hoyolabData.totalCompleted` alongside the reconciliation difference.
+- **Global Search**: Added global cross-category search matching canonical ID, name, and description.
+- **Search UI Refactoring**: Moved search out of the category header to a prominent global location above the main content split. Retained category context by grouping global search results by category.
+- **Version Filter**: Implemented a `Version` filter dynamically populated with all unique versions from the deterministic achievement dataset, sorted descending.
+- **Hidden Terminology**: Renamed all visual `SECRET` badges to `HIDDEN` to accurately reflect the game's semantic behavior, while retaining the purple color scheme. Documented the semantics to avoid conflating "Hidden" with commission gating.
+- **Hide Completed Categories**: Implemented an ephemeral UI toggle to hide fully completed categories from the `CategoryRail` and mobile selector. Did not add to persistent storage.
+- **Commission Metadata**: Explicitly deferred. The `YuehaiTeam/cocogoat` dataset (and its underlying `amos-data`) was thoroughly researched and found lacking in stable, canonical quest IDs mapped reliably to canonical achievement IDs. Generating commission mappings algorithmically was rejected to preserve canonical data integrity.
+
 ---
 
 ## 46. Explicit Non-Goals for Initial Release

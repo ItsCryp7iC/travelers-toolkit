@@ -4,11 +4,7 @@ import { getAchievementCategoryIconUrl } from '../../utils/achievementCategoryIc
 export default function CategoryHeader({
   category,
   stats,
-  categoryRecon,
-  searchQuery,
-  setSearchQuery,
-  filterStatus,
-  setFilterStatus
+  categoryRecon
 }) {
   if (!category) return null;
 
@@ -42,13 +38,14 @@ export default function CategoryHeader({
               {categoryRecon && (
                 <>
                   <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:block"></span>
-                  <span className="hidden sm:inline-flex items-center gap-1">
+                  <span className="hidden sm:inline-flex items-center gap-1.5 text-white/80">
+                    <span>HoYoLAB: <span className="font-bold text-white">{categoryRecon.hoyolabCompleted}</span> completed</span>
                     {categoryRecon.difference === 0 ? (
-                      <span className="text-teal-400 font-bold uppercase tracking-wider text-[11px] bg-teal-900/20 px-2 py-0.5 rounded">Synced</span>
+                      <span className="text-teal-400 font-bold uppercase tracking-wider text-[10px] bg-teal-900/20 px-1.5 py-0.5 rounded">Synced</span>
                     ) : categoryRecon.difference > 0 ? (
-                      <span className="text-primary font-bold uppercase tracking-wider text-[11px] bg-primary/20 px-2 py-0.5 rounded">+{categoryRecon.difference} HoYoLAB</span>
+                      <span className="text-primary font-bold uppercase tracking-wider text-[10px] bg-primary/20 px-1.5 py-0.5 rounded">+{categoryRecon.difference} vs Toolkit</span>
                     ) : (
-                      <span className="text-yellow-400 font-bold uppercase tracking-wider text-[11px] bg-yellow-900/20 px-2 py-0.5 rounded">+{ -categoryRecon.difference} Toolkit</span>
+                      <span className="text-yellow-400 font-bold uppercase tracking-wider text-[10px] bg-yellow-900/20 px-1.5 py-0.5 rounded">Toolkit +{-categoryRecon.difference}</span>
                     )}
                   </span>
                 </>
@@ -56,40 +53,8 @@ export default function CategoryHeader({
             </div>
           </div>
         </div>
-
-        {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto mt-2 sm:mt-0">
-          <div className="relative flex-1 sm:w-64 group">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-primary/50 focus:bg-black/60 transition-all shadow-inner"
-              aria-label="Search achievements"
-            />
-          </div>
-
-          <div className="flex bg-black/40 border border-white/10 rounded-lg p-1 shadow-inner shrink-0 justify-between sm:justify-start">
-            {['All', 'Incomplete', 'Completed'].map(status => (
-              <button
-                key={status}
-                onClick={() => setFilterStatus(status)}
-                className={`flex-1 sm:flex-none px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                  filterStatus === status
-                    ? 'bg-primary/20 text-primary shadow-sm'
-                    : 'text-white/50 hover:text-white/80 hover:bg-white/5'
-                }`}
-              >
-                {status}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
 }
+

@@ -6,7 +6,8 @@ export default function AchievementHero({
   hoyolabConnected,
   reconciliationStatus,
   hoyolabError,
-  fetchHoyolabData
+  fetchHoyolabData,
+  hoyolabData
 }) {
   return (
     <div className="relative bg-[#0d1421]/90 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
@@ -87,20 +88,23 @@ export default function AchievementHero({
                 ) : reconciliationStatus === 'error' ? (
                   <span className="text-red-400 truncate max-w-[120px] md:max-w-none">{hoyolabError}</span>
                 ) : overallRecon ? (
-                  overallRecon.difference === 0 ? (
-                    <span className="text-teal-400 flex items-center gap-1.5 font-semibold">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                      Synced perfectly
-                    </span>
-                  ) : overallRecon.difference > 0 ? (
-                    <span className="text-primary flex items-center gap-1.5 font-semibold">
-                      <span className="bg-primary/20 px-2 py-0.5 rounded text-xs md:text-sm">+{overallRecon.difference}</span> <span className="hidden sm:inline">HoYoLAB</span>
-                    </span>
-                  ) : (
-                    <span className="text-yellow-400 flex items-center gap-1.5 font-semibold">
-                      <span className="bg-yellow-400/20 px-2 py-0.5 rounded text-xs md:text-sm">+{-overallRecon.difference}</span> <span className="hidden sm:inline">Toolkit</span>
-                    </span>
-                  )
+                  <div className="flex flex-col text-right md:text-left leading-tight pt-0.5">
+                    <span className="text-white font-bold">{hoyolabData.totalCompleted.toLocaleString()} completed</span>
+                    {overallRecon.difference === 0 ? (
+                      <span className="text-teal-400 text-[10px] md:text-[11px] font-semibold flex items-center justify-end md:justify-start gap-1 mt-0.5">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        Matched with Toolkit
+                      </span>
+                    ) : overallRecon.difference > 0 ? (
+                      <span className="text-primary text-[10px] md:text-[11px] font-semibold mt-0.5">
+                        +{overallRecon.difference} vs Toolkit
+                      </span>
+                    ) : (
+                      <span className="text-yellow-400 text-[10px] md:text-[11px] font-semibold mt-0.5">
+                        Toolkit +{-overallRecon.difference}
+                      </span>
+                    )}
+                  </div>
                 ) : (
                   <span className="text-white/50">No data</span>
                 )}

@@ -213,3 +213,17 @@ During Phase I, the canonical source data (`genshin-db-dist`) was evaluated for 
 5. **Regional grouping & Source hints**: Deferred. No curated region IDs or reliable acquisition text are provided natively.
 
 **Conclusion**: Only multi-stage grouping was implemented. All other requested metadata fields have been deferred pending a reliable source.
+
+---
+
+## 8. Commission Metadata Research (Phase M)
+
+During Phase M, the `YuehaiTeam/cocogoat` and its related data repositories (`YuehaiTeam/amos` and `YuehaiTeam/amos-data`) were evaluated as candidate sources for commission-to-achievement mapping.
+
+**Findings:**
+1. **Repository Structure**: Cocogoat separates its parsed achievement dataset into the `YuehaiTeam/amos-data` repository. 
+2. **Missing Canonical Commission Mappings**: Inspection of the generated `json/achievements/index.json` reveals that achievements contain generic trigger enums (e.g., `trigger: { type: 'FINISH_QUEST_OR' }`), but critically lack concrete Quest IDs, localized Task Names, or Commission ID arrays.
+3. **No Name-Based Matching Rule**: Phase M strictly forbids fuzzy-matching or guessing based on external guides without stable canonical IDs. Since the `amos-data` schema provides no stable quest/commission IDs for individual achievements, an algorithmic mapping cannot be established.
+4. **Alternative Files**: `YuehaiTeam/genshin-contributed-data` provides only forum link strings (e.g., `80003: "https://bbs.mihoyo.com/ys/article/1791253"`), which violates the requirement for factual, non-walkthrough commission tags.
+
+**Conclusion**: Commission metadata implementation has been explicitly deferred. No additive canonical fields or dependencies have been introduced. The requirement is halted pending the discovery of a dataset that exposes stable quest/commission ID relationships mapped reliably against canonical achievement IDs.
