@@ -1455,7 +1455,22 @@ Exit criteria:
 - **Deferred Metadata**: Explicitly rejected chains, prerequisites, commissions, and regions due to missing reliable provenance in the source files.
 - **Note**: The current grouping UI is structural and not the final Achievements visual redesign. No changes were made to underlying persistence or progress statistics semantics.
 
-### Phase J — Scanner Compatibility
+### Phase J — Visual Polish
+
+**Status**: Complete.
+
+**Implementation Details**:
+- **Goal**: Transformed the `/achievements` page into a game-like, Seelie-inspired tracker with strong visual hierarchy, dense but readable layout, and clear category identity.
+- **Hero Section**: Replaced the previous summary header with a `AchievementHero` component featuring a radial progress indicator, prominent Primogem statistics, HoYoLAB sync status, and a subtle glowing backdrop.
+- **Category Rail**: Extracted navigation to a `CategoryRail` component. On desktop, it is an independently scrollable, fixed-width sidebar with active state visual cues. On mobile, it degrades gracefully to a dropdown selector.
+- **Category Header**: Created a sticky `CategoryHeader` component to display the selected category icon, name, completion metrics, and HoYoLAB reconciliation status.
+- **Toolbar Refinement**: Replaced the generic dropdown select for completion status with a segmented button control (`All | Incomplete | Completed`), integrated alongside the search input in the `CategoryHeader`.
+- **Achievement Cards**: Extracted rows to a compact `AchievementCard` component, optimizing rendering speed (avoiding heavy backdrop-filters) while retaining a premium look. Integrated metadata badges (Secret, version, primogems) cleanly into the card header.
+- **Multi-Stage Grouping**: Refined the `AchievementGroup` component. Multi-stage achievements now share a single group header (the `commonName`), with individual stages visually connected by a subtle vertical progression line (`node indicator`).
+- **Performance**: Maintained the existing virtualization/rendering strategy. Avoiding complex CSS filters in large lists guarantees smooth scrolling even with ~1000 items. No data logic files were altered, keeping logic distinct from presentation.
+- **Tests**: Re-aligned `Achievements.test.jsx` UI assertions to reflect the new DOM structure and text nodes.
+
+### Phase K — Scanner Compatibility
 
 Potential future scope:
 
@@ -1465,7 +1480,7 @@ Potential future scope:
 
 This is not required for initial release.
 
-### Phase K — Final Stabilization
+### Phase L — Final Stabilization
 
 Run:
 
