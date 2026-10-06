@@ -8,7 +8,7 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
     <div className={`flex flex-col bg-black/20 border rounded-xl overflow-hidden shadow-sm transition-colors duration-200 ${
       isAllComplete ? 'border-cyan-500/20' : 'border-white/5 hover:border-white/10'
     }`}>
-      
+
       {/* Group Header */}
       {item.commonName && (
         <div className={`px-4 md:px-5 py-2.5 md:py-3 border-b flex justify-between items-center transition-colors duration-200 ${
@@ -37,11 +37,11 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
       <div className="flex flex-col relative">
         {/* Subtle connecting line for stages */}
         <div className="absolute left-[29px] md:left-[33px] top-8 bottom-8 w-px bg-white/10 pointer-events-none z-0" />
-        
+
         <div className="flex flex-col divide-y divide-white/5">
           {item.stages.map((ach, idx) => {
             const isCompleted = !!achievementProgress[ach.id]?.completed;
-            
+
             return (
               <label
                 key={ach.id}
@@ -59,8 +59,8 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
                       checked={isCompleted}
                       onChange={(e) => handleToggle(ach.id, e.target.checked)}
                       className={`w-6 h-6 rounded-md border-2 cursor-pointer appearance-none transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 ${
-                        isCompleted 
-                          ? 'bg-cyan-500 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]' 
+                        isCompleted
+                          ? 'bg-cyan-500 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]'
                           : 'bg-black/60 border-white/20 focus-visible:ring-primary group-hover:border-white/40'
                       }`}
                       aria-label={`Mark Stage ${ach.stageIndex} as complete`}
@@ -75,7 +75,7 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
 
                 <div className="flex-1 min-w-0 flex flex-col">
                   <div className="flex items-start justify-between gap-2 md:gap-4 mb-1 md:mb-2">
-                    
+
                     {/* Only show title if it doesn't match the group commonName */}
                     {!item.commonName && (
                       <div className={`font-bold text-sm md:text-base leading-tight md:leading-normal transition-colors duration-200 ${
@@ -106,7 +106,7 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
                   }`}>
                     {ach.description}
                   </div>
-                  
+
                   <div className="flex items-center justify-between mt-auto pt-2.5 md:pt-3 border-t border-white/5 border-opacity-50">
                     <span className="text-[10px] text-white/30 font-mono tracking-wider">ID: {ach.id}</span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-white/40">v{ach.version}</span>

@@ -1,6 +1,6 @@
 /**
  * Applies a completion cascade to an achievement and its staged group.
- * 
+ *
  * @param {Object} currentProgress - The current achievement progress map.
  * @param {Array} canonicalAchievements - The full list of canonical achievements.
  * @param {string} targetId - The ID of the achievement being checked/unchecked.
@@ -77,7 +77,7 @@ export function applyStageCompletionChange(
 /**
  * Normalizes a progress map to ensure sequential stage invariants are met.
  * If a later stage is complete, all earlier stages must also be complete.
- * 
+ *
  * @param {Object} progress - The parsed progress map.
  * @param {Array} canonicalAchievements - The full list of canonical achievements.
  * @returns {Object} A new progress map with missing earlier stages inferred.
@@ -85,10 +85,10 @@ export function applyStageCompletionChange(
 export function normalizeStageProgress(progress, canonicalAchievements) {
   const normalized = Object.assign(Object.create(null), progress);
   const highestStageIndexByGroup = {};
-  
+
   for (const [id, entry] of Object.entries(normalized)) {
     if (!entry || !entry.completed) continue;
-    
+
     const ach = canonicalAchievements.find(a => a.id === id);
     if (ach && ach.stageGroupId) {
       if (!highestStageIndexByGroup[ach.stageGroupId] || ach.stageIndex > highestStageIndexByGroup[ach.stageGroupId]) {
@@ -101,7 +101,7 @@ export function normalizeStageProgress(progress, canonicalAchievements) {
     const groupStages = canonicalAchievements
       .filter(a => a.stageGroupId === groupId)
       .sort((a, b) => a.stageIndex - b.stageIndex);
-      
+
     for (const stage of groupStages) {
       if (stage.stageIndex <= highestIndex) {
         if (!normalized[stage.id] || !normalized[stage.id].completed) {
@@ -113,6 +113,6 @@ export function normalizeStageProgress(progress, canonicalAchievements) {
       }
     }
   }
-  
+
   return normalized;
 }

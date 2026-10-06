@@ -16,7 +16,7 @@ export default function CategoryHeader({
     <div className="flex flex-col bg-[#0d1421]/60 backdrop-blur-sm border-b border-primary/20 shrink-0 shadow-sm relative overflow-hidden">
       {/* Decorative gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-      
+
       <div className="p-3 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
         <div className="flex items-center gap-3 md:gap-4">
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center p-1.5 shrink-0 shadow-inner relative overflow-hidden">
@@ -38,7 +38,7 @@ export default function CategoryHeader({
               <span className="text-[#FDE047]/80 flex items-center gap-0.5">
                 {stats.earnedPrimogems} <span className="text-[10px]">✦</span>
               </span>
-              
+
               {categoryRecon && (
                 <>
                   <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:block"></span>
@@ -72,15 +72,15 @@ export default function CategoryHeader({
               aria-label="Search achievements"
             />
           </div>
-          
+
           <div className="flex bg-black/40 border border-white/10 rounded-lg p-1 shadow-inner shrink-0 justify-between sm:justify-start">
             {['All', 'Incomplete', 'Completed'].map(status => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
                 className={`flex-1 sm:flex-none px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                  filterStatus === status 
-                    ? 'bg-primary/20 text-primary shadow-sm' 
+                  filterStatus === status
+                    ? 'bg-primary/20 text-primary shadow-sm'
                     : 'text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
               >

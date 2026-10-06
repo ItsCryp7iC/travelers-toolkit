@@ -1,6 +1,6 @@
 /**
  * Groups an already-filtered list of achievements by stageGroupId.
- * 
+ *
  * @param {Array} achievements - The filtered and sorted list of canonical achievements.
  * @returns {Array} An array of renderable items, either single achievements or grouped achievements.
  */
@@ -33,7 +33,7 @@ export function groupAchievements(achievements) {
   for (const item of result) {
     if (item.isGroup) {
       item.stages.sort((a, b) => a.stageIndex - b.stageIndex);
-      
+
       const firstName = item.stages[0].name;
       const allSameName = item.stages.every(s => s.name === firstName);
       if (allSameName) {

@@ -15,7 +15,7 @@ export default function AchievementHero({
       <div className="absolute -left-32 -top-32 w-64 h-64 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 items-center justify-between">
-        
+
         {/* Left: Title & Subtitle */}
         <div className="flex-1 min-w-0 text-center md:text-left z-10 md:max-w-[280px]">
           <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 mb-1 md:mb-1.5 tracking-wide">Achievements</h2>
@@ -25,7 +25,7 @@ export default function AchievementHero({
         {/* Center: Radial Progress & Stats */}
         <div className="flex-[1.5] flex flex-row items-center justify-center gap-4 md:gap-6 z-10 w-full md:w-auto">
           <div className="flex-shrink-0 relative">
-            <div 
+            <div
               className="w-[82px] h-[82px] md:w-[110px] md:h-[110px] rounded-full flex flex-col items-center justify-center shadow-[inset_0_0_20px_rgba(0,0,0,0.5),0_0_15px_rgba(0,240,255,0.15)] bg-black/40 border border-black/50"
               style={{
                 background: `conic-gradient(var(--color-primary) ${overallStats.percentage}%, rgba(255,255,255,0.05) ${overallStats.percentage}%)`

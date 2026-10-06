@@ -25,8 +25,8 @@ export default function CategoryRail({
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
               className={`group flex flex-col text-left p-3 rounded-xl transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                isSelected 
-                  ? 'bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/40 shadow-[inset_4px_0_0_var(--color-primary)]' 
+                isSelected
+                  ? 'bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/40 shadow-[inset_4px_0_0_var(--color-primary)]'
                   : 'bg-transparent border border-transparent hover:bg-white/5 hover:border-white/10'
               }`}
             >
@@ -41,7 +41,7 @@ export default function CategoryRail({
                   {category.name}
                 </div>
               </div>
-              
+
               <div className="flex items-end justify-between px-1">
                 <span className="text-[10px] text-white/50 font-semibold tracking-wide">
                   <span className={isDone ? "text-cyan-400" : isSelected ? "text-white" : ""}>{stats.completedCount}</span> / {stats.totalCount}
@@ -58,11 +58,11 @@ export default function CategoryRail({
                   return <span className="text-[11px] text-white/30 font-bold uppercase tracking-wider">{stats.percentage.toFixed(0)}%</span>;
                 })()}
               </div>
-              
+
               <div className="w-full h-1 bg-black/60 rounded-full mt-2 overflow-hidden shadow-inner relative">
-                <div 
-                  className={`absolute left-0 top-0 h-full transition-all duration-500 ease-out rounded-full ${isSelected ? 'bg-primary shadow-[0_0_8px_var(--color-primary)]' : isDone ? 'bg-cyan-500' : 'bg-white/40'}`} 
-                  style={{ width: `${stats.percentage}%` }} 
+                <div
+                  className={`absolute left-0 top-0 h-full transition-all duration-500 ease-out rounded-full ${isSelected ? 'bg-primary shadow-[0_0_8px_var(--color-primary)]' : isDone ? 'bg-cyan-500' : 'bg-white/40'}`}
+                  style={{ width: `${stats.percentage}%` }}
                 />
               </div>
             </button>

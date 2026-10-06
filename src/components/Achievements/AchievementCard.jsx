@@ -22,8 +22,8 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
             checked={isCompleted}
             onChange={(e) => handleToggle(ach.id, e.target.checked)}
             className={`w-6 h-6 rounded-md border-2 cursor-pointer appearance-none transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 ${
-              isCompleted 
-                ? 'bg-cyan-500 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]' 
+              isCompleted
+                ? 'bg-cyan-500 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]'
                 : 'bg-black/40 border-white/20 focus-visible:ring-primary group-hover:border-white/40'
             }`}
             aria-label={`Mark ${ach.name} as complete`}
@@ -38,7 +38,7 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
 
       {/* Content */}
       <div className="flex-1 min-w-0 flex flex-col relative z-10">
-        
+
         {/* Title Row */}
         <div className="flex items-start justify-between gap-2 md:gap-4 mb-1 md:mb-2">
           <div className={`font-bold text-sm md:text-base leading-tight md:leading-normal transition-colors duration-200 ${
@@ -46,7 +46,7 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
           }`}>
             {ach.name}
           </div>
-          
+
           <div className="flex items-center gap-2 shrink-0">
             <div className="flex items-center justify-center gap-1 text-[#FDE047] font-bold text-xs md:text-sm bg-black/40 px-2 md:px-3 py-0.5 md:py-1 rounded-md border border-[#FDE047]/20 shadow-inner min-w-[48px] md:min-w-[56px]">
               <span className="text-[9px] md:text-[10px] drop-shadow-[0_0_6px_rgba(253,224,71,0.5)]">✦</span>

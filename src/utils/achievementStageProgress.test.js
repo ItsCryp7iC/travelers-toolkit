@@ -106,7 +106,7 @@ describe('achievementStageProgress', () => {
     const progress = {};
     const next = applyStageCompletionChange(progress, canonicalAchievements, '1', true, 'now');
     expect(next['1']).toEqual({ completed: true, completedAt: 'now' });
-    
+
     const next2 = applyStageCompletionChange(next, canonicalAchievements, '1', false);
     expect(next2['1']).toBeUndefined();
   });
