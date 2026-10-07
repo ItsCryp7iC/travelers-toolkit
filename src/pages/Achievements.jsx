@@ -6,6 +6,7 @@ import { getOverallReconciliation, getCategoryReconciliation } from '../utils/ac
 import { groupAchievements } from '../utils/achievementGrouping';
 import { applyStageCompletionChange } from '../utils/achievementStageProgress';
 import allAchievementsData from '../data/achievements/achievements.json';
+import commissionsData from '../data/achievements/commissions.json';
 import { getAchievementCategoryIconUrl } from '../utils/achievementCategoryIcon';
 
 import AchievementHero from '../components/Achievements/AchievementHero';
@@ -147,9 +148,15 @@ export default function Achievements() {
       if (filterVersion !== 'All' && ach.version !== filterVersion) return false;
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        return ach.name.toLowerCase().includes(q) || 
-               ach.description.toLowerCase().includes(q) || 
-               String(ach.id).includes(q);
+        let commsMatch = false;
+        if (commissionsData[ach.id]) {
+          commsMatch = commissionsData[ach.id].some(comm => comm.name.toLowerCase().includes(q));
+        }
+
+        return ach.name.toLowerCase().includes(q) ||
+               ach.description.toLowerCase().includes(q) ||
+               String(ach.id).includes(q) ||
+               commsMatch;
       }
       return true;
     });
@@ -209,7 +216,7 @@ export default function Achievements() {
       {/* Global Toolbar */}
       <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center bg-[#0d1421]/60 backdrop-blur-sm border border-white/5 rounded-xl p-3 shadow-[0_8px_32px_rgba(0,0,0,0.4)] relative overflow-hidden z-20">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
-        
+
         {/* Search */}
         <div className="relative flex-1 group z-10">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -229,7 +236,7 @@ export default function Achievements() {
               </button>
             )}
         </div>
-        
+
         <div className="flex items-center gap-3 w-full md:w-auto z-10">
           {/* Version Filter */}
           <div className="relative flex-1 md:flex-none md:w-36 shrink-0">
@@ -292,7 +299,7 @@ export default function Achievements() {
 
         {/* Achievements List */}
         <div className="flex-1 flex flex-col min-w-0 bg-[#0d1421]/60 backdrop-blur-md border border-white/5 rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-[600px] lg:h-[calc(100vh-220px)]">
-          
+
           {!searchQuery && (
             <CategoryHeader
               category={currentCategoryObj}

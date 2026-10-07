@@ -1,6 +1,8 @@
 import React from 'react';
+import commissionsData from '../../data/achievements/commissions.json';
 
 export default function AchievementCard({ ach, isCompleted, handleToggle }) {
+  const commissions = commissionsData[ach.id];
   return (
     <label
       className={`relative flex gap-3 md:gap-4 p-3 md:p-4 rounded-xl border transition-all duration-200 cursor-pointer group shadow-sm overflow-hidden ${
@@ -61,6 +63,30 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
         }`}>
           {ach.description}
         </div>
+
+        {/* Commissions Metadata */}
+        {commissions && commissions.length > 0 && (
+          <div className="mb-2.5 md:mb-4">
+            <div className="text-[10px] md:text-[11px] font-bold text-white/50 uppercase tracking-widest mb-1.5 md:mb-2">Commissions:</div>
+            <div className="flex flex-wrap gap-2">
+              {commissions.map((comm, idx) => (
+                <a
+                  key={idx}
+                  href={comm.wikiUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-2 py-1 bg-black/40 border border-white/10 rounded-full text-[11px] md:text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {comm.name}
+                  <svg className="w-3 h-3 ml-1 md:ml-1.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Footer Meta */}
         <div className="flex items-center justify-between mt-auto pt-2.5 md:pt-3 border-t border-white/5">

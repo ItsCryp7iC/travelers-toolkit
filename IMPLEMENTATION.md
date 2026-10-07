@@ -1472,13 +1472,9 @@ Exit criteria:
 
 ### Phase K — Scanner Compatibility
 
-Potential future scope:
+**Status**: Cancelled / Deferred Indefinitely.
 
-- OCR/scanner imports;
-- external achievement-reader compatibility;
-- reconciliation assistance.
-
-This is not required for initial release.
+Scanner and OCR compatibility has been explicitly cancelled from the roadmap. Do not implement automated scanner tools or OCR integration.
 
 ### Phase L — Final Stabilization
 
@@ -1525,6 +1521,29 @@ The Achievements feature is stable, thoroughly tested, backwards-compatible, and
 - **Hidden Terminology**: Renamed all visual `SECRET` badges to `HIDDEN` to accurately reflect the game's semantic behavior, while retaining the purple color scheme. Documented the semantics to avoid conflating "Hidden" with commission gating.
 - **Hide Completed Categories**: Implemented an ephemeral UI toggle to hide fully completed categories from the `CategoryRail` and mobile selector. Did not add to persistent storage.
 - **Commission Metadata**: Explicitly deferred. The `YuehaiTeam/cocogoat` dataset (and its underlying `amos-data`) was thoroughly researched and found lacking in stable, canonical quest IDs mapped reliably to canonical achievement IDs. Generating commission mappings algorithmically was rejected to preserve canonical data integrity.
+
+### Phase N — Curated Commission Metadata
+
+**Status**: Implemented.
+
+**Implementation Details**:
+- **Research & Discovery**: Abandoned heuristic extraction of game data (which proved unreliable for commissions). Opted for manual/curated Wiki extraction using the Genshin Impact Wiki API (`Commission_Achievements` page).
+- **Metadata Generation**: Built `scratch/extract_commissions.mjs` to fetch parsed Wiki HTML, extract tables using `jsdom`, map Wiki achievement names robustly to our canonical IDs, and extract exact wiki links to the prerequisite commissions.
+- **Data Validation**: Exported mappings to `src/data/achievements/commissions.json`. Implemented `src/data/commissionsValidation.test.js` to ensure the structure strictly adheres to the schema (canonical ID keys, non-empty arrays, HTTPS wiki URLs, deterministic sorting, and immunity to prototype pollution).
+- **UI Integration**: Extended `AchievementCard.jsx` and `AchievementGroup.jsx` to render commission data. When present, commission names are displayed as clickable tags (`target="_blank"`, `rel="noopener noreferrer"`) immediately below the achievement description.
+- **Global Search Extension**: Upgraded the `filteredAchievements` logic in `Achievements.jsx` to search within commission names. Filtering by Version or Status continues to apply perfectly to these commission-matched results.
+- **UI Tests**: Updated `Achievements.test.jsx` to mock `commissions.json` and thoroughly verify commission label rendering, correct hrefs, multi-commission display, HIDDEN/Commission co-existence, and global search matching behavior.
+- **Commission Metadata**: Curated, partial coverage based on the Commission Achievements source snapshot.
+  - Source page: Commission Achievements
+  - Source snapshot/retrieval date: October 2026
+  - Source reported coverage/version: 6.2 ("Luna III")
+  - Source row count: 65
+  - Mapped canonical achievement count: 65
+  - Relationship count: 72
+  - Unique commission count: 69
+  - Manual verification methodology: Every source row manually mapped to its canonical ID and its prerequisite commissions verified on the Wiki. No fuzzy matching or automated name matching for the final relationships.
+  - Disclaimer: This is curated secondary metadata. There is no runtime Wiki dependency.
+- **Scanner/OCR**: Cancelled / not planned.
 
 ---
 

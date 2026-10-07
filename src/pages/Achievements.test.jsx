@@ -21,6 +21,18 @@ vi.mock('../data/achievements/achievements.json', () => ({
   ]
 }));
 
+vi.mock('../data/achievements/commissions.json', () => ({
+  default: {
+    '80001': [
+      { name: 'Comm One', wikiUrl: 'https://genshin-impact.fandom.com/wiki/Comm_One' }
+    ],
+    '80002': [
+      { name: 'Comm Two', wikiUrl: 'https://genshin-impact.fandom.com/wiki/Comm_Two' },
+      { name: 'Comm Three', wikiUrl: 'https://genshin-impact.fandom.com/wiki/Comm_Three' }
+    ]
+  }
+}));
+
 describe('Achievements Page UI', () => {
   let mockSetAchievementCompleted;
   let mockSetAchievementProgress;
@@ -326,10 +338,10 @@ describe('Achievements Page UI', () => {
       expect(container.textContent).toContain('1 match');
       expect(container.textContent).toContain('Mortal Travails: Series I');
       expect(container.textContent).toContain('Zoo Tycoon');
-      
+
       const activeCategory = container.querySelector('button.bg-gradient-to-r');
       expect(activeCategory.textContent).toContain('Wonders of the World');
-      
+
       act(() => {
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
         nativeInputValueSetter.call(searchInput, '');
@@ -355,16 +367,16 @@ describe('Achievements Page UI', () => {
       act(() => { root.render(<Achievements />); });
       const selects = container.querySelectorAll('select');
       const versionSelect = Array.from(selects).find(s => s.getAttribute('aria-label') === 'Filter by version');
-      
+
       const options = Array.from(versionSelect.options).map(o => o.value);
       expect(options).toEqual(['All', '1.2', '1.1', '1.0']);
-      
+
       act(() => {
         const nativeSelectValueSetter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value").set;
         nativeSelectValueSetter.call(versionSelect, '1.1');
         versionSelect.dispatchEvent(new Event('change', { bubbles: true }));
       });
-      
+
       expect(container.textContent).toContain('Test Achievement 2');
       expect(container.textContent).not.toContain('Test Achievement 1');
     });
@@ -390,16 +402,16 @@ describe('Achievements Page UI', () => {
         hoyolabConnected: false
       }));
       act(() => { root.render(<Achievements />); });
-      
+
       const hideCheckboxes = container.querySelectorAll('input[type="checkbox"]');
       const hideToggle = Array.from(hideCheckboxes).find(cb => cb.closest('label')?.textContent.includes('Hide completed categories'));
-      
+
       expect(container.textContent).toContain('Mortal Travails: Series I');
-      
+
       act(() => {
         hideToggle.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       });
-      
+
       const buttons = container.querySelectorAll('button');
       const mortalButton = Array.from(buttons).find(b => b.textContent.includes('Mortal Travails: Series I'));
       expect(mortalButton).toBeUndefined();
@@ -435,7 +447,7 @@ describe('Achievements Page UI', () => {
       act(() => { root.render(<Achievements />); });
       expect(container.textContent).toContain('Wonders of the World');
       expect(container.textContent).toContain('Mortal Travails: Series I');
-      
+
       setVersion('1.2');
       expect(container.textContent).not.toContain('Wonders of the World');
       expect(container.textContent).toContain('Mortal Travails: Series I');
@@ -451,8 +463,8 @@ describe('Achievements Page UI', () => {
 
     it('Incomplete filter hides fully completed category', () => {
       useStore.mockImplementation(selector => selector({
-        achievementProgress: { 
-          '80003': { completed: true }, '80004': { completed: true }, '80005': { completed: true } 
+        achievementProgress: {
+          '80003': { completed: true }, '80004': { completed: true }, '80005': { completed: true }
         },
         hoyolabConnected: false
       }));
@@ -468,7 +480,7 @@ describe('Achievements Page UI', () => {
       setVersion('1.0');
       setStatus('Completed');
       expect(container.textContent).toContain('Wonders of the World');
-      
+
       setVersion('1.1');
       expect(container.textContent).toContain('No achievements match the current filters.');
     });
@@ -478,7 +490,7 @@ describe('Achievements Page UI', () => {
       setVersion('1.1');
       setStatus('Incomplete');
       expect(container.textContent).toContain('Wonders of the World');
-      
+
       setVersion('1.0');
       expect(container.textContent).toContain('No achievements match the current filters.');
     });
@@ -487,7 +499,7 @@ describe('Achievements Page UI', () => {
       act(() => { root.render(<Achievements />); });
       setVersion('1.2');
       expect(container.textContent).not.toContain('Wonders of the World');
-      
+
       setVersion('All');
       setStatus('All');
       expect(container.textContent).toContain('Wonders of the World');
@@ -505,7 +517,7 @@ describe('Achievements Page UI', () => {
     it('zero matches across all categories renders global filter empty state', () => {
       act(() => { root.render(<Achievements />); });
       setVersion('1.0');
-      setStatus('Incomplete'); 
+      setStatus('Incomplete');
       expect(container.textContent).toContain('No achievements match the current filters.');
       expect(container.querySelector('select')).not.toBeNull();
       const buttons = Array.from(container.querySelectorAll('button'));
@@ -514,10 +526,10 @@ describe('Achievements Page UI', () => {
 
     it('mobile selector uses the same filtered category set', () => {
       act(() => { root.render(<Achievements />); });
-      setVersion('1.2'); 
+      setVersion('1.2');
       const selects = container.querySelectorAll('select');
       const mobileSelect = Array.from(selects).find(s => s.getAttribute('aria-label') === 'Select category');
-      
+
       const options = Array.from(mobileSelect.options).map(o => o.textContent);
       expect(options.some(t => t.includes('Wonders of the World'))).toBe(false);
       expect(options.some(t => t.includes('Mortal Travails: Series I'))).toBe(true);
@@ -528,7 +540,7 @@ describe('Achievements Page UI', () => {
       const searchInput = container.querySelector('input[type="text"]');
       act(() => {
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-        nativeInputValueSetter.call(searchInput, 'Zoo'); 
+        nativeInputValueSetter.call(searchInput, 'Zoo');
         searchInput.dispatchEvent(new Event('input', { bubbles: true }));
       });
       setVersion('1.0');
@@ -545,19 +557,111 @@ describe('Achievements Page UI', () => {
 
     it('Hide Completed toggle combines correctly with Version/Status filters', () => {
       useStore.mockImplementation(selector => selector({
-        achievementProgress: { 
-          '80003': { completed: true }, '80004': { completed: true }, '80005': { completed: true } 
+        achievementProgress: {
+          '80003': { completed: true }, '80004': { completed: true }, '80005': { completed: true }
         },
         hoyolabConnected: false
       }));
       act(() => { root.render(<Achievements />); });
-      
+
       const hideCheckboxes = container.querySelectorAll('input[type="checkbox"]');
       const hideToggle = Array.from(hideCheckboxes).find(cb => cb.closest('label')?.textContent.includes('Hide completed'));
       act(() => { hideToggle.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
-      
+
       setVersion('1.2');
       expect(window.location.search).toContain('category=1');
+    });
+  });
+
+  describe('Phase N - Commission Metadata', () => {
+    beforeEach(() => {
+      useStore.mockImplementation(selector => selector({
+        achievementProgress: {},
+        setAchievementProgress: vi.fn(),
+        hoyolabConnected: false
+      }));
+    });
+
+    const setVersion = (val) => {
+      const selects = container.querySelectorAll('select');
+      const versionSelect = Array.from(selects).find(s => s.getAttribute('aria-label') === 'Filter by version');
+      act(() => {
+        const nativeSelectValueSetter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value").set;
+        nativeSelectValueSetter.call(versionSelect, val);
+        versionSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    };
+
+    const setStatus = (val) => {
+      const buttons = Array.from(container.querySelectorAll('button'));
+      const statusBtn = buttons.find(b => b.textContent === val);
+      act(() => { statusBtn.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    };
+
+    const searchFor = (val) => {
+      const searchInput = container.querySelector('input[type="text"]');
+      act(() => {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        nativeInputValueSetter.call(searchInput, val);
+        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    };
+
+    it('renders commission label and one commission link', () => {
+      act(() => { root.render(<Achievements />); });
+      expect(container.textContent).toContain('Commissions:');
+      const links = Array.from(container.querySelectorAll('a'));
+      const commOne = links.find(a => a.textContent === 'Comm One');
+      expect(commOne).toBeDefined();
+      expect(commOne.href).toBe('https://genshin-impact.fandom.com/wiki/Comm_One');
+      expect(commOne.target).toBe('_blank');
+      expect(commOne.rel).toBe('noopener noreferrer');
+    });
+
+    it('renders multiple commission links', () => {
+      act(() => { root.render(<Achievements />); });
+      const links = Array.from(container.querySelectorAll('a'));
+      const commTwo = links.find(a => a.textContent === 'Comm Two');
+      const commThree = links.find(a => a.textContent === 'Comm Three');
+      expect(commTwo).toBeDefined();
+      expect(commThree).toBeDefined();
+    });
+
+    it('achievement without commission has no commission row', () => {
+      act(() => { root.render(<Achievements />); });
+
+      const buttons = Array.from(container.querySelectorAll('button'));
+      const cat1Btn = buttons.find(b => b.textContent.includes('Mortal Travails'));
+      if (cat1Btn) {
+        act(() => { cat1Btn.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+      }
+
+      expect(container.textContent).toContain('Zoo Tycoon');
+      expect(container.textContent).not.toContain('Commissions:');
+    });
+
+    it('HIDDEN and commission can render simultaneously', () => {
+      act(() => { root.render(<Achievements />); });
+      expect(container.textContent).toContain('Hidden');
+      expect(container.textContent).toContain('Comm Two');
+    });
+
+    it('commission name global search works', () => {
+      act(() => { root.render(<Achievements />); });
+      searchFor('Comm Two');
+      // Should show Test Achievement 2, not Test Achievement 1
+      expect(container.textContent).toContain('Test Achievement 2');
+      expect(container.textContent).not.toContain('Test Achievement 1');
+    });
+
+    it('Version/status filters still apply to commission-search results', () => {
+      act(() => { root.render(<Achievements />); });
+      searchFor('Comm'); // matches both
+
+      setVersion('1.1');
+      // Should only show Test Achievement 2
+      expect(container.textContent).toContain('Test Achievement 2');
+      expect(container.textContent).not.toContain('Test Achievement 1');
     });
   });
 });

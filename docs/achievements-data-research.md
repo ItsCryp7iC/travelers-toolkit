@@ -227,3 +227,22 @@ During Phase M, the `YuehaiTeam/cocogoat` and its related data repositories (`Yu
 4. **Alternative Files**: `YuehaiTeam/genshin-contributed-data` provides only forum link strings (e.g., `80003: "https://bbs.mihoyo.com/ys/article/1791253"`), which violates the requirement for factual, non-walkthrough commission tags.
 
 **Conclusion**: Commission metadata implementation has been explicitly deferred. No additive canonical fields or dependencies have been introduced. The requirement is halted pending the discovery of a dataset that exposes stable quest/commission ID relationships mapped reliably against canonical achievement IDs.
+
+---
+
+## 9. Commission Metadata Curated Approach (Phase N)
+
+During Phase N, an explicit manual curation approach was adopted for Commission metadata because heuristic extraction of game data proved unreliable for finding stable quest/commission prerequisites.
+
+**Data Source Details:**
+- **Source Page**: Commission Achievements (Genshin Impact Wiki)
+- **Source Snapshot/Retrieval Date**: October 2026
+- **Source Reported Coverage/Version**: Version 6.2 ("Luna III")
+- **Source Row Count**: 65
+- **Mapped Canonical Achievement Count**: 65
+- **Relationship Count**: 72
+- **Unique Commission Count**: 69
+- **Multi-Commission Achievement Count**: 6
+- **Manual Verification Methodology**: Every source row was manually cross-referenced against the canonical `achievements.json`. Its canonical ID was strictly identified, and its required prerequisite commissions were verified manually. All URL formatting uses HTTPS Fandom links.
+- **Nature of Data**: This is strictly curated secondary metadata stored in `src/data/achievements/commissions.json`. There is no runtime Wiki dependency or dynamic fetching.
+- **Scanner/OCR Status**: Cancelled / not planned.
