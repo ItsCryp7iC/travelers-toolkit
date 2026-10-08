@@ -4,6 +4,7 @@ import CharactersTable from '../components/CharactersTable'
 import CharacterModal from '../components/CharacterModal'
 import AddCharacterModal from '../components/AddCharacterModal'
 import BulkEditCharacterModal from '../components/BulkEditCharacterModal'
+import HoyolabSyncPreviewModal from '../components/HoyolabSyncPreviewModal'
 import SortDirectionButton from '../components/SortDirectionButton'
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import charactersData from '../utils/characters'
@@ -41,6 +42,7 @@ export default function Characters() {
   const removeCharacter = useStore((s) => s.removeCharacter)
   const batchRemoveCharacters = useStore((s) => s.batchRemoveCharacters)
   const bulkUpdateCharacters = useStore((s) => s.bulkUpdateCharacters)
+  const hoyolabConnected = useStore((s) => s.hoyolabConnected)
 
   const [search,        setSearch]        = useState('')
   const [elementFilter, setElementFilter] = useState('All')
@@ -51,6 +53,7 @@ export default function Characters() {
   const [viewMode,      setViewMode]      = useState('table') // 'table' | 'card'
 
   const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)
   const [bulkModalOpen, setBulkModalOpen] = useState(false)
   const [editingChar, setEditingChar] = useState(null)
   const [selectedNames, setSelectedNames] = useState([])
@@ -146,6 +149,10 @@ export default function Characters() {
 
   return (
     <div className="animate-fade-in">
+      <HoyolabSyncPreviewModal
+        isOpen={isSyncModalOpen}
+        onClose={() => setIsSyncModalOpen(false)}
+      />
       <BulkEditCharacterModal
         isOpen={bulkModalOpen}
         onClose={() => setBulkModalOpen(false)}
@@ -204,6 +211,14 @@ export default function Characters() {
                 Bulk Edit ({selectedNames.length})
               </button>
             </>
+          )}
+          {hoyolabConnected && (
+            <button
+              onClick={() => setIsSyncModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 hover:text-blue-300 transition-colors shadow-md"
+            >
+              Sync from HoYoLAB
+            </button>
           )}
           <button
             id="add-character-btn"

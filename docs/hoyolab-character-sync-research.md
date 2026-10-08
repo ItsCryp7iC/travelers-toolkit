@@ -51,3 +51,6 @@ When syncing a character, we merge data from three distinct HoYoLAB endpoints. T
 
 ## 10. Out of Scope
 Artifacts and Combat Stats are explicitly out of scope and excluded from this pipeline to maintain strict privacy and data boundaries.
+
+## 11. Manekin Exclusions
+HoYoLAB numeric IDs `10000117` (Manekin) and `10000118` (Manekina) are intentionally excluded from actionable reconciliation rows because they are non-progression entities that fall outside the material and progression planning scope of Traveler's Toolkit. They are safely ignored rather than classified as unmapped.
