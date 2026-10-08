@@ -10,12 +10,12 @@ with patch("main._get_hoyolab_client") as mock_get_client:
 from backend.hoyolab_character_sync import normalize_ascension
 
 class MockWeapon:
-    def __init__(self, id=11414, name="Amenoma Kageuchi", level=90, refinement=5, promote_level=6):
+    def __init__(self, id=11414, name="Amenoma Kageuchi", level=90, refinement=5, ascension=6):
         self.id = id
         self.name = name
         self.level = level
         self.refinement = refinement
-        self.promote_level = promote_level
+        self.ascension = ascension
 
 class MockCharacter:
     def __init__(self, id=10000002, name="Kamisato Ayaka", element="Cryo", rarity=5, level=90, constellation=0, friendship=10, weapon=None):
@@ -36,6 +36,10 @@ class MockDetailCharacter:
     def __init__(self, id=10000002, weapon=None):
         self.id = id
         self.weapon = weapon or MockWeapon()
+
+class MockGenshinDetailCharacters:
+    def __init__(self, characters):
+        self.characters = characters
 
 class TestHoyolabCharacterSync(unittest.TestCase):
     def setUp(self):
@@ -91,7 +95,7 @@ class TestHoyolabCharacterSync(unittest.TestCase):
             }]
 
         async def mock_get_details(*args, **kwargs):
-            return [MockDetailCharacter()]
+            return MockGenshinDetailCharacters([MockDetailCharacter()])
 
         self.mock_genshin_client.get_genshin_characters = mock_get_chars
         self.mock_genshin_client._get_calculator_items = mock_get_calc_items
@@ -150,7 +154,7 @@ class TestHoyolabCharacterSync(unittest.TestCase):
             }]
 
         async def mock_get_details(*args, **kwargs):
-            return [MockDetailCharacter(id=10000005)]
+            return MockGenshinDetailCharacters([MockDetailCharacter(id=10000005)])
 
         self.mock_genshin_client.get_genshin_characters = mock_get_chars
         self.mock_genshin_client._get_calculator_items = mock_get_calc_items
@@ -173,7 +177,7 @@ class TestHoyolabCharacterSync(unittest.TestCase):
             return []
 
         async def mock_get_details(*args, **kwargs):
-            return []
+            return MockGenshinDetailCharacters([])
 
         self.mock_genshin_client.get_genshin_characters = mock_get_chars
         self.mock_genshin_client._get_calculator_items = mock_get_calc_items

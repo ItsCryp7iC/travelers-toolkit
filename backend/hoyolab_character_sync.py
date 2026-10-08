@@ -58,7 +58,7 @@ async def get_raw_calculator_characters(client: genshin.Client, uid: Optional[in
     )
     return raw_list
 
-async def get_batched_detailed_characters(client: genshin.Client, uid: Optional[int], character_ids: list[int], chunk_size: int = 20) -> list[genshin.models.GenshinDetailCharacter]:
+async def get_batched_detailed_characters(client: genshin.Client, uid: Optional[int], character_ids: list[int], chunk_size: int = 20) -> list[genshin.models.genshin.chronicle.characters.GenshinDetailCharacter]:
     """
     Fetches detailed characters in safe batches to avoid request timeout or payload limits.
     """
@@ -66,8 +66,8 @@ async def get_batched_detailed_characters(client: genshin.Client, uid: Optional[
     for i in range(0, len(character_ids), chunk_size):
         chunk = character_ids[i:i+chunk_size]
         try:
-            details = await client.get_genshin_detailed_characters(uid, characters=chunk)
-            results.extend(details)
+            details_wrapper = await client.get_genshin_detailed_characters(uid, characters=chunk)
+            results.extend(details_wrapper.characters)
         except Exception as e:
             logger.error(f"Failed to fetch details for chunk {chunk}: {e}")
             # If 429 or auth error, we'd raise it up, but for partial errors we might just continue or fail safely
@@ -119,8 +119,8 @@ async def build_sync_preview(client: genshin.Client, uid: Optional[int] = None) 
         # Exact weapon ascension
         weapon_ascension = None
         if detail_data and detail_data.weapon:
-            # The GenshinDetailWeapon model contains promote_level in raw form, or we can use getattr safely.
-            weapon_ascension = normalize_ascension(getattr(detail_data.weapon, "promote_level", None))
+            # The DetailCharacterWeapon model exposes ascension natively
+            weapon_ascension = normalize_ascension(getattr(detail_data.weapon, "ascension", None))
 
         weapon = None
         if basic.weapon:
