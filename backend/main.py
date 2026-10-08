@@ -13,6 +13,7 @@ from hoyolab_achievements import (
     AchievementNormalizationError,
 )
 
+
 from config import (
     IS_PRODUCTION,
     FRONTEND_ORIGINS,
@@ -61,6 +62,11 @@ class NotesPayload(BaseModel):
     uid: int | None = None
 
 class AchievementPayload(BaseModel):
+    uid: int | None = None
+
+
+
+class CalculatorSyncPayload(BaseModel):
     uid: int | None = None
 
 COOKIE_NAME = "tt_hoyolab_session"
@@ -286,6 +292,33 @@ async def get_achievement_summary(request: Request, payload: AchievementPayload 
         if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
             return auth_failure_response("Authentication failed. Please check your cookies.")
         raise HTTPException(status_code=502, detail="HoYoLAB achievement service is temporarily unavailable.")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Internal server error.")
+
+
+from hoyolab_character_sync import build_sync_preview
+
+@app.post("/api/hoyolab/character-sync-preview")
+async def character_sync_preview(request: Request, payload: CalculatorSyncPayload = None):
+    client, err = _get_hoyolab_client(request)
+    if err is not None:
+        return err
+
+    uid = payload.uid if payload else None
+
+    try:
+        preview = await build_sync_preview(client, uid)
+        return {"characters": [p.model_dump() for p in preview]}
+    except genshin.errors.InvalidCookies:
+        return auth_failure_response("Invalid or expired cookies.")
+    except genshin.errors.DataNotPublic:
+        raise HTTPException(status_code=403, detail="Character data is unavailable.")
+    except genshin.errors.TooManyRequests:
+        raise HTTPException(status_code=429, detail="HoYoLAB is temporarily rate limiting requests.")
+    except genshin.errors.GenshinException as e:
+        if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
+            return auth_failure_response("Authentication failed.")
+        raise HTTPException(status_code=502, detail=f"Service unavailable: {str(e)}")
     except Exception:
         raise HTTPException(status_code=500, detail="Internal server error.")
 

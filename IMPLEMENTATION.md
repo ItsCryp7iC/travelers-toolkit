@@ -1745,3 +1745,15 @@ future import/scanner compatibility
 ```
 
 while preserving canonical identity and user data across future Genshin updates.
+
+---
+
+# HoYoLAB Character Sync Roadmap
+
+## Phase A: Read-only API research / exact field verification
+- **Status**: Complete after validation.
+- **Summary**: Investigated HoYoLAB APIs to determine if exact character and weapon ascension phases could be extracted. Verified that the Enhancement Progression Calculator (`sync/avatar/list`) raw response provides `promote_level` for characters, and Detailed Battle Chronicle provides `weapon.promote_level`. Inference logic is completely unnecessary. Created backend isolated helpers and tests.
+
+## Phase B: Canonical character/weapon mapping and reconciliation
+- **Status**: Planned next. Do not implement yet.
+- **Summary**: Map the exact HoYoLAB fields into the Traveler's Toolkit frontend, reconciling canonical names/IDs (e.g. Traveler elements) and updating the Zustand store safely.
