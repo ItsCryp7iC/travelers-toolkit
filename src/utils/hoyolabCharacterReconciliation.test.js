@@ -251,4 +251,30 @@ describe('hoyolabCharacterReconciliation', () => {
     expect(ignored[0].hoyolabId).toBe(10000117);
     expect(ignored[1].hoyolabId).toBe(10000118);
   });
+  it('existing character + remote talents missing -> no talent diff, local untouched', () => {
+    const syncArray = [{ id: 10000046, level: 80, ascension: 5 }]; // No talents
+    const roster = {
+      'Hu Tao': {
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 }
+      }
+    };
+    const res = reconcileCharacters(syncArray, roster, []);
+    expect(res.summary.unchangedCharacters).toBe(1);
+    const c = res.characters[0];
+    expect(c.status).toBe('unchanged');
+    expect(c.changes).toEqual({});
+    expect(c.hoyolab.talents).toBeUndefined();
+  });
+
+  it('new ordinary character + remote talents missing -> no fake 1/1/1 diff', () => {
+    const syncArray = [{ id: 10000046, level: 90, ascension: 6 }]; // No talents
+    const res = reconcileCharacters(syncArray, {}, []);
+    expect(res.summary.newCharacters).toBe(1);
+    const c = res.characters[0];
+    expect(c.status).toBe('new');
+    expect(c.changes).toEqual({});
+    expect(c.hoyolab.talents).toBeUndefined();
+  });
 });

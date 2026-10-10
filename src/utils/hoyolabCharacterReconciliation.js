@@ -132,7 +132,7 @@ export function reconcileCharacters(syncArray, roster, trackedWeapons) {
 
         ['normal', 'skill', 'burst'].forEach(t => {
           const remoteT = syncChar.talents[t] ?? 1;
-          const localT = localChar.talents[t] ?? 1;
+          const localT = (localChar.talents && localChar.talents[t]) ? localChar.talents[t] : 1;
           const tCmp = compareField(localT, remoteT);
           if (tCmp.direction !== "same") {
             changes.talents[t] = tCmp;

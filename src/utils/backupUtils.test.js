@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeBackupForImport, BACKUP_SCHEMA_VERSION } from './backupUtils';
+import { normalizeBackupForImport, getBackupPayload, BACKUP_SCHEMA_VERSION } from './backupUtils';
 
 describe('Backup Normalization', () => {
   it('normalizes valid v1 backup', () => {
@@ -21,6 +21,47 @@ describe('Backup Normalization', () => {
     expect(result.inventory).toEqual({});
     expect(result.serverRegion).toBe('Asia');
     expect(result.achievementProgress).toEqual({}); // Absent field normalizes to {}
+  });
+
+  it('safely round-trips optional HoYoLAB Phase C fields (constellation/friendship)', () => {
+    const mockState = {
+      roster: {
+        'Hu Tao': {
+          level: 90,
+          ascension: 6,
+          targetLevel: 90,
+          targetAscension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          targetTalents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: null,
+          tracked: true,
+          calculatedCosts: null,
+          // Phase C optional additive fields
+          constellation: 1,
+          friendship: 10
+        }
+      },
+      trackedWeapons: [],
+      inventory: {},
+      serverRegion: 'America',
+      showDbBuilder: false,
+      displayTimeZone: 'auto',
+      achievementProgress: {}
+    };
+
+    // 1. Export state to backup payload
+    const payload = getBackupPayload(mockState);
+
+    // Simulate JSON serialization/deserialization over the wire
+    const raw = JSON.parse(JSON.stringify(payload));
+
+    // 2. Import backup payload back to normalized state
+    const restored = normalizeBackupForImport(raw);
+
+    // 3. Verify fields survived untouched
+    expect(restored.roster['Hu Tao'].constellation).toBe(1);
+    expect(restored.roster['Hu Tao'].friendship).toBe(10);
+    expect(restored.roster['Hu Tao'].level).toBe(90); // Baseline verification
   });
 
   it('normalizes legacy full backup with staged achievement correctly', () => {

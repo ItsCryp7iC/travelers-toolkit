@@ -50,3 +50,29 @@ export const syncTravelerAscension = (roster, sourceName = null) => {
     }
   });
 };
+
+/**
+ * Helper to keep Traveler current progression synchronized explicitly (Phase C).
+ * Copies ONLY current level/ascension from sourceName to all other tracked travelers.
+ * Does NOT touch targetLevel, targetAscension, or targetTalents.
+ */
+export const syncTravelerCurrentProgression = (roster, sourceName) => {
+  const travelers = Object.keys(roster).filter(name => name.startsWith('Traveler '));
+  if (travelers.length <= 1) return;
+
+  const sourceEntry = roster[sourceName];
+  if (!sourceEntry) return;
+
+  travelers.forEach(name => {
+    if (name !== sourceName) {
+      const charEntry = {
+        ...roster[name],
+        level: sourceEntry.level,
+        ascension: sourceEntry.ascension
+      };
+
+      recalculateCharacterCosts(name, charEntry);
+      roster[name] = charEntry;
+    }
+  });
+};

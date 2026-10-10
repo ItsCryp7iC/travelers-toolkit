@@ -1,37 +1,53 @@
-# HoYoLAB Character Sync - Phase C Recommendation
+# HoYoLAB Character Sync - Phase C: Safe Selectable Apply
 
-## Goal
+**Status: Implemented locally / awaiting live safety validation**
 
-Phase C will involve taking the output of the reconciliation engine (built in Phase B) and applying the differences to the local user's roster and tracked weapons, safely persisting those changes.
+## Objective
+Enable users to selectively apply synchronization changes to their roster and tracked weapons based on the reconciliation preview.
 
-## Phase C Recommended Strategy (Apply Mutation)
+## Architecture & Implementation Rules
 
-1. **User Interface / Interaction**
-   - In the `HoyolabSyncPreviewModal`, add interactive elements (e.g., checkboxes) next to each character that has differences (`status: "new"`, `status: "update"`).
-   - Allow the user to "Select All" or cherry-pick specific character updates to apply.
-   - For weapon conflicts/ambiguities, provide a small dropdown inline to let the user select how to resolve it (e.g., "Create New", "Attach to Unassigned Staff of Homa", "Leave As Is").
+### 1. Pure State Transformation
+Applying changes must not directly mutate Zustand state step-by-step. Instead, it relies on a pure utility function (`src/utils/hoyolabSyncApply.js`) that takes:
+- Current `roster`
+- Current `trackedWeapons`
+- Validation Plan / Selection configuration
+- `uuidFactory` (for deterministic testability)
 
-2. **Zustand Mutation Handlers**
-   - Introduce a new action in `src/store/slices/rosterSlice.js`: `applyHoyolabSync(updates)`.
-   - `updates` will be an array of instructions generated from the UI selection.
-   - For `new` characters: call `addCharacter()` and immediately apply the levels, ascension, and talents.
-   - For `update` characters: call `updateCharacter()` with the parsed level/ascension/talent patches.
+The apply utility returns `{ roster, trackedWeapons, result }`. The Zustand store then updates using a single, atomic `set()` operation to avoid partial state corruption.
 
-3. **Weapon Handling**
-   - New weapons (`status: "would-create"`): use `addTrackedWeapon()` and assign the newly generated ID to the character's `equippedWeaponId`.
-   - Re-assigned weapons (`status: "ambiguous"` or `"suggested-instance"`): call `updateTrackedWeapon(id, { assignedTo: rosterKey })`.
-   - Mismatched equipment (`status: "equipment-mismatch"`): depending on user choice, either detach the old weapon, create a new one, or leave the old one intact.
+### 2. No Deletion
+Synchronization is strictly additive or updates existing items. It never deletes local characters, alternative Traveler variants, or older weapon instances (reassigned weapons become unassigned, but their instances are preserved).
 
-4. **Safety and Fallbacks**
-   - The reconciliation engine already ensures impossible progression states (`status: "conflict"`) are caught. These should **not** be selectable in the UI.
-   - Unknown mappings (`status: "unmapped"`) should also remain disabled.
-   - Changes must trigger a save to persistence. The current store architecture will automatically handle this when Zustand state mutates.
+### 3. Field-Level Local-Ahead Policy
+If the user's local character/weapon state is functionally ahead of HoYoLAB (e.g. Toolkit level 90, HoYoLAB level 80), the default safe behavior is to **keep the local Toolkit value**. Users can explicitly override this via a dedicated button in the UI, which will apply only to the selected field type.
 
-## strict Enforcement of Phase B (Read-Only)
-Phase B is purely visual and analytical.
-- The modal only calls a `GET` (or idempotent `POST` for fetching from HoYoLAB) endpoint.
-- It parses the response.
-- It compares the data against the local store.
-- **Crucially**, it never calls any `set()` functions in Zustand, meaning no local data is overwritten, no weapons are created, and no persistence mechanisms are invoked.
+### 4. Target Preservation
+Target fields (e.g., `targetLevel`, `targetAscension`, `targetTalents`, `targetRefinement`) are strictly preserved for existing entities. When new characters or weapons are created, sensible toolkit defaults are applied (e.g. 90/6/10 for characters, 90/6/currentRefinement for weapons) instead of matching the current HoYoLAB level.
 
-This separation ensures the user can securely observe exactly what HoYoLAB returns before we build out the destructive UI logic in Phase C.
+### 5. Traveler Current-Only Sharing
+Traveler syncing requires special handling:
+- **Level and Ascension** are shared across all element variants of the Traveler.
+- **Talents** are updated ONLY for the currently active Traveler element from HoYoLAB.
+- **Planner targets** remain independent and preserved for each variant.
+
+### 6. Weapon Ambiguity Resolution
+When HoYoLAB reports a weapon that has multiple ambiguous candidates locally or has an equipment mismatch, it is categorized as needing attention. The user must explicitly choose how to resolve this (e.g. Create New, Use Existing Instance, Leave Unchanged) before they are permitted to sync the selection.
+
+### 7. Stale-Preview Validation
+The apply workflow relies on the frontend state tracking selections. The apply logic compares the plan against the latest Zustand state to prevent applying stale decisions (e.g. applying a weapon re-assignment that is no longer valid).
+
+### 8. Idempotency
+Applying the exact same HoYoLAB state twice will not duplicate characters, change targets incorrectly, or spawn additional redundant weapons. Reconciling a successfully synced roster will accurately label the characters as "Up to date".
+
+### 9. Manekin Exclusion
+Internal non-progression entities (`10000117` and `10000118`) are explicitly excluded and silently ignored. They will never appear in a generated sync plan.
+
+### 10. Derived Traveler Variants
+HoYoLAB's API limitations prevent fetching real account-specific talent levels for inactive Traveler elements. To account for this without breaking safe mapping:
+- If the **active Traveler** is found in the HoYoLAB fetch, the UI permits selectively onboarding **inactive variants** as derived toolkit entries.
+- These variants are entirely user-selected.
+- They clone only the shared current `level` and `ascension` from the active Traveler.
+- They initialize with standard empty baseline stats: `1/1/1` talents, `90/6/10/10/10` targets.
+- They do **not** duplicate equipped weapons.
+- Existing local variants are safely preserved and not overwritten.

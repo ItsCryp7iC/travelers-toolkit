@@ -1293,7 +1293,7 @@ Phase A Research Decisions:
 - **Canonical Category ID**: The numeric game category ID (`achievementGroupId` in `genshin-db`).
 - **HoYoLAB Mapping Strategy**: Direct 1:1 mapping. The canonical category ID perfectly matches the HoYoLAB ID (verified `set(genshinDbGroupIds) === set(hoyolabIds)` for all 73 categories). The numeric canonical category ID itself will serve as the HoYoLAB reconciliation ID with no additional mapping needed. If a future version diverges, we will introduce an explicit mapping layer.
 - **Version Metadata Strategy**: Rely on the `version` field from `genshin-db`. This is **curated secondary metadata**, not native game data, but is highly reliable.
-- **Dataset Update Strategy**: An update script (Phase C) will consume pinned `genshin-db-dist` JSONs via HTTP (fetching exact commits/tags, not mutable `main`). It will unroll multi-stage achievements, extract integer `primogems` from rewards, enforce validation (unique IDs, observed 5/10/20 rewards), and output perfectly deterministic JSON files (`categories.json`, `achievements.json`) with no embedded timestamps inside the generation output. 
+- **Dataset Update Strategy**: An update script (Phase C) will consume pinned `genshin-db-dist` JSONs via HTTP (fetching exact commits/tags, not mutable `main`). It will unroll multi-stage achievements, extract integer `primogems` from rewards, enforce validation (unique IDs, observed 5/10/20 rewards), and output perfectly deterministic JSON files (`categories.json`, `achievements.json`) with no embedded timestamps inside the generation output.
 - **Managed Risks**: Handled via strict schema validation before generation, pinned source tracking in the manifest, and explicit validation of HoYoLAB ID equality.
 
 ### Phase B — HoYoLAB Achievement Proof of Concept
@@ -1751,9 +1751,22 @@ while preserving canonical identity and user data across future Genshin updates.
 # HoYoLAB Character Sync Roadmap
 
 ## Phase A: Read-only API research / exact field verification
-- **Status**: Complete after validation.
-- **Summary**: Investigated HoYoLAB APIs to determine if exact character and weapon ascension phases could be extracted. Verified that the Enhancement Progression Calculator (`sync/avatar/list`) raw response provides `promote_level` for characters, and Detailed Battle Chronicle provides `weapon.promote_level`. Inference logic is completely unnecessary. Created backend isolated helpers and tests.
+- **Status**: Completed.
+- **Summary**: Extracted exact character and weapon ascension phases directly from HoYoLAB APIs. Inference logic was avoided. Integrated safely via backend.
 
 ## Phase B: Canonical character/weapon mapping and reconciliation
-- **Status**: Planned next. Do not implement yet.
-- **Summary**: Map the exact HoYoLAB fields into the Traveler's Toolkit frontend, reconciling canonical names/IDs (e.g. Traveler elements) and updating the Zustand store safely.
+- **Status**: Completed.
+- **Summary**: Mapped exact HoYoLAB fields (including Manekin exclusions) to Traveler's Toolkit frontend, reconciling canonical names/IDs and generating a precise apply preview against the Zustand store.
+
+## Phase C: Safe Selectable Apply
+- **Status**: Implemented locally / awaiting live safety validation.
+- **Summary**:
+  - **Atomic Apply:** The mutation operates via a pure utility (`hoyolabSyncApply.js`) and applies changes using a single Zustand `set()` transaction to avoid partial application states.
+  - **Field-Level Local-Ahead Policy:** Keeps local progression values by default if they exceed the remote HoYoLAB representation. Explicit user opt-in is required to downgrade.
+  - **Target Preservation:** Target planners (e.g. `targetLevel`, `targetAscension`) are meticulously preserved and seeded with robust defaults for new imports (90/6/10).
+  - **Traveler Current-Only Sharing:** Synchronizing the Traveler applies the level and ascension universally across tracked variants but restricts talent updates precisely to the active element.
+  - **Weapon Ambiguity Resolution:** Equipment mismatches or ambiguously typed identical weapons mandate definitive user conflict-resolution prior to application.
+  - **No Deletion:** The synchronization pipeline strictly avoids local-authoritative deletion; mismatched weapons are unassigned, never removed.
+  - **Idempotency:** Applying an identical sync state redundantly yields no duplicated weapon instances or destructive character overwrites.
+  - **Stale-Preview Validation:** Execution logic re-validates the apply plan against the absolute latest Zustand context to prevent race conditions during modal confirmation.
+  - **Manekin Exclusion:** Specifically discards non-progression system characters (10000117, 10000118) to avoid artificial errors.

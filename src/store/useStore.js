@@ -12,6 +12,7 @@ import { createInventorySlice } from './slices/inventorySlice';
 import { createGoalsSlice } from './slices/goalsSlice';
 import { createHelpersSlice } from './slices/helpersSlice';
 import { createAchievementSlice } from './slices/achievementSlice';
+import { createHoyolabSyncSlice } from './slices/hoyolabSyncSlice';
 import { STORE_NAME, STORE_VERSION, migrateStore, partializeStore } from './persistence';
 
 /**
@@ -31,6 +32,7 @@ const useStore = create(
       ...createGoalsSlice(set, get),
       ...createHelpersSlice(set, get),
       ...createAchievementSlice(set, get),
+      ...createHoyolabSyncSlice(set, get),
     }),
     {
       name: STORE_NAME,
