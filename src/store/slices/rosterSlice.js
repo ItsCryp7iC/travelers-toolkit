@@ -1,4 +1,5 @@
 import { syncTravelerAscension, recalculateCharacterCosts } from '../helpers/rosterHelpers';
+import { getTravelerAwareWeaponId } from '../../utils/travelerHelper';
 
 export const createRosterSlice = (set, get) => ({
   roster: {},
@@ -22,6 +23,69 @@ export const createRosterSlice = (set, get) => ({
           },
         },
       }
+    }),
+
+  saveCharacterDraft: (name, draft) =>
+    set((state) => {
+      const {
+        level, ascension, targetLevel, targetAscension, talents, targetTalents,
+        weaponName, weaponProgression
+      } = draft;
+
+      const newRoster = { ...state.roster };
+      let updatedWeapons = [...state.trackedWeapons];
+
+      let charEntry = newRoster[name] || {
+        level: 1, ascension: 0, targetLevel: 90, targetAscension: 6,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 10, skill: 10, burst: 10 },
+        equippedWeaponId: null, tracked: true, calculatedCosts: null
+      };
+
+      let finalWeaponId = getTravelerAwareWeaponId(name, charEntry, updatedWeapons);
+      const currentWeapon = finalWeaponId ? updatedWeapons.find(w => w.id === finalWeaponId) : null;
+
+      if (!weaponName) {
+        if (finalWeaponId) {
+          updatedWeapons = updatedWeapons.map(w => w.id === finalWeaponId ? { ...w, assignedTo: null } : w);
+          finalWeaponId = null;
+        }
+      } else {
+        if (currentWeapon && currentWeapon.weaponName === weaponName) {
+          updatedWeapons = updatedWeapons.map(w => w.id === finalWeaponId ? { ...w, ...weaponProgression } : w);
+        } else {
+          if (finalWeaponId) {
+            updatedWeapons = updatedWeapons.map(w => w.id === finalWeaponId ? { ...w, assignedTo: null } : w);
+          }
+          finalWeaponId = crypto.randomUUID();
+          updatedWeapons.push({
+            id: finalWeaponId,
+            weapon_id: weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
+            weaponName: weaponName,
+            assignedTo: name,
+            createdAt: Date.now(),
+            currentRefinement: 1,
+            targetRefinement: 1,
+            ...weaponProgression
+          });
+        }
+      }
+
+      const isTraveler = name.startsWith('Traveler ');
+      charEntry = {
+        ...charEntry,
+        level, ascension, targetLevel, targetAscension,
+        talents, targetTalents,
+        equippedWeaponId: isTraveler ? null : finalWeaponId
+      };
+      charEntry = recalculateCharacterCosts(name, charEntry);
+      newRoster[name] = charEntry;
+
+      if (name.startsWith('Traveler ')) {
+        syncTravelerAscension(newRoster, name);
+      }
+
+      return { roster: newRoster, trackedWeapons: updatedWeapons };
     }),
 
   batchAddCharacters: (namesArray) =>
