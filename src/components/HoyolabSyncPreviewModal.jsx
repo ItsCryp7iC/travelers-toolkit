@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import useStore from '../store/useStore';
 import { reconcileCharacters } from '../utils/hoyolabCharacterReconciliation';
 import { buildHoyolabApplyPlan } from '../utils/hoyolabSyncApply';
@@ -42,18 +42,40 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (showConfirmation) {
+          setShowConfirmation(false);
+        } else if (!loading && !applyResult) {
+          onClose();
+        }
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, showConfirmation, loading, applyResult, onClose]);
+
   const fetchSyncPreview = async () => {
     setLoading(true);
     setError(null);
+    setReconciliationResult(null);
+    setSelectedChars({});
+    setWeaponChoices({});
+    setLocalAheadOverrides({});
+    setSelectedDerivedTravelers({});
+    setShowConfirmation(false);
+    setApplyResult(null);
+
     try {
       const res = await fetch('/api/hoyolab/character-sync-preview', { method: 'POST' });
       if (!res.ok) {
-        let msg = 'Failed to fetch data';
-        try {
-          const data = await res.json();
-          msg = data.detail || msg;
-        } catch (e) {}
-        throw new Error(msg);
+        if (res.status === 401) throw new Error("Your HoYoLAB session has expired. Reconnect HoYoLAB and try again.");
+        if (res.status === 403) throw new Error("Battle Chronicle data is private. Enable character details in HoYoLAB settings.");
+        if (res.status === 429) throw new Error("HoYoLAB is rate-limiting requests. Please try again in a little while.");
+        throw new Error("Could not load HoYoLAB character data. Your Toolkit data was not changed.");
       }
       const data = await res.json();
       const result = reconcileCharacters(data.characters || [], roster, trackedWeapons);
@@ -168,26 +190,14 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
         if (c.weapon.action === 'create') weaponCreatedCount++;
         else if (c.weapon.action === 'assign') weaponUpdatedCount++;
       }
-
-      // Check unresolved things
-      const r = reconciliationResult.characters.find(rc => rc.hoyolabId === c.hoyolabId);
-      if (r) {
-        if (r.status === 'conflict') hasInvalidConflict = true;
-        if (r.weaponReconciliation?.status === 'ambiguous' && !c.weapon) hasUnresolvedAmbiguity = true;
-        if (r.weaponReconciliation?.status === 'equipment-mismatch' && !c.weapon) hasUnresolvedAmbiguity = true;
-      }
     });
 
-    if (hasInvalidConflict || hasUnresolvedAmbiguity) {
-      alert("Please resolve ambiguities or deselect conflicting characters before applying.");
-      return;
-    }
-
     const travelerVariantsCount = Object.values(selectedDerivedTravelers).filter(Boolean).length;
-
     setPlanSummary({ newCount, updateCount, weaponCreatedCount, weaponUpdatedCount, travelerVariantsCount, plan });
     setShowConfirmation(true);
   };
+
+
 
 
   const confirmApply = () => {
@@ -200,7 +210,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     setShowConfirmation(false);
   };
 
-  if (!isOpen) return null;
+
 
   const renderBadge = (status) => {
     if (status === 'new') return <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-green-500/20 text-green-400">New</span>;
@@ -212,24 +222,27 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     return null;
   };
 
-  let activeTraveler = null;
-  let activeTravelerElement = null;
-  let travelerVariants = [];
-  const ALL_TRAVELER_ELEMENTS = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo'];
+  const { activeTraveler, activeTravelerElement, travelerVariants } = useMemo(() => {
+    let activeTraveler = null;
+    let activeTravelerElement = null;
+    let travelerVariants = [];
+    const ALL_TRAVELER_ELEMENTS = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo'];
 
-  if (reconciliationResult) {
-    const travelerChar = reconciliationResult.characters.find(c => c.rosterKey?.startsWith('Traveler '));
-    if (travelerChar && ['new', 'update', 'unchanged'].includes(travelerChar.status)) {
-      activeTraveler = travelerChar;
-      activeTravelerElement = travelerChar.rosterKey.replace('Traveler ', '');
-      travelerVariants = ALL_TRAVELER_ELEMENTS.map(e => {
-        let status = 'missing';
-        if (e === activeTravelerElement) status = 'active';
-        else if (roster[`Traveler ${e}`]) status = 'exists';
-        return { element: e, status };
-      });
+    if (reconciliationResult) {
+      const travelerChar = reconciliationResult.characters.find(c => c.rosterKey?.startsWith('Traveler '));
+      if (travelerChar && ['new', 'update', 'unchanged'].includes(travelerChar.status)) {
+        activeTraveler = travelerChar;
+        activeTravelerElement = travelerChar.rosterKey.replace('Traveler ', '');
+        travelerVariants = ALL_TRAVELER_ELEMENTS.map(e => {
+          let status = 'missing';
+          if (e === activeTravelerElement) status = 'active';
+          else if (roster[`Traveler ${e}`]) status = 'exists';
+          return { element: e, status };
+        });
+      }
     }
-  }
+    return { activeTraveler, activeTravelerElement, travelerVariants };
+  }, [reconciliationResult, roster]);
 
   const handleSelectAllTravelers = () => {
     const newSel = { ...selectedDerivedTravelers };
@@ -243,10 +256,15 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     setSelectedDerivedTravelers(prev => ({ ...prev, [elem]: !prev[elem] }));
   };
 
-  let filteredChars = [];
+  const trackedWeaponsMap = useMemo(() => {
+    const map = {};
+    trackedWeapons.forEach(w => map[w.id] = w);
+    return map;
+  }, [trackedWeapons]);
 
-  if (reconciliationResult) {
-    filteredChars = reconciliationResult.characters.filter(c => {
+  const filteredChars = useMemo(() => {
+    if (!reconciliationResult) return [];
+    return reconciliationResult.characters.filter(c => {
       if (activeTraveler && c.hoyolabId === activeTraveler.hoyolabId) return false;
       if (filter === 'All') return true;
       if (filter === 'New') return c.status === 'new';
@@ -255,7 +273,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       if (filter === 'Needs Attention') return ['conflict', 'unmapped'].includes(c.status) || c.weaponReconciliation?.status === 'equipment-mismatch' || Object.values(c.changes || {}).some(x => x && x.direction === 'local-ahead');
       return true;
     });
-  }
+  }, [reconciliationResult, activeTraveler, filter]);
 
   const renderCharacterCard = (char, isTravelerCard = false) => (
     <div key={char.hoyolabId} className={`bg-[var(--surface)] border ${selectedChars[char.hoyolabId] ? 'border-cyan-500/50' : 'border-[var(--border)]'} rounded-xl p-4 flex flex-col md:flex-row gap-4 items-start md:items-center transition-colors`}>
@@ -284,7 +302,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
           <div className="text-[var(--muted)] text-xs">Excluded from planning sync</div>
         ) : !isTravelerCard ? (
           <div className="text-[var(--muted)] text-xs">
-            C{char.hoyolab.constellation} • Friendship {char.hoyolab.friendship}
+            C{char.hoyolab.constellation} â€¢ Friendship {char.hoyolab.friendship}
           </div>
         ) : null}
       </div>
@@ -304,7 +322,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                   <span>Lv {char.local?.level} A{char.local?.ascension}</span>
                   {(char.changes?.level || char.changes?.ascension) && (
                     <>
-                      <span className="text-[var(--muted)]">→</span>
+                      <span className="text-[var(--muted)]">â†’</span>
                       <span className={(char.changes?.level?.direction === 'local-ahead' || char.changes?.ascension?.direction === 'local-ahead') ? 'text-yellow-400' : 'text-cyan-400'}>
                         Lv {char.hoyolab.level} A{char.hoyolab.ascension || 0}
                       </span>
@@ -339,7 +357,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                   <span>{char.local?.talents?.normal} / {char.local?.talents?.skill} / {char.local?.talents?.burst}</span>
                   {char.changes?.talents && (
                     <>
-                      <span className="text-[var(--muted)]">→</span>
+                      <span className="text-[var(--muted)]">â†’</span>
                       <span className={Object.values(char.changes.talents).some(t => t.direction === 'local-ahead') ? 'text-yellow-400' : 'text-cyan-400'}>
                         {char.hoyolab.talents?.normal || 1} / {char.hoyolab.talents?.skill || 1} / {char.hoyolab.talents?.burst || 1}
                       </span>
@@ -374,7 +392,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
               ) : char.weaponReconciliation?.status === 'equipment-mismatch' ? (
                 <div className="flex flex-col">
                   <span className="text-[var(--text)] line-through opacity-70">
-                    {trackedWeapons.find(w => w.id === char.weaponReconciliation.equippedInstanceId)?.weaponName || 'Unknown'}
+                    {trackedWeaponsMap[char.weaponReconciliation.equippedInstanceId]?.weaponName || 'Unknown'}
                   </span>
                   <span className="text-yellow-400">{char.weaponReconciliation?.weaponName} Lv {char.hoyolab.weapon?.level}</span>
                 </div>
@@ -415,7 +433,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                         <input type="radio" className="mt-1" name={`w_${char.hoyolabId}`} checked={weaponChoices[char.hoyolabId] === `assign|${cand.id}`} onChange={() => handleWeaponChoice(char.hoyolabId, `assign|${cand.id}`)} />
                         <div className="flex flex-col">
                           <span className="text-blue-400">
-                            Use existing: Lv {cand.level} R{cand.currentRefinement} {showsUpgrade ? `→ Lv ${rLvl} R${rRef}` : ''} {cand.assignedTo ? `(Assigned: ${cand.assignedTo})` : '(Unassigned)'}
+                            Use existing: Lv {cand.level} R{cand.currentRefinement} {showsUpgrade ? `â†’ Lv ${rLvl} R${rRef}` : ''} {cand.assignedTo ? `(Assigned: ${cand.assignedTo})` : '(Unassigned)'}
                           </span>
                           {showsUpgrade && weaponChoices[char.hoyolabId] === `assign|${cand.id}` && (
                             <span className="text-xs text-blue-300/70 mt-0.5">Current stats will be synced to HoYoLAB</span>
@@ -444,6 +462,30 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   const hasSelections = selectedCharCount > 0 || selectedTravelerCount > 0;
   const totalSelectedCount = selectedCharCount + selectedTravelerCount;
 
+  const { canApply, applyBlockReason } = useMemo(() => {
+    if (!reconciliationResult || !hasSelections) return { canApply: false, applyBlockReason: 'No characters selected.' };
+
+    let hasUnresolvedAmbiguity = false;
+    let hasInvalidConflict = false;
+
+    Object.keys(selectedChars).forEach(hoyolabId => {
+      if (!selectedChars[hoyolabId]) return;
+
+      const c = reconciliationResult.characters.find(rc => rc.hoyolabId == hoyolabId);
+      if (!c) return;
+
+      const weaponChoice = weaponChoices[hoyolabId];
+      if (c.status === 'conflict') hasInvalidConflict = true;
+      if (c.weaponReconciliation?.status === 'ambiguous' && !weaponChoice) hasUnresolvedAmbiguity = true;
+      if (c.weaponReconciliation?.status === 'equipment-mismatch' && !weaponChoice) hasUnresolvedAmbiguity = true;
+    });
+
+    if (hasInvalidConflict) return { canApply: false, applyBlockReason: 'Please deselect conflicting characters.' };
+    if (hasUnresolvedAmbiguity) return { canApply: false, applyBlockReason: 'Please resolve weapon ambiguities.' };
+    return { canApply: true, applyBlockReason: '' };
+  }, [reconciliationResult, hasSelections, selectedChars, weaponChoices]);
+  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="bg-[var(--bg)] border border-[var(--border)] rounded-2xl w-full max-w-5xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
@@ -453,7 +495,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
             Sync Characters from HoYoLAB
           </h2>
           <button onClick={onClose} className="text-[var(--muted)] hover:text-[var(--text)] transition-colors p-1">
-            ✕
+            âœ•
           </button>
         </div>
 
@@ -467,7 +509,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
           ) : error ? (
             <div className="p-6">
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 text-center">
-                <span className="text-4xl block mb-2">⚠️</span>
+                <span className="text-4xl block mb-2">âš ï¸</span>
                 <h3 className="text-red-400 font-bold mb-2">Sync Failed</h3>
                 <p className="text-red-300/80 text-sm">{error}</p>
                 <button onClick={fetchSyncPreview} className="mt-4 px-4 py-2 bg-[var(--surface-light)] rounded-lg text-sm hover:bg-[var(--border)] transition-colors">
@@ -477,7 +519,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
             </div>
           ) : applyResult ? (
             <div className="p-10 flex flex-col items-center justify-center">
-              <span className="text-5xl mb-4">✅</span>
+              <span className="text-5xl mb-4">âœ…</span>
               <h2 className="text-2xl font-bold text-green-400 mb-6">Sync Complete</h2>
               <div className="bg-[var(--surface)] p-6 rounded-xl border border-[var(--border)] w-full max-w-sm">
                 <div className="flex justify-between py-2 border-b border-[var(--border)]">
@@ -517,7 +559,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                     <div className="text-2xl font-bold text-[var(--text)]">{reconciliationResult.summary.totalRemote}</div>
                     <div className="text-[var(--muted)] text-xs uppercase tracking-wide">Found</div>
                     {reconciliationResult.summary.ignored > 0 && (
-                      <div className="text-[var(--muted)] text-[10px] mt-1 opacity-80">{reconciliationResult.summary.syncRelevant} syncable • {reconciliationResult.summary.ignored} ignored</div>
+                      <div className="text-[var(--muted)] text-[10px] mt-1 opacity-80">{reconciliationResult.summary.syncRelevant} syncable â€¢ {reconciliationResult.summary.ignored} ignored</div>
                     )}
                   </div>
                   <div className="bg-[var(--surface)] border border-green-500/20 p-4 rounded-xl text-center">
@@ -553,7 +595,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                       <div className="flex items-center gap-2 mb-3">
                         <h4 className="font-bold text-[var(--text)] text-sm">Variants</h4>
                         <span className="group relative cursor-help text-[var(--muted)] text-sm">
-                          ⓘ
+                          â“˜
                           <span className="absolute bottom-full left-0 mb-2 w-64 p-2 bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] text-xs rounded shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none z-50 text-left">
                             Why? Inactive Traveler talent progression is not exposed by HoYoLAB.
                           </span>
@@ -588,9 +630,9 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                             >
                               <img src={getElementIcon(tv.element)} alt={tv.element} className="w-4 h-4 object-contain" />
                               <span>{tv.element}</span>
-                              {isActive && <span className="text-xs ml-1 font-normal opacity-80">• Active</span>}
-                              {isExists && <span className="text-xs ml-1 font-normal opacity-80">• Exists</span>}
-                              {isSelected && <span className="text-xs ml-1 font-normal opacity-80">• Add</span>}
+                              {isActive && <span className="text-xs ml-1 font-normal opacity-80">â€¢ Active</span>}
+                              {isExists && <span className="text-xs ml-1 font-normal opacity-80">â€¢ Exists</span>}
+                              {isSelected && <span className="text-xs ml-1 font-normal opacity-80">â€¢ Add</span>}
                             </button>
                           );
                         })}
@@ -616,7 +658,16 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
               {/* Bulk Controls */}
 
-              <div className="px-6 py-3 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg)] sticky top-0 z-10">
+              {Object.keys(roster).length === 0 && reconciliationResult.summary.syncRelevant > 0 && (
+                <div className="mx-6 mt-4 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <h3 className="font-bold text-cyan-400">Welcome to Traveler's Toolkit</h3>
+                    <p className="text-sm text-[var(--muted)]">Import your current HoYoLAB roster into Traveler's Toolkit. Planner targets will remain editable after import.</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="px-6 py-3 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg)] sticky top-0 z-10 mt-2">
                 <div className="flex gap-2 overflow-x-auto">
                   {['All', 'New', 'Updates', 'Unchanged', 'Needs Attention'].map(f => (
                     <button
@@ -659,8 +710,9 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
             </button>
             <button
               onClick={prepareApply}
-              disabled={!hasSelections}
-              className={`px-5 py-2 rounded-xl font-bold text-sm shadow-lg transition-all ${hasSelections ? 'bg-[var(--gold)] text-[var(--bg)] hover:scale-105' : 'bg-[var(--surface-light)] text-[var(--muted)] opacity-50 cursor-not-allowed'}`}
+              disabled={!canApply}
+              title={applyBlockReason}
+              className={`px-5 py-2 rounded-xl font-bold text-sm shadow-lg transition-all ${canApply ? 'bg-[var(--gold)] text-[var(--bg)] hover:scale-105' : 'bg-[var(--surface-light)] text-[var(--muted)] opacity-50 cursor-not-allowed'}`}
             >
               Apply Selected ({totalSelectedCount})
             </button>

@@ -106,4 +106,5 @@ export interface PersistedStore {
   autoBackupEnabled: boolean;
   displayTimeZone: string;
   achievementProgress: AchievementProgressMap;
+  lastHoyolabCharacterSyncAt?: number | null;
 }

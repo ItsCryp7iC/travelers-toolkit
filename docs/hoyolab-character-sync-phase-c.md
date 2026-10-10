@@ -1,6 +1,20 @@
 # HoYoLAB Character Sync - Phase C: Safe Selectable Apply
 
-**Status: Implemented locally / awaiting live safety validation**
+**Status: Completed**
+
+Live validation successfully covered:
+- existing character update
+- new character import
+- new weapon creation
+- existing weapon reuse/update
+- weapon-only apply
+- derived Traveler variant creation
+- Traveler shared level/ascension behavior
+- target preservation
+- local-ahead safety
+- stale preview protection
+- idempotency
+- atomic apply
 
 ## Objective
 Enable users to selectively apply synchronization changes to their roster and tracked weapons based on the reconciliation preview.

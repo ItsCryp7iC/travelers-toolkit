@@ -131,7 +131,12 @@ export function reconcileCharacters(syncArray, roster, trackedWeapons) {
         let talentDiff = false;
 
         ['normal', 'skill', 'burst'].forEach(t => {
-          const remoteT = syncChar.talents[t] ?? 1;
+          // If the remote payload did not successfully map this talent,
+          // treat it as absent/unknown, and preserve the local value.
+          if (syncChar.talents[t] === undefined || syncChar.talents[t] === null) {
+            return;
+          }
+          const remoteT = syncChar.talents[t];
           const localT = (localChar.talents && localChar.talents[t]) ? localChar.talents[t] : 1;
           const tCmp = compareField(localT, remoteT);
           if (tCmp.direction !== "same") {

@@ -146,6 +146,43 @@ describe('Zustand Persistence Migrations', () => {
     expect(migrated.achievementProgress['80129']).toEqual({ completed: true, completedAt: '2026-01-01T00:00:00.000Z' });
   });
 
+  it('migrates v7 -> v8 initializes lastHoyolabCharacterSyncAt to null if missing', () => {
+    const legacyState = {};
+    const migrated = migrateStore(legacyState, 7);
+    expect(migrated.lastHoyolabCharacterSyncAt).toBeNull();
+  });
+
+  it('migrates v7 -> v8 preserves existing valid lastHoyolabCharacterSyncAt', () => {
+    const legacyState = {
+      lastHoyolabCharacterSyncAt: 1234567890
+    };
+    const migrated = migrateStore(legacyState, 7);
+    expect(migrated.lastHoyolabCharacterSyncAt).toBe(1234567890);
+  });
+
+  it('migrates v7 -> v8 nullifies malformed timestamp', () => {
+    const legacyState = {
+      lastHoyolabCharacterSyncAt: "not-a-number"
+    };
+    const migrated = migrateStore(legacyState, 7);
+    expect(migrated.lastHoyolabCharacterSyncAt).toBeNull();
+  });
+
+  it('migrates older state -> v8 completely', () => {
+    const legacyState = {
+      roster: {
+        'Amber': {
+          equippedWeapon: 'Hunters Bow',
+          weaponLevel: 20
+        }
+      }
+    };
+    const migrated = migrateStore(legacyState, 1);
+    expect(migrated.lastHoyolabCharacterSyncAt).toBeNull();
+    expect(migrated.trackedWeapons.length).toBe(1);
+    expect(migrated.achievementProgress).toEqual({});
+  });
+
   it('partializeStore returns exactly the persisted whitelist', () => {
     const fullState = {
       autoBackupEnabled: true,
@@ -172,8 +209,7 @@ describe('Zustand Persistence Migrations', () => {
       'autoBackupEnabled',
       'displayTimeZone',
       'goals',
-      'inventory',
-      'resinCount',
+      'inventory', 'lastHoyolabCharacterSyncAt', 'resinCount',
       'resinTimestamp',
       'roster',
       'serverRegion',

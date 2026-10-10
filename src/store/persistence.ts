@@ -2,7 +2,7 @@ import type { PersistedStore } from '../types/domain';
 import { normalizeAchievementProgress } from '../utils/achievementProgress';
 
 export const STORE_NAME = 'travelers-toolkit-store';
-export const STORE_VERSION = 7;
+export const STORE_VERSION = 8;
 
 export interface LegacyRosterEntry extends Record<string, unknown> {
   equippedWeapon?: string;
@@ -114,6 +114,14 @@ export const migrateStore = (persistedState: unknown, fromVersion: number): unkn
     }
     state = { ...state, achievementProgress: safeProgress }
   }
+  // v7 → v8: add lastHoyolabCharacterSyncAt
+  if (fromVersion < 8) {
+    let safeTimestamp = null;
+    if (typeof state.lastHoyolabCharacterSyncAt === 'number' && !isNaN(state.lastHoyolabCharacterSyncAt)) {
+      safeTimestamp = state.lastHoyolabCharacterSyncAt;
+    }
+    state = { ...state, lastHoyolabCharacterSyncAt: safeTimestamp }
+  }
   return state
 }
 
@@ -129,4 +137,5 @@ export const partializeStore = (state: PersistedStore & Record<string, unknown>)
   autoBackupEnabled: state.autoBackupEnabled,
   displayTimeZone: state.displayTimeZone,
   achievementProgress: state.achievementProgress,
+  lastHoyolabCharacterSyncAt: state.lastHoyolabCharacterSyncAt,
 })

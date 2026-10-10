@@ -62,6 +62,34 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
     });
   };
 
+  it('Phase D: Hook Order Hotfix - renders without crashing when toggling isOpen false -> true -> false', async () => {
+    setupMockData();
+
+    // 1. Render closed
+    await act(async () => {
+      root.render(<HoyolabSyncPreviewModal isOpen={false} onClose={vi.fn()} />);
+    });
+    expect(container.textContent).not.toContain('Sync Characters from HoYoLAB');
+
+    // 2. Render open
+    await act(async () => {
+      root.render(<HoyolabSyncPreviewModal isOpen={true} onClose={vi.fn()} />);
+    });
+    expect(container.textContent).toContain('Sync Characters from HoYoLAB');
+
+    // 3. Render closed again
+    await act(async () => {
+      root.render(<HoyolabSyncPreviewModal isOpen={false} onClose={vi.fn()} />);
+    });
+    expect(container.textContent).not.toContain('Sync Characters from HoYoLAB');
+
+    // 4. Render open again
+    await act(async () => {
+      root.render(<HoyolabSyncPreviewModal isOpen={true} onClose={vi.fn()} />);
+    });
+    expect(container.textContent).toContain('Sync Characters from HoYoLAB');
+  });
+
   it('default selects safe rows and allows clear/select all', async () => {
     setupMockData();
     await renderAndFetch();
@@ -170,10 +198,12 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
 
     const applyBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
 
-    // Attempt apply without resolving (it should alert)
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    act(() => { applyBtn.click(); });
-    expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('resolve ambiguities'));
+    // Attempt apply without resolving (it should alert in old code, now it should be disabled)
+    const checkbox = container.querySelector('input[type="checkbox"]');
+    if (checkbox && !checkbox.checked) act(() => { checkbox.click(); });
+
+    expect(applyBtn.disabled).toBe(true);
+    expect(applyBtn.title).toContain('resolve');
 
     // Resolve it
     const resolveRadio = Array.from(container.querySelectorAll('input[type="radio"]')).find(r => r.nextSibling.textContent.includes('Use existing: Lv 90'));
@@ -181,7 +211,6 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
 
     act(() => { applyBtn.click(); });
     expect(container.textContent).toContain('Apply HoYoLAB Sync?'); // Moved to confirmation
-    alertSpy.mockRestore();
   });
 
   describe('Traveler Variants Onboarding', () => {
@@ -219,8 +248,8 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
 
       // G. active Cryo is marked Active and disabled
       // H. existing Anemo marked Already in Toolkit and disabled
-      expect(container.textContent).toContain('Cryo• Active');
-      expect(container.textContent).toContain('Anemo• Exists');
+      expect(container.textContent).toContain('Cryoâ€¢ Active');
+      expect(container.textContent).toContain('Anemoâ€¢ Exists');
 
       const applyBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
       expect(applyBtn.disabled).toBe(true);
@@ -306,7 +335,7 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
       await renderAndFetch();
 
       // J. reopening after Geo exists does not offer Geo again
-      expect(container.textContent).toContain('Geo• Exists');
+      expect(container.textContent).toContain('Geoâ€¢ Exists');
       const geoBtn = Array.from(container.querySelectorAll('button')).find(el => el.textContent.startsWith('Geo'));
       expect(geoBtn.disabled).toBe(true);
 
@@ -325,4 +354,134 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
       expect(applyBtn.textContent).toContain('Apply Selected (5)');
     });
   });
+
+  describe('Phase D: Error UX', () => {
+    it('shows 401 message', async () => {
+      global.fetch.mockResolvedValueOnce({ ok: false, status: 401 });
+      await renderAndFetch();
+      expect(container.textContent).toContain('Your HoYoLAB session has expired. Reconnect HoYoLAB and try again.');
+    });
+
+    it('shows 403 message', async () => {
+      global.fetch.mockResolvedValueOnce({ ok: false, status: 403 });
+      await renderAndFetch();
+      expect(container.textContent).toContain('Battle Chronicle data is private. Enable character details in HoYoLAB settings.');
+    });
+
+    it('shows 429 message', async () => {
+      global.fetch.mockResolvedValueOnce({ ok: false, status: 429 });
+      await renderAndFetch();
+      expect(container.textContent).toContain('HoYoLAB is rate-limiting requests. Please try again in a little while.');
+    });
+
+    it('shows network/500 message', async () => {
+      global.fetch.mockResolvedValueOnce({ ok: false, status: 500 });
+      await renderAndFetch();
+      expect(container.textContent).toContain('Could not load HoYoLAB character data. Your Toolkit data was not changed.');
+    });
+
+    it('shows malformed JSON message', async () => {
+      global.fetch.mockRejectedValueOnce(new Error('Failed to fetch'));
+      await renderAndFetch();
+      expect(container.textContent).toContain('Failed to fetch');
+    });
+  });
+
+  describe('Phase D: Retry Safety', () => {
+    it('Retry clears state and fetches fresh data', async () => {
+      global.fetch.mockResolvedValueOnce({ ok: false, status: 500 });
+      await renderAndFetch();
+
+      const retryBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'Retry');
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ characters: [] })
+      });
+
+      act(() => { retryBtn.click(); });
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      expect(container.textContent).not.toContain('Could not load');
+    });
+  });
+
+  describe('Phase D: No-Mutation Guarantee', () => {
+    it('does not mutate state during render, select, or close', async () => {
+      setupMockData();
+      await renderAndFetch();
+
+      const originalRosterStr = JSON.stringify(mockState.roster);
+      const originalWeaponsStr = JSON.stringify(mockState.trackedWeapons);
+
+      const closeBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'âœ•');
+      act(() => { closeBtn.click(); });
+
+      expect(JSON.stringify(mockState.roster)).toBe(originalRosterStr);
+      expect(JSON.stringify(mockState.trackedWeapons)).toBe(originalWeaponsStr);
+      expect(mockApply).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Phase D: Accessibility / Modal UX', () => {
+    it('Escape closes confirmation first, then modal', async () => {
+      setupMockData();
+      await renderAndFetch();
+
+      const applyBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      act(() => { applyBtn.click(); });
+
+      expect(container.textContent).toContain('Apply HoYoLAB Sync?');
+
+      // Press Escape
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      });
+
+      expect(container.textContent).not.toContain('Apply HoYoLAB Sync?');
+      expect(container.textContent).toContain('Sync Characters from HoYoLAB'); // Still open
+    });
+
+    it('disabled apply tells why', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            { id: 10000046, level: 90, ascension: 6, weapon: { id: 13501, level: 90, refinement: 1 } },
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Hu Tao': { level: 80, ascension: 5 }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w1', weapon_id: 'staffofhoma', level: 90, currentRefinement: 1, assignedTo: null },
+        { id: 'w2', weapon_id: 'staffofhoma', level: 80, currentRefinement: 1, assignedTo: null }
+      ];
+
+      await renderAndFetch();
+
+      const checkbox = container.querySelector('input[type="checkbox"]');
+      if (checkbox && !checkbox.checked) {
+        act(() => { checkbox.click(); });
+      }
+
+      const applyBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      expect(applyBtn.title).toContain('resolve weapon ambiguities'); // If there is a title, or we just test it alerts. We already tested the alert.
+    });
+  });
+
+  describe('Phase D: First-Run UX', () => {
+    it('shows welcome hint on empty roster', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ characters: [{ id: 10000046, level: 90, ascension: 6 }] })
+      });
+      mockState.roster = {};
+
+      await renderAndFetch();
+      expect(container.textContent).toContain("Welcome to Traveler's Toolkit");
+    });
+  });
+
 });

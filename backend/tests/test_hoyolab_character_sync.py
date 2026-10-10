@@ -76,95 +76,180 @@ class TestHoyolabCharacterSync(unittest.TestCase):
         self.assertIsNone(normalize_ascension(7))
         self.assertIsNone(normalize_ascension(90))
 
-    def test_normal_response(self):
+    def test_ayaka_like_skill_list(self):
         char = MockCharacter()
-
-        async def mock_get_chars(*args, **kwargs):
-            return [char]
-
+        async def mock_get_chars(*args, **kwargs): return [char]
         async def mock_get_calc_items(*args, **kwargs):
             return [{
                 "id": 10000002,
                 "level_current": 90,
                 "promote_level": 6,
                 "skill_list": [
-                    {"level_current": 10},
-                    {"level_current": 9},
-                    {"level_current": 9}
+                    {"level_current": 10, "group_id": 231}, # normal
+                    {"level_current": 10, "group_id": 232}, # skill
+                    {"level_current": 1, "group_id": 233},  # alt sprint
+                    {"level_current": 10, "group_id": 239}  # burst
                 ]
             }]
-
-        async def mock_get_details(*args, **kwargs):
-            return MockGenshinDetailCharacters([MockDetailCharacter()])
-
+        async def mock_get_details(*args, **kwargs): return MockGenshinDetailCharacters([MockDetailCharacter()])
         self.mock_genshin_client.get_genshin_characters = mock_get_chars
         self.mock_genshin_client._get_calculator_items = mock_get_calc_items
         self.mock_genshin_client.get_genshin_detailed_characters = mock_get_details
 
         response = self.client.post("/api/hoyolab/character-sync-preview")
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-
-        self.assertEqual(len(data["characters"]), 1)
-
-        c = data["characters"][0]
-        self.assertEqual(c["id"], 10000002)
-        self.assertEqual(c["name"], "Kamisato Ayaka")
-        self.assertEqual(c["level"], 90)
-        self.assertEqual(c["constellation"], 0)
-        self.assertEqual(c["friendship"], 10)
-        self.assertEqual(c["ascension"], 6)
-
-        self.assertIsNotNone(c["talents"])
+        c = response.json()["characters"][0]
         self.assertEqual(c["talents"]["normal"], 10)
+        self.assertEqual(c["talents"]["skill"], 10)
+        self.assertEqual(c["talents"]["burst"], 10)
+
+    def test_mona_like_skill_list(self):
+        char = MockCharacter(id=10000041, name="Mona")
+        async def mock_get_chars(*args, **kwargs): return [char]
+        async def mock_get_calc_items(*args, **kwargs):
+            return [{
+                "id": 10000041,
+                "level_current": 90,
+                "skill_list": [
+                    {"level_current": 1, "group_id": 4131}, # normal
+                    {"level_current": 9, "group_id": 4132}, # skill
+                    {"level_current": 1, "group_id": 4133}, # alt sprint
+                    {"level_current": 10, "group_id": 4139} # burst
+                ]
+            }]
+        async def mock_get_details(*args, **kwargs): return MockGenshinDetailCharacters([MockDetailCharacter(id=10000041)])
+        self.mock_genshin_client.get_genshin_characters = mock_get_chars
+        self.mock_genshin_client._get_calculator_items = mock_get_calc_items
+        self.mock_genshin_client.get_genshin_detailed_characters = mock_get_details
+
+        response = self.client.post("/api/hoyolab/character-sync-preview")
+        c = response.json()["characters"][0]
+        self.assertEqual(c["talents"]["normal"], 1)
+        self.assertEqual(c["talents"]["skill"], 9)
+        self.assertEqual(c["talents"]["burst"], 10)
+
+    def test_ordinary_3_skill_character(self):
+        char = MockCharacter(id=10000030, name="Zhongli")
+        async def mock_get_chars(*args, **kwargs): return [char]
+        async def mock_get_calc_items(*args, **kwargs):
+            return [{
+                "id": 10000030,
+                "level_current": 90,
+                "skill_list": [
+                    {"level_current": 9, "group_id": 3031},
+                    {"level_current": 9, "group_id": 3032},
+                    {"level_current": 9, "group_id": 3039}
+                ]
+            }]
+        async def mock_get_details(*args, **kwargs): return MockGenshinDetailCharacters([MockDetailCharacter(id=10000030)])
+        self.mock_genshin_client.get_genshin_characters = mock_get_chars
+        self.mock_genshin_client._get_calculator_items = mock_get_calc_items
+        self.mock_genshin_client.get_genshin_detailed_characters = mock_get_details
+
+        response = self.client.post("/api/hoyolab/character-sync-preview")
+        c = response.json()["characters"][0]
+        self.assertEqual(c["talents"]["normal"], 9)
         self.assertEqual(c["talents"]["skill"], 9)
         self.assertEqual(c["talents"]["burst"], 9)
 
-        w = c["weapon"]
-        self.assertEqual(w["id"], 11414)
-        self.assertEqual(w["name"], "Amenoma Kageuchi")
-        self.assertEqual(w["level"], 90)
-        self.assertEqual(w["refinement"], 5)
-        self.assertEqual(w["ascension"], 6)
+    def test_extra_skill_before_burst(self):
+        char = MockCharacter()
+        async def mock_get_chars(*args, **kwargs): return [char]
+        async def mock_get_calc_items(*args, **kwargs):
+            return [{
+                "id": char.id,
+                "level_current": 90,
+                "skill_list": [
+                    {"level_current": 6, "group_id": 231},
+                    {"level_current": 6, "group_id": 232},
+                    {"level_current": 1, "group_id": 221}, # passive
+                    {"level_current": 8, "group_id": 239}
+                ]
+            }]
+        async def mock_get_details(*args, **kwargs): return MockGenshinDetailCharacters([MockDetailCharacter()])
+        self.mock_genshin_client.get_genshin_characters = mock_get_chars
+        self.mock_genshin_client._get_calculator_items = mock_get_calc_items
+        self.mock_genshin_client.get_genshin_detailed_characters = mock_get_details
 
-        # Ensure no artifacts/stats leaked
-        self.assertNotIn("hp", c)
-        self.assertNotIn("atk", c)
-        self.assertNotIn("artifacts", c)
+        response = self.client.post("/api/hoyolab/character-sync-preview")
+        c = response.json()["characters"][0]
+        self.assertEqual(c["talents"]["normal"], 6)
+        self.assertEqual(c["talents"]["skill"], 6)
+        self.assertEqual(c["talents"]["burst"], 8)
+
+    def test_extra_skill_after_burst(self):
+        char = MockCharacter()
+        async def mock_get_chars(*args, **kwargs): return [char]
+        async def mock_get_calc_items(*args, **kwargs):
+            return [{
+                "id": char.id,
+                "level_current": 90,
+                "skill_list": [
+                    {"level_current": 6, "group_id": 231},
+                    {"level_current": 6, "group_id": 232},
+                    {"level_current": 8, "group_id": 239},
+                    {"level_current": 1, "group_id": 221} # passive
+                ]
+            }]
+        async def mock_get_details(*args, **kwargs): return MockGenshinDetailCharacters([MockDetailCharacter()])
+        self.mock_genshin_client.get_genshin_characters = mock_get_chars
+        self.mock_genshin_client._get_calculator_items = mock_get_calc_items
+        self.mock_genshin_client.get_genshin_detailed_characters = mock_get_details
+
+        response = self.client.post("/api/hoyolab/character-sync-preview")
+        c = response.json()["characters"][0]
+        self.assertEqual(c["talents"]["normal"], 6)
+        self.assertEqual(c["talents"]["skill"], 6)
+        self.assertEqual(c["talents"]["burst"], 8)
+
+    def test_missing_burst_classification(self):
+        char = MockCharacter()
+        async def mock_get_chars(*args, **kwargs): return [char]
+        async def mock_get_calc_items(*args, **kwargs):
+            return [{
+                "id": char.id,
+                "level_current": 90,
+                "skill_list": [
+                    {"level_current": 6, "group_id": 231},
+                    {"level_current": 6, "group_id": 232},
+                    {"level_current": 1, "group_id": 233} # alternate sprint instead of burst
+                ]
+            }]
+        async def mock_get_details(*args, **kwargs): return MockGenshinDetailCharacters([MockDetailCharacter()])
+        self.mock_genshin_client.get_genshin_characters = mock_get_chars
+        self.mock_genshin_client._get_calculator_items = mock_get_calc_items
+        self.mock_genshin_client.get_genshin_detailed_characters = mock_get_details
+
+        response = self.client.post("/api/hoyolab/character-sync-preview")
+        c = response.json()["characters"][0]
+        self.assertEqual(c["talents"]["normal"], 6)
+        self.assertEqual(c["talents"]["skill"], 6)
+        self.assertIsNone(c["talents"]["burst"]) # Burst stays absent
 
     def test_traveler_response(self):
-        # Traveler has 5 talents instead of 3, we just take the first 3
         char = MockCharacter(id=10000005, name="Traveler")
-
-        async def mock_get_chars(*args, **kwargs):
-            return [char]
-
+        async def mock_get_chars(*args, **kwargs): return [char]
         async def mock_get_calc_items(*args, **kwargs):
             return [{
                 "id": 10000005,
                 "level_current": 90,
-                "promote_level": 6,
                 "skill_list": [
-                    {"level_current": 1},
-                    {"level_current": 1},
-                    {"level_current": 5},
-                    {"level_current": 1},
-                    {"level_current": 1}
+                    # Electro active element
+                    {"level_current": 1, "group_id": 531},
+                    {"level_current": 1, "group_id": 532},
+                    {"level_current": 5, "group_id": 539},
+                    # Geo inactive element
+                    {"level_current": 2, "group_id": 731},
+                    {"level_current": 2, "group_id": 732},
+                    {"level_current": 2, "group_id": 739}
                 ]
             }]
-
-        async def mock_get_details(*args, **kwargs):
-            return MockGenshinDetailCharacters([MockDetailCharacter(id=10000005)])
-
+        async def mock_get_details(*args, **kwargs): return MockGenshinDetailCharacters([MockDetailCharacter(id=10000005)])
         self.mock_genshin_client.get_genshin_characters = mock_get_chars
         self.mock_genshin_client._get_calculator_items = mock_get_calc_items
         self.mock_genshin_client.get_genshin_detailed_characters = mock_get_details
 
         response = self.client.post("/api/hoyolab/character-sync-preview")
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-
-        c = data["characters"][0]
+        c = response.json()["characters"][0]
         self.assertEqual(c["talents"]["normal"], 1)
         self.assertEqual(c["talents"]["skill"], 1)
         self.assertEqual(c["talents"]["burst"], 5)

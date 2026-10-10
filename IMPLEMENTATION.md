@@ -1759,7 +1759,7 @@ while preserving canonical identity and user data across future Genshin updates.
 - **Summary**: Mapped exact HoYoLAB fields (including Manekin exclusions) to Traveler's Toolkit frontend, reconciling canonical names/IDs and generating a precise apply preview against the Zustand store.
 
 ## Phase C: Safe Selectable Apply
-- **Status**: Implemented locally / awaiting live safety validation.
+- **Status**: Completed.
 - **Summary**:
   - **Atomic Apply:** The mutation operates via a pure utility (`hoyolabSyncApply.js`) and applies changes using a single Zustand `set()` transaction to avoid partial application states.
   - **Field-Level Local-Ahead Policy:** Keeps local progression values by default if they exceed the remote HoYoLAB representation. Explicit user opt-in is required to downgrade.
@@ -1770,3 +1770,9 @@ while preserving canonical identity and user data across future Genshin updates.
   - **Idempotency:** Applying an identical sync state redundantly yields no duplicated weapon instances or destructive character overwrites.
   - **Stale-Preview Validation:** Execution logic re-validates the apply plan against the absolute latest Zustand context to prevent race conditions during modal confirmation.
   - **Manekin Exclusion:** Specifically discards non-progression system characters (10000117, 10000118) to avoid artificial errors.
+
+## Phase D: Production Hardening & Sync Lifecycle
+- **Status**: Implemented locally / awaiting production smoke validation.
+- **Summary**:
+  - **Goal:** Make HoYoLAB character sync understandable, resilient, and production-ready without changing the proven core mutation semantics.
+  - Do NOT redesign reconciliation rules, canonical mapping, atomic apply, target preservation, weapon semantics, or Traveler semantics.

@@ -1,6 +1,7 @@
 import { applyHoyolabPlanToState, validateHoyolabApplyPlan } from '../../utils/hoyolabSyncApply';
 
 export const createHoyolabSyncSlice = (set, get) => ({
+  lastHoyolabCharacterSyncAt: null,
   applyHoyolabSync: (plan) => {
     let finalResult = null;
     let errorToThrow = null;
@@ -21,7 +22,7 @@ export const createHoyolabSyncSlice = (set, get) => ({
       });
 
       finalResult = result;
-      return { roster, trackedWeapons };
+      return { roster, trackedWeapons, lastHoyolabCharacterSyncAt: Date.now() };
     });
 
     if (errorToThrow) throw errorToThrow;

@@ -7,9 +7,9 @@ import genshin
 logger = logging.getLogger(__name__)
 
 class CharacterTalents(BaseModel):
-    normal: int
-    skill: int
-    burst: int
+    normal: Optional[int] = None
+    skill: Optional[int] = None
+    burst: Optional[int] = None
 
 class SyncWeapon(BaseModel):
     id: int
@@ -107,14 +107,34 @@ async def build_sync_preview(client: genshin.Client, uid: Optional[int] = None) 
         # Talents
         skills = calc_data.get("skill_list", [])
         talents = None
-        if len(skills) >= 3:
-            # We assume first 3 are combat talents (normal, skill, burst).
-            # Traveler has more but first 3 correspond to the active element.
-            talents = CharacterTalents(
-                normal=skills[0].get("level_current", 1),
-                skill=skills[1].get("level_current", 1),
-                burst=skills[2].get("level_current", 1),
-            )
+        if skills:
+            talents_dict = {}
+            for skill in skills:
+                group_id = skill.get("group_id", 0)
+                if not group_id:
+                    continue
+
+                # Semantic identity from canonical game data (group_id encodes the type)
+                # For example: 4139 -> group 41, identifier 3, order 9
+                relevant = group_id % 100
+                identifier = relevant // 10
+                order = relevant % 10
+
+                # Combat talents always have identifier == 3
+                if identifier == 3:
+                    if order == 1 and "normal" not in talents_dict:
+                        talents_dict["normal"] = skill.get("level_current", 1)
+                    elif order == 2 and "skill" not in talents_dict:
+                        talents_dict["skill"] = skill.get("level_current", 1)
+                    elif order == 9 and "burst" not in talents_dict:
+                        talents_dict["burst"] = skill.get("level_current", 1)
+
+            if talents_dict:
+                talents = CharacterTalents(
+                    normal=talents_dict.get("normal"),
+                    skill=talents_dict.get("skill"),
+                    burst=talents_dict.get("burst")
+                )
 
         # Exact weapon ascension
         weapon_ascension = None

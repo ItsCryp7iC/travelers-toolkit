@@ -277,4 +277,92 @@ describe('hoyolabCharacterReconciliation', () => {
     expect(c.changes).toEqual({});
     expect(c.hoyolab.talents).toBeUndefined();
   });
+
+  it('existing character + partial missing talent (burst) -> preserves local burst, diffs others', () => {
+    const syncArray = [{
+      id: 10000046,
+      level: 90,
+      ascension: 6,
+      talents: { normal: 10, skill: 10, burst: null }
+    }];
+    const roster = {
+      'Hu Tao': {
+        level: 90,
+        ascension: 6,
+        talents: { normal: 8, skill: 8, burst: 8 }
+      }
+    };
+    const res = reconcileCharacters(syncArray, roster, []);
+    const c = res.characters[0];
+    expect(c.status).toBe('update');
+    expect(c.changes.talents.normal.direction).toBe('remote-ahead');
+    expect(c.changes.talents.skill.direction).toBe('remote-ahead');
+    expect(c.changes.talents.burst).toBeUndefined(); // Burst must NOT be diffed (local 8 is preserved instead of defaulting to 1)
+  });
+
+  describe('Phase D: Malformed / Partial Remote Data', () => {
+    it('missing talents on existing character does not overwrite with 1/1/1', () => {
+      const syncArray = [{ id: 10000046, level: 90 }]; // Hu Tao without talents
+      const roster = {
+        'Hu Tao': { level: 80, talents: { normal: 8, skill: 8, burst: 8 } }
+      };
+      const res = reconcileCharacters(syncArray, roster, []);
+      expect(res.characters[0].status).toBe('update');
+      expect(res.characters[0].hasTalentDiff).toBeFalsy();
+    });
+
+    it('missing talents on ordinary new character does not invent diff', () => {
+      const syncArray = [{ id: 10000046, level: 90 }]; // Hu Tao without talents
+      const res = reconcileCharacters(syncArray, {}, []);
+      expect(res.characters[0].status).toBe('new');
+      expect(res.characters[0].hasTalentDiff).toBeFalsy();
+    });
+
+    it('unmapped character is safely skipped', () => {
+      const syncArray = [{ id: 99999999, level: 90 }];
+      const res = reconcileCharacters(syncArray, {}, []);
+      expect(res.characters[0].status).toBe('unmapped');
+    });
+
+    it('malformed optional weapon data is handled', () => {
+      const syncArray = [{ id: 10000046, level: 90, weapon: { id: null, level: null } }];
+      const res = reconcileCharacters(syncArray, {}, []);
+      expect(res.characters[0].weaponReconciliation.status).toBe('unmapped');
+    });
+  });
+
+  describe('Phase D: Large-Account Dry Run', () => {
+    it('builds internally consistent plan for large account', () => {
+      const syncArray = [
+        { id: 10000002, level: 90, ascension: 6, weapon: { id: 11414, level: 90, refinement: 1 } }, // Ayaka (unchanged)
+        { id: 10000046, level: 90, ascension: 6, weapon: { id: 13501, level: 90, refinement: 1 } }, // Hu Tao (update)
+        { id: 10000030, level: 80, ascension: 5, weapon: { id: 11501, level: 80, refinement: 1 } }, // Zhongli (new)
+        { id: 10000007, level: 90, ascension: 6, element: 'Geo', weapon: { id: 11401, level: 90 } }, // Traveler Geo (active)
+        { id: 10000117, level: 90 } // Manekin
+      ];
+
+      const roster = {
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w1' },
+        'Hu Tao': { level: 80, ascension: 5 },
+        'Traveler Anemo': { level: 70, ascension: 4 }
+      };
+
+      const trackedWeapons = [
+        { id: 'w1', weapon_id: 'amenomakageuchi', level: 90, currentRefinement: 1, assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+
+      expect(res.summary.totalRemote).toBe(5);
+      expect(res.summary.ignored).toBe(1); // Manekin
+      expect(res.summary.syncRelevant).toBe(4);
+      expect(res.summary.newCharacters).toBe(2); // Zhongli, Traveler Geo (new variant)
+      expect(res.summary.charactersWithUpdates).toBe(1); // Hu Tao
+      // Wait, Traveler Geo is active, local roster has Traveler Anemo. Active traveler gets mapped to active element (Geo).
+      // Since Geo is not in roster, it's 'new' status. Let's check:
+      const geoTraveler = res.characters.find(c => c.rosterKey === 'Traveler Geo');
+      expect(geoTraveler.status).toBe('new');
+    });
+  });
+
 });
