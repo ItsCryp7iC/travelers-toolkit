@@ -248,8 +248,8 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
 
       // G. active Cryo is marked Active and disabled
       // H. existing Anemo marked Already in Toolkit and disabled
-      expect(container.textContent).toContain('Cryoâ€¢ Active');
-      expect(container.textContent).toContain('Anemoâ€¢ Exists');
+      expect(container.textContent).toContain('Cryo• Active');
+      expect(container.textContent).toContain('Anemo• Exists');
 
       const applyBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
       expect(applyBtn.disabled).toBe(true);
@@ -335,7 +335,7 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
       await renderAndFetch();
 
       // J. reopening after Geo exists does not offer Geo again
-      expect(container.textContent).toContain('Geoâ€¢ Exists');
+      expect(container.textContent).toContain('Geo• Exists');
       const geoBtn = Array.from(container.querySelectorAll('button')).find(el => el.textContent.startsWith('Geo'));
       expect(geoBtn.disabled).toBe(true);
 
@@ -413,7 +413,7 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
       const originalRosterStr = JSON.stringify(mockState.roster);
       const originalWeaponsStr = JSON.stringify(mockState.trackedWeapons);
 
-      const closeBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'âœ•');
+      const closeBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === '✕');
       act(() => { closeBtn.click(); });
 
       expect(JSON.stringify(mockState.roster)).toBe(originalRosterStr);

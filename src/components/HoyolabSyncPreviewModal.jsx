@@ -302,7 +302,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
           <div className="text-[var(--muted)] text-xs">Excluded from planning sync</div>
         ) : !isTravelerCard ? (
           <div className="text-[var(--muted)] text-xs">
-            C{char.hoyolab.constellation} â€¢ Friendship {char.hoyolab.friendship}
+            C{char.hoyolab.constellation} • Friendship {char.hoyolab.friendship}
           </div>
         ) : null}
       </div>
@@ -322,7 +322,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                   <span>Lv {char.local?.level} A{char.local?.ascension}</span>
                   {(char.changes?.level || char.changes?.ascension) && (
                     <>
-                      <span className="text-[var(--muted)]">â†’</span>
+                      <span className="text-[var(--muted)]">→</span>
                       <span className={(char.changes?.level?.direction === 'local-ahead' || char.changes?.ascension?.direction === 'local-ahead') ? 'text-yellow-400' : 'text-cyan-400'}>
                         Lv {char.hoyolab.level} A{char.hoyolab.ascension || 0}
                       </span>
@@ -357,7 +357,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                   <span>{char.local?.talents?.normal} / {char.local?.talents?.skill} / {char.local?.talents?.burst}</span>
                   {char.changes?.talents && (
                     <>
-                      <span className="text-[var(--muted)]">â†’</span>
+                      <span className="text-[var(--muted)]">→</span>
                       <span className={Object.values(char.changes.talents).some(t => t.direction === 'local-ahead') ? 'text-yellow-400' : 'text-cyan-400'}>
                         {char.hoyolab.talents?.normal || 1} / {char.hoyolab.talents?.skill || 1} / {char.hoyolab.talents?.burst || 1}
                       </span>
@@ -433,7 +433,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                         <input type="radio" className="mt-1" name={`w_${char.hoyolabId}`} checked={weaponChoices[char.hoyolabId] === `assign|${cand.id}`} onChange={() => handleWeaponChoice(char.hoyolabId, `assign|${cand.id}`)} />
                         <div className="flex flex-col">
                           <span className="text-blue-400">
-                            Use existing: Lv {cand.level} R{cand.currentRefinement} {showsUpgrade ? `â†’ Lv ${rLvl} R${rRef}` : ''} {cand.assignedTo ? `(Assigned: ${cand.assignedTo})` : '(Unassigned)'}
+                            Use existing: Lv {cand.level} R{cand.currentRefinement} {showsUpgrade ? `→ Lv ${rLvl} R${rRef}` : ''} {cand.assignedTo ? `(Assigned: ${cand.assignedTo})` : '(Unassigned)'}
                           </span>
                           {showsUpgrade && weaponChoices[char.hoyolabId] === `assign|${cand.id}` && (
                             <span className="text-xs text-blue-300/70 mt-0.5">Current stats will be synced to HoYoLAB</span>
@@ -495,7 +495,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
             Sync Characters from HoYoLAB
           </h2>
           <button onClick={onClose} className="text-[var(--muted)] hover:text-[var(--text)] transition-colors p-1">
-            âœ•
+            ✕
           </button>
         </div>
 
@@ -509,7 +509,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
           ) : error ? (
             <div className="p-6">
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 text-center">
-                <span className="text-4xl block mb-2">âš ï¸</span>
+                <span className="text-4xl block mb-2">⚠️</span>
                 <h3 className="text-red-400 font-bold mb-2">Sync Failed</h3>
                 <p className="text-red-300/80 text-sm">{error}</p>
                 <button onClick={fetchSyncPreview} className="mt-4 px-4 py-2 bg-[var(--surface-light)] rounded-lg text-sm hover:bg-[var(--border)] transition-colors">
@@ -519,7 +519,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
             </div>
           ) : applyResult ? (
             <div className="p-10 flex flex-col items-center justify-center">
-              <span className="text-5xl mb-4">âœ…</span>
+              <span className="text-5xl mb-4">✅</span>
               <h2 className="text-2xl font-bold text-green-400 mb-6">Sync Complete</h2>
               <div className="bg-[var(--surface)] p-6 rounded-xl border border-[var(--border)] w-full max-w-sm">
                 <div className="flex justify-between py-2 border-b border-[var(--border)]">
@@ -559,7 +559,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                     <div className="text-2xl font-bold text-[var(--text)]">{reconciliationResult.summary.totalRemote}</div>
                     <div className="text-[var(--muted)] text-xs uppercase tracking-wide">Found</div>
                     {reconciliationResult.summary.ignored > 0 && (
-                      <div className="text-[var(--muted)] text-[10px] mt-1 opacity-80">{reconciliationResult.summary.syncRelevant} syncable â€¢ {reconciliationResult.summary.ignored} ignored</div>
+                      <div className="text-[var(--muted)] text-[10px] mt-1 opacity-80">{reconciliationResult.summary.syncRelevant} syncable • {reconciliationResult.summary.ignored} ignored</div>
                     )}
                   </div>
                   <div className="bg-[var(--surface)] border border-green-500/20 p-4 rounded-xl text-center">
@@ -595,7 +595,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                       <div className="flex items-center gap-2 mb-3">
                         <h4 className="font-bold text-[var(--text)] text-sm">Variants</h4>
                         <span className="group relative cursor-help text-[var(--muted)] text-sm">
-                          â“˜
+                          ⓘ
                           <span className="absolute bottom-full left-0 mb-2 w-64 p-2 bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] text-xs rounded shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none z-50 text-left">
                             Why? Inactive Traveler talent progression is not exposed by HoYoLAB.
                           </span>
@@ -630,9 +630,9 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                             >
                               <img src={getElementIcon(tv.element)} alt={tv.element} className="w-4 h-4 object-contain" />
                               <span>{tv.element}</span>
-                              {isActive && <span className="text-xs ml-1 font-normal opacity-80">â€¢ Active</span>}
-                              {isExists && <span className="text-xs ml-1 font-normal opacity-80">â€¢ Exists</span>}
-                              {isSelected && <span className="text-xs ml-1 font-normal opacity-80">â€¢ Add</span>}
+                              {isActive && <span className="text-xs ml-1 font-normal opacity-80">• Active</span>}
+                              {isExists && <span className="text-xs ml-1 font-normal opacity-80">• Exists</span>}
+                              {isSelected && <span className="text-xs ml-1 font-normal opacity-80">• Add</span>}
                             </button>
                           );
                         })}
