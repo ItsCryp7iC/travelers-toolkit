@@ -4,8 +4,9 @@ export const createSyncSlice = (set, get) => ({
   setSyncPayload: (payload) => set({ syncPayload: payload }),
   setIsSyncing: (val) => set({ isSyncing: val }),
   handleSyncNotes: async (isAuto = false) => {
-    const { hoyolabConnected, setHoyolabConnected } = get();
+    const { hoyolabConnected, setHoyolabConnected, isSyncing } = get();
     if (!hoyolabConnected) return { error: 'no_cookie' };
+    if (isSyncing) return { error: 'already_syncing' };
 
     set({ isSyncing: true });
     try {

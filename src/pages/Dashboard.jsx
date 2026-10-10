@@ -24,6 +24,11 @@ const RARITY_FILTERS = [
  { label: '🟣 4★', value: 4 }
 ]
 
+const TOTAL_5_STAR_CHARS = charactersData.filter((c) => Number(c.rarity?.length || c.rarity || 0) === 5).length
+const TOTAL_4_STAR_CHARS = charactersData.filter((c) => Number(c.rarity?.length || c.rarity || 0) === 4).length
+const TOTAL_5_STAR_WEAPONS = weaponsData.filter((w) => Number(w.rarity?.length || w.rarity || 0) === 5).length
+const TOTAL_4_STAR_WEAPONS = weaponsData.filter((w) => Number(w.rarity?.length || w.rarity || 0) === 4).length
+
 // Summary stats
 function StatCard({ icon, label, value, accent }) {
  return (
@@ -52,9 +57,9 @@ export default function Dashboard() {
  const hoyolabConnected = useStore((s) => s.hoyolabConnected);
 
  const hasCookie = hoyolabConnected;
- const roster = useStore((s) => s.roster)
+ const rosterCount = useStore((s) => Object.keys(s.roster).length)
  const batchAddCharacters = useStore((s) => s.batchAddCharacters)
- const trackedWeapons = useStore((s) => s.trackedWeapons) || []
+ const trackedWeaponsCount = useStore((s) => s.trackedWeapons ? s.trackedWeapons.length : 0)
 
  const [activeTab, setActiveTab] = useState('characters');
  const [selectedWeapon, setSelectedWeapon] = useState(null);
@@ -89,7 +94,8 @@ export default function Dashboard() {
  }, [])
 
  const handleAddAllCharacters = () => {
- const missing = charactersData.filter((c) => !roster[c.name])
+ const currentRoster = useStore.getState().roster;
+ const missing = charactersData.filter((c) => !currentRoster[c.name])
  if (missing.length === 0) {
  alert("All available characters are already in your roster!")
  return
@@ -176,12 +182,6 @@ export default function Dashboard() {
  }, [activeTab, search, elementFilter, weaponFilter, rarityFilter, sortBy, sortDirection])
 
  // Stats
- const total5StarChars = charactersData.filter((c) => Number(c.rarity?.length || c.rarity || 0) === 5).length
- const total4StarChars = charactersData.filter((c) => Number(c.rarity?.length || c.rarity || 0) === 4).length
- const rosterCount = Object.keys(roster).length
- const total5StarWeapons = weaponsData.filter((w) => Number(w.rarity?.length || w.rarity || 0) === 5).length
- const total4StarWeapons = weaponsData.filter((w) => Number(w.rarity?.length || w.rarity || 0) === 4).length
- const trackedWeaponsCount = trackedWeapons.length
 
  return (
  <div className="animate-fade-in">
@@ -289,15 +289,15 @@ export default function Dashboard() {
  {activeTab === 'characters' ? (
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
  <StatCard icon={<img src="/Characters.png" alt="Characters" className="w-6 h-6 object-contain" />} label="Total Characters" value={charactersData.length} />
- <StatCard icon="🟡" label="5★ Characters" value={total5StarChars} accent="#FFD700" />
- <StatCard icon="🟣" label="4★ Characters" value={total4StarChars} accent="#B07FE8" />
+ <StatCard icon="🟡" label="5★ Characters" value={TOTAL_5_STAR_CHARS} accent="#FFD700" />
+ <StatCard icon="🟣" label="4★ Characters" value={TOTAL_4_STAR_CHARS} accent="#B07FE8" />
  <StatCard icon="📋" label="In My Roster" value={rosterCount} accent="#4EC9B0" />
  </div>
  ) : (
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 animate-fade-in">
  <StatCard icon="🗡️" label="Total Weapons" value={weaponsData.length} />
- <StatCard icon="🟡" label="5★ Weapons" value={total5StarWeapons} accent="#FFD700" />
- <StatCard icon="🟣" label="4★ Weapons" value={total4StarWeapons} accent="#B07FE8" />
+ <StatCard icon="🟡" label="5★ Weapons" value={TOTAL_5_STAR_WEAPONS} accent="#FFD700" />
+ <StatCard icon="🟣" label="4★ Weapons" value={TOTAL_4_STAR_WEAPONS} accent="#B07FE8" />
  <StatCard icon="📋" label="Tracked Weapons" value={trackedWeaponsCount} accent="#4EC9B0" />
  </div>
  )}

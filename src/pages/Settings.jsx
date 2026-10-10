@@ -8,30 +8,25 @@ import GoodImportModal from '../components/GoodImportModal';
 import AchievementData from '../components/Settings/AchievementData';
 import { buildTimeZoneOptions, getTimeZoneDisplayLabel } from '../utils/timeZoneUtils';
 
+const timeZoneOptions = buildTimeZoneOptions();
+
 export default function Settings() {
-  const {
-    roster,
-    trackedWeapons,
-    inventory,
-    serverRegion,
-    setServerRegion,
-    showDbBuilder,
-    setShowDbBuilder,
-    autoBackupEnabled,
-    setAutoBackupEnabled,
-    importData,
-    importGoodData,
-    resetStore,
-    displayTimeZone,
-    setDisplayTimeZone
-  } = useStore();
+  const serverRegion = useStore((s) => s.serverRegion);
+  const setServerRegion = useStore((s) => s.setServerRegion);
+  const showDbBuilder = useStore((s) => s.showDbBuilder);
+  const setShowDbBuilder = useStore((s) => s.setShowDbBuilder);
+  const autoBackupEnabled = useStore((s) => s.autoBackupEnabled);
+  const setAutoBackupEnabled = useStore((s) => s.setAutoBackupEnabled);
+  const importData = useStore((s) => s.importData);
+  const importGoodData = useStore((s) => s.importGoodData);
+  const resetStore = useStore((s) => s.resetStore);
+  const displayTimeZone = useStore((s) => s.displayTimeZone);
+  const setDisplayTimeZone = useStore((s) => s.setDisplayTimeZone);
 
   const fileInputRef = useRef(null);
   const goodFileInputRef = useRef(null);
 
   const [pendingImportData, setPendingImportData] = useState(null);
-
-  const timeZoneOptions = buildTimeZoneOptions();
 
   // Cloud Sync State
   const [isSyncing, setIsSyncing] = useState(false);

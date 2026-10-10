@@ -140,6 +140,7 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
           <GenshinImage 
             src={getWeaponIcon(name)}
             alt={displayName}
+            loading="lazy"
             className="w-full h-full object-contain absolute inset-0 z-10 rounded-t-[14px] p-2"
             fallback={
               <span
@@ -211,6 +212,7 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
           <GenshinImage 
             src={getWeaponIcon(name)} 
             alt={displayName}
+            loading="lazy"
             className="w-full h-full object-cover relative z-10 p-1"
             fallback={
               <span className="relative z-10 select-none text-[var(--gold)] text-xl flex items-center justify-center w-full h-full">

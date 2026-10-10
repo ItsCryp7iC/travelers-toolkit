@@ -1,17 +1,31 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import Dashboard from './pages/Dashboard'
-import Planner from './pages/Planner'
-import Inventory from './pages/Inventory'
-import Characters from './pages/Characters'
-import Weapons from './pages/Weapons'
-import Achievements from './pages/Achievements'
-import PlaceholderPage from './pages/PlaceholderPage'
-import Settings from './pages/Settings'
-import DevBuilder from './pages/DevBuilder'
-import Changelog from './pages/Changelog'
 import useStore from './store/useStore'
+
+const Planner = lazy(() => import('./pages/Planner'))
+const Inventory = lazy(() => import('./pages/Inventory'))
+const Characters = lazy(() => import('./pages/Characters'))
+const Weapons = lazy(() => import('./pages/Weapons'))
+const Achievements = lazy(() => import('./pages/Achievements'))
+const Settings = lazy(() => import('./pages/Settings'))
+const DevBuilder = lazy(() => import('./pages/DevBuilder'))
+const Changelog = lazy(() => import('./pages/Changelog'))
+
+function LoadingFallback() {
+  return (
+    <div className="flex items-center justify-center w-full h-full min-h-[50vh]">
+      <span className="text-[var(--color-text-muted)] text-sm animate-pulse">Loading...</span>
+    </div>
+  )
+}
+
+const withSuspense = (Component) => (
+  <Suspense fallback={<LoadingFallback />}>
+    <Component />
+  </Suspense>
+)
 
 export default function App() {
   const showDbBuilder = useStore((s) => s.showDbBuilder)
@@ -39,18 +53,18 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route
             path="characters"
-            element={<Characters />}
+            element={withSuspense(Characters)}
           />
           <Route
             path="weapons"
-            element={<Weapons />}
+            element={withSuspense(Weapons)}
           />
-          <Route path="planner"   element={<Planner />} />
-          <Route path="inventory" element={<Inventory />} />
-          <Route path="achievements" element={<Achievements />} />
-          <Route path="changelog" element={<Changelog />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="builder" element={showDbBuilder ? <DevBuilder /> : <Navigate to="/" replace />} />
+          <Route path="planner"   element={withSuspense(Planner)} />
+          <Route path="inventory" element={withSuspense(Inventory)} />
+          <Route path="achievements" element={withSuspense(Achievements)} />
+          <Route path="changelog" element={withSuspense(Changelog)} />
+          <Route path="settings" element={withSuspense(Settings)} />
+          <Route path="builder" element={showDbBuilder ? withSuspense(DevBuilder) : <Navigate to="/" replace />} />
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

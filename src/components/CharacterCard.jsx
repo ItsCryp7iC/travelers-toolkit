@@ -183,6 +183,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
             <GenshinImage
               src={getCharacterAvatar(name)}
               alt={displayName}
+              loading="lazy"
               className="w-full h-full object-cover absolute inset-0 z-10 rounded-t-[14px]"
               fallback={
                 <span
@@ -322,6 +323,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
             <GenshinImage 
               src={avatarUrl} 
               alt={displayName}
+              loading="lazy"
               className="w-full h-full object-cover relative z-10"
               fallback={
                 <span className="relative z-10 select-none text-[var(--gold)] text-xl flex items-center justify-center w-full h-full">
