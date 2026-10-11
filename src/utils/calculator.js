@@ -176,7 +176,13 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
   const eLvTo   = effectiveLookupLevel(rawToLv,   rawToAsc);
 
   // No-op guard: if effective positions are identical, nothing to do
-  if (eLvFrom >= eLvTo) return {};
+  if (eLvFrom >= eLvTo) {
+    let stellaFortuna = 0;
+    if (rawFromLv < 95 && rawToLv >= 95) stellaFortuna += 1;
+    if (rawFromLv < 100 && rawToLv === 100) stellaFortuna += 2;
+    if (stellaFortuna > 0) return { masterless_stella_fortuna: stellaFortuna };
+    return {};
+  }
 
   const fromObj = costsData.character_levels.find(x => x.level === eLvFrom) || costsData.character_levels[0];
   const toObj   = costsData.character_levels.find(x => x.level === eLvTo)   || costsData.character_levels[costsData.character_levels.length - 1];
@@ -755,8 +761,18 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
     }
   }
 
-  const hasRaiden = charactersRoster && Object.keys(charactersRoster).includes('Raiden Shogun');
-  const hasWanderer = charactersRoster && Object.keys(charactersRoster).includes('Wanderer');
+  const checkRosterHas = (name) => {
+    if (!charactersRoster) return false;
+    if (Array.isArray(charactersRoster)) {
+      return charactersRoster.some(c => (typeof c === 'string' ? c === name : c?.name === name));
+    }
+    if (typeof charactersRoster === 'object') {
+      return Boolean(charactersRoster[name]);
+    }
+    return false;
+  };
+  const hasRaiden = checkRosterHas('Raiden Shogun');
+  const hasWanderer = checkRosterHas('Wanderer');
 
   let ascensionMultiplier = 1;
   let discountSource = null;

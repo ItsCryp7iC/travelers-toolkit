@@ -6,7 +6,7 @@ export const getGemFamily = (element) => {
   const gems = {
     Anemo: "VayudaTurquoise", Cryo: "ShivadaJade",
     Electro: "VajradaAmethyst", Geo: "PrithivaTopaz",
-    Hydro: "VarunadaLazulite", Pyro: "AgnidusAgate",
+    Hydro: "VarunadaLazurite", Pyro: "AgnidusAgate",
     Dendro: "NagadusEmerald"
   }
   return gems[element] || ""

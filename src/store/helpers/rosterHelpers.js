@@ -16,7 +16,10 @@ export const recalculateCharacterCosts = (name, charEntry) => {
       skill: { current: charEntry.talents?.skill || 1, target: charEntry.targetTalents?.skill || 10 },
       burst: { current: charEntry.talents?.burst || 1, target: charEntry.targetTalents?.burst || 10 }
     });
-    charEntry.calculatedCosts = { ascCosts, talentCosts };
+    return {
+      ...charEntry,
+      calculatedCosts: { ascCosts, talentCosts }
+    };
   }
   return charEntry;
 };

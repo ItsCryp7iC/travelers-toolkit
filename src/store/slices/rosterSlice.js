@@ -176,9 +176,18 @@ export const createRosterSlice = (set, get) => ({
           const currentPatch = isPayloads ? payloadsMap[name] : patch;
           const updatedEntry = { ...newRoster[name], ...currentPatch }
 
+          const isTraveler = name.startsWith('Traveler ');
+          if (isTraveler) {
+            updatedEntry.equippedWeaponId = null;
+          }
+
           if ('equippedWeaponId' in currentPatch && currentPatch.equippedWeaponId !== newRoster[name].equippedWeaponId) {
             // A. Unassign old weapon from this character (so the old weapon has no owner)
-            if (newRoster[name].equippedWeaponId) {
+            if (isTraveler) {
+              updatedWeapons = updatedWeapons.map(w =>
+                w.assignedTo?.startsWith('Traveler ') ? { ...w, assignedTo: null } : w
+              );
+            } else if (newRoster[name].equippedWeaponId) {
               updatedWeapons = updatedWeapons.map(w =>
                 w.id === newRoster[name].equippedWeaponId ? { ...w, assignedTo: null } : w
               )
@@ -206,9 +215,11 @@ export const createRosterSlice = (set, get) => ({
               } else {
                 const newWeapon = updatedWeapons.find(w => w.id === finalWeaponId);
                 if (newWeapon && newWeapon.assignedTo && newWeapon.assignedTo !== name) {
-                  newRoster[newWeapon.assignedTo] = {
-                    ...newRoster[newWeapon.assignedTo],
-                    equippedWeaponId: null
+                  if (!newWeapon.assignedTo.startsWith('Traveler ') && newRoster[newWeapon.assignedTo]) {
+                    newRoster[newWeapon.assignedTo] = {
+                      ...newRoster[newWeapon.assignedTo],
+                      equippedWeaponId: null
+                    }
                   }
                 }
 
@@ -218,15 +229,15 @@ export const createRosterSlice = (set, get) => ({
                 )
               }
 
-              // Ensure updatedEntry uses the valid UUID instead of the 'NEW:' placeholder
-              updatedEntry.equippedWeaponId = finalWeaponId;
+              // Ensure updatedEntry uses the valid UUID for non-Travelers, or null for Travelers
+              updatedEntry.equippedWeaponId = isTraveler ? null : finalWeaponId;
             }
           }
 
           // Recalculate costs per user request
-          recalculateCharacterCosts(name, updatedEntry);
+          const finalCharEntry = recalculateCharacterCosts(name, updatedEntry);
 
-          newRoster[name] = updatedEntry
+          newRoster[name] = finalCharEntry;
           hasChanges = true
         }
       })

@@ -283,6 +283,23 @@ describe('Calculator Weapon Regressions', () => {
     expect(costDiscounted.has_ascension_discount).toBe(false);
   });
 
+  it('Passive discount: works when charactersRoster is an array of objects or strings', () => {
+    const costNormal = calculateWeaponCost(aquila, 80, 80, 5, 6, false, []);
+    const costArrayObj = calculateWeaponCost(aquila, 80, 80, 5, 6, false, [{ name: 'Raiden Shogun' }]);
+    const costArrayStr = calculateWeaponCost(aquila, 80, 80, 5, 6, false, ['Raiden Shogun']);
+
+    expect(costArrayObj.total_mora).toBe(Math.ceil(costNormal.total_mora / 2));
+    expect(costArrayObj.has_ascension_discount).toBe(true);
+    expect(costArrayObj.discount_source).toBe('Raiden Shogun');
+
+    expect(costArrayStr.total_mora).toBe(Math.ceil(costNormal.total_mora / 2));
+    expect(costArrayStr.has_ascension_discount).toBe(true);
+
+    const wandererCost = calculateWeaponCost(skywardHarp, 80, 80, 5, 6, false, [{ name: 'Wanderer' }]);
+    expect(wandererCost.has_ascension_discount).toBe(true);
+    expect(wandererCost.discount_source).toBe('Wanderer');
+  });
+
   it('Invalid reverse progression returns empty object', () => {
     const cost1 = calculateWeaponCost(aquila, 90, 80, 6, 5, false, {});
     const cost2 = calculateWeaponCost(aquila, 80, 80, 6, 5, false, {});
@@ -290,5 +307,65 @@ describe('Calculator Weapon Regressions', () => {
     expect(cost1).toEqual({});
     expect(cost2).toEqual({});
     expect(cost3).toEqual({});
+  });
+
+  it('does not mutate input arguments', () => {
+    const charInput = {
+      name: 'TestChar',
+      rarity: 5,
+      level: 1,
+      targetLevel: 90,
+      ascension: 0,
+      targetAscension: 6,
+      materials: { world_boss_material_id: 'Boss' }
+    };
+    const freezeChar = Object.freeze({ ...charInput });
+    expect(() => calculateProgressionCost(freezeChar)).not.toThrow();
+
+    const weaponInput = {
+      name: 'Aquila Favonia',
+      rarity: 5,
+      type: 'Sword'
+    };
+    const freezeWeapon = Object.freeze({ ...weaponInput });
+    expect(() => calculateWeaponCost(freezeWeapon, 1, 90, 0, 6, false, {})).not.toThrow();
+  });
+});
+
+describe('Table-Driven Progression Boundaries', () => {
+  const dummy5Star = { rarity: 5, materials: { world_boss_material_id: 'BossMat' } };
+
+  describe.each([
+    { fromLv: 1, toLv: 1, fromAsc: 0, toAsc: 0, desc: 'L1 A0 -> L1 A0 exact no-op', expectEmpty: true },
+    { fromLv: 80, toLv: 80, fromAsc: 5, toAsc: 5, desc: 'L80 A5 -> L80 A5 exact no-op', expectEmpty: true },
+    { fromLv: 90, toLv: 90, fromAsc: 6, toAsc: 6, desc: 'L90 A6 -> L90 A6 exact no-op', expectEmpty: true },
+    { fromLv: 90, toLv: 80, fromAsc: 6, toAsc: 5, desc: 'Target < Current (L90 A6 -> L80 A5)', expectEmpty: true },
+    { fromLv: 80, toLv: 80, fromAsc: 5, toAsc: 6, desc: 'Same-level ascension L80 A5 -> A6', expectEmpty: false, zeroExp: true },
+    { fromLv: 1, toLv: 90, fromAsc: 0, toAsc: 6, desc: 'Full progression L1 A0 -> L90 A6', expectEmpty: false, hasExp: true },
+    { fromLv: 80, toLv: 90, fromAsc: 6, toAsc: 6, desc: 'Leveling only L80 A6 -> L90 A6', expectEmpty: false, hasExp: true, zeroBoss: true },
+    { fromLv: 90, toLv: 95, fromAsc: 6, toAsc: 6, desc: 'Constellation milestone L90 -> L95 awards 1 stella fortuna', expectEmpty: false, stella: 1 },
+    { fromLv: 90, toLv: 100, fromAsc: 6, toAsc: 6, desc: 'Constellation milestone L90 -> L100 awards 3 stella fortuna', expectEmpty: false, stella: 3 },
+  ])('Character progression: $desc', ({ fromLv, toLv, fromAsc, toAsc, expectEmpty, zeroExp, hasExp, zeroBoss, stella }) => {
+    it(`calculates expected cost structure`, () => {
+      const cost = calculateProgressionCost(dummy5Star, fromLv, toLv, fromAsc, toAsc);
+      if (expectEmpty) {
+        expect(cost).toEqual({});
+      } else {
+        expect(Object.keys(cost).length).toBeGreaterThan(0);
+        if (zeroExp) {
+          expect(cost.heros_wit).toBeUndefined();
+        }
+        if (hasExp) {
+          expect(cost.heros_wit).toBeGreaterThan(0);
+        }
+        if (zeroBoss) {
+          expect(cost.boss_material).toBeUndefined();
+        }
+        if (stella) {
+          expect(cost.masterless_stella_fortuna).toBe(stella);
+        }
+        assertValidQuantities(cost);
+      }
+    });
   });
 });

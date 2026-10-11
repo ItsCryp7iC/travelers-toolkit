@@ -23,6 +23,14 @@ export const createWeaponsSlice = (set, get) => ({
     set((state) => {
       let updatedRoster = state.roster
       if (assignedTo && state.roster[assignedTo]) {
+        const isTraveler = assignedTo.startsWith('Traveler ')
+        if (isTraveler) {
+          // Unassign any weapon assigned to ANY Traveler variant
+          const updatedWeapons = state.trackedWeapons.map((w) =>
+            w.assignedTo?.startsWith('Traveler ') ? { ...w, assignedTo: null } : w
+          )
+          return { trackedWeapons: [...updatedWeapons, newWeapon], roster: state.roster }
+        }
         // Unassign the old weapon first
         const oldId = state.roster[assignedTo].equippedWeaponId
         const updatedWeapons = state.trackedWeapons.map((w) =>
@@ -43,7 +51,7 @@ export const createWeaponsSlice = (set, get) => ({
     set((state) => {
       const weapon = state.trackedWeapons.find((w) => w.id === id)
       let updatedRoster = state.roster
-      if (weapon?.assignedTo && state.roster[weapon.assignedTo]) {
+      if (weapon?.assignedTo && !weapon.assignedTo.startsWith('Traveler ') && state.roster[weapon.assignedTo]) {
         updatedRoster = {
           ...state.roster,
           [weapon.assignedTo]: {
@@ -64,7 +72,7 @@ export const createWeaponsSlice = (set, get) => ({
 
       ids.forEach(id => {
         const weapon = state.trackedWeapons.find(w => w.id === id)
-        if (weapon?.assignedTo && updatedRoster[weapon.assignedTo]) {
+        if (weapon?.assignedTo && !weapon.assignedTo.startsWith('Traveler ') && updatedRoster[weapon.assignedTo]) {
           updatedRoster[weapon.assignedTo] = {
             ...updatedRoster[weapon.assignedTo],
             equippedWeaponId: null,
@@ -90,7 +98,7 @@ export const createWeaponsSlice = (set, get) => ({
       if ('assignedTo' in patch && patch.assignedTo !== weapon.assignedTo) {
 
         // A. Unassign this weapon from its previous owner
-        if (weapon.assignedTo && updatedRoster[weapon.assignedTo]) {
+        if (weapon.assignedTo && !weapon.assignedTo.startsWith('Traveler ') && updatedRoster[weapon.assignedTo]) {
           updatedRoster[weapon.assignedTo] = {
             ...updatedRoster[weapon.assignedTo],
             equippedWeaponId: null,
@@ -99,19 +107,28 @@ export const createWeaponsSlice = (set, get) => ({
 
         // B. If the new owner already has a different weapon, rip it out of their hands
         const newCharName = patch.assignedTo;
-        if (newCharName && updatedRoster[newCharName]) {
-          const charPreviousWeaponId = updatedRoster[newCharName].equippedWeaponId;
-          if (charPreviousWeaponId && charPreviousWeaponId !== id) {
+        if (newCharName) {
+          const isNewTraveler = newCharName.startsWith('Traveler ');
+          if (isNewTraveler) {
+            // Rip weapon out of hands of ANY Traveler variant
             updatedWeapons = updatedWeapons.map((w) =>
-              w.id === charPreviousWeaponId ? { ...w, assignedTo: null } : w
+              w.id !== id && w.assignedTo?.startsWith('Traveler ') ? { ...w, assignedTo: null } : w
             );
-          }
+            // Traveler roster entries must keep equippedWeaponId: null
+          } else if (updatedRoster[newCharName]) {
+            const charPreviousWeaponId = updatedRoster[newCharName].equippedWeaponId;
+            if (charPreviousWeaponId && charPreviousWeaponId !== id) {
+              updatedWeapons = updatedWeapons.map((w) =>
+                w.id === charPreviousWeaponId ? { ...w, assignedTo: null } : w
+              );
+            }
 
-          // C. Hand the new owner this weapon
-          updatedRoster[newCharName] = {
-            ...updatedRoster[newCharName],
-            equippedWeaponId: id,
-          };
+            // C. Hand the new owner this weapon
+            updatedRoster[newCharName] = {
+              ...updatedRoster[newCharName],
+              equippedWeaponId: id,
+            };
+          }
         }
       }
 
@@ -140,13 +157,13 @@ export const createWeaponsSlice = (set, get) => ({
       let updatedRoster = { ...state.roster };
 
       const unassignFromChar = (charName) => {
-         if (charName && updatedRoster[charName]) {
+         if (charName && !charName.startsWith('Traveler ') && updatedRoster[charName]) {
              updatedRoster[charName] = { ...updatedRoster[charName], equippedWeaponId: null };
          }
       }
 
       const assignToChar = (charName, weaponId) => {
-         if (charName && updatedRoster[charName]) {
+         if (charName && !charName.startsWith('Traveler ') && updatedRoster[charName]) {
              updatedRoster[charName] = { ...updatedRoster[charName], equippedWeaponId: weaponId };
          }
       }
@@ -164,9 +181,6 @@ export const createWeaponsSlice = (set, get) => ({
 
           if ('assignedTo' in currentPatch && currentPatch.assignedTo !== weapon.assignedTo) {
              unassignFromChar(weapon.assignedTo);
-             if (currentPatch.assignedTo && updatedRoster[currentPatch.assignedTo]?.equippedWeaponId) {
-                 // The character already has a weapon; we will unassign it in the second pass
-             }
              assignToChar(currentPatch.assignedTo, weapon.id);
           }
 
@@ -188,10 +202,10 @@ export const createWeaponsSlice = (set, get) => ({
         return weapon;
       });
 
-      // Second pass: unassign weapons that were replaced
+      // Second pass: unassign weapons that were replaced (exempting shared Traveler weapons)
       const currentlyEquippedWeaponIds = Object.values(updatedRoster).map(c => c.equippedWeaponId).filter(Boolean);
       const finalArmory = updatedArmory.map(w => {
-         if (w.assignedTo && !currentlyEquippedWeaponIds.includes(w.id)) {
+         if (w.assignedTo && !w.assignedTo.startsWith('Traveler ') && !currentlyEquippedWeaponIds.includes(w.id)) {
              return { ...w, assignedTo: null };
          }
          return w;
@@ -204,31 +218,34 @@ export const createWeaponsSlice = (set, get) => ({
     set((state) => {
       let updatedWeapons = state.trackedWeapons
       let updatedRoster = { ...state.roster }
+      const isTraveler = charName.startsWith('Traveler ')
 
-      // Unassign old weapon currently on this character
-      const charEntry = updatedRoster[charName]
-      if (charEntry?.equippedWeaponId && charEntry.equippedWeaponId !== weaponId) {
+      // Unassign old weapon currently on this character (or on ANY Traveler variant if assigning to Traveler)
+      if (isTraveler) {
         updatedWeapons = updatedWeapons.map((w) =>
-          w.id === charEntry.equippedWeaponId ? { ...w, assignedTo: null } : w
+          w.id !== weaponId && w.assignedTo?.startsWith('Traveler ') ? { ...w, assignedTo: null } : w
         )
+      } else {
+        const charEntry = updatedRoster[charName]
+        if (charEntry?.equippedWeaponId && charEntry.equippedWeaponId !== weaponId) {
+          updatedWeapons = updatedWeapons.map((w) =>
+            w.id === charEntry.equippedWeaponId ? { ...w, assignedTo: null } : w
+          )
+        }
       }
 
       // Unassign this weapon from any previous character
       const weapon = updatedWeapons.find((w) => w.id === weaponId)
-      if (weapon?.assignedTo && weapon.assignedTo !== charName) {
-        updatedRoster = {
-          ...updatedRoster,
-          [weapon.assignedTo]: { ...updatedRoster[weapon.assignedTo], equippedWeaponId: null },
-        }
+      if (weapon?.assignedTo && weapon.assignedTo !== charName && !weapon.assignedTo.startsWith('Traveler ') && updatedRoster[weapon.assignedTo]) {
+        updatedRoster[weapon.assignedTo] = { ...updatedRoster[weapon.assignedTo], equippedWeaponId: null }
       }
 
       // Assign the weapon to the character
       updatedWeapons = updatedWeapons.map((w) =>
         w.id === weaponId ? { ...w, assignedTo: charName } : w
       )
-      updatedRoster = {
-        ...updatedRoster,
-        [charName]: { ...updatedRoster[charName], equippedWeaponId: weaponId },
+      if (!isTraveler && updatedRoster[charName]) {
+        updatedRoster[charName] = { ...updatedRoster[charName], equippedWeaponId: weaponId }
       }
 
       return { trackedWeapons: updatedWeapons, roster: updatedRoster }
@@ -238,7 +255,7 @@ export const createWeaponsSlice = (set, get) => ({
     set((state) => {
       const weapon = state.trackedWeapons.find((w) => w.id === weaponId)
       let updatedRoster = state.roster
-      if (weapon?.assignedTo && state.roster[weapon.assignedTo]) {
+      if (weapon?.assignedTo && !weapon.assignedTo.startsWith('Traveler ') && state.roster[weapon.assignedTo]) {
         updatedRoster = {
           ...state.roster,
           [weapon.assignedTo]: { ...state.roster[weapon.assignedTo], equippedWeaponId: null },

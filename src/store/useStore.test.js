@@ -330,6 +330,120 @@ describe('Zustand Store Integrity', () => {
       expect(weapon).toBeDefined();
       expect(weapon.costs).toBeUndefined(); // Should not have calculated costs since it doesn't exist in data
     });
+
+    it('importGoodData preserves weapon refinement and existing targetRefinement', () => {
+      useStore.getState().addTrackedWeapon('Favonius Warbow', null, {
+        currentRefinement: 1,
+        targetRefinement: 5,
+      });
+
+      const goodPayload = {
+        format: 'GOOD',
+        characters: [],
+        weapons: [
+          { weaponName: 'Favonius Warbow', level: 90, ascension: 6, refinement: 3, location: null },
+        ]
+      };
+
+      useStore.getState().importGoodData(goodPayload);
+      const state = useStore.getState();
+      const weapon = state.trackedWeapons.find(w => w.weaponName === 'Favonius Warbow');
+
+      expect(weapon).toBeDefined();
+      expect(weapon.currentRefinement).toBe(3);
+      expect(weapon.targetRefinement).toBe(5);
+    });
+
+    it('importGoodData creates distinct UUIDs for duplicate unassigned weapons of the same name', () => {
+      const goodPayload = {
+        format: 'GOOD',
+        characters: [],
+        weapons: [
+          { weaponName: 'The Catch', level: 90, ascension: 6, refinement: 5, location: null },
+          { weaponName: 'The Catch', level: 1, ascension: 0, refinement: 1, location: null },
+        ]
+      };
+
+      useStore.getState().importGoodData(goodPayload);
+      const state = useStore.getState();
+      const catchWeapons = state.trackedWeapons.filter(w => w.weaponName === 'The Catch');
+
+      expect(catchWeapons).toHaveLength(2);
+      expect(catchWeapons[0].id).not.toBe(catchWeapons[1].id);
+      expect(new Set(state.trackedWeapons.map(w => w.id)).size).toBe(state.trackedWeapons.length);
+    });
+
+    it('importGoodData resolves assignment conflicts when two weapons claim the same character', () => {
+      useStore.getState().addCharacter('Bennett');
+
+      const goodPayload = {
+        format: 'GOOD',
+        characters: [],
+        weapons: [
+          { weaponName: 'Sapwood Blade', level: 80, ascension: 5, refinement: 1, location: 'Bennett' },
+          { weaponName: 'Aquila Favonia', level: 90, ascension: 6, refinement: 1, location: 'Bennett' },
+        ]
+      };
+
+      useStore.getState().importGoodData(goodPayload);
+      const state = useStore.getState();
+
+      const sapwood = state.trackedWeapons.find(w => w.weaponName === 'Sapwood Blade');
+      const aquila = state.trackedWeapons.find(w => w.weaponName === 'Aquila Favonia');
+
+      expect(sapwood.assignedTo).toBeNull();
+      expect(aquila.assignedTo).toBe('Bennett');
+      expect(state.roster.Bennett.equippedWeaponId).toBe(aquila.id);
+    });
+
+    it('importGoodData protects Traveler weapon invariant from equippedWeaponId pollution', () => {
+      useStore.getState().addCharacter('Traveler Geo');
+
+      const goodPayload = {
+        format: 'GOOD',
+        characters: [{ name: 'Traveler Geo', level: 80, ascension: 5, talents: { normal: 6, skill: 6, burst: 6 } }],
+        weapons: [
+          { weaponName: 'Favonius Sword', level: 90, ascension: 6, refinement: 5, location: 'Traveler Geo' },
+        ]
+      };
+
+      useStore.getState().importGoodData(goodPayload);
+      const state = useStore.getState();
+
+      const favSword = state.trackedWeapons.find(w => w.weaponName === 'Favonius Sword');
+      expect(favSword.assignedTo).toBe('Traveler Geo');
+      // Traveler roster entry must NOT have equippedWeaponId directly
+      expect(state.roster['Traveler Geo'].equippedWeaponId).toBeNull();
+    });
+
+    it('importGoodData repeated import is idempotent and preserves user targets', () => {
+      useStore.getState().addCharacter('Xiangling');
+      useStore.getState().updateCharacter('Xiangling', { targetLevel: 80, targetAscension: 5 });
+
+      const payload = {
+        format: 'GOOD',
+        characters: [{ name: 'Xiangling', level: 70, ascension: 4, talents: { normal: 1, skill: 6, burst: 8 } }],
+        weapons: [{ weaponName: 'Dragon\'s Bane', level: 80, ascension: 5, refinement: 3, location: 'Xiangling' }],
+        materials: { 'Mora': 500000 }
+      };
+
+      // First import
+      useStore.getState().importGoodData(payload);
+      const firstState = useStore.getState();
+      const firstWeaponId = firstState.roster.Xiangling.equippedWeaponId;
+
+      expect(firstState.roster.Xiangling.targetLevel).toBe(80);
+      expect(firstState.roster.Xiangling.level).toBe(70);
+
+      // Second import with same payload
+      useStore.getState().importGoodData(payload);
+      const secondState = useStore.getState();
+
+      expect(secondState.roster.Xiangling.targetLevel).toBe(80);
+      expect(secondState.roster.Xiangling.level).toBe(70);
+      expect(secondState.roster.Xiangling.equippedWeaponId).toBe(firstWeaponId);
+      expect(secondState.trackedWeapons).toHaveLength(1);
+    });
   });
 
   describe('Reset Behavior', () => {

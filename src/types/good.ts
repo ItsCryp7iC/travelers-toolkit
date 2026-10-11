@@ -1,4 +1,4 @@
-import type { CharacterLevel, AscensionLevel, TalentLevels, CharacterName, WeaponName } from './domain';
+import type { CharacterLevel, AscensionLevel, TalentLevels, CharacterName, WeaponName, RefinementLevel } from './domain';
 
 /**
  * GoodCharacterEntry represents a single character record imported via the GOOD format.
@@ -17,6 +17,7 @@ export interface GoodWeaponEntry {
   weaponName: WeaponName;
   level: CharacterLevel;
   ascension: AscensionLevel;
+  refinement: RefinementLevel;
   location: CharacterName | null;
 }
 

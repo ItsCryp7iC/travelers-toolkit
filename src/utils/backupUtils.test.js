@@ -297,4 +297,24 @@ describe('Backup Normalization', () => {
     const result = normalizeBackupForImport(raw);
     expect(result.achievementProgress).toEqual({});
   });
+
+  it('preserves legacy inventory containing negative quantities for backward compatibility', () => {
+    const raw = {
+      app: 'travelers-toolkit',
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      createdAt: new Date().toISOString(),
+      data: {
+        roster: {},
+        trackedWeapons: [],
+        inventory: {
+          'Mora': -500,
+          'HerosWit': 10
+        },
+        achievementProgress: {}
+      }
+    };
+    const result = normalizeBackupForImport(raw);
+    expect(result.inventory['Mora']).toBe(-500);
+    expect(result.inventory['HerosWit']).toBe(10);
+  });
 });

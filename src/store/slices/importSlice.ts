@@ -88,10 +88,30 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
 
     // 3. Weapons
     const newWeapons: TrackedWeapon[] = [];
+    const matchedExistingIds = new Set<string>();
+
     (goodPayload.weapons || []).forEach(w => {
-       // Attempt to preserve target levels for weapons by matching name and assignment
-       const existing = state.trackedWeapons.find(ew => ew.weaponName === w.weaponName && ew.assignedTo === w.location);
+       const targetLocation = w.location || null;
+       // Attempt to preserve target levels and ID for weapons by matching name and assignment, tracking claimed IDs
+       const existing = state.trackedWeapons.find(
+         ew => !matchedExistingIds.has(ew.id) && ew.weaponName === w.weaponName && ew.assignedTo === targetLocation
+       );
+       if (existing) {
+         matchedExistingIds.add(existing.id);
+       }
        const id = existing ? existing.id : crypto.randomUUID();
+
+       // If target location was already claimed by an earlier imported weapon, unassign the earlier weapon
+       if (targetLocation) {
+         const isTraveler = targetLocation.startsWith('Traveler ');
+         const priorClaim = newWeapons.find(pw =>
+           isTraveler ? pw.assignedTo?.startsWith('Traveler ') : pw.assignedTo === targetLocation
+         );
+         if (priorClaim) {
+           priorClaim.assignedTo = null;
+         }
+       }
+
        const newWeapon: TrackedWeapon = {
          id,
          weapon_id: w.weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
@@ -100,7 +120,9 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
          ascension: w.ascension,
          targetLevel: existing?.targetLevel ?? 90,
          targetAscension: existing?.targetAscension ?? 6,
-         assignedTo: w.location || null,
+         currentRefinement: w.refinement ?? 1,
+         targetRefinement: existing?.targetRefinement ?? (w.refinement ?? 1),
+         assignedTo: targetLocation,
          createdAt: existing?.createdAt ?? Date.now()
        };
 
@@ -120,8 +142,9 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
 
        newWeapons.push(newWeapon);
 
-       if (w.location && newRoster[w.location]) {
-         newRoster[w.location].equippedWeaponId = id;
+       // For Traveler, we don't store equippedWeaponId directly on the variant to avoid desync
+       if (targetLocation && newRoster[targetLocation] && !targetLocation.startsWith('Traveler ')) {
+         newRoster[targetLocation].equippedWeaponId = id;
        }
     });
 

@@ -73,8 +73,6 @@ export const resolveCharacterMaterials = (char) => {
 }
 
 export function resolveWeaponMaterials(weaponState) {
-  const SAFE_FALLBACK = { name: 'Unknown', id: 'unknown', tiers: {} };
-
   // Extract identifier
   const identifier = typeof weaponState === 'string'
     ? weaponState
