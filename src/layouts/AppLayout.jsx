@@ -6,6 +6,8 @@ import { triggerGoogleAuth } from '../utils/googleAuthHelper'
 import { getBackupPayload, isLocalUserDataEmpty } from '../utils/backupPayload'
 import ResinTracker from '../components/ResinTracker'
 import RealmCurrencyTracker from '../components/RealmCurrencyTracker'
+import NotificationContainer from '../components/NotificationContainer'
+import { notify } from '../utils/notify'
 
 const navItems = [
  { to: '/', label: 'Dashboard', icon: '/Dashboard.png', id: 'nav-dashboard' },
@@ -101,6 +103,27 @@ export default function AppLayout() {
  const disconnectGoogleSession = useStore((s) => s.disconnectGoogleSession)
 
  const [dropdownOpen, setDropdownOpen] = useState(false)
+ const dropdownRef = useRef(null)
+
+ useEffect(() => {
+   const handleKeyDown = (e) => {
+     if (e.key === 'Escape') {
+       if (dropdownOpen) setDropdownOpen(false);
+       if (sidebarOpen) setSidebarOpen(false);
+     }
+   };
+   const handleClickOutside = (e) => {
+     if (dropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+       setDropdownOpen(false);
+     }
+   };
+   document.addEventListener('keydown', handleKeyDown);
+   document.addEventListener('mousedown', handleClickOutside);
+   return () => {
+     document.removeEventListener('keydown', handleKeyDown);
+     document.removeEventListener('mousedown', handleClickOutside);
+   };
+ }, [dropdownOpen, sidebarOpen]);
 
  const login = () => {
    triggerGoogleAuth();
@@ -143,11 +166,11 @@ export default function AppLayout() {
           const { restoreLatestRecoveryBackup } = await import('../utils/backupUtils');
           const success = await restoreLatestRecoveryBackup(currentState.importData);
           if (success) {
-            alert('Latest cloud state restored successfully.');
+            notify.success('Latest cloud state restored successfully.');
             return;
           }
         } catch (e) {
-          alert('Restore failed: ' + e.message);
+          notify.error('Restore failed: ' + e.message);
           return;
         }
      }
@@ -204,6 +227,14 @@ export default function AppLayout() {
  return (
  <div className={`bg-[url('/bg.png')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full ${isDesktopCollapsed ? 'desktop-collapsed' : ''}`}>
 
+  {/* Skip to Main Content Link */}
+  <a
+    href="#page-content"
+    className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[99999] focus:px-4 focus:py-2 focus:bg-[var(--primary,#FAB632)] focus:text-black focus:font-bold focus:rounded-lg focus:shadow-xl focus:outline-none"
+  >
+    Skip to main content
+  </a>
+
   {/* ── Top Bar (Full Width) ────────────────────────────────── */}
   <header className="topbar" id="app-topbar">
     {/* Brand */}
@@ -222,9 +253,12 @@ export default function AppLayout() {
     {/* Mobile burger */}
     <button
       id="sidebar-toggle"
-      className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border-light)] transition-all flex-shrink-0"
+      type="button"
+      className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border-light)] transition-all flex-shrink-0 cursor-pointer"
       onClick={() => setSidebarOpen(!sidebarOpen)}
       aria-label="Toggle sidebar"
+      aria-expanded={sidebarOpen}
+      aria-controls="app-sidebar"
     >
       ☰
     </button>
@@ -254,24 +288,34 @@ export default function AppLayout() {
     </div>
 
     {/* Avatar & Dropdown */}
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       {!googleUser ? (
-        <div
+        <button
+          type="button"
           id="user-avatar-logged-out"
-          className="w-9 h-9 rounded-full flex items-center justify-center text-sm cursor-pointer transition-all hover:scale-105 flex-shrink-0 bg-gray-600 text-white"
+          className="w-9 h-9 rounded-full flex items-center justify-center text-sm cursor-pointer transition-all hover:scale-105 flex-shrink-0 bg-gray-600 text-white border-0"
           title="Sign In with Google"
+          aria-label="Sign in with Google"
           onClick={() => login()}
         >
           ?
-        </div>
+        </button>
       ) : (
-        <div
+        <button
+          type="button"
           id="user-avatar-logged-in"
-          className="w-9 h-9 rounded-full cursor-pointer transition-all hover:scale-105 flex-shrink-0 border-2 border-[var(--border)] overflow-hidden"
+          className="w-9 h-9 rounded-full cursor-pointer transition-all hover:scale-105 flex-shrink-0 border-2 border-[var(--border)] overflow-hidden p-0 bg-transparent"
+          aria-label={`Google account menu for ${googleUser.name}`}
+          aria-expanded={dropdownOpen}
+          aria-haspopup="true"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          <img src={googleUser.picture} alt="Profile" className="w-full h-full object-cover" />
-        </div>
+          {googleUser.picture ? (
+            <img src={googleUser.picture} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <span className="font-semibold text-xs">{googleUser.name?.charAt(0) || 'U'}</span>
+          )}
+        </button>
       )}
 
       {dropdownOpen && googleUser && (
@@ -281,7 +325,8 @@ export default function AppLayout() {
             <p className="text-xs text-[var(--muted)] truncate">{googleUser.email}</p>
           </div>
           <button
-            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors"
+            type="button"
+            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
             onClick={() => {
               disconnectGoogleSession();
               setDropdownOpen(false);
@@ -478,6 +523,45 @@ export default function AppLayout() {
  })}
  </nav>
 
+  {/* Sidebar Legal Links */}
+  <nav
+    className="sidebar-legal-nav shrink-0 px-3 py-2 border-t border-[var(--border)] bg-[#00041e]/60 text-xs"
+    aria-label="Legal navigation"
+  >
+    <div className="flex flex-col gap-1">
+      <NavLink
+        to="/privacy"
+        id="sidebar-privacy-link"
+        title="Privacy Policy"
+        aria-label="Privacy Policy"
+        className={({ isActive }) =>
+          `sidebar-legal-link flex items-center gap-2 px-3 py-1.5 rounded text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-1 focus-visible:ring-primary ${
+            isActive ? 'text-primary font-semibold' : ''
+          }`
+        }
+        onClick={() => setSidebarOpen(false)}
+      >
+        <span className="legal-link-icon text-sm shrink-0" aria-hidden="true">📜</span>
+        <span className="legal-link-label">Privacy Policy</span>
+      </NavLink>
+      <NavLink
+        to="/terms"
+        id="sidebar-terms-link"
+        title="Terms of Service"
+        aria-label="Terms of Service"
+        className={({ isActive }) =>
+          `sidebar-legal-link flex items-center gap-2 px-3 py-1.5 rounded text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-1 focus-visible:ring-primary ${
+            isActive ? 'text-primary font-semibold' : ''
+          }`
+        }
+        onClick={() => setSidebarOpen(false)}
+      >
+        <span className="legal-link-icon text-sm shrink-0" aria-hidden="true">⚖️</span>
+        <span className="legal-link-label">Terms of Service</span>
+      </NavLink>
+    </div>
+  </nav>
+
  {/* Dev Tools */}
  {showDbBuilder && (
  <nav className="sidebar-dev-nav shrink-0 pt-2 pb-2 border-t border-b border-[var(--border)] bg-[#00041e]/90 relative z-10" aria-label="Dev navigation">
@@ -514,13 +598,27 @@ export default function AppLayout() {
  )}
 
  {/* ── Main Content ───────────────────────────── */}
- <div className="main-content">
+  <div className="main-content flex flex-col min-h-screen">
 
- {/* Page Content */}
- <main className="flex-1 p-6 md:p-8" id="page-content">
- <Outlet />
- </main>
- </div>
+  {/* Page Content */}
+  <main className="flex-1 p-6 md:p-8" id="page-content" tabIndex={-1}>
+  <Outlet />
+  </main>
+
+  {/* Footer */}
+  <footer className="mt-auto px-6 md:px-8 py-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)] bg-[#030712]/40">
+    <div className="flex items-center gap-4">
+      <Link to="/privacy" className="hover:text-[var(--text)] transition-colors">Privacy Policy</Link>
+      <span>•</span>
+      <Link to="/terms" className="hover:text-[var(--text)] transition-colors">Terms of Service</Link>
+    </div>
+    <p className="text-center sm:text-right">
+      Traveler&apos;s Toolkit is an independent fan-made tool and is not affiliated with HoYoverse.
+    </p>
+  </footer>
+  </div>
+
+  <NotificationContainer />
  </div>
  )
 }

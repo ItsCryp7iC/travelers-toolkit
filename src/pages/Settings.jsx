@@ -7,6 +7,7 @@ import { triggerGoogleAuth } from '../utils/googleAuthHelper';
 import GoodImportModal from '../components/GoodImportModal';
 import AchievementData from '../components/Settings/AchievementData';
 import { buildTimeZoneOptions, getTimeZoneDisplayLabel } from '../utils/timeZoneUtils';
+import notify from '../utils/notify';
 
 const timeZoneOptions = buildTimeZoneOptions();
 
@@ -64,7 +65,7 @@ export default function Settings() {
 
   const handleConnectHoyolab = async () => {
     if (!hoyolabLtuid || !hoyolabLtoken) {
-      alert('Please enter both ltuid and ltoken.');
+      notify.warning('Please enter both ltuid and ltoken.');
       return;
     }
     setIsConnecting(true);
@@ -73,15 +74,15 @@ export default function Settings() {
     if (res.success) {
       setHoyolabLtuid('');
       setHoyolabLtoken('');
-      alert('HoYoLAB connected successfully!');
+      notify.success('HoYoLAB connected successfully!');
     } else {
-      alert(`Connection failed: ${res.message || res.error}`);
+      notify.error(`Connection failed: ${res.message || res.error}`);
     }
   };
 
   const handleDisconnectHoyolab = async () => {
     await disconnectHoyolabSession();
-    alert('HoYoLAB disconnected.');
+    notify.info('HoYoLAB disconnected.');
   };
 
 
@@ -98,7 +99,7 @@ export default function Settings() {
       if (error.status === 401) {
         disconnectGoogleSession();
       }
-      alert('Failed to fetch backups from Google Drive.');
+      notify.error('Failed to fetch backups from Google Drive.');
     }
   };
 
@@ -108,13 +109,13 @@ export default function Settings() {
       const dataToExport = getBackupPayload(useStore.getState());
       await uploadBackupToDrive(dataToExport);
       setLastSyncedTime(new Date().toLocaleString());
-      alert('Cloud sync successful!');
+      notify.success('Cloud sync successful!');
     } catch (error) {
       console.error(error);
       if (error.status === 401) {
         disconnectGoogleSession();
       }
-      alert('Failed to sync to Google Drive.');
+      notify.error('Failed to sync to Google Drive.');
     } finally {
       setIsSyncing(false);
     }
@@ -122,7 +123,7 @@ export default function Settings() {
 
   const handleCloudRestore = async (fileId) => {
     if (!useStore.getState().googleConnected) {
-      alert('Please connect to Google Drive first.');
+      notify.warning('Please connect to Google Drive first.');
       return;
     }
 
@@ -132,16 +133,16 @@ export default function Settings() {
       if (data) {
         const normalized = normalizeBackupForImport(data);
         importData(normalized);
-        alert('Cloud restore successful!');
+        notify.success('Cloud restore successful!');
       } else {
-        alert('No backup found in Google Drive.');
+        notify.warning('No backup found in Google Drive.');
       }
     } catch (error) {
       console.error(error);
       if (error.status === 401) {
         disconnectGoogleSession();
       }
-      alert('Failed to restore from Google Drive.');
+      notify.error('Failed to restore from Google Drive.');
     } finally {
       setIsRestoring(false);
     }
@@ -175,10 +176,10 @@ export default function Settings() {
         if (parsedData) {
           const normalized = normalizeBackupForImport(parsedData);
           importData(normalized);
-          alert('Data imported successfully!');
+          notify.success('Data imported successfully!');
         }
       } catch (error) {
-        alert(error.message || 'Failed to import data. Invalid JSON file.');
+        notify.error(error.message || 'Failed to import data. Invalid JSON file.');
       }
     };
     reader.readAsText(file);
@@ -203,13 +204,13 @@ export default function Settings() {
 
         const hasKnown = goodData.characters.length > 0 || goodData.weapons.length > 0 || Object.keys(goodData.materials).length > 0;
         if (!hasKnown) {
-          alert("No recognized Traveler's Toolkit data was found in this GOOD file.");
+          notify.warning("No recognized Traveler's Toolkit data was found in this GOOD file.");
           return;
         }
 
         setPendingImportData(goodData);
       } catch (error) {
-        alert('Failed to parse GOOD data. Please ensure it is a valid format.');
+        notify.error('Failed to parse GOOD data. Please ensure it is a valid format.');
         console.error(error);
       }
     };
@@ -237,7 +238,7 @@ export default function Settings() {
       }
     }
 
-    alert(msg);
+    notify.success(msg);
     setPendingImportData(null);
   };
 
@@ -249,7 +250,7 @@ export default function Settings() {
         console.error("Failed to disconnect from HoYoLAB during reset", error);
       } finally {
         resetStore();
-        alert('Data reset successfully.');
+        notify.success('Data reset successfully.');
       }
     }
   };
@@ -563,9 +564,11 @@ export default function Settings() {
             </p>
             <div className="flex flex-col gap-3 mt-2">
               <div>
-                <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltuid_v2 (or ltuid)</label>
+                <label htmlFor="hoyolab-ltuid" className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltuid_v2 (or ltuid)</label>
                 <input
+                  id="hoyolab-ltuid"
                   type="password"
+                  autoComplete="off"
                   className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
                   value={hoyolabLtuid}
                   onChange={(e) => setHoyolabLtuid(e.target.value)}
@@ -574,9 +577,11 @@ export default function Settings() {
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltoken_v2 (or ltoken)</label>
+                <label htmlFor="hoyolab-ltoken" className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltoken_v2 (or ltoken)</label>
                 <input
+                  id="hoyolab-ltoken"
                   type="password"
+                  autoComplete="off"
                   className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
                   value={hoyolabLtoken}
                   onChange={(e) => setHoyolabLtoken(e.target.value)}
@@ -585,6 +590,7 @@ export default function Settings() {
                 />
               </div>
               <button
+                type="button"
                 className="genshin-btn w-full mt-2"
                 onClick={handleConnectHoyolab}
                 disabled={isConnecting}

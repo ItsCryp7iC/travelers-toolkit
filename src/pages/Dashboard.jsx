@@ -15,6 +15,7 @@ import GenshinImage from '../components/GenshinImage'
 import { getElementIcon, getWeaponTypeIcon, getCharacterAvatar } from '../utils/assetHelper'
 import SortDirectionButton from '../components/SortDirectionButton'
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
+import notify from '../utils/notify'
 
 const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
 const ALL_WEAPONS = ['All', ...Object.keys(WEAPON_TYPES)]
@@ -77,11 +78,11 @@ export default function Dashboard() {
          setIsCookieModalOpen(true);
        }
        if (res.error === 'auth_failed' && !isCookieModalOpen && !isAuto) {
-         alert(res.message || "Authentication failed. Please check your cookies.");
+         notify.error(res.message || "Authentication failed. Please check your cookies.");
        }
      } else {
        if (!isCookieModalOpen && !isAuto) {
-         alert("Failed to sync Real-Time Notes: " + res.error);
+         notify.error("Failed to sync Real-Time Notes: " + res.error);
        }
      }
    } else {
@@ -97,14 +98,14 @@ export default function Dashboard() {
  const currentRoster = useStore.getState().roster;
  const missing = charactersData.filter((c) => !currentRoster[c.name])
  if (missing.length === 0) {
- alert("All available characters are already in your roster!")
+ notify.info("All available characters are already in your roster!")
  return
  }
 
  if (!window.confirm(`Are you sure you want to add all ${missing.length} missing characters to your roster?`)) return
 
  batchAddCharacters(missing.map((c) => c.name))
- alert(`Successfully added ${missing.length} missing characters!`)
+ notify.success(`Successfully added ${missing.length} missing characters!`)
  }
 
  const [search, setSearch] = useState('')

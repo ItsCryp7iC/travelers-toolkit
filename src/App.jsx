@@ -12,10 +12,16 @@ const Achievements = lazy(() => import('./pages/Achievements'))
 const Settings = lazy(() => import('./pages/Settings'))
 const DevBuilder = lazy(() => import('./pages/DevBuilder'))
 const Changelog = lazy(() => import('./pages/Changelog'))
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
+const TermsOfService = lazy(() => import('./pages/TermsOfService'))
 
 function LoadingFallback() {
   return (
-    <div className="flex items-center justify-center w-full h-full min-h-[50vh]">
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex items-center justify-center w-full h-full min-h-[50vh]"
+    >
       <span className="text-[var(--color-text-muted)] text-sm animate-pulse">Loading...</span>
     </div>
   )
@@ -64,6 +70,8 @@ export default function App() {
           <Route path="achievements" element={withSuspense(Achievements)} />
           <Route path="changelog" element={withSuspense(Changelog)} />
           <Route path="settings" element={withSuspense(Settings)} />
+          <Route path="privacy" element={withSuspense(PrivacyPolicy)} />
+          <Route path="terms" element={withSuspense(TermsOfService)} />
           <Route path="builder" element={showDbBuilder ? withSuspense(DevBuilder) : <Navigate to="/" replace />} />
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />

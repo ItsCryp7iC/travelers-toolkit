@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import notify from '../../utils/notify';
 
 export function StagingModal({ isOpen, onClose, stagedUpdates, setStagedUpdates }) {
   const [editingItemInfo, setEditingItemInfo] = useState(null); // { filename, index }
   const [editingJson, setEditingJson] = useState("");
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -32,7 +44,7 @@ export function StagingModal({ isOpen, onClose, stagedUpdates, setStagedUpdates 
       setEditingItemInfo(null);
       setEditingJson("");
     } catch (err) {
-      alert("Invalid JSON format!");
+      notify.error("Invalid JSON format!");
     }
   };
 
@@ -51,13 +63,18 @@ export function StagingModal({ isOpen, onClose, stagedUpdates, setStagedUpdates 
   const hasItems = Object.values(stagedUpdates).some(arr => arr.length > 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in" role="presentation">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="staging-modal-title"
+        className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col"
+      >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-[var(--text)] flex items-center gap-2">
+          <h2 id="staging-modal-title" className="text-xl font-bold text-[var(--text)] flex items-center gap-2">
             <span>📦</span> Staging Manager
           </h2>
-          <button onClick={onClose} className="text-[var(--muted)] hover:text-red-400 transition-colors">
+          <button type="button" onClick={onClose} aria-label="Close modal" className="text-[var(--muted)] hover:text-red-400 transition-colors">
             ✕ Close
           </button>
         </div>

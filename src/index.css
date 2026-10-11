@@ -64,16 +64,30 @@ textarea {
 /* ──────────────────────────────────────────────
    Base Resets & Body
 ─────────────────────────────────────────────── */
-* {
-  font-weight: normal !important;
-}
-
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary, #FAB632);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 html {
@@ -155,6 +169,20 @@ body {
   
   .desktop-collapsed .nav-section-title {
     display: none;
+  }
+
+  .desktop-collapsed .sidebar-legal-nav {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .desktop-collapsed .sidebar-legal-nav .legal-link-label {
+    display: none;
+  }
+
+  .desktop-collapsed .sidebar-legal-link {
+    justify-content: center;
+    padding: 8px 0;
   }
 }
 

@@ -9,6 +9,8 @@ import GenshinImage from './GenshinImage'
 import CustomSelect from './CustomSelect'
 import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
+import notify from '../utils/notify'
+
 export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSave }) {
   // Store
   const trackedWeapons = useStore((s) => s.trackedWeapons)
@@ -17,6 +19,17 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
   const globallyAssignedCharacterIds = useMemo(() => {
     return new Set(trackedWeapons.map(w => w.assignedTo).filter(Boolean));
   }, [trackedWeapons]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   // Toggles
   const [overrideCurrentLevel, setOverrideCurrentLevel] = useState(false)
@@ -124,7 +137,7 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
       }
     } catch (error) {
       console.error("Bulk Edit Apply Failed:", error);
-      alert("An error occurred while applying overrides. Check console.");
+      notify.error("An error occurred while applying overrides. Check console.");
     }
   }
 
@@ -137,19 +150,30 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
       className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
       style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
       onClick={onClose}
+      role="presentation"
     >
       <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bulk-edit-weapon-title"
         className="w-full max-w-3xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up relative overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border)] shrink-0 bg-[var(--surface)]">
           <div className="flex items-center gap-3">
-            <h2 className="font-bold text-xl text-[var(--text)]">
+            <h2 id="bulk-edit-weapon-title" className="font-bold text-xl text-[var(--text)]">
               Bulk Edit Weapons
             </h2>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors">✕</button>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="w-8 h-8 rounded-full hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors"
+          >
+            ✕
+          </button>
         </div>
 
         <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-6 py-2 text-xs font-semibold text-center border-b border-[var(--gold)]/20">

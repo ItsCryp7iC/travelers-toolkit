@@ -5,6 +5,7 @@ import { buildHoyolabApplyPlan } from '../utils/hoyolabSyncApply';
 import { getElementIcon } from '../utils/assetHelper';
 import HoyolabCharacterCard from './hoyolabSync/HoyolabCharacterCard';
 import HoyolabSyncSummary from './hoyolabSync/HoyolabSyncSummary';
+import notify from '../utils/notify';
 
 export const isCharacterActionable = (char) => {
   if (!char) return false;
@@ -211,7 +212,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       const result = applyHoyolabSync(planSummary.plan);
       setApplyResult(result);
     } catch (e) {
-      alert("Failed to apply sync: " + e.message);
+      notify.error("Failed to apply sync: " + e.message);
     }
     setShowConfirmation(false);
   };
