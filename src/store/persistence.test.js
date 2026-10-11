@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { migrateStore, partializeStore } from './persistence';
+import useStore from './useStore';
 
 describe('Zustand Persistence Migrations', () => {
   it('migrates v1 -> v2 (legacy weapons)', () => {
@@ -216,5 +217,132 @@ describe('Zustand Persistence Migrations', () => {
       'showDbBuilder',
       'trackedWeapons'
     ]);
+  });
+
+  it('hydrates representative pre-Phase-3 persisted state completely without loss or corruption', async () => {
+    const prePhase3PersistedState = {
+      roster: {
+        'Amber': {
+          level: 80,
+          ascension: 5,
+          targetLevel: 90,
+          targetAscension: 6,
+          talents: { normal: 6, skill: 6, burst: 6 },
+          equippedWeaponId: 'weapon-amber-favonius'
+        },
+        'Traveler Geo': {
+          level: 70,
+          ascension: 4,
+          targetLevel: 80,
+          targetAscension: 5,
+          talents: { normal: 6, skill: 6, burst: 6 },
+          equippedWeaponId: null // Traveler invariant: equippedWeaponId is null
+        },
+        'Traveler Anemo': {
+          level: 70,
+          ascension: 4,
+          targetLevel: 80,
+          targetAscension: 5,
+          talents: { normal: 1, skill: 1, burst: 1 },
+          equippedWeaponId: null
+        }
+      },
+      trackedWeapons: [
+        {
+          id: 'weapon-amber-favonius',
+          weaponName: 'Favonius Warbow',
+          level: 80,
+          ascension: 5,
+          targetLevel: 90,
+          targetAscension: 6,
+          currentRefinement: 3,
+          targetRefinement: 5,
+          assignedTo: 'Amber'
+        },
+        {
+          id: 'weapon-traveler-favonius',
+          weaponName: 'Favonius Sword',
+          level: 70,
+          ascension: 4,
+          targetLevel: 80,
+          targetAscension: 5,
+          currentRefinement: 1,
+          targetRefinement: 1,
+          assignedTo: 'Traveler Geo'
+        }
+      ],
+      inventory: {
+        mora: 1500000,
+        hero_wit: 250,
+        brilliant_diamond_sliver: 1
+      },
+      goals: [
+        { id: 'goal-1', character: 'Amber', type: 'ascension' }
+      ],
+      resinCount: 145,
+      resinTimestamp: 1710000000000,
+      serverRegion: 'America',
+      showDbBuilder: false,
+      autoBackupEnabled: true,
+      displayTimeZone: 'America/New_York',
+      achievementProgress: {
+        '80129': { completed: true, completedAt: '2026-01-01T12:00:00.000Z' },
+        '80001': { completed: true, completedAt: null }
+      },
+      lastHoyolabCharacterSyncAt: 1710000500000
+    };
+
+    // 1. Migration check: v8 input should pass through cleanly
+    const migratedV8 = migrateStore(prePhase3PersistedState, 8);
+    expect(migratedV8.roster).toEqual(prePhase3PersistedState.roster);
+    expect(migratedV8.trackedWeapons).toEqual(prePhase3PersistedState.trackedWeapons);
+    expect(migratedV8.displayTimeZone).toBe('America/New_York');
+    expect(migratedV8.lastHoyolabCharacterSyncAt).toBe(1710000500000);
+
+    // 2. Full hydration via Zustand persist
+    window.localStorage.setItem(
+      'travelers-toolkit-store',
+      JSON.stringify({
+        state: prePhase3PersistedState,
+        version: 8
+      })
+    );
+
+    await useStore.persist.rehydrate();
+    const hydrated = useStore.getState();
+
+    // Verify roster and Traveler invariants
+    expect(hydrated.roster['Amber'].level).toBe(80);
+    expect(hydrated.roster['Amber'].equippedWeaponId).toBe('weapon-amber-favonius');
+    expect(hydrated.roster['Traveler Geo'].equippedWeaponId).toBeNull();
+    expect(hydrated.roster['Traveler Anemo'].equippedWeaponId).toBeNull();
+
+    // Verify weapon tracking and assignment
+    expect(hydrated.trackedWeapons.length).toBe(2);
+    expect(hydrated.trackedWeapons[0].assignedTo).toBe('Amber');
+    expect(hydrated.trackedWeapons[1].assignedTo).toBe('Traveler Geo');
+
+    // Verify inventory, goals, resin
+    expect(hydrated.inventory.mora).toBe(1500000);
+    expect(hydrated.inventory.hero_wit).toBe(250);
+    expect(hydrated.goals.length).toBe(1);
+    expect(hydrated.resinCount).toBe(145);
+
+    // Verify settings, region, timezone, sync
+    expect(hydrated.serverRegion).toBe('America');
+    expect(hydrated.showDbBuilder).toBe(false);
+    expect(hydrated.autoBackupEnabled).toBe(true);
+    expect(hydrated.displayTimeZone).toBe('America/New_York');
+    expect(hydrated.lastHoyolabCharacterSyncAt).toBe(1710000500000);
+
+    // Verify achievement progress
+    expect(hydrated.achievementProgress['80129']).toEqual({
+      completed: true,
+      completedAt: '2026-01-01T12:00:00.000Z'
+    });
+
+    // Verify partialize produces exact clean schema without leaking any catalog definitions
+    const persisted = partializeStore(hydrated);
+    expect(persisted).toEqual(prePhase3PersistedState);
   });
 });

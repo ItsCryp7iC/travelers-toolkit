@@ -23,6 +23,9 @@ const META_BASE_URL = `https://raw.githubusercontent.com/${METADATA_REPO}/${META
 const VERSION_URL = `${META_BASE_URL}/src/data/version/achievements.json`;
 
 const OUTPUT_DIR = path.join(__dirname, '../src/data/achievements');
+const UTILS_DIR = path.join(__dirname, '../src/utils');
+export const CANONICAL_IDS_FILE = path.join(UTILS_DIR, 'achievementCanonicalIds.js');
+export const STAGE_PREREQS_FILE = path.join(UTILS_DIR, 'achievementStagePrereqs.js');
 
 async function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -225,6 +228,51 @@ function sha256(str) {
   return crypto.createHash('sha256').update(str).digest('hex');
 }
 
+export function generateCanonicalIdsCode(achievements) {
+  const ids = achievements.map(a => a.id);
+  return `/**
+ * Canonical achievement IDs generated deterministically from the canonical achievements dataset.
+ * Lightweight membership lookup avoiding full 500+ kB catalog import in the store dependency graph.
+ */
+export const ACHIEVEMENT_IDS = ${JSON.stringify(ids, null, 2)};
+`;
+}
+
+export function generateStagePrereqsCode(achievements) {
+  const groups = new Map();
+  for (const a of achievements) {
+    if (a.stageGroupId) {
+      if (!groups.has(a.stageGroupId)) {
+        groups.set(a.stageGroupId, []);
+      }
+      groups.get(a.stageGroupId).push(a);
+    }
+  }
+
+  const prereqs = {};
+  for (const [, members] of groups) {
+    members.sort((a, b) => a.stageIndex - b.stageIndex);
+    for (let i = 1; i < members.length; i++) {
+      const current = members[i];
+      const earlier = members.slice(0, i).map(m => m.id);
+      prereqs[current.id] = earlier;
+    }
+  }
+
+  const sortedPrereqs = {};
+  for (const key of Object.keys(prereqs).sort((a, b) => parseInt(a) - parseInt(b))) {
+    sortedPrereqs[key] = prereqs[key];
+  }
+
+  return `/**
+ * Compact map of staged achievement IDs to their prerequisite earlier-stage achievement IDs.
+ * Generated deterministically from canonical achievements stage groups.
+ * Enables store/persistence stage cascading without loading the 500+ kB full achievements catalog.
+ */
+export const STAGE_PREREQUISITES = ${JSON.stringify(sortedPrereqs, null, 2)};
+`;
+}
+
 export async function runGenerator(isCheck = false) {
   console.log(`Fetching pinned sources...`);
 
@@ -245,6 +293,8 @@ export async function runGenerator(isCheck = false) {
 
   const catJson = JSON.stringify(categories, null, 2) + '\n';
   const achJson = JSON.stringify(achievements, null, 2) + '\n';
+  const idsCode = generateCanonicalIdsCode(achievements);
+  const prereqsCode = generateStagePrereqsCode(achievements);
 
   const manifest = {
     schemaVersion: 1,
@@ -294,9 +344,18 @@ export async function runGenerator(isCheck = false) {
       const diskCat = await fs.readFile(path.join(OUTPUT_DIR, 'categories.json'), 'utf8');
       const diskAch = await fs.readFile(path.join(OUTPUT_DIR, 'achievements.json'), 'utf8');
       const diskMan = await fs.readFile(path.join(OUTPUT_DIR, 'manifest.json'), 'utf8');
+      const diskIds = await fs.readFile(CANONICAL_IDS_FILE, 'utf8');
+      const diskPrereqs = await fs.readFile(STAGE_PREREQS_FILE, 'utf8');
 
-      if (diskCat !== catJson || diskAch !== achJson || diskMan !== manJson) {
-        console.error('Data drift detected! Generated data does not match on-disk data.');
+      const drifted = [];
+      if (diskCat !== catJson) drifted.push('categories.json');
+      if (diskAch !== achJson) drifted.push('achievements.json');
+      if (diskMan !== manJson) drifted.push('manifest.json');
+      if (diskIds !== idsCode) drifted.push('achievementCanonicalIds.js');
+      if (diskPrereqs !== prereqsCode) drifted.push('achievementStagePrereqs.js');
+
+      if (drifted.length > 0) {
+        console.error(`Data drift detected! The following files do not match generated output: ${drifted.join(', ')}`);
         process.exit(1);
       } else {
         console.log('Check passed. Data is up to date.');
@@ -310,6 +369,10 @@ export async function runGenerator(isCheck = false) {
     await fs.writeFile(path.join(OUTPUT_DIR, 'categories.json'), catJson);
     await fs.writeFile(path.join(OUTPUT_DIR, 'achievements.json'), achJson);
     await fs.writeFile(path.join(OUTPUT_DIR, 'manifest.json'), manJson);
+
+    await fs.mkdir(UTILS_DIR, { recursive: true });
+    await fs.writeFile(CANONICAL_IDS_FILE, idsCode);
+    await fs.writeFile(STAGE_PREREQS_FILE, prereqsCode);
 
     const hiddenCount = achievements.filter(a => a.hidden).length;
     const versionCount = achievements.filter(a => a.version !== null).length;
@@ -329,6 +392,8 @@ export async function runGenerator(isCheck = false) {
     console.log(`Visible: ${achievements.length - hiddenCount}`);
     console.log(`Output categories hash: ${manifest.artifacts.categories.sha256}`);
     console.log(`Output achievements hash: ${manifest.artifacts.achievements.sha256}`);
+    console.log(`Updated: ${CANONICAL_IDS_FILE}`);
+    console.log(`Updated: ${STAGE_PREREQS_FILE}`);
     console.log('Generated successfully.');
   }
 }

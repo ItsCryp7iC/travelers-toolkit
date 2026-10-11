@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { applyStageCompletionChange, normalizeStageProgress } from './achievementStageProgress';
+import { STAGE_PREREQUISITES } from './achievementStagePrereqs';
 
 describe('achievementStageProgress', () => {
   const canonicalAchievements = [
@@ -269,5 +270,32 @@ describe('normalizeStageProgress', () => {
     const next1 = normalizeStageProgress(progress, canonicalAchievements);
     const next2 = normalizeStageProgress(next1, canonicalAchievements);
     expect(next1).toEqual(next2);
+  });
+
+  describe('STAGE_PREREQUISITES standalone generator mapping', () => {
+    it('contains verified canonical stage group relationships', () => {
+      // In canonical dataset:
+      // Group 80008 has stages 80008 (1), 80009 (2), 80010 (3)
+      expect(STAGE_PREREQUISITES['80009']).toEqual(['80008']);
+      expect(STAGE_PREREQUISITES['80010']).toEqual(['80008', '80009']);
+      expect(STAGE_PREREQUISITES['80008']).toBeUndefined();
+
+      // Group 80127 has stages 80127 (1), 80128 (2), 80129 (3)
+      expect(STAGE_PREREQUISITES['80128']).toEqual(['80127']);
+      expect(STAGE_PREREQUISITES['80129']).toEqual(['80127', '80128']);
+      expect(STAGE_PREREQUISITES['80127']).toBeUndefined();
+    });
+
+    it('infers missing earlier stages purely from STAGE_PREREQUISITES without full catalog', () => {
+      const progress = {
+        '80129': { completed: true, completedAt: '2026-01-01T00:00:00.000Z' }
+      };
+
+      // Call normalizeStageProgress WITHOUT passing canonicalAchievements
+      const normalized = normalizeStageProgress(progress);
+      expect(normalized['80127']).toEqual({ completed: true, completedAt: null });
+      expect(normalized['80128']).toEqual({ completed: true, completedAt: null });
+      expect(normalized['80129']).toEqual({ completed: true, completedAt: '2026-01-01T00:00:00.000Z' });
+    });
   });
 });

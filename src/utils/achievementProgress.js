@@ -1,8 +1,12 @@
-import achievementDefinitions from '../data/achievements/achievements.json';
+import { ACHIEVEMENT_IDS } from './achievementCanonicalIds';
 import { normalizeStageProgress } from './achievementStageProgress';
 
-const canonicalIds = new Set(achievementDefinitions.map((a) => a.id));
+const canonicalIds = new Set(ACHIEVEMENT_IDS);
 
+/**
+ * Validates that an ID is a member of the canonical achievements dataset.
+ * Preserves pre-Phase-3 canonical membership semantics using lightweight generated IDs.
+ */
 export function isValidAchievementId(id) {
   return canonicalIds.has(id);
 }
@@ -23,7 +27,12 @@ export function isValidCompletedAt(timestamp) {
   }
 }
 
-export function normalizeAchievementProgress(rawProgress) {
+/**
+ * Pure structural sanitizer for user achievement progress.
+ * Validates entry structure, ensures completed: true, checks ISO timestamp validity,
+ * and guards against prototype pollution.
+ */
+export function sanitizeAchievementProgress(rawProgress, idValidator = null) {
   if (!rawProgress || typeof rawProgress !== 'object' || Array.isArray(rawProgress)) {
     throw new Error('Malformed achievement progress data.');
   }
@@ -32,14 +41,14 @@ export function normalizeAchievementProgress(rawProgress) {
 
   // Use Object.keys to avoid prototype pollution
   for (const id of Object.keys(rawProgress)) {
-    // Ignore dangerous prototype keys implicitly by iterating own properties only,
-    // but we can be strictly explicit:
+    // Ignore dangerous prototype keys
     if (id === '__proto__' || id === 'constructor' || id === 'prototype') {
       continue;
     }
 
-    if (!isValidAchievementId(id)) {
-      // "unknown ID rejected/ignored safely"
+    if (idValidator) {
+      if (!idValidator(id)) continue;
+    } else if (!isValidAchievementId(id)) {
       continue;
     }
 
@@ -48,7 +57,7 @@ export function normalizeAchievementProgress(rawProgress) {
       throw new Error('Malformed achievement progress entry.');
     }
 
-    // "retain only completed achievements"
+    // Retain only completed achievements
     if (entry.completed !== true) {
       continue;
     }
@@ -63,7 +72,14 @@ export function normalizeAchievementProgress(rawProgress) {
     };
   }
 
-  const stageNormalized = normalizeStageProgress(normalized, achievementDefinitions);
+  return normalized;
+}
 
-  return stageNormalized;
+/**
+ * Normalizes user progress with stage cascading.
+ * If canonicalAchievements is omitted, uses the compact STAGE_PREREQUISITES map.
+ */
+export function normalizeAchievementProgress(rawProgress, canonicalAchievements = null) {
+  const sanitized = sanitizeAchievementProgress(rawProgress);
+  return normalizeStageProgress(sanitized, canonicalAchievements);
 }

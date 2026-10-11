@@ -1,3 +1,5 @@
+import { STAGE_PREREQUISITES } from './achievementStagePrereqs';
+
 /**
  * Applies a completion cascade to an achievement and its staged group.
  *
@@ -79,11 +81,29 @@ export function applyStageCompletionChange(
  * If a later stage is complete, all earlier stages must also be complete.
  *
  * @param {Object} progress - The parsed progress map.
- * @param {Array} canonicalAchievements - The full list of canonical achievements.
+ * @param {Array|null} canonicalAchievements - Optional full list of canonical achievements. If omitted, uses precomputed STAGE_PREREQUISITES.
  * @returns {Object} A new progress map with missing earlier stages inferred.
  */
-export function normalizeStageProgress(progress, canonicalAchievements) {
+export function normalizeStageProgress(progress, canonicalAchievements = null) {
   const normalized = Object.assign(Object.create(null), progress);
+
+  if (!canonicalAchievements || !Array.isArray(canonicalAchievements)) {
+    for (const [id, entry] of Object.entries(normalized)) {
+      if (!entry || !entry.completed) continue;
+      const prereqs = STAGE_PREREQUISITES[id];
+      if (prereqs) {
+        for (const prereqId of prereqs) {
+          if (!normalized[prereqId] || !normalized[prereqId].completed) {
+            normalized[prereqId] = {
+              completed: true,
+              completedAt: null,
+            };
+          }
+        }
+      }
+    }
+    return normalized;
+  }
   const highestStageIndexByGroup = {};
 
   for (const [id, entry] of Object.entries(normalized)) {

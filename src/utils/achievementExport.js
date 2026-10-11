@@ -1,4 +1,4 @@
-import { isValidAchievementId } from './achievementProgress';
+import { isCanonicalAchievementId } from './achievementCatalog';
 
 export function exportAchievementData(achievementProgress) {
   if (!achievementProgress) return { achievements: [] };
@@ -6,7 +6,7 @@ export function exportAchievementData(achievementProgress) {
   const validIds = [];
 
   for (const [id, data] of Object.entries(achievementProgress)) {
-    if (data && data.completed && isValidAchievementId(id)) {
+    if (data && data.completed && isCanonicalAchievementId(id)) {
       validIds.push(Number(id));
     }
   }
@@ -29,7 +29,7 @@ export function exportNativeAchievementData(achievementProgress) {
   const nativeProgress = {};
 
   const sortedIds = Object.keys(achievementProgress)
-    .filter(id => achievementProgress[id]?.completed && isValidAchievementId(id))
+    .filter(id => achievementProgress[id]?.completed && isCanonicalAchievementId(id))
     .sort((a, b) => Number(a) - Number(b));
 
   for (const id of sortedIds) {

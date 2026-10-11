@@ -1,4 +1,7 @@
-import { isValidAchievementId, isValidCompletedAt } from './achievementProgress';
+import { isCanonicalAchievementId } from './achievementCatalog';
+import { isValidCompletedAt } from './achievementProgress';
+
+const isValidAchievementId = isCanonicalAchievementId;
 
 export function parseAchievementImport(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {

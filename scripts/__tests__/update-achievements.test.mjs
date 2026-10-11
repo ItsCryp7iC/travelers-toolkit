@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeCategories, normalizeAchievements, validateDataset } from '../update-achievements.mjs';
+import {
+  normalizeCategories,
+  normalizeAchievements,
+  validateDataset,
+  generateCanonicalIdsCode,
+  generateStagePrereqsCode
+} from '../update-achievements.mjs';
 
 describe('Achievement Generator Logic', () => {
   it('accepts ID 0 category', () => {
@@ -197,5 +203,37 @@ describe('Achievement Generator Logic', () => {
     const cats = normalizeCategories(rawGroups);
     expect(cats[0].id).toBe("1");
     expect(cats[1].id).toBe("2");
+  });
+
+  describe('Compact Artifact Generation', () => {
+    it('generateCanonicalIdsCode produces deterministic array export with stable ordering', () => {
+      const mockAchs = [
+        { id: '80001' },
+        { id: '80002' },
+        { id: '80129' }
+      ];
+      const code = generateCanonicalIdsCode(mockAchs);
+      expect(code).toContain('export const ACHIEVEMENT_IDS = [');
+      expect(code).toContain('"80001"');
+      expect(code).toContain('"80002"');
+      expect(code).toContain('"80129"');
+      expect(code.endsWith(';\n')).toBe(true);
+    });
+
+    it('generateStagePrereqsCode generates correct multi-stage prerequisite cascade', () => {
+      const mockAchs = [
+        { id: '10', stageGroupId: '10', stageIndex: 1, stageCount: 3 },
+        { id: '11', stageGroupId: '10', stageIndex: 2, stageCount: 3 },
+        { id: '12', stageGroupId: '10', stageIndex: 3, stageCount: 3 },
+        { id: '20', name: 'Standalone' }
+      ];
+      const code = generateStagePrereqsCode(mockAchs);
+      expect(code).toContain('export const STAGE_PREREQUISITES = {');
+      expect(code).toContain('"11": [\n    "10"\n  ]');
+      expect(code).toContain('"12": [\n    "10",\n    "11"\n  ]');
+      expect(code).not.toContain('"10":'); // stage 1 has no earlier prerequisites
+      expect(code).not.toContain('"20":'); // standalone has no stage prerequisites
+      expect(code.endsWith(';\n')).toBe(true);
+    });
   });
 });

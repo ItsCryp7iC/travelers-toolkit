@@ -3,7 +3,7 @@ import { NavLink, Link, Outlet, useLocation } from 'react-router-dom'
 import useStore from '../store/useStore'
 import { upsertAutoBackupToDrive } from '../utils/driveSync'
 import { triggerGoogleAuth } from '../utils/googleAuthHelper'
-import { getBackupPayload, isLocalUserDataEmpty, restoreLatestRecoveryBackup } from '../utils/backupUtils'
+import { getBackupPayload, isLocalUserDataEmpty } from '../utils/backupPayload'
 import ResinTracker from '../components/ResinTracker'
 import RealmCurrencyTracker from '../components/RealmCurrencyTracker'
 
@@ -140,6 +140,7 @@ export default function AppLayout() {
 
      if (isLocalUserDataEmpty(currentState)) {
         try {
+          const { restoreLatestRecoveryBackup } = await import('../utils/backupUtils');
           const success = await restoreLatestRecoveryBackup(currentState.importData);
           if (success) {
             alert('Latest cloud state restored successfully.');
