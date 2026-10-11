@@ -4,8 +4,8 @@
 
 @font-face {
   font-family: 'GenshinFont';
-  src: url('/fonts/genshin-font.ttf') format('truetype');
-  font-weight: normal;
+  src: url('/fonts/genshin-font.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }

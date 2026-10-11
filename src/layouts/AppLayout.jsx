@@ -225,7 +225,7 @@ export default function AppLayout() {
  const inventoryTab = location.pathname === '/inventory' ? currentTab || 'currency_exp' : null;
 
  return (
- <div className={`bg-[url('/bg.png')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full ${isDesktopCollapsed ? 'desktop-collapsed' : ''}`}>
+ <div className={`bg-[url('/bg.webp')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full ${isDesktopCollapsed ? 'desktop-collapsed' : ''}`}>
 
   {/* Skip to Main Content Link */}
   <a
