@@ -12,12 +12,14 @@ import { getRarityColorClass } from '../shared/tableDisplayUtils';
 import AscensionLevelCell from '../shared/AscensionLevelCell';
 import InlineNumberInput from '../../InlineNumberInput';
 
+const weaponByName = new Map(weaponsData.map(w => [w.name, w]));
+
 export default function useWeaponColumns({
-  selectedIds,
+  selectedIds = [],
   setSelectedIds,
   updateWeapon,
   removeWeapon
-}) {
+} = {}) {
   return useMemo(() => [
     // ──────────────── IDENTITY ────────────────
     {
@@ -27,43 +29,56 @@ export default function useWeaponColumns({
       columns: [
         {
           id: 'select',
-          header: ({ table }) => (
-            <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   if (table.getFilteredRowModel().rows.length > 0 && selectedIds.length === table.getFilteredRowModel().rows.length) {
-                     setSelectedIds([]);
-                   } else {
-                     setSelectedIds(table.getFilteredRowModel().rows.map(r => r.original.id));
-                   }
-                 }}>
-              <input
-                type="checkbox"
-                checked={table.getFilteredRowModel().rows.length > 0 && selectedIds.length === table.getFilteredRowModel().rows.length}
-                readOnly
-                className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-blue-500 focus:ring-0 focus:ring-offset-0"
-              />
-            </div>
-          ),
-          cell: ({ row }) => (
-            <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   const id = row.original.id;
-                   if (selectedIds.includes(id)) {
-                     setSelectedIds(prev => prev.filter(n => n !== id));
-                   } else {
-                     setSelectedIds(prev => [...prev, id]);
-                   }
-                 }}>
-              <input
-                type="checkbox"
-                checked={selectedIds.includes(row.original.id)}
-                readOnly
-                className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-blue-500 focus:ring-0 focus:ring-offset-0"
-              />
-            </div>
-          ),
+          header: ({ table }) => {
+            const currentSelected = table.options.meta?.selectedIds ?? selectedIds;
+            const currentSetSelected = table.options.meta?.setSelectedIds ?? setSelectedIds;
+            const filteredRows = table.getFilteredRowModel().rows;
+            const isAllSelected = filteredRows.length > 0 && currentSelected.length === filteredRows.length;
+            return (
+              <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     if (!currentSetSelected) return;
+                     if (isAllSelected) {
+                       currentSetSelected([]);
+                     } else {
+                       currentSetSelected(filteredRows.map(r => r.original.id));
+                     }
+                   }}>
+                <input
+                  type="checkbox"
+                  checked={isAllSelected}
+                  readOnly
+                  className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-blue-500 focus:ring-0 focus:ring-offset-0"
+                />
+              </div>
+            );
+          },
+          cell: ({ row, table }) => {
+            const currentSelected = table.options.meta?.selectedIds ?? selectedIds;
+            const currentSetSelected = table.options.meta?.setSelectedIds ?? setSelectedIds;
+            const id = row.original.id;
+            const isChecked = currentSelected.includes(id);
+            return (
+              <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     if (!currentSetSelected) return;
+                     if (isChecked) {
+                       currentSetSelected(prev => prev.filter(n => n !== id));
+                     } else {
+                       currentSetSelected(prev => [...prev, id]);
+                     }
+                   }}>
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  readOnly
+                  className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-blue-500 focus:ring-0 focus:ring-offset-0"
+                />
+              </div>
+            );
+          },
           meta: {
             thClassName: "w-16 px-2 py-2 sticky left-0 z-20 bg-[var(--surface)] border-r border-gray-700/50",
             tdClassName: "w-16 px-4 py-2 sticky left-0 z-20 bg-inherit border-r border-gray-700/50"
@@ -208,7 +223,7 @@ export default function useWeaponColumns({
           cell: ({ row, getValue }) => {
             const wp = row.original;
             const refine = getValue();
-            const originalWeapon = weaponsData.find(w => w.name === wp.weaponName);
+            const originalWeapon = wp.data || weaponByName.get(wp.weaponName);
             const isForgeable = originalWeapon ? !!(forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : false;
             if (!isForgeable) return <span className="text-gray-500/50 text-xs" title="Not a forgeable weapon">—</span>;
             return (
@@ -229,13 +244,13 @@ export default function useWeaponColumns({
         {
           id: 'forging_billet', header: 'Billet',
           accessorFn: row => {
-            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const originalWeapon = row.data || weaponByName.get(row.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             return recipe?.billet?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => {
-            const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
-            const originalB = weaponsData.find(w => w.name === rowB.original.weaponName);
+            const originalA = rowA.original.data || weaponByName.get(rowA.original.weaponName);
+            const originalB = rowB.original.data || weaponByName.get(rowB.original.weaponName);
             const recipeA = originalA ? (forgingData[originalA.id] || forgingData[originalA.name]) : null;
             const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
             const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
@@ -245,7 +260,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'text', thClassName: "text-amber-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const originalWeapon = row.original.data || weaponByName.get(row.original.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             if (!recipe) return <span className="text-gray-500/50 text-xs">—</span>;
             const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
@@ -256,13 +271,13 @@ export default function useWeaponColumns({
         {
           id: 'forging_ore_regional', header: 'Regional Ore',
           accessorFn: row => {
-            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const originalWeapon = row.data || weaponByName.get(row.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             return recipe?.ores?.find(o => o.kind === 'regional')?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => {
-            const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
-            const originalB = weaponsData.find(w => w.name === rowB.original.weaponName);
+            const originalA = rowA.original.data || weaponByName.get(rowA.original.weaponName);
+            const originalB = rowB.original.data || weaponByName.get(rowB.original.weaponName);
             const recipeA = originalA ? (forgingData[originalA.id] || forgingData[originalA.name]) : null;
             const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
             const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
@@ -274,7 +289,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'text', thClassName: "text-purple-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const originalWeapon = row.original.data || weaponByName.get(row.original.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             if (!recipe || !recipe.ores) return <span className="text-gray-500/50 text-xs">—</span>;
             const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
@@ -286,13 +301,13 @@ export default function useWeaponColumns({
         {
           id: 'forging_ore_common', header: 'Common Ore',
           accessorFn: row => {
-            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const originalWeapon = row.data || weaponByName.get(row.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             return recipe?.ores?.find(o => o.kind === 'common')?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => {
-            const originalA = weaponsData.find(w => w.name === rowA.original.weaponName);
-            const originalB = weaponsData.find(w => w.name === rowB.original.weaponName);
+            const originalA = rowA.original.data || weaponByName.get(rowA.original.weaponName);
+            const originalB = rowB.original.data || weaponByName.get(rowB.original.weaponName);
             const recipeA = originalA ? (forgingData[originalA.id] || forgingData[originalA.name]) : null;
             const recipeB = originalB ? (forgingData[originalB.id] || forgingData[originalB.name]) : null;
             const costA = calculateForgingCost(rowA.original, rowA.original.currentRefinement ?? 1, rowA.original.targetRefinement ?? 1, forgingData);
@@ -304,7 +319,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'text', thClassName: "text-blue-300 px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const originalWeapon = row.original.data || weaponByName.get(row.original.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             if (!recipe || !recipe.ores) return <span className="text-gray-500/50 text-xs">—</span>;
             const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
@@ -316,7 +331,7 @@ export default function useWeaponColumns({
         {
           id: 'forging_mora', header: 'Mora',
           accessorFn: row => {
-            const originalWeapon = weaponsData.find(w => w.name === row.weaponName);
+            const originalWeapon = row.data || weaponByName.get(row.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             if (!recipe || !recipe.mora) return 0;
             const cost = calculateForgingCost(row, row.currentRefinement ?? 1, row.targetRefinement ?? 1, forgingData);
@@ -325,7 +340,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'number', thClassName: "text-yellow-400 px-2 py-2 font-semibold border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const originalWeapon = weaponsData.find(w => w.name === row.original.weaponName);
+            const originalWeapon = row.original.data || weaponByName.get(row.original.weaponName);
             const recipe = originalWeapon ? (forgingData[originalWeapon.id] || forgingData[originalWeapon.name]) : null;
             if (!recipe) return <span className="text-gray-500/50 text-xs">—</span>;
             const cost = calculateForgingCost(row.original, row.original.currentRefinement ?? 1, row.original.targetRefinement ?? 1, forgingData);
@@ -376,41 +391,41 @@ export default function useWeaponColumns({
       columns: [
         {
           id: 'asc_5', header: 'Asc 5★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['5_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.ascensionFamily?.tiers?.['5_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['5_star_ascension_material'] || 0) - (rowB.original.costs?.['5_star_ascension_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-amber-400 px-2 py-2 font-semibold text-amber-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['5_star_ascension_material'] || 0} icon="🛡️" color="text-amber-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} category="Weapon Ascension Material" />;
           }
         },
         {
           id: 'asc_4', header: 'Asc 4★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['4_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.ascensionFamily?.tiers?.['4_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['4_star_ascension_material'] || 0) - (rowB.original.costs?.['4_star_ascension_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-purple-400 px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['4_star_ascension_material'] || 0} icon="🛡️" color="text-purple-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['4_star']?.name} category="Weapon Ascension Material" />;
           }
         },
         {
           id: 'asc_3', header: 'Asc 3★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['3_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.ascensionFamily?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['3_star_ascension_material'] || 0) - (rowB.original.costs?.['3_star_ascension_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['3_star_ascension_material'] || 0} icon="🛡️" color="text-blue-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['3_star']?.name} category="Weapon Ascension Material" />;
           }
         },
         {
           id: 'asc_2', header: 'Asc 2★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.ascensionFamily?.tiers?.['2_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.ascensionFamily?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['2_star_ascension_material'] || 0) - (rowB.original.costs?.['2_star_ascension_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-green-400 px-2 py-2 font-semibold text-green-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['2_star_ascension_material'] || 0} icon="🛡️" color="text-green-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['2_star']?.name} category="Weapon Ascension Material" />;
           }
         }
@@ -424,31 +439,31 @@ export default function useWeaponColumns({
       columns: [
         {
           id: 'elite_4', header: 'Elite 4★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.eliteFamily?.tiers?.['4_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.eliteFamily?.tiers?.['4_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['4_star_enhancement_material'] || 0) - (rowB.original.costs?.['4_star_enhancement_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-purple-400 px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['4_star_enhancement_material'] || 0} icon="⚔️" color="text-purple-400" nameKey={resolvedMats?.eliteFamily?.tiers?.['4_star']?.name} category="Elite Enhancement Material" />;
           }
         },
         {
           id: 'elite_3', header: 'Elite 3★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.eliteFamily?.tiers?.['3_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.eliteFamily?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['3_star_enhancement_material'] || 0) - (rowB.original.costs?.['3_star_enhancement_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['3_star_enhancement_material'] || 0} icon="⚔️" color="text-blue-400" nameKey={resolvedMats?.eliteFamily?.tiers?.['3_star']?.name} category="Elite Enhancement Material" />;
           }
         },
         {
           id: 'elite_2', header: 'Elite 2★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.eliteFamily?.tiers?.['2_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.eliteFamily?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['2_star_enhancement_material'] || 0) - (rowB.original.costs?.['2_star_enhancement_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-green-400 px-2 py-2 font-semibold text-green-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['2_star_enhancement_material'] || 0} icon="⚔️" color="text-green-400" nameKey={resolvedMats?.eliteFamily?.tiers?.['2_star']?.name} category="Elite Enhancement Material" />;
           }
         }
@@ -462,35 +477,35 @@ export default function useWeaponColumns({
       columns: [
         {
           id: 'mob_3', header: 'Enh 3★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.commonFamily?.tiers?.['3_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.commonFamily?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['3_star_enemy_material'] || 0) - (rowB.original.costs?.['3_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.commonFamily?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'mob_2', header: 'Enh 2★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.commonFamily?.tiers?.['2_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.commonFamily?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['2_star_enemy_material'] || 0) - (rowB.original.costs?.['2_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-green-400 px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.commonFamily?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'mob_1', header: 'Enh 1★',
-          accessorFn: row => resolveWeaponMaterials(row.data)?.commonFamily?.tiers?.['1_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveWeaponMaterials(row.data))?.commonFamily?.tiers?.['1_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.costs?.['1_star_enemy_material'] || 0) - (rowB.original.costs?.['1_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-gray-400 px-2 py-2 font-semibold text-gray-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveWeaponMaterials(row.original.data);
+            const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
             return <MatQuantity val={row.original.costs?.['1_star_enemy_material'] || 0} icon="💧" color="text-gray-400" nameKey={resolvedMats?.commonFamily?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
           }
         }
       ]
     }
-  ], [selectedIds, setSelectedIds, updateWeapon, removeWeapon]);
+  ], [updateWeapon, removeWeapon]);
 }

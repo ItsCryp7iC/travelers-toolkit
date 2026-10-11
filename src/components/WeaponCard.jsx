@@ -24,11 +24,7 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
   const inventory = useStore((s) => s.inventory)
   
   // Find who has this equipped
-  const roster = useStore((s) => s.roster)
-  const equippedBy = useMemo(() => {
-    if (!armoryEntry) return null;
-    return Object.entries(roster).find(([charName, entry]) => entry.equippedWeaponId === armoryEntry.id)?.[0]
-  }, [roster, armoryEntry])
+  const equippedBy = armoryEntry?.assignedTo || null
 
   const getRarityGradient = (r) => {
     switch (Number(r)) {

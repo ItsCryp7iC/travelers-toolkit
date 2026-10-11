@@ -9,31 +9,21 @@ import SortDirectionButton from '../components/SortDirectionButton'
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
-import costsData from '../data/costs.json'
 import useStore from '../store/useStore'
 import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import { resolveCharacterMaterials } from '../utils/dataManager'
-import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
-import { getCharacterAvatar, getElementIcon, getWeaponIcon, getWeaponTypeIcon } from '../utils/assetHelper'
-import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, formatNumber, buildMobNames, buildBookKey, toggleMilestoneAscension, isMilestone } from '../utils/calculator'
+import { ELEMENTS, WEAPON_TYPES } from '../utils/gameData'
+import { getElementIcon, getWeaponTypeIcon } from '../utils/assetHelper'
+import { calculateProgressionCost, calculateAllTalentsCost } from '../utils/calculator'
 import GenshinImage from '../components/GenshinImage'
-import MatQuantity from '../components/MatQuantity'
-import InlineNumberInput from '../components/InlineNumberInput'
 
 const ALL_ELEMENTS = ['All', 'Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo']
 const ALL_WEAPONS  = ['All', 'Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst']
 const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★']
 
-const isAscended = (level, ascension) => {
-  if (level === 20 && ascension >= 1) return true;
-  if (level === 40 && ascension >= 2) return true;
-  if (level === 50 && ascension >= 3) return true;
-  if (level === 60 && ascension >= 4) return true;
-  if (level === 70 && ascension >= 5) return true;
-  if (level === 80 && ascension >= 6) return true;
-  if (level === 90 && ascension >= 6) return true;
-  return false;
-}
+// Hoisted static lookup maps to avoid repeated O(N) array scans
+const characterByName = new Map(charactersData.map((c, idx) => [c.name, { ...c, sl_no: idx + 1 }]))
+const weaponByName = new Map(weaponsData.map((w) => [w.name, w]))
 
 export default function Characters() {
   const roster         = useStore((s) => s.roster)
@@ -71,14 +61,14 @@ export default function Characters() {
   const [selectedNames, setSelectedNames] = useState([])
   const [slideDirection, setSlideDirection] = useState('next')
 
-  // Build full character objects for rostered characters, calculate their maths
+  // Build full character objects for rostered characters, calculate their maths and pre-resolve materials
   const rostered = useMemo(() => {
+    const trackedMap = new Map(trackedWeapons.map((w) => [w.id, w]))
     return Object.keys(roster)
       .map((name) => {
-        const data = charactersData.find((c) => c.name === name)
+        const data = characterByName.get(name)
         if (!data) return null
 
-        const sl_no = charactersData.findIndex((c) => c.name === name) + 1
         const entry = roster[name]
 
         // Progression Math
@@ -103,20 +93,23 @@ export default function Characters() {
         let eqWeapon = null
         const awareWeaponId = getTravelerAwareWeaponId(data.name, entry, trackedWeapons)
         if (awareWeaponId) {
-          const tracked = trackedWeapons.find((w) => w.id === awareWeaponId)
+          const tracked = trackedMap.get(awareWeaponId)
           if (tracked) {
-            const wData = weaponsData.find((w) => w.name === tracked.weaponName)
+            const wData = weaponByName.get(tracked.weaponName)
             eqWeapon = { tracked, data: wData }
           }
         }
 
+        const resolvedMaterials = resolveCharacterMaterials(data)
+
         return {
           ...data,
-          sl_no,
+          sl_no: data.sl_no,
           entry,
           ascCosts,
           talentCosts,
-          eqWeapon
+          eqWeapon,
+          resolvedMaterials
         }
       })
       .filter(Boolean)
@@ -133,7 +126,7 @@ export default function Characters() {
     if (rarityFilter !== 'All') {
       const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
       list = list.filter((c) => {
-        const cRarity = typeof c.rarity === 'string' ? (c.rarity.match(/★/g)?.length || parseInt(c.rarity) || 0) : (c.rarity || 0)
+        const cRarity = typeof c.rarity === 'string' ? (c.rarity.match(/★/g)?.length || parseInt(c.rarity, 10) || 0) : (c.rarity || 0)
         return cRarity === rFilterNum
       })
     }
@@ -145,8 +138,8 @@ export default function Characters() {
       } else if (sortOrder === 'Name') {
         return compareNullableString(a.name, b.name, sortDirection);
       } else if (sortOrder === 'Rarity') {
-        const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity) || 0) : (a.rarity || 0);
-        const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity) || 0) : (b.rarity || 0);
+        const rarityA = typeof a.rarity === 'string' ? (a.rarity.match(/★/g)?.length || parseInt(a.rarity, 10) || 0) : (a.rarity || 0);
+        const rarityB = typeof b.rarity === 'string' ? (b.rarity.match(/★/g)?.length || parseInt(b.rarity, 10) || 0) : (b.rarity || 0);
         return (rarityA - rarityB) * dirMult;
       } else if (sortOrder === 'Element') {
         return compareNullableString(a.element, b.element, sortDirection);

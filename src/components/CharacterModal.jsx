@@ -157,7 +157,6 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
   const { name, rarity, element, weapon_type, materials } = character
 
   const rosterEntry = useStore((s) => s.roster[name])
-  const fullRoster = useStore((s) => s.roster)
   const saveCharacterDraft = useStore((s) => s.saveCharacterDraft)
   const removeCharacter = useStore((s) => s.removeCharacter)
   const trackedWeapons = useStore((s) => s.trackedWeapons)

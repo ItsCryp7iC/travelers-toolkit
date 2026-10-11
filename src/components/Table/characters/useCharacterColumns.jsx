@@ -12,11 +12,11 @@ import CharacterTalentMaterialCell from './CharacterTalentMaterialCell';
 import InlineNumberInput from '../../InlineNumberInput';
 
 export default function useCharacterColumns({
-  selectedNames,
+  selectedNames = [],
   setSelectedNames,
   updateCharacter,
   removeCharacter
-}) {
+} = {}) {
   return useMemo(() => [
     // ──────────────── IDENTITY ────────────────
     {
@@ -26,43 +26,56 @@ export default function useCharacterColumns({
       columns: [
         {
           id: 'select',
-          header: ({ table }) => (
-            <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   if (table.getFilteredRowModel().rows.length > 0 && selectedNames.length === table.getFilteredRowModel().rows.length) {
-                     setSelectedNames([]);
-                   } else {
-                     setSelectedNames(table.getFilteredRowModel().rows.map(r => r.original.name));
-                   }
-                 }}>
-              <input
-                type="checkbox"
-                checked={table.getFilteredRowModel().rows.length > 0 && selectedNames.length === table.getFilteredRowModel().rows.length}
-                readOnly
-                className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
-              />
-            </div>
-          ),
-          cell: ({ row }) => (
-            <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   const name = row.original.name;
-                   if (selectedNames.includes(name)) {
-                     setSelectedNames(prev => prev.filter(n => n !== name));
-                   } else {
-                     setSelectedNames(prev => [...prev, name]);
-                   }
-                 }}>
-              <input
-                type="checkbox"
-                checked={selectedNames.includes(row.original.name)}
-                readOnly
-                className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
-              />
-            </div>
-          ),
+          header: ({ table }) => {
+            const currentSelected = table.options.meta?.selectedNames ?? selectedNames;
+            const currentSetSelected = table.options.meta?.setSelectedNames ?? setSelectedNames;
+            const filteredRows = table.getFilteredRowModel().rows;
+            const isAllSelected = filteredRows.length > 0 && currentSelected.length === filteredRows.length;
+            return (
+              <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     if (!currentSetSelected) return;
+                     if (isAllSelected) {
+                       currentSetSelected([]);
+                     } else {
+                       currentSetSelected(filteredRows.map(r => r.original.name));
+                     }
+                   }}>
+                <input
+                  type="checkbox"
+                  checked={isAllSelected}
+                  readOnly
+                  className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
+                />
+              </div>
+            );
+          },
+          cell: ({ row, table }) => {
+            const currentSelected = table.options.meta?.selectedNames ?? selectedNames;
+            const currentSetSelected = table.options.meta?.setSelectedNames ?? setSelectedNames;
+            const name = row.original.name;
+            const isChecked = currentSelected.includes(name);
+            return (
+              <div className="w-full h-full flex items-center justify-center cursor-pointer pointer-events-auto"
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     if (!currentSetSelected) return;
+                     if (isChecked) {
+                       currentSetSelected(prev => prev.filter(n => n !== name));
+                     } else {
+                       currentSetSelected(prev => [...prev, name]);
+                     }
+                   }}>
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  readOnly
+                  className="w-5 h-5 pointer-events-none rounded border-gray-600 bg-gray-800/50 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
+                />
+              </div>
+            );
+          },
           meta: {
             thClassName: "w-16 px-2 py-2 sticky left-0 z-20 bg-[var(--surface)] border-r border-gray-700/50",
             tdClassName: "w-16 px-4 py-2 sticky left-0 z-20 bg-inherit border-r border-gray-700/50"
@@ -329,93 +342,93 @@ export default function useCharacterColumns({
         },
         {
           id: 'asc_nboss', header: 'N.Boss',
-          accessorFn: row => resolveCharacterMaterials(row)?.worldBoss?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.worldBoss?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.boss_material || 0) - (rowB.original.ascCosts?.boss_material || 0),
           filterFn: universalFilterFn,
           meta: { filterType: 'text', thClassName: "text-purple-400 text-center px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" },
           enableSorting: true, enableColumnFilter: true,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.boss_material || 0} icon="👹" color="text-purple-400" nameKey={resolvedMats?.worldBoss?.name || ''} category="Normal Boss Material" />;
           }
         },
         {
           id: 'asc_local', header: 'Local',
-          accessorFn: row => resolveCharacterMaterials(row)?.localSpecialty?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.localSpecialty?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.local_specialty || 0) - (rowB.original.ascCosts?.local_specialty || 0),
           meta: { filterType: 'text', thClassName: "text-gray-400 text-center px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.local_specialty || 0} icon="🌸" color="text-gray-400" nameKey={resolvedMats?.localSpecialty?.name || ''} category="Local Specialty" />;
           }
         },
         {
           id: 'asc_gem_5', header: 'Gemstone',
-          accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['4_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.gem?.tiers?.['4_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_gemstone || 0) - (rowB.original.ascCosts?.gem_gemstone || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#FBBF24]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.gem_gemstone || 0} icon="💎" color="text-amber-400" nameKey={resolvedMats?.gem?.tiers?.['4_star']?.name} category="Character Ascension Gem" />;
           }
         },
         {
           id: 'asc_gem_4', header: 'Chunk',
-          accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['3_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.gem?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_chunk || 0) - (rowB.original.ascCosts?.gem_chunk || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#A78BFA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.gem_chunk || 0} icon="💎" color="text-purple-400" nameKey={resolvedMats?.gem?.tiers?.['3_star']?.name} category="Character Ascension Gem" />;
           }
         },
         {
           id: 'asc_gem_3', header: 'Fragment',
-          accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['2_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.gem?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_fragment || 0) - (rowB.original.ascCosts?.gem_fragment || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.gem_fragment || 0} icon="💎" color="text-blue-400" nameKey={resolvedMats?.gem?.tiers?.['2_star']?.name} category="Character Ascension Gem" />;
           }
         },
         {
           id: 'asc_gem_2', header: 'Sliver',
-          accessorFn: row => resolveCharacterMaterials(row)?.gem?.tiers?.['1_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.gem?.tiers?.['1_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.gem_sliver || 0) - (rowB.original.ascCosts?.gem_sliver || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#4ADE80]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.gem_sliver || 0} icon="💎" color="text-green-400" nameKey={resolvedMats?.gem?.tiers?.['1_star']?.name} category="Character Ascension Gem" />;
           }
         },
         {
           id: 'asc_enh3', header: 'Enh 3★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['3_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.['3_star_enemy_material'] || 0) - (rowB.original.ascCosts?.['3_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'asc_enh2', header: 'Enh 2★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['2_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.['2_star_enemy_material'] || 0) - (rowB.original.ascCosts?.['2_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'asc_enh1', header: 'Enh 1★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['1_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['1_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.ascCosts?.['1_star_enemy_material'] || 0) - (rowB.original.ascCosts?.['1_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-gray-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.ascCosts?.['1_star_enemy_material'] || 0} icon="💧" color="text-gray-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
           }
         },
@@ -443,7 +456,7 @@ export default function useCharacterColumns({
             if (row.materials?.talent_material_family_ids) {
               return row.materials.talent_material_family_ids.map(f => `Philosophies of ${f}`);
             }
-            return resolveCharacterMaterials(row)?.talent?.tiers?.['4_star']?.name || 'Unknown';
+            return (row.resolvedMaterials || resolveCharacterMaterials(row))?.talent?.tiers?.['4_star']?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['4_star_talent_material'] || 0) - (rowB.original.talentCosts?.['4_star_talent_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
@@ -455,7 +468,7 @@ export default function useCharacterColumns({
             if (row.materials?.talent_material_family_ids) {
               return row.materials.talent_material_family_ids.map(f => `Guide to ${f}`);
             }
-            return resolveCharacterMaterials(row)?.talent?.tiers?.['3_star']?.name || 'Unknown';
+            return (row.resolvedMaterials || resolveCharacterMaterials(row))?.talent?.tiers?.['3_star']?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['3_star_talent_material'] || 0) - (rowB.original.talentCosts?.['3_star_talent_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
@@ -467,7 +480,7 @@ export default function useCharacterColumns({
             if (row.materials?.talent_material_family_ids) {
               return row.materials.talent_material_family_ids.map(f => `Teachings of ${f}`);
             }
-            return resolveCharacterMaterials(row)?.talent?.tiers?.['2_star']?.name || 'Unknown';
+            return (row.resolvedMaterials || resolveCharacterMaterials(row))?.talent?.tiers?.['2_star']?.name || 'Unknown';
           },
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['2_star_talent_material'] || 0) - (rowB.original.talentCosts?.['2_star_talent_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
@@ -475,11 +488,11 @@ export default function useCharacterColumns({
         },
         {
           id: 'tal_wk', header: 'Wk.Boss',
-          accessorFn: row => resolveCharacterMaterials(row)?.weeklyBoss?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.weeklyBoss?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.weekly_boss_material || 0) - (rowB.original.talentCosts?.weekly_boss_material || 0),
           meta: { filterType: 'text', thClassName: "text-amber-400 text-center px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.talentCosts?.weekly_boss_material || 0} icon="🐉" color="text-amber-400" nameKey={resolvedMats?.weeklyBoss?.name || ''} category="Weekly Boss Material" />;
           }
         },
@@ -490,31 +503,31 @@ export default function useCharacterColumns({
         },
         {
           id: 'tal_enh3', header: 'Enh 3★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['3_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['3_star_enemy_material'] || 0) - (rowB.original.talentCosts?.['3_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.talentCosts?.['3_star_enemy_material'] || 0} icon="⚔️" color="text-blue-400" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'tal_enh2', header: 'Enh 2★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['2_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['2_star_enemy_material'] || 0) - (rowB.original.talentCosts?.['2_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.talentCosts?.['2_star_enemy_material'] || 0} icon="⚔️" color="text-green-400" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'tal_enh1', header: 'Enh 1★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['1_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['1_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => (rowA.original.talentCosts?.['1_star_enemy_material'] || 0) - (rowB.original.talentCosts?.['1_star_enemy_material'] || 0),
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-gray-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={row.original.talentCosts?.['1_star_enemy_material'] || 0} icon="⚔️" color="text-gray-400" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
           }
         },
@@ -568,7 +581,7 @@ export default function useCharacterColumns({
       columns: [
         {
           id: 'grand_enh3', header: 'Enh 3★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['3_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['3_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => {
             const a = (rowA.original.ascCosts?.['3_star_enemy_material'] || 0) + (rowA.original.talentCosts?.['3_star_enemy_material'] || 0);
             const b = (rowB.original.ascCosts?.['3_star_enemy_material'] || 0) + (rowB.original.talentCosts?.['3_star_enemy_material'] || 0);
@@ -579,13 +592,13 @@ export default function useCharacterColumns({
             const asc = row.original.ascCosts;
             const tal = row.original.talentCosts;
             const grandEnh3 = (asc?.['3_star_enemy_material'] || 0) + (tal?.['3_star_enemy_material'] || 0);
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={grandEnh3} icon="⚔️" color="text-blue-400" nameKey={resolvedMats?.enemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'grand_enh2', header: 'Enh 2★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['2_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['2_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => {
             const a = (rowA.original.ascCosts?.['2_star_enemy_material'] || 0) + (rowA.original.talentCosts?.['2_star_enemy_material'] || 0);
             const b = (rowB.original.ascCosts?.['2_star_enemy_material'] || 0) + (rowB.original.talentCosts?.['2_star_enemy_material'] || 0);
@@ -596,13 +609,13 @@ export default function useCharacterColumns({
             const asc = row.original.ascCosts;
             const tal = row.original.talentCosts;
             const grandEnh2 = (asc?.['2_star_enemy_material'] || 0) + (tal?.['2_star_enemy_material'] || 0);
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={grandEnh2} icon="⚔️" color="text-green-400" nameKey={resolvedMats?.enemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
           }
         },
         {
           id: 'grand_enh1', header: 'Enh 1★',
-          accessorFn: row => resolveCharacterMaterials(row)?.enemy?.tiers?.['1_star']?.name || 'Unknown',
+          accessorFn: row => (row.resolvedMaterials || resolveCharacterMaterials(row))?.enemy?.tiers?.['1_star']?.name || 'Unknown',
           sortingFn: (rowA, rowB) => {
             const a = (rowA.original.ascCosts?.['1_star_enemy_material'] || 0) + (rowA.original.talentCosts?.['1_star_enemy_material'] || 0);
             const b = (rowB.original.ascCosts?.['1_star_enemy_material'] || 0) + (rowB.original.talentCosts?.['1_star_enemy_material'] || 0);
@@ -613,7 +626,7 @@ export default function useCharacterColumns({
             const asc = row.original.ascCosts;
             const tal = row.original.talentCosts;
             const grandEnh1 = (asc?.['1_star_enemy_material'] || 0) + (tal?.['1_star_enemy_material'] || 0);
-            const resolvedMats = resolveCharacterMaterials(row.original);
+            const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
             return <MatQuantity val={grandEnh1} icon="⚔️" color="text-[#9CA3AF]" nameKey={resolvedMats?.enemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
           }
         },
@@ -636,10 +649,10 @@ export default function useCharacterColumns({
           id: 'actions',
           header: '',
           meta: { thClassName: "px-2 py-2", tdClassName: "px-4 py-2 text-center" }, enableSorting: false, enableColumnFilter: false,
-          cell: ({ row }) => (
+          cell: ({ row, table }) => (
             <div className="flex justify-center" onClick={e => e.stopPropagation()}>
               <button
-                onClick={() => removeCharacter(row.original.name)}
+                onClick={() => (table.options.meta?.removeCharacter || removeCharacter)(row.original.name)}
                 className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded border border-red-500/20 hover:border-red-500/40 transition-colors"
               >
                 ✕
@@ -649,5 +662,5 @@ export default function useCharacterColumns({
         }
       ]
     }
-  ], [selectedNames, setSelectedNames, updateCharacter, removeCharacter]);
+  ], [updateCharacter, removeCharacter]);
 }

@@ -56,6 +56,12 @@ export default function WeaponsTable({
       sorting,
       columnFilters,
     },
+    meta: {
+      selectedIds,
+      setSelectedIds,
+      updateWeapon,
+      removeWeapon,
+    },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

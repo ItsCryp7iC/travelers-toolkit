@@ -3,6 +3,20 @@ import useStore from '../store/useStore';
 import { reconcileCharacters } from '../utils/hoyolabCharacterReconciliation';
 import { buildHoyolabApplyPlan } from '../utils/hoyolabSyncApply';
 import { getElementIcon } from '../utils/assetHelper';
+import HoyolabCharacterCard from './hoyolabSync/HoyolabCharacterCard';
+import HoyolabSyncSummary from './hoyolabSync/HoyolabSyncSummary';
+
+export const isCharacterActionable = (char) => {
+  if (!char) return false;
+  if (['new', 'update'].includes(char.status)) return true;
+  if (Object.values(char.changes || {}).some(x => x && x.direction === 'local-ahead')) return true;
+
+  const wStatus = char.weaponReconciliation?.status;
+  if (['would-create', 'suggested-instance', 'ambiguous', 'equipment-mismatch'].includes(wStatus)) return true;
+  if (wStatus === 'matched-instance' && char.weaponReconciliation?.changes && Object.keys(char.weaponReconciliation.changes).length > 0) return true;
+
+  return false;
+};
 
 export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
@@ -38,7 +52,6 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       setSelectedDerivedTravelers({});
       setShowConfirmation(false);
       setApplyResult(null);
-
     }
   }, [isOpen]);
 
@@ -117,17 +130,16 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     }
   };
 
-  const isCharacterActionable = (char) => {
-    if (!char) return false;
-    if (['new', 'update'].includes(char.status)) return true;
-    if (Object.values(char.changes || {}).some(x => x && x.direction === 'local-ahead')) return true;
-
-    const wStatus = char.weaponReconciliation?.status;
-    if (['would-create', 'suggested-instance', 'ambiguous', 'equipment-mismatch'].includes(wStatus)) return true;
-    if (wStatus === 'matched-instance' && char.weaponReconciliation?.changes && Object.keys(char.weaponReconciliation.changes).length > 0) return true;
-
-    return false;
-  };
+  const charactersByHoyolabId = useMemo(() => {
+    const map = new Map();
+    if (reconciliationResult?.characters) {
+      reconciliationResult.characters.forEach(c => {
+        map.set(String(c.hoyolabId), c);
+        map.set(Number(c.hoyolabId), c);
+      });
+    }
+    return map;
+  }, [reconciliationResult]);
 
   const handleSelectAllSafe = () => {
     if (!reconciliationResult) return;
@@ -145,18 +157,18 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     setSelectedChars({});
   };
 
-  const toggleCharSelection = (id) => {
+  const toggleCharSelection = useCallback((id) => {
     setSelectedChars(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
-  };
+  }, []);
 
-  const handleWeaponChoice = (id, choice) => {
+  const handleWeaponChoice = useCallback((id, choice) => {
     setWeaponChoices(prev => ({ ...prev, [id]: choice }));
-  };
+  }, []);
 
-  const toggleLocalAheadOverride = (id, fieldKey) => {
+  const toggleLocalAheadOverride = useCallback((id, fieldKey) => {
     setLocalAheadOverrides(prev => {
       const charOverrides = prev[id] || {};
       return {
@@ -167,20 +179,17 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
         }
       };
     });
-  };
+  }, []);
 
   const prepareApply = () => {
     if (!reconciliationResult) return;
     const plan = buildHoyolabApplyPlan({ reconciliationResult, selectedChars, weaponChoices, localAheadOverrides, selectedDerivedTravelers });
-
 
     // Count for summary
     let newCount = 0;
     let updateCount = 0;
     let weaponCreatedCount = 0;
     let weaponUpdatedCount = 0;
-    let hasUnresolvedAmbiguity = false;
-    let hasInvalidConflict = false;
 
     plan.characters.forEach(c => {
       if (c.isNew) newCount++;
@@ -197,9 +206,6 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     setShowConfirmation(true);
   };
 
-
-
-
   const confirmApply = () => {
     try {
       const result = applyHoyolabSync(planSummary.plan);
@@ -210,19 +216,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     setShowConfirmation(false);
   };
 
-
-
-  const renderBadge = (status) => {
-    if (status === 'new') return <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-green-500/20 text-green-400">New</span>;
-    if (status === 'update') return <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-blue-500/20 text-blue-400">Update</span>;
-    if (status === 'unchanged') return <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-[var(--surface-light)] text-[var(--muted)]">Unchanged</span>;
-    if (status === 'conflict') return <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-red-500/20 text-red-400">Conflict</span>;
-    if (status === 'unmapped') return <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-orange-500/20 text-orange-400">Unmapped</span>;
-    if (status === 'ignored') return <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-[var(--surface-light)] text-[var(--muted)]">Ignored</span>;
-    return null;
-  };
-
-  const { activeTraveler, activeTravelerElement, travelerVariants } = useMemo(() => {
+  const { activeTraveler, travelerVariants } = useMemo(() => {
     let activeTraveler = null;
     let activeTravelerElement = null;
     let travelerVariants = [];
@@ -258,7 +252,9 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
   const trackedWeaponsMap = useMemo(() => {
     const map = {};
-    trackedWeapons.forEach(w => map[w.id] = w);
+    trackedWeapons.forEach(w => {
+      map[w.id] = w;
+    });
     return map;
   }, [trackedWeapons]);
 
@@ -275,189 +271,15 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     });
   }, [reconciliationResult, activeTraveler, filter]);
 
-  const renderCharacterCard = (char, isTravelerCard = false) => (
-    <div key={char.hoyolabId} className={`bg-[var(--surface)] border ${selectedChars[char.hoyolabId] ? 'border-cyan-500/50' : 'border-[var(--border)]'} rounded-xl p-4 flex flex-col md:flex-row gap-4 items-start md:items-center transition-colors`}>
-      {/* Checkbox */}
-      {char.status !== 'unmapped' && char.status !== 'ignored' && (!isTravelerCard || isCharacterActionable(char)) && (
-        <label className="flex items-center gap-3 shrink-0 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={!!selectedChars[char.hoyolabId]}
-            onChange={() => toggleCharSelection(char.hoyolabId)}
-            className="w-5 h-5 rounded border-[var(--border)] bg-[var(--bg)] checked:bg-cyan-500"
-          />
-        </label>
-      )}
+  const selectedCharCount = useMemo(() => {
+    return Object.keys(selectedChars).filter(id => {
+      if (!selectedChars[id]) return false;
+      const char = charactersByHoyolabId.get(id);
+      if (char?.rosterKey?.startsWith('Traveler ') && !isCharacterActionable(char)) return false;
+      return true;
+    }).length;
+  }, [selectedChars, charactersByHoyolabId]);
 
-      {/* Char Info */}
-      <div className="flex-1 min-w-[200px]">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-bold text-lg text-[var(--text)]">{char.rosterKey || char.hoyolab.name}</span>
-          {renderBadge(char.status)}
-        </div>
-
-        {char.status === 'unmapped' ? (
-          <div className="text-orange-400 text-xs">Not yet supported by Toolkit data (ID: {char.hoyolabId})</div>
-        ) : char.status === 'ignored' ? (
-          <div className="text-[var(--muted)] text-xs">Excluded from planning sync</div>
-        ) : !isTravelerCard ? (
-          <div className="text-[var(--muted)] text-xs">
-            C{char.hoyolab.constellation} • Friendship {char.hoyolab.friendship}
-          </div>
-        ) : null}
-      </div>
-
-      {/* Diff Area */}
-      {char.status !== 'unmapped' && char.status !== 'ignored' && (
-        <div className="flex-[2] grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm w-full md:w-auto">
-
-          {/* Level & Asc */}
-          <div className="text-[var(--muted)] pt-1">Level</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 font-mono">
-              {char.status === 'new' ? (
-                <span className="text-cyan-400">Lv {char.hoyolab.level} A{char.hoyolab.ascension || 0}</span>
-              ) : (
-                <>
-                  <span>Lv {char.local?.level} A{char.local?.ascension}</span>
-                  {(char.changes?.level || char.changes?.ascension) && (
-                    <>
-                      <span className="text-[var(--muted)]">→</span>
-                      <span className={(char.changes?.level?.direction === 'local-ahead' || char.changes?.ascension?.direction === 'local-ahead') ? 'text-yellow-400' : 'text-cyan-400'}>
-                        Lv {char.hoyolab.level} A{char.hoyolab.ascension || 0}
-                      </span>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-            {((char.changes?.level?.direction === 'local-ahead' || char.changes?.ascension?.direction === 'local-ahead')) && (
-              <div className="flex items-center gap-2 mt-1 bg-yellow-500/10 p-2 rounded text-xs border border-yellow-500/20">
-                <span className="text-yellow-400">Toolkit is ahead.</span>
-                <button
-                  onClick={() => toggleLocalAheadOverride(char.hoyolabId, 'level')}
-                  className="px-2 py-1 bg-[var(--surface)] hover:bg-[var(--border)] rounded text-[var(--text)] ml-auto"
-                >
-                  {localAheadOverrides[char.hoyolabId]?.level ? 'Using HoYoLAB' : 'Keep Toolkit'}
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Talents */}
-          <div className="text-[var(--muted)] pt-1">Talents</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 font-mono">
-              {char.status === 'new' ? (
-                <span className="text-cyan-400">
-                  {char.hoyolab.talents?.normal || 1} / {char.hoyolab.talents?.skill || 1} / {char.hoyolab.talents?.burst || 1}
-                </span>
-              ) : (
-                <>
-                  <span>{char.local?.talents?.normal} / {char.local?.talents?.skill} / {char.local?.talents?.burst}</span>
-                  {char.changes?.talents && (
-                    <>
-                      <span className="text-[var(--muted)]">→</span>
-                      <span className={Object.values(char.changes.talents).some(t => t.direction === 'local-ahead') ? 'text-yellow-400' : 'text-cyan-400'}>
-                        {char.hoyolab.talents?.normal || 1} / {char.hoyolab.talents?.skill || 1} / {char.hoyolab.talents?.burst || 1}
-                      </span>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-            {(char.changes?.talents && Object.values(char.changes.talents).some(t => t.direction === 'local-ahead')) && (
-              <div className="flex items-center gap-2 mt-1 bg-yellow-500/10 p-2 rounded text-xs border border-yellow-500/20">
-                <span className="text-yellow-400">Toolkit talents ahead.</span>
-                <button
-                  onClick={() => toggleLocalAheadOverride(char.hoyolabId, 'skill')}
-                  className="px-2 py-1 bg-[var(--surface)] hover:bg-[var(--border)] rounded text-[var(--text)] ml-auto"
-                >
-                  {localAheadOverrides[char.hoyolabId]?.skill ? 'Using HoYoLAB' : 'Keep Toolkit'}
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Weapon */}
-          <div className="text-[var(--muted)] pt-1">Weapon</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              {char.weaponReconciliation?.status === 'unmapped' ? (
-                <span className="text-orange-400">Unmapped ({char.weaponReconciliation?.hoyolab?.id})</span>
-              ) : char.weaponReconciliation?.status === 'would-create' || char.status === 'new' ? (
-                <span className="text-cyan-400">
-                  {char.weaponReconciliation?.weaponName} Lv {char.hoyolab.weapon?.level} R{char.hoyolab.weapon?.refinement || 1}
-                </span>
-              ) : char.weaponReconciliation?.status === 'equipment-mismatch' ? (
-                <div className="flex flex-col">
-                  <span className="text-[var(--text)] line-through opacity-70">
-                    {trackedWeaponsMap[char.weaponReconciliation.equippedInstanceId]?.weaponName || 'Unknown'}
-                  </span>
-                  <span className="text-yellow-400">{char.weaponReconciliation?.weaponName} Lv {char.hoyolab.weapon?.level}</span>
-                </div>
-              ) : char.weaponReconciliation?.status === 'ambiguous' ? (
-                <span className="text-yellow-400">
-                  {char.weaponReconciliation?.weaponName} Lv {char.hoyolab.weapon?.level} (Ambiguous)
-                </span>
-              ) : char.weaponReconciliation?.status === 'suggested-instance' ? (
-                <span className="text-blue-400">
-                  {char.weaponReconciliation?.weaponName} (Suggest unassigned)
-                </span>
-              ) : char.weaponReconciliation?.status === 'matched-instance' ? (
-                <span className={Object.keys(char.weaponReconciliation?.changes || {}).length > 0 ? "text-cyan-400" : "text-[var(--text)]"}>
-                  {char.weaponReconciliation?.weaponName} Lv {char.hoyolab.weapon?.level} R{char.hoyolab.weapon?.refinement || 1}
-                </span>
-              ) : null}
-            </div>
-
-            {/* Weapon Action Resolver */}
-            {selectedChars[char.hoyolabId] && ['ambiguous', 'suggested-instance', 'equipment-mismatch'].includes(char.weaponReconciliation?.status) && (
-              <div className="flex flex-col gap-2 mt-2 bg-[var(--surface-light)] p-3 rounded border border-[var(--border)]">
-                <span className="text-xs font-bold text-[var(--text)]">Resolve Weapon Assignment:</span>
-                <div className="flex flex-col gap-2">
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input type="radio" name={`w_${char.hoyolabId}`} checked={weaponChoices[char.hoyolabId] === 'ignore' || !weaponChoices[char.hoyolabId]} onChange={() => handleWeaponChoice(char.hoyolabId, 'ignore')} />
-                    <span className="text-[var(--muted)]">Leave Unchanged</span>
-                  </label>
-                  <label className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input type="radio" name={`w_${char.hoyolabId}`} checked={weaponChoices[char.hoyolabId] === 'create'} onChange={() => handleWeaponChoice(char.hoyolabId, 'create')} />
-                    <span className="text-cyan-400">Create New Tracked Instance</span>
-                  </label>
-                  {char.weaponReconciliation?.candidates?.map(cand => {
-                    const rLvl = char.hoyolab.weapon?.level ?? 1;
-                    const rRef = char.hoyolab.weapon?.refinement ?? 1;
-                    const showsUpgrade = (cand.level < rLvl || cand.currentRefinement < rRef);
-                    return (
-                      <label key={cand.id} className="flex items-start gap-2 text-sm cursor-pointer">
-                        <input type="radio" className="mt-1" name={`w_${char.hoyolabId}`} checked={weaponChoices[char.hoyolabId] === `assign|${cand.id}`} onChange={() => handleWeaponChoice(char.hoyolabId, `assign|${cand.id}`)} />
-                        <div className="flex flex-col">
-                          <span className="text-blue-400">
-                            Use existing: Lv {cand.level} R{cand.currentRefinement} {showsUpgrade ? `→ Lv ${rLvl} R${rRef}` : ''} {cand.assignedTo ? `(Assigned: ${cand.assignedTo})` : '(Unassigned)'}
-                          </span>
-                          {showsUpgrade && weaponChoices[char.hoyolabId] === `assign|${cand.id}` && (
-                            <span className="text-xs text-blue-300/70 mt-0.5">Current stats will be synced to HoYoLAB</span>
-                          )}
-                        </div>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
-        </div>
-      )}
-    </div>
-  );
-
-  const selectedCharCount = Object.keys(selectedChars).filter(id => {
-    if (!selectedChars[id]) return false;
-    const char = reconciliationResult?.characters.find(c => c.hoyolabId === id);
-    if (char?.rosterKey?.startsWith('Traveler ') && !isCharacterActionable(char)) return false;
-    return true;
-  }).length;
   const selectedTravelerCount = Object.values(selectedDerivedTravelers).filter(Boolean).length;
   const hasSelections = selectedCharCount > 0 || selectedTravelerCount > 0;
   const totalSelectedCount = selectedCharCount + selectedTravelerCount;
@@ -471,7 +293,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     Object.keys(selectedChars).forEach(hoyolabId => {
       if (!selectedChars[hoyolabId]) return;
 
-      const c = reconciliationResult.characters.find(rc => rc.hoyolabId == hoyolabId);
+      const c = charactersByHoyolabId.get(hoyolabId);
       if (!c) return;
 
       const weaponChoice = weaponChoices[hoyolabId];
@@ -483,7 +305,8 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     if (hasInvalidConflict) return { canApply: false, applyBlockReason: 'Please deselect conflicting characters.' };
     if (hasUnresolvedAmbiguity) return { canApply: false, applyBlockReason: 'Please resolve weapon ambiguities.' };
     return { canApply: true, applyBlockReason: '' };
-  }, [reconciliationResult, hasSelections, selectedChars, weaponChoices]);
+  }, [reconciliationResult, hasSelections, selectedChars, weaponChoices, charactersByHoyolabId]);
+
   if (!isOpen) return null;
 
   return (
@@ -544,7 +367,6 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                     <span className="font-bold text-[var(--text)]">{applyResult.travelerVariantsAdded}</span>
                   </div>
                 )}
-
               </div>
               <button onClick={onClose} className="mt-8 px-6 py-2 bg-[var(--gold)] text-[var(--bg)] font-bold rounded-xl shadow-lg hover:scale-105 transition-transform">
                 Review Updated State
@@ -553,29 +375,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
           ) : reconciliationResult ? (
             <div className="flex flex-col h-full">
               {/* Summary */}
-              <div className="p-4 bg-[var(--surface-light)] border-b border-[var(--border)]">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                  <div className="bg-[var(--surface)] border border-[var(--border)] p-4 rounded-xl text-center">
-                    <div className="text-2xl font-bold text-[var(--text)]">{reconciliationResult.summary.totalRemote}</div>
-                    <div className="text-[var(--muted)] text-xs uppercase tracking-wide">Found</div>
-                    {reconciliationResult.summary.ignored > 0 && (
-                      <div className="text-[var(--muted)] text-[10px] mt-1 opacity-80">{reconciliationResult.summary.syncRelevant} syncable • {reconciliationResult.summary.ignored} ignored</div>
-                    )}
-                  </div>
-                  <div className="bg-[var(--surface)] border border-green-500/20 p-4 rounded-xl text-center">
-                    <div className="text-2xl font-bold text-green-400">{reconciliationResult.summary.newCharacters}</div>
-                    <div className="text-[var(--muted)] text-xs uppercase tracking-wide">New</div>
-                  </div>
-                  <div className="bg-[var(--surface)] border border-blue-500/20 p-4 rounded-xl text-center">
-                    <div className="text-2xl font-bold text-blue-400">{reconciliationResult.summary.charactersWithUpdates}</div>
-                    <div className="text-[var(--muted)] text-xs uppercase tracking-wide">Updates</div>
-                  </div>
-                  <div className="bg-[var(--surface)] border border-[var(--border)] p-4 rounded-xl text-center">
-                    <div className="text-2xl font-bold text-[var(--text)]">{reconciliationResult.summary.unchangedCharacters}</div>
-                    <div className="text-[var(--muted)] text-xs uppercase tracking-wide">Up to date</div>
-                  </div>
-                </div>
-              </div>
+              <HoyolabSyncSummary summary={reconciliationResult.summary} />
 
               {/* Traveler Section */}
               {activeTraveler && (
@@ -588,7 +388,18 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                     </div>
 
                     {/* Active Traveler Card */}
-                    {renderCharacterCard(activeTraveler, true)}
+                    <HoyolabCharacterCard
+                      char={activeTraveler}
+                      isTravelerCard={true}
+                      isSelected={selectedChars[activeTraveler.hoyolabId]}
+                      onToggleSelect={toggleCharSelection}
+                      isActionable={isCharacterActionable(activeTraveler)}
+                      localAheadOverrides={localAheadOverrides}
+                      onToggleLocalAheadOverride={toggleLocalAheadOverride}
+                      weaponChoice={weaponChoices[activeTraveler.hoyolabId]}
+                      onWeaponChoice={handleWeaponChoice}
+                      trackedWeaponsMap={trackedWeaponsMap}
+                    />
 
                     {/* Traveler Variants */}
                     <div className="mt-2 pt-4 border-t border-[var(--border)]">
@@ -657,7 +468,6 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
               )}
 
               {/* Bulk Controls */}
-
               {Object.keys(roster).length === 0 && reconciliationResult.summary.syncRelevant > 0 && (
                 <div className="mx-6 mt-4 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-between">
                   <div className="flex flex-col">
@@ -691,7 +501,21 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
               {/* Rows */}
               <div className="p-4 md:p-6 space-y-3">
-                {filteredChars.map((char) => renderCharacterCard(char))}
+                {filteredChars.map((char) => (
+                  <HoyolabCharacterCard
+                    key={char.hoyolabId}
+                    char={char}
+                    isTravelerCard={false}
+                    isSelected={selectedChars[char.hoyolabId]}
+                    onToggleSelect={toggleCharSelection}
+                    isActionable={isCharacterActionable(char)}
+                    localAheadOverrides={localAheadOverrides}
+                    onToggleLocalAheadOverride={toggleLocalAheadOverride}
+                    weaponChoice={weaponChoices[char.hoyolabId]}
+                    onWeaponChoice={handleWeaponChoice}
+                    trackedWeaponsMap={trackedWeaponsMap}
+                  />
+                ))}
                 {filteredChars.length === 0 && (
                   <div className="text-center py-10 text-[var(--muted)] italic">
                     No characters match this filter.
@@ -734,8 +558,6 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
               <div className="flex justify-between"><span className="text-[var(--muted)]">Weapons to Create</span><span className="font-bold text-cyan-400">{planSummary.weaponCreatedCount}</span></div>
               <div className="flex justify-between"><span className="text-[var(--muted)]">Existing Weapons to Reassign/Update</span><span className="font-bold text-[var(--text)]">{planSummary.weaponUpdatedCount}</span></div>
               <div className="mt-4 p-3 bg-blue-500/10 rounded-lg text-blue-300 text-xs border border-blue-500/20">
-
-
                 Planner targets will be safely preserved.
               </div>
             </div>

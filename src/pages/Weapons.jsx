@@ -9,47 +9,23 @@ import ForgingQueuePanel from '../components/ForgingQueuePanel'
 import weaponsData from '../data/weapons.json'
 import charactersData from '../utils/characters'
 import useStore from '../store/useStore'
-import { WEAPON_TYPES, RARITY_COLORS, formatName, getInitials, getStars, getRarityClass, getRarityBg } from '../utils/gameData'
-import { ELEMENTS } from '../utils/gameData'
-import { calculateWeaponCost, formatNumber, buildWeaponAscMatKey, buildWeaponEliteKey, buildMobNames, formatMaterialName, toggleMilestoneAscension, isMilestone } from '../utils/calculator'
+import { WEAPON_TYPES } from '../utils/gameData'
+import { calculateWeaponCost } from '../utils/calculator'
 import { resolveWeaponMaterials } from '../utils/dataManager'
+import { getWeaponTypeIcon } from '../utils/assetHelper'
 import GenshinImage from '../components/GenshinImage'
-import { getWeaponIcon, getCharacterAvatar, getMaterialIcon, getWeaponTypeIcon } from '../utils/assetHelper'
-import MatQuantity from '../components/MatQuantity'
-import InlineNumberInput from '../components/InlineNumberInput'
 import WeaponsTable from '../components/WeaponsTable'
 
 const ALL_TYPES    = ['All', ...Object.keys(WEAPON_TYPES)]
 const ALL_RARITIES = ['All', '🟡 5★', '🟣 4★', '🔵 3★', '🟢 2★', '⚪ 1★']
 
-const isAscended = (level, ascension) => {
-  if (level === 20 && ascension >= 1) return true;
-  if (level === 40 && ascension >= 2) return true;
-  if (level === 50 && ascension >= 3) return true;
-  if (level === 60 && ascension >= 4) return true;
-  if (level === 70 && ascension >= 5) return true;
-  if (level === 80 && ascension >= 6) return true;
-  if (level === 90 && ascension >= 6) return true;
-  return false;
-}
-
-const MatCell = ({ qty, color = 'text-[var(--text)]', nameKey, category, className = '' }) => {
-  if (!qty) return <td className={`px-3 py-2 text-center ${className}`}><span className="text-[var(--muted)] opacity-50">-</span></td>
-  const fallbackStr = nameKey ? nameKey.substring(0, 2).toUpperCase() : '??'
-  const iconFallback = <span className="text-xs font-bold text-[var(--muted)] border border-[var(--border)] rounded px-0.5 bg-[var(--elevated)] opacity-70" title={nameKey}>{fallbackStr}</span>
-  return (
-    <td className={`px-3 py-1 text-center ${className}`}>
-      <div className="flex items-center justify-center gap-2">
-        <GenshinImage src={getMaterialIcon(nameKey, category)} alt={nameKey} className="w-8 h-8 object-contain shrink-0" fallback={iconFallback} />
-        <span className={`text-xs font-bold ${color}`}>{qty}</span>
-      </div>
-    </td>
-  )
-}
+// Hoisted static lookup maps to avoid repeated O(N) array scans
+const weaponById = new Map(weaponsData.map((w) => [w.id, w]))
+const weaponByName = new Map(weaponsData.map((w) => [w.name, w]))
+const characterByName = new Map(charactersData.map((c) => [c.name, c]))
 
 export default function Weapons() {
   const trackedWeapons      = useStore((s) => s.trackedWeapons)
-  const roster              = useStore((s) => s.roster)
   const removeTrackedWeapon = useStore((s) => s.removeTrackedWeapon)
   const batchRemoveWeapons  = useStore((s) => s.batchRemoveWeapons)
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
@@ -68,16 +44,15 @@ export default function Weapons() {
   const [selectedIds, setSelectedIds] = useState([])
   const [slideDirection, setSlideDirection] = useState('next')
 
-  // Enrich tracked weapons with their static metadata and costs
+  // Enrich tracked weapons with their static metadata, pre-resolved materials and costs
   const enriched = useMemo(() => {
-    // First, map over tracked weapons and calculate costs
     const mapped = trackedWeapons.map((tw) => {
-      const data = weaponsData.find((w) => w.id === tw.weapon_id) || weaponsData.find((w) => w.name === tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
-      const assignedChar = tw.assignedTo ? charactersData.find((c) => c.name === tw.assignedTo) : null
-      
-      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus, roster)
+      const data = weaponById.get(tw.weapon_id) || weaponByName.get(tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
+      const assignedChar = tw.assignedTo ? (characterByName.get(tw.assignedTo) || null) : null
+      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus)
+      const resolvedMaterials = resolveWeaponMaterials(data)
 
-      return { ...tw, data, assignedChar, costs }
+      return { ...tw, data, assignedChar, costs, resolvedMaterials }
     })
     
     // Default sort chronological based on createdAt
@@ -97,7 +72,8 @@ export default function Weapons() {
     if (rarityFilter !== 'All') {
       const rFilterNum = parseInt(rarityFilter.match(/\d+/)?.[0] || '0', 10)
       list = list.filter((w) => {
-        const wRarity = typeof w.data?.rarity === 'string' ? (w.data.rarity.match(/★/g)?.length || parseInt(w.data.rarity) || 0) : (w.data?.rarity || 0)
+        const rawRarity = w.data?.rarity
+        const wRarity = typeof rawRarity === 'string' ? (rawRarity.match(/★/g)?.length || parseInt(rawRarity, 10) || 0) : (rawRarity || 0)
         return wRarity === rFilterNum
       })
     }
@@ -122,8 +98,8 @@ export default function Weapons() {
         if (!charA_Name) return 1;
         if (!charB_Name) return -1;
 
-        const charA = charactersData.find(c => c.name === charA_Name) || {};
-        const charB = charactersData.find(c => c.name === charB_Name) || {};
+        const charA = a.assignedChar || {};
+        const charB = b.assignedChar || {};
         
         const charOrderComp = compareNullableNumber(charA.release_order, charB.release_order, sortDirection);
         if (charOrderComp !== 0) return charOrderComp;

@@ -53,6 +53,12 @@ export default function CharactersTable({
       sorting,
       columnFilters,
     },
+    meta: {
+      selectedNames,
+      setSelectedNames,
+      updateCharacter,
+      removeCharacter,
+    },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
