@@ -18,8 +18,16 @@ from config import (
     get_cookie_set_options,
     get_cookie_delete_options,
     STATE_COOKIE_MAX_AGE,
-    GOOGLE_FERNET
+    SESSION_COOKIE_MAX_AGE,
+    GOOGLE_FERNET,
+    UPSTREAM_TIMEOUT_SECONDS,
+    UPSTREAM_CONNECT_TIMEOUT_SECONDS
 )
+
+GOOGLE_HTTP_TIMEOUT = httpx.Timeout(UPSTREAM_TIMEOUT_SECONDS, connect=UPSTREAM_CONNECT_TIMEOUT_SECONDS)
+
+def get_google_http_client() -> httpx.AsyncClient:
+    return httpx.AsyncClient(timeout=GOOGLE_HTTP_TIMEOUT)
 
 router = APIRouter()
 
@@ -39,6 +47,8 @@ class BackupData(BaseModel):
     inventory: dict = Field(default_factory=dict)
     serverRegion: str = "Asia"
     showDbBuilder: bool = False
+    displayTimeZone: Optional[str] = "auto"
+    achievementProgress: Optional[dict] = Field(default_factory=dict)
 
 class BackupEnvelope(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -60,7 +70,7 @@ async def get_valid_access_token(request: Request, response: Response):
 
     fernet = get_google_fernet()
     try:
-        session_data = json.loads(fernet.decrypt(encrypted_session.encode()).decode())
+        session_data = json.loads(fernet.decrypt(encrypted_session.encode(), ttl=SESSION_COOKIE_MAX_AGE).decode())
     except Exception:
         raise GoogleAuthError("Invalid Google session.", clear_cookie=True)
 
@@ -74,7 +84,7 @@ async def get_valid_access_token(request: Request, response: Response):
             raise GoogleAuthError("Session expired and no refresh token available.", clear_cookie=True)
 
         # Refresh token
-        async with httpx.AsyncClient() as client:
+        async with get_google_http_client() as client:
             res = await client.post("https://oauth2.googleapis.com/token", data={
                 "client_id": GOOGLE_CLIENT_ID,
                 "client_secret": GOOGLE_CLIENT_SECRET,
@@ -130,7 +140,7 @@ async def google_auth_callback(request: Request, response: Response, code: str =
     if error or not code or not state or not expected_state or not secrets.compare_digest(state, expected_state):
         return html_response
 
-    async with httpx.AsyncClient() as client:
+    async with get_google_http_client() as client:
         res = await client.post("https://oauth2.googleapis.com/token", data={
             "client_id": GOOGLE_CLIENT_ID,
             "client_secret": GOOGLE_CLIENT_SECRET,
@@ -174,7 +184,7 @@ async def google_auth_callback(request: Request, response: Response, code: str =
 async def check_google_session(request: Request, response: Response):
     try:
         access_token = await get_valid_access_token(request, response)
-        async with httpx.AsyncClient() as client:
+        async with get_google_http_client() as client:
             user_res = await client.get(
                 "https://www.googleapis.com/oauth2/v1/userinfo",
                 headers={"Authorization": f"Bearer {access_token}"}
@@ -213,7 +223,7 @@ async def create_manual_backup(request: Request, response: Response, payload: Ba
         "parents": ["appDataFolder"]
     }
 
-    async with httpx.AsyncClient() as client:
+    async with get_google_http_client() as client:
         # Upload
         form = {
             "metadata": (None, json.dumps(metadata), "application/json"),
@@ -247,7 +257,7 @@ async def create_manual_backup(request: Request, response: Response, payload: Ba
             if len(manual_files) > 5:
                 for f in manual_files[5:]:
                     await client.delete(
-                        f"https://www.googleapis.com/drive/v3/files/{f['id']}",
+                        f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(str(f['id']), safe='')}",
                         headers={"Authorization": f"Bearer {access_token}"}
                     )
     return {"success": True}
@@ -256,7 +266,7 @@ async def create_manual_backup(request: Request, response: Response, payload: Ba
 async def create_auto_backup(request: Request, response: Response, payload: BackupEnvelope):
     access_token = await get_valid_access_token(request, response)
 
-    async with httpx.AsyncClient() as client:
+    async with get_google_http_client() as client:
         search_res = await client.get(
             "https://www.googleapis.com/drive/v3/files",
             params={
@@ -282,7 +292,7 @@ async def create_auto_backup(request: Request, response: Response, payload: Back
         if files:
             file_id = files[0]["id"]
             upload_res = await client.patch(
-                f"https://www.googleapis.com/upload/drive/v3/files/{file_id}?uploadType=multipart",
+                f"https://www.googleapis.com/upload/drive/v3/files/{urllib.parse.quote(str(file_id), safe='')}?uploadType=multipart",
                 headers={"Authorization": f"Bearer {access_token}"},
                 files=form
             )
@@ -306,7 +316,7 @@ async def create_auto_backup(request: Request, response: Response, payload: Back
 async def list_manual_backups(request: Request, response: Response):
     access_token = await get_valid_access_token(request, response)
 
-    async with httpx.AsyncClient() as client:
+    async with get_google_http_client() as client:
         search_res = await client.get(
             "https://www.googleapis.com/drive/v3/files",
             params={
@@ -331,7 +341,7 @@ async def list_manual_backups(request: Request, response: Response):
 async def get_recovery_backup(request: Request, response: Response):
     access_token = await get_valid_access_token(request, response)
 
-    async with httpx.AsyncClient() as client:
+    async with get_google_http_client() as client:
         search_res = await client.get(
             "https://www.googleapis.com/drive/v3/files",
             params={
@@ -394,7 +404,7 @@ async def get_recovery_backup(request: Request, response: Response):
 async def get_auto_backup_status(request: Request, response: Response):
     access_token = await get_valid_access_token(request, response)
 
-    async with httpx.AsyncClient() as client:
+    async with get_google_http_client() as client:
         search_res = await client.get(
             "https://www.googleapis.com/drive/v3/files",
             params={
@@ -424,7 +434,7 @@ async def get_auto_backup_status(request: Request, response: Response):
 @router.get("/api/google/backups/{file_id}")
 async def download_backup(request: Request, response: Response, file_id: str):
     access_token = await get_valid_access_token(request, response)
-    async with httpx.AsyncClient() as client:
+    async with get_google_http_client() as client:
         search_res = await client.get(
             "https://www.googleapis.com/drive/v3/files",
             params={
@@ -447,8 +457,9 @@ async def download_backup(request: Request, response: Response, file_id: str):
                 break
         if not matched_file:
             raise HTTPException(status_code=403, detail="File is not a valid manual backup")
+        safe_file_id = urllib.parse.quote(str(file_id), safe="")
         download_res = await client.get(
-            f"https://www.googleapis.com/drive/v3/files/{file_id}?alt=media",
+            f"https://www.googleapis.com/drive/v3/files/{safe_file_id}?alt=media",
             headers={"Authorization": f"Bearer {access_token}"}
         )
         if download_res.status_code != 200:

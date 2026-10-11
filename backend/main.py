@@ -1,11 +1,12 @@
+import asyncio
+import logging
+import json
 from fastapi import FastAPI, HTTPException, Response, Request, Cookie
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import genshin
-import traceback
-import json
 from cryptography.fernet import InvalidToken
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 from google_api import router as google_router, GoogleAuthError
 from hoyolab_achievements import (
     normalize_achievement_response,
@@ -13,14 +14,17 @@ from hoyolab_achievements import (
     AchievementNormalizationError,
 )
 
-
 from config import (
     IS_PRODUCTION,
     FRONTEND_ORIGINS,
     HOYOLAB_FERNET,
+    SESSION_COOKIE_MAX_AGE,
+    UPSTREAM_TIMEOUT_SECONDS,
     get_cookie_set_options,
     get_cookie_delete_options
 )
+
+logger = logging.getLogger("backend.main")
 
 app = FastAPI(
     title="Traveler's Toolkit Backend",
@@ -28,6 +32,15 @@ app = FastAPI(
     redoc_url=None if IS_PRODUCTION else "/redoc",
     openapi_url=None if IS_PRODUCTION else "/openapi.json"
 )
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
 
 @app.exception_handler(GoogleAuthError)
 async def google_auth_exception_handler(request: Request, exc: GoogleAuthError):
@@ -54,23 +67,36 @@ app.add_middleware(
 app.include_router(google_router)
 
 class AuthPayload(BaseModel):
-    ltuid: str
-    ltoken: str
-    uid: int | None = None
+    model_config = ConfigDict(extra="forbid")
+    ltuid: str = Field(..., min_length=1, max_length=128)
+    ltoken: str = Field(..., min_length=1, max_length=512)
+    uid: int | None = Field(default=None, ge=100000000, le=9999999999)
 
 class NotesPayload(BaseModel):
-    uid: int | None = None
+    model_config = ConfigDict(extra="forbid")
+    uid: int | None = Field(default=None, ge=100000000, le=9999999999)
 
 class AchievementPayload(BaseModel):
-    uid: int | None = None
-
-
+    model_config = ConfigDict(extra="forbid")
+    uid: int | None = Field(default=None, ge=100000000, le=9999999999)
 
 class CalculatorSyncPayload(BaseModel):
-    uid: int | None = None
+    model_config = ConfigDict(extra="forbid")
+    uid: int | None = Field(default=None, ge=100000000, le=9999999999)
 
 COOKIE_NAME = "tt_hoyolab_session"
-COOKIE_MAX_AGE = 30 * 24 * 60 * 60 # 30 days in seconds
+COOKIE_MAX_AGE = 30 * 24 * 60 * 60  # 30 days in seconds
+
+def sanitize_credential_token(raw: str, key_hint: str) -> str:
+    """Sanitize pasted credential strings (handling whitespace, key=value format, quotes, semicolons)."""
+    if not raw:
+        return ""
+    val = raw.strip().strip("'\"").strip()
+    if "=" in val:
+        k, _, v = val.partition("=")
+        if key_hint in k.lower():
+            val = v.strip().strip("'\"").strip()
+    return val.rstrip(";").strip().strip("'\"")
 
 def auth_failure_response(detail: str):
     response = JSONResponse(
@@ -95,12 +121,15 @@ def _get_hoyolab_client(request: Request):
         )
 
     try:
-        decrypted_data = HOYOLAB_FERNET.decrypt(encrypted_session.encode()).decode()
+        decrypted_data = HOYOLAB_FERNET.decrypt(
+            encrypted_session.encode(),
+            ttl=SESSION_COOKIE_MAX_AGE
+        ).decode()
         session_data = json.loads(decrypted_data)
         ltuid = session_data.get("ltuid")
         ltoken = session_data.get("ltoken")
     except InvalidToken:
-        return None, auth_failure_response("Session corrupted or invalid.")
+        return None, auth_failure_response("Session corrupted, expired, or invalid.")
     except Exception:
         return None, auth_failure_response("Session parsing failed.")
 
@@ -113,31 +142,31 @@ def _get_hoyolab_client(request: Request):
 
 @app.post("/api/hoyolab/session")
 async def connect_hoyolab_session(payload: AuthPayload, response: Response):
-    if not payload.ltuid or not payload.ltoken:
-        raise HTTPException(status_code=400, detail="LTUID or LTOKEN missing in request.")
-    
-    ltuid = payload.ltuid.strip()
-    ltoken = payload.ltoken.strip()
-    
+    ltuid = sanitize_credential_token(payload.ltuid, "ltuid")
+    ltoken = sanitize_credential_token(payload.ltoken, "ltoken")
+
     if not ltuid or not ltoken:
         raise HTTPException(status_code=400, detail="LTUID or LTOKEN cannot be blank.")
 
     cookies = {"ltuid_v2": ltuid, "ltoken_v2": ltoken}
     client = genshin.Client(cookies, game=genshin.Game.GENSHIN)
-    
+
     try:
         # Perform a real authenticated call to prove credentials work
-        await client.get_genshin_notes(payload.uid) if payload.uid else await client.get_genshin_notes()
+        notes_coro = client.get_genshin_notes(payload.uid) if payload.uid else client.get_genshin_notes()
+        await asyncio.wait_for(notes_coro, timeout=UPSTREAM_TIMEOUT_SECONDS)
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Upstream request timed out. Please try again later.")
     except genshin.errors.InvalidCookies:
         raise HTTPException(status_code=401, detail="Invalid or expired cookies.")
     except genshin.errors.GenshinException as e:
         if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
             raise HTTPException(status_code=401, detail="Authentication failed. Please check your cookies.")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail="Authentication failed with upstream HoYoLAB service.")
     except Exception as e:
-        print(traceback.format_exc())
+        logger.error("HoYoLAB authentication unexpected error: %s", type(e).__name__)
         raise HTTPException(status_code=500, detail="Internal server error.")
-        
+
     # If successful, encrypt the credentials
     session_data = {
         "version": 1,
@@ -145,13 +174,13 @@ async def connect_hoyolab_session(payload: AuthPayload, response: Response):
         "ltoken": ltoken
     }
     encrypted_session = HOYOLAB_FERNET.encrypt(json.dumps(session_data).encode()).decode()
-    
+
     response.set_cookie(
         key=COOKIE_NAME,
         value=encrypted_session,
         **get_cookie_set_options(max_age=COOKIE_MAX_AGE)
     )
-    
+
     return {"connected": True}
 
 @app.get("/api/hoyolab/session")
@@ -159,9 +188,12 @@ async def check_hoyolab_session(request: Request, response: Response):
     encrypted_session = request.cookies.get(COOKIE_NAME)
     if not encrypted_session:
         return {"connected": False}
-        
+
     try:
-        decrypted_data = HOYOLAB_FERNET.decrypt(encrypted_session.encode()).decode()
+        decrypted_data = HOYOLAB_FERNET.decrypt(
+            encrypted_session.encode(),
+            ttl=SESSION_COOKIE_MAX_AGE
+        ).decode()
         session_data = json.loads(decrypted_data)
         if not session_data.get("ltuid") or not session_data.get("ltoken"):
             response.delete_cookie(key=COOKIE_NAME, **get_cookie_delete_options())
@@ -186,39 +218,39 @@ async def get_real_time_notes(request: Request, response: Response, payload: Not
         return err
 
     uid = payload.uid if payload else None
-    
+
     try:
-        if uid:
-            data = await client.get_genshin_notes(uid)
-        else:
-            data = await client.get_genshin_notes()
-            
+        notes_coro = client.get_genshin_notes(uid) if uid else client.get_genshin_notes()
+        data = await asyncio.wait_for(notes_coro, timeout=UPSTREAM_TIMEOUT_SECONDS)
+
         # Resin details
         resin_payload = {
             "current": data.current_resin,
             "max": data.max_resin,
             "recovery_time_seconds": data.remaining_resin_recovery_time.total_seconds()
         }
-        
+
         # Realm currency details
         realm_currency_payload = {
             "current": data.current_realm_currency,
             "max": data.max_realm_currency,
             "recovery_time_seconds": data.remaining_realm_currency_recovery_time.total_seconds()
         }
-        
+
         return {
             "resin": resin_payload,
             "realm_currency": realm_currency_payload
         }
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Upstream request timed out. Please try again later.")
     except genshin.errors.InvalidCookies:
         return auth_failure_response("Invalid or expired cookies.")
     except genshin.errors.GenshinException as e:
         if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
             return auth_failure_response("Authentication failed. Please check your cookies.")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=502, detail="HoYoLAB service is temporarily unavailable.")
     except Exception as e:
-        print(traceback.format_exc())
+        logger.error("HoYoLAB notes unexpected error: %s", type(e).__name__)
         raise HTTPException(status_code=500, detail="Internal server error.")
 
 @app.post("/api/hoyolab/achievements")
@@ -238,18 +270,12 @@ async def get_achievement_summary(request: Request, payload: AchievementPayload 
     uid = payload.uid if payload else None
 
     try:
-        # NOTE: genshin.py 1.7.29 has no public Genshin achievement method.
-        # This internal transport (_request_genshin_record) is intentionally isolated here.
-        # It handles:
-        # - UID resolution (via _get_uid if uid is None)
-        # - Server recognition (via recognize_genshin_server)
-        # - DS signing and required headers
-        # - Proper base URL for overseas/Chinese regions
-        raw = await client._request_genshin_record(
+        achieve_coro = client._request_genshin_record(
             "achievement",
             uid,
             method="POST",
         )
+        raw = await asyncio.wait_for(achieve_coro, timeout=UPSTREAM_TIMEOUT_SECONDS)
 
         normalized = normalize_achievement_response(raw)
 
@@ -265,6 +291,8 @@ async def get_achievement_summary(request: Request, payload: AchievementPayload 
 
         return result
 
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Upstream request timed out. Please try again later.")
     except genshin.errors.InvalidCookies:
         return auth_failure_response("Invalid or expired cookies.")
     except genshin.errors.DataNotPublic:
@@ -292,7 +320,8 @@ async def get_achievement_summary(request: Request, payload: AchievementPayload 
         if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
             return auth_failure_response("Authentication failed. Please check your cookies.")
         raise HTTPException(status_code=502, detail="HoYoLAB achievement service is temporarily unavailable.")
-    except Exception:
+    except Exception as e:
+        logger.error("HoYoLAB achievement unexpected error: %s", type(e).__name__)
         raise HTTPException(status_code=500, detail="Internal server error.")
 
 
@@ -307,8 +336,10 @@ async def character_sync_preview(request: Request, payload: CalculatorSyncPayloa
     uid = payload.uid if payload else None
 
     try:
-        preview = await build_sync_preview(client, uid)
+        preview = await asyncio.wait_for(build_sync_preview(client, uid), timeout=UPSTREAM_TIMEOUT_SECONDS * 2)
         return {"characters": [p.model_dump() for p in preview]}
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Upstream request timed out. Please try again later.")
     except genshin.errors.InvalidCookies:
         return auth_failure_response("Invalid or expired cookies.")
     except genshin.errors.DataNotPublic:
@@ -318,8 +349,9 @@ async def character_sync_preview(request: Request, payload: CalculatorSyncPayloa
     except genshin.errors.GenshinException as e:
         if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
             return auth_failure_response("Authentication failed.")
-        raise HTTPException(status_code=502, detail=f"Service unavailable: {str(e)}")
-    except Exception:
+        raise HTTPException(status_code=502, detail="HoYoLAB character sync is temporarily unavailable.")
+    except Exception as e:
+        logger.error("HoYoLAB character sync unexpected error: %s", type(e).__name__)
         raise HTTPException(status_code=500, detail="Internal server error.")
 
 @app.get("/api/health")
