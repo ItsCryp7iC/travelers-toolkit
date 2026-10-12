@@ -248,7 +248,7 @@ export default function Characters() {
           <span className="text-6xl mb-5">⚔️</span>
           <h3 className="font-semibold text-[var(--text)] text-xl mb-2">Your roster is empty</h3>
           <p className="text-[var(--muted)] text-sm max-w-xs mb-6">Add characters to start tracking their progression goals and material costs.</p>
-          <button onClick={() => setAddModalOpen(true)} className="genshin-btn-ghost">+ Add Character</button>
+          <button onClick={() => setIsBatchModalOpen(true)} className="genshin-btn-ghost">+ Add Character</button>
         </div>
       ) : (
         <>

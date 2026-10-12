@@ -1,0 +1,52 @@
+node_modules
+dist
+dist-ssr
+backend
+public
+package-lock.json
+
+# Markdown docs and specifications (preserve architectural formatting)
+docs/**
+*.md
+
+# HTML and deployment config
+index.html
+vercel.json
+
+# Backup and temp files
+*.orig
+**/*.orig*
+
+# Large game data & generated artifacts
+src/data/**
+scripts/**
+
+# Binary / font / media assets
+*.woff2
+*.ttf
+*.png
+*.webp
+*.svg
+*.ico
+
+# Python scripts and virtual environments
+*.py
+*.pyc
+.venv
+
+# Local env and cache
+.env
+.env.*
+
+# Legacy source deferred to prevent mass repository whitespace churn (F-005 Scope Policy)
+src/components/**
+src/pages/**
+src/layouts/**
+src/store/**
+src/utils/**
+src/types/**
+src/App.jsx
+src/App.test.jsx
+src/assets.test.js
+src/main.jsx
+src/index.css

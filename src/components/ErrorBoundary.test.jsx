@@ -1,6 +1,6 @@
-import React, { act } from 'react';
-import { createRoot } from 'react-dom/client';
+import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import ErrorBoundary from './ErrorBoundary';
 
 function ProblemChild({ shouldThrow = true }) {
@@ -11,80 +11,60 @@ function ProblemChild({ shouldThrow = true }) {
 }
 
 describe('ErrorBoundary Component', () => {
-  let container = null;
-  let root = null;
-  let originalConsoleError;
+  let consoleErrorSpy;
 
   beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-    root = createRoot(container);
-    originalConsoleError = console.error;
-    console.error = vi.fn(); // Suppress noisy React error boundary logs
+    // React logs uncaught component exceptions to console.error; spy and silence for intentional boundary tests
+    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    act(() => {
-      root.unmount();
-    });
-    container.remove();
-    container = null;
-    root = null;
-    console.error = originalConsoleError;
+    consoleErrorSpy.mockRestore();
+    vi.restoreAllMocks();
   });
 
   it('renders children normally when there is no error', () => {
-    act(() => {
-      root.render(
-        <ErrorBoundary>
-          <ProblemChild shouldThrow={false} />
-        </ErrorBoundary>
-      );
-    });
+    render(
+      <ErrorBoundary>
+        <ProblemChild shouldThrow={false} />
+      </ErrorBoundary>
+    );
 
-    expect(container.textContent).toContain('Everything is fine');
+    expect(screen.getByText('Everything is fine')).toBeInTheDocument();
   });
 
   it('catches render error and displays user-friendly fallback UI', () => {
-    act(() => {
-      root.render(
-        <ErrorBoundary>
-          <ProblemChild shouldThrow={true} />
-        </ErrorBoundary>
-      );
-    });
+    render(
+      <ErrorBoundary>
+        <ProblemChild shouldThrow={true} />
+      </ErrorBoundary>
+    );
 
-    expect(container.querySelector('[role="alert"]')).not.toBeNull();
-    expect(container.textContent).toContain('Something went wrong');
-    const buttons = container.querySelectorAll('button');
-    const buttonTexts = Array.from(buttons).map((b) => b.textContent);
-    expect(buttonTexts).toContain('Reload App');
-    expect(buttonTexts).toContain('Go to Dashboard');
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reload app/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /go to dashboard/i })).toBeInTheDocument();
   });
 
   it('does NOT expose raw internal error details to end users', () => {
-    act(() => {
-      root.render(
-        <ErrorBoundary>
-          <ProblemChild shouldThrow={true} />
-        </ErrorBoundary>
-      );
-    });
+    render(
+      <ErrorBoundary>
+        <ProblemChild shouldThrow={true} />
+      </ErrorBoundary>
+    );
 
-    expect(container.textContent).not.toContain('0xdeadbeef');
-    expect(container.textContent).not.toContain('Secret internal sensitive');
+    expect(screen.queryByText(/0xdeadbeef/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/secret internal sensitive/i)).not.toBeInTheDocument();
   });
 
   it('supports custom fallback if provided', () => {
-    act(() => {
-      root.render(
-        <ErrorBoundary fallback={<div>Custom fallback message</div>}>
-          <ProblemChild shouldThrow={true} />
-        </ErrorBoundary>
-      );
-    });
+    render(
+      <ErrorBoundary fallback={<div>Custom fallback message</div>}>
+        <ProblemChild shouldThrow={true} />
+      </ErrorBoundary>
+    );
 
-    expect(container.textContent).toContain('Custom fallback message');
-    expect(container.textContent).not.toContain('Something went wrong');
+    expect(screen.getByText('Custom fallback message')).toBeInTheDocument();
+    expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument();
   });
 });

@@ -103,6 +103,7 @@ describe('achievementSlice', () => {
   });
 
   it('invalid timestamps rejected', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const store = useStore.getState();
     const badTimestamps = [
       'not-a-date',
@@ -121,6 +122,9 @@ describe('achievementSlice', () => {
       const state = useStore.getState();
       expect(state.achievementProgress['80212']).toBeUndefined();
     });
+
+    expect(errorSpy).toHaveBeenCalledTimes(badTimestamps.length);
+    errorSpy.mockRestore();
   });
 
   it('dangerous prototype keys ignored', () => {

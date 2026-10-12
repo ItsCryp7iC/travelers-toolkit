@@ -9,7 +9,7 @@ vi.mock('../components/CharacterModal', () => ({
   default: ({ isOpen, character, onClose }) => isOpen ? <div data-testid="character-modal">Modal for {character?.name} <button onClick={onClose}>Close</button></div> : null
 }));
 vi.mock('../components/AddCharacterModal', () => ({
-  default: ({ isOpen }) => isOpen ? <div data-testid="add-character-modal">Add Modal</div> : null
+  default: ({ onClose }) => <div data-testid="add-character-modal">Add Modal <button onClick={onClose}>Close</button></div>
 }));
 vi.mock('../components/BulkEditCharacterModal', () => ({
   default: ({ isOpen }) => isOpen ? <div data-testid="bulk-modal">Bulk Modal</div> : null
@@ -174,5 +174,22 @@ describe('Characters Page Component Architecture', () => {
     expect(container.textContent).toContain('Bennett');
     expect(container.textContent).toContain('Kamisato Ayaka');
     expect(container.textContent).toContain('Xiangling');
+  });
+
+  it('renders empty roster state and clicking "+ Add Character" opens the add character modal without crash', async () => {
+    mockState.roster = {};
+    await renderComponent();
+
+    expect(container.textContent).toContain('Your roster is empty');
+    const addBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent.includes('+ Add Character')
+    );
+    expect(addBtn).toBeTruthy();
+
+    await act(async () => {
+      addBtn.click();
+    });
+
+    expect(container.querySelector('[data-testid="add-character-modal"]')).toBeTruthy();
   });
 });

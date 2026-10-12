@@ -399,7 +399,9 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
         json: async () => ({ characters: [] })
       });
 
-      act(() => { retryBtn.click(); });
+      await act(async () => {
+        retryBtn.click();
+      });
       expect(global.fetch).toHaveBeenCalledTimes(2);
       expect(container.textContent).not.toContain('Could not load');
     });

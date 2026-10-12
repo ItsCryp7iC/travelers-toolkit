@@ -178,7 +178,7 @@ function MaterialsSummary({ forgingQueue }) {
 }
 
 // ─── Main Panel ──────────────────────────────────────────────────────────────
-export default function forgingQueuePanel() {
+export default function ForgingQueuePanel() {
   const trackedWeapons = useStore(s => s.trackedWeapons)
   
   const forgingQueue = useMemo(() => {

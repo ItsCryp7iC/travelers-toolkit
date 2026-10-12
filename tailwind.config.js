@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -34,11 +31,11 @@ export default {
         'el-cryo': '#BAE6FD',
       },
       fontSize: {
-        'xs': ['0.85rem', { lineHeight: '1.25rem' }],
-        'sm': ['0.95rem', { lineHeight: '1.5rem' }],
-        'base': ['1.05rem', { lineHeight: '1.75rem' }],
-        'lg': ['1.15rem', { lineHeight: '1.75rem' }],
-        'xl': ['1.3rem', { lineHeight: '1.75rem' }],
+        xs: ['0.85rem', { lineHeight: '1.25rem' }],
+        sm: ['0.95rem', { lineHeight: '1.5rem' }],
+        base: ['1.05rem', { lineHeight: '1.75rem' }],
+        lg: ['1.15rem', { lineHeight: '1.75rem' }],
+        xl: ['1.3rem', { lineHeight: '1.75rem' }],
       },
       fontFamily: {
         sans: ['GenshinFont', 'sans-serif'],
@@ -48,7 +45,7 @@ export default {
         'fade-in': 'fadeIn 0.4s ease-out',
         'slide-up': 'slideUp 0.4s ease-out',
         'pulse-glow': 'pulseGlow 2s infinite',
-        'swipeIn': 'swipeIn 0.25s ease-out forwards',
+        swipeIn: 'swipeIn 0.25s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
@@ -74,4 +71,4 @@ export default {
     },
   },
   plugins: [],
-}
+};

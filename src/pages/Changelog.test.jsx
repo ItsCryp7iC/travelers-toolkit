@@ -1,5 +1,8 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import React from 'react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import { changelogEntries } from '../data/changelog';
+import Changelog from './Changelog';
 
 describe('Changelog Data', () => {
   it('has at least one entry', () => {
@@ -19,8 +22,7 @@ describe('Changelog Data', () => {
   it('entries have the required fields and correct formats', () => {
     const shas = new Set();
 
-    changelogEntries.forEach(entry => {
-      // Required fields
+    changelogEntries.forEach((entry) => {
       expect(entry).toHaveProperty('sha');
       expect(entry).toHaveProperty('shortSha');
       expect(entry).toHaveProperty('timestamp');
@@ -28,52 +30,36 @@ describe('Changelog Data', () => {
       expect(entry).toHaveProperty('type');
       expect(entry).toHaveProperty('url');
 
-      // Check SHA matching
       expect(entry.shortSha).toBe(entry.sha.substring(0, 7));
-
-      // Check URL format
-      expect(entry.url).toBe(`https://github.com/ItsCryp7iC/travelers-toolkit/commit/${entry.sha}`);
-
-      // Valid types
-      expect(['added', 'changed', 'fixed', 'security', 'test', 'maintenance', 'docs']).toContain(entry.type);
-
-      // No duplicates
+      expect(entry.url).toBe(
+        `https://github.com/ItsCryp7iC/travelers-toolkit/commit/${entry.sha}`
+      );
+      expect([
+        'added',
+        'changed',
+        'fixed',
+        'security',
+        'test',
+        'maintenance',
+        'docs',
+      ]).toContain(entry.type);
       expect(shas.has(entry.sha)).toBe(false);
       shas.add(entry.sha);
     });
   });
 });
 
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { act } from 'react';
-import Changelog from './Changelog';
-import { vi } from 'vitest';
-
 describe('Changelog Component', () => {
-  let container = null;
-  let root = null;
-
   beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-    root = createRoot(container);
-
     global.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve([])
+        json: () => Promise.resolve([]),
       })
     );
   });
 
   afterEach(() => {
-    act(() => {
-      root.unmount();
-    });
-    container.remove();
-    container = null;
-    root = null;
     vi.restoreAllMocks();
   });
 
@@ -81,40 +67,46 @@ describe('Changelog Component', () => {
     global.fetch.mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve([
-          {
-            sha: 'new12345',
-            commit: {
-              committer: { date: '2026-09-30T10:00:00Z' },
-              message: 'feat: dynamic fetch'
+        json: () =>
+          Promise.resolve([
+            {
+              sha: 'new12345',
+              commit: {
+                committer: { date: '2026-09-30T10:00:00Z' },
+                message: 'feat: dynamic fetch',
+              },
+              html_url: 'url',
             },
-            html_url: 'url'
-          }
-        ])
+          ]),
       })
     );
 
-    await act(async () => {
-      root.render(<Changelog />);
-    });
+    render(<Changelog />);
 
-    // Check if fetch was called
-    expect(global.fetch).toHaveBeenCalledWith('https://api.github.com/repos/ItsCryp7iC/travelers-toolkit/commits?sha=main&per_page=100');
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://api.github.com/repos/ItsCryp7iC/travelers-toolkit/commits?sha=main&per_page=100'
+    );
 
-    // Check if new commit is rendered
-    expect(container.textContent).toContain('feat: dynamic fetch');
+    expect(await screen.findByText('feat: dynamic fetch')).toBeInTheDocument();
   });
 
   it('falls back to static history on fetch failure', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     global.fetch.mockImplementationOnce(() =>
       Promise.reject(new Error('Network Error'))
     );
 
-    await act(async () => {
-      root.render(<Changelog />);
+    render(<Changelog />);
+
+    await waitFor(() => {
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Failed to fetch recent GitHub commits:',
+        expect.any(Error)
+      );
     });
 
-    // Original static commits should still be visible
-    expect(container.textContent).toContain('commits'); // from the header X commits
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Changelog');
+    expect(screen.getByText(/commits/i)).toBeInTheDocument();
+    warnSpy.mockRestore();
   });
 });

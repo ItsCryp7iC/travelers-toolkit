@@ -96,7 +96,7 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
         if (typeof val === 'number' && val > 0) {
-          const resolved = resolveSpecificItem(key, isWeapon ? null : character, isWeapon ? wData : null, isAscension);
+          const resolved = resolveSpecificItem(key, isWeapon ? null : character, null, isAscension);
           const finalId = resolved.id;
           totalCosts[finalId] = (totalCosts[finalId] || 0) + val
           if (!skipGrandTotals) {
