@@ -4,16 +4,17 @@ export const createSyncSlice = (set, get) => ({
   setSyncPayload: (payload) => set({ syncPayload: payload }),
   setIsSyncing: (val) => set({ isSyncing: val }),
   handleSyncNotes: async (isAuto = false) => {
-    const { hoyolabConnected, setHoyolabConnected, isSyncing } = get();
+    const { hoyolabConnected, setHoyolabConnected, isSyncing, hoyolabAccount } = get();
     if (!hoyolabConnected) return { error: 'no_cookie' };
     if (isSyncing) return { error: 'already_syncing' };
 
     set({ isSyncing: true });
     try {
+      const payload = hoyolabAccount?.uid ? { uid: Number(hoyolabAccount.uid) } : {};
       const res = await fetch('/api/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify(payload)
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));

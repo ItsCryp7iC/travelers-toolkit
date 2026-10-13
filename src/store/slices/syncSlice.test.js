@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import useStore from '../useStore';
 
 describe('syncSlice', () => {
@@ -43,5 +43,63 @@ describe('syncSlice', () => {
 
     // Verify flag was reset
     expect(useStore.getState().isSyncing).toBe(false);
+  });
+
+  it('propagates selected hoyolabAccount.uid into POST /api/notes request payload', async () => {
+    useStore.setState({
+      hoyolabConnected: true,
+      isSyncing: false,
+      hoyolabAccount: {
+        uid: 700123456,
+        nickname: 'TravelerMain',
+        server: 'os_euro',
+        serverName: 'Europe',
+        level: 60,
+      },
+    });
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          resin: { current: 160, max: 200, recovery_time_seconds: 0 },
+          realm_currency: { current: 2400, max: 2400, recovery_time_seconds: 0 },
+        }),
+    });
+
+    const result = await useStore.getState().handleSyncNotes(false);
+    expect(result.success).toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uid: 700123456 }),
+    });
+  });
+
+  it('sends empty payload to /api/notes when hoyolabAccount is null', async () => {
+    useStore.setState({
+      hoyolabConnected: true,
+      isSyncing: false,
+      hoyolabAccount: null,
+    });
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          resin: { current: 160, max: 200, recovery_time_seconds: 0 },
+          realm_currency: { current: 2400, max: 2400, recovery_time_seconds: 0 },
+        }),
+    });
+
+    const result = await useStore.getState().handleSyncNotes(false);
+    expect(result.success).toBe(true);
+
+    expect(global.fetch).toHaveBeenCalledWith('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
   });
 });

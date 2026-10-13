@@ -25,7 +25,9 @@ export const createSessionSlice = (set, get) => ({
   },
 
   hoyolabConnected: false,
+  hoyolabAccount: null,
   setHoyolabConnected: (val) => set({ hoyolabConnected: val }),
+  setHoyolabAccount: (acc) => set({ hoyolabAccount: acc }),
   checkHoyolabSession: async () => {
     try {
       const res = await fetch('/api/hoyolab/session');
@@ -66,6 +68,6 @@ export const createSessionSlice = (set, get) => ({
     } catch (err) {
       console.error(err);
     }
-    set({ hoyolabConnected: false });
+    set({ hoyolabConnected: false, hoyolabAccount: null });
   },
 });

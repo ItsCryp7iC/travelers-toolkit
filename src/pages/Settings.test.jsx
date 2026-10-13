@@ -42,6 +42,7 @@ describe('Settings Actions & Alert Replacement', () => {
       googleConnected: true,
       disconnectGoogleSession: vi.fn(),
       hoyolabConnected: false,
+      hoyolabAccount: null,
       connectHoyolabSession: vi.fn().mockResolvedValue({ success: true }),
       disconnectHoyolabSession: vi.fn().mockResolvedValue(undefined),
       roster: {},

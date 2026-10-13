@@ -6,6 +6,7 @@ import { getBackupPayload, normalizeBackupForImport } from '../utils/backupUtils
 import { triggerGoogleAuth } from '../utils/googleAuthHelper';
 import GoodImportModal from '../components/GoodImportModal';
 import AchievementData from '../components/Settings/AchievementData';
+import HoyoLoginModal from '../components/hoyolab/HoyoLoginModal';
 import { buildTimeZoneOptions, getTimeZoneDisplayLabel } from '../utils/timeZoneUtils';
 import notify from '../utils/notify';
 
@@ -56,9 +57,11 @@ export default function Settings() {
   }, [googleConnected]);
 
   const hoyolabConnected = useStore((s) => s.hoyolabConnected);
+  const hoyolabAccount = useStore((s) => s.hoyolabAccount);
   const connectHoyolabSession = useStore((s) => s.connectHoyolabSession);
   const disconnectHoyolabSession = useStore((s) => s.disconnectHoyolabSession);
 
+  const [isHoyoLoginOpen, setIsHoyoLoginOpen] = useState(false);
   const [hoyolabLtuid, setHoyolabLtuid] = useState('');
   const [hoyolabLtoken, setHoyolabLtoken] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
@@ -539,16 +542,25 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* HoYoLAB API Configuration Card */}
+      {/* HoYoLAB Connection Card */}
       <div className="genshin-card p-6 flex flex-col gap-4 mt-6">
-        <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
-          HoYoLAB API Configuration
+        <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
+          <span>Connect HoYoLAB</span>
+          <span className="text-sm">🌟</span>
         </h2>
         {hoyolabConnected ? (
           <div>
-            <p className="text-sm font-semibold text-green-500 mb-2">Connected</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />
+              <p className="text-sm font-semibold text-green-500">Connected</p>
+              {hoyolabAccount && (
+                <span className="text-xs text-[var(--color-text-muted)] font-mono">
+                  ({hoyolabAccount.nickname || 'Traveler'} • UID: {hoyolabAccount.uid})
+                </span>
+              )}
+            </div>
             <p className="text-sm text-[var(--color-text-muted)] mb-4">
-              Live Resin & Realm Currency sync enabled
+              Live Resin &amp; Realm Currency sync enabled
             </p>
             <button
               className="genshin-btn w-full"
@@ -558,49 +570,89 @@ export default function Settings() {
             </button>
           </div>
         ) : (
-          <>
+          <div className="flex flex-col gap-4">
             <p className="text-sm text-[var(--color-text-muted)]">
-              Provide your HoYoLAB cookies to enable live sync for Resin and Realm Currency. Your credentials will be securely managed by the server.
+              Connect your HoYoLAB account to enable live sync for Resin, Realm Currency, and character progress.
             </p>
-            <div className="flex flex-col gap-3 mt-2">
-              <div>
-                <label htmlFor="hoyolab-ltuid" className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltuid_v2 (or ltuid)</label>
-                <input
-                  id="hoyolab-ltuid"
-                  type="password"
-                  autoComplete="off"
-                  className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
-                  value={hoyolabLtuid}
-                  onChange={(e) => setHoyolabLtuid(e.target.value)}
-                  placeholder="Enter ltuid"
-                  disabled={isConnecting}
-                />
-              </div>
-              <div>
-                <label htmlFor="hoyolab-ltoken" className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">ltoken_v2 (or ltoken)</label>
-                <input
-                  id="hoyolab-ltoken"
-                  type="password"
-                  autoComplete="off"
-                  className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
-                  value={hoyolabLtoken}
-                  onChange={(e) => setHoyolabLtoken(e.target.value)}
-                  placeholder="Enter ltoken"
-                  disabled={isConnecting}
-                />
-              </div>
+
+            {/* Recommended: Sign in with HoYoLAB */}
+            <div className="flex flex-col gap-2">
               <button
                 type="button"
-                className="genshin-btn w-full mt-2"
-                onClick={handleConnectHoyolab}
-                disabled={isConnecting}
+                className="genshin-btn w-full flex justify-center items-center gap-2 py-2.5"
+                onClick={() => setIsHoyoLoginOpen(true)}
               >
-                {isConnecting ? 'Connecting...' : 'Connect'}
+                <span>🌟</span>
+                <span>Sign in with HoYoLAB</span>
+                <span className="text-[10px] font-bold bg-[#0d0f1a] text-primary px-1.5 py-0.5 rounded ml-1">
+                  Recommended
+                </span>
               </button>
             </div>
-          </>
+
+            {/* Advanced / fallback: Manual Cookie Entry */}
+            <div className="border-t border-[var(--border)] pt-3 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[var(--color-text-muted)]">
+                  Enter cookies manually
+                </span>
+                <span className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider">
+                  Advanced / fallback
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label htmlFor="hoyolab-ltuid" className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">
+                    ltuid_v2 (or ltuid)
+                  </label>
+                  <input
+                    id="hoyolab-ltuid"
+                    type="password"
+                    autoComplete="off"
+                    className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+                    value={hoyolabLtuid}
+                    onChange={(e) => setHoyolabLtuid(e.target.value)}
+                    placeholder="Enter ltuid"
+                    disabled={isConnecting}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="hoyolab-ltoken" className="text-xs font-semibold text-[var(--color-text-main)] mb-1 block">
+                    ltoken_v2 (or ltoken)
+                  </label>
+                  <input
+                    id="hoyolab-ltoken"
+                    type="password"
+                    autoComplete="off"
+                    className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+                    value={hoyolabLtoken}
+                    onChange={(e) => setHoyolabLtoken(e.target.value)}
+                    placeholder="Enter ltoken"
+                    disabled={isConnecting}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="genshin-btn w-full mt-2"
+                  onClick={handleConnectHoyolab}
+                  disabled={isConnecting}
+                >
+                  {isConnecting ? 'Connecting...' : 'Connect'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
+
+      <HoyoLoginModal
+        isOpen={isHoyoLoginOpen}
+        onClose={() => setIsHoyoLoginOpen(false)}
+        onSuccess={() => {
+          setIsHoyoLoginOpen(false);
+        }}
+      />
 
       {pendingImportData && (
         <GoodImportModal
