@@ -964,6 +964,20 @@ class TestHoyoLabAuthEngine(unittest.TestCase):
             retry_call_kwargs = mock_login.call_args[1]
             self.assertEqual(retry_call_kwargs["device_id"], device_id_used)
 
+    # ------------------------------------------------------------------------
+    # 22. RSA dependency present and encrypts credentials regression test
+    # ------------------------------------------------------------------------
+    def test_rsa_dependency_present_and_encrypts_credentials(self):
+        import rsa
+        self.assertIsNotNone(rsa)
+        from genshin.utility.auth import encrypt_credentials
+        ciphertext_1 = encrypt_credentials("test_account", 1)
+        ciphertext_2 = encrypt_credentials("test_password", 1)
+        self.assertIsInstance(ciphertext_1, str)
+        self.assertIsInstance(ciphertext_2, str)
+        self.assertGreater(len(ciphertext_1), 100)
+        self.assertGreater(len(ciphertext_2), 100)
+
 
 if __name__ == "__main__":
     unittest.main()
