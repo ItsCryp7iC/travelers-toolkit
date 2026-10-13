@@ -91,6 +91,9 @@ try:
 except Exception:
     raise ValueError("HOYOLAB_SESSION_KEY is invalid. It must be a valid Fernet key.")
 
+# Optional HoYoLAB login proxy hook (defaults to None, used only for auth client if set)
+HOYOLAB_LOGIN_PROXY = os.getenv("HOYOLAB_LOGIN_PROXY", "").strip() or None
+
 # Google Variables
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()

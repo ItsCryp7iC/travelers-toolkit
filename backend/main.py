@@ -64,7 +64,16 @@ app.add_middleware(
     allow_headers=["Content-Type"],
 )
 
+from hoyolab_auth import auth_router
+from hoyolab_session import (
+    COOKIE_NAME,
+    COOKIE_MAX_AGE,
+    set_hoyolab_session_cookie,
+    validate_hoyolab_credentials,
+)
+
 app.include_router(google_router)
+app.include_router(auth_router)
 
 class AuthPayload(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -151,35 +160,8 @@ async def connect_hoyolab_session(payload: AuthPayload, response: Response):
     cookies = {"ltuid_v2": ltuid, "ltoken_v2": ltoken}
     client = genshin.Client(cookies, game=genshin.Game.GENSHIN)
 
-    try:
-        # Perform a real authenticated call to prove credentials work
-        notes_coro = client.get_genshin_notes(payload.uid) if payload.uid else client.get_genshin_notes()
-        await asyncio.wait_for(notes_coro, timeout=UPSTREAM_TIMEOUT_SECONDS)
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=504, detail="Upstream request timed out. Please try again later.")
-    except genshin.errors.InvalidCookies:
-        raise HTTPException(status_code=401, detail="Invalid or expired cookies.")
-    except genshin.errors.GenshinException as e:
-        if "login" in str(e).lower() or "auth" in str(e).lower() or "cookie" in str(e).lower():
-            raise HTTPException(status_code=401, detail="Authentication failed. Please check your cookies.")
-        raise HTTPException(status_code=400, detail="Authentication failed with upstream HoYoLAB service.")
-    except Exception as e:
-        logger.error("HoYoLAB authentication unexpected error: %s", type(e).__name__)
-        raise HTTPException(status_code=500, detail="Internal server error.")
-
-    # If successful, encrypt the credentials
-    session_data = {
-        "version": 1,
-        "ltuid": ltuid,
-        "ltoken": ltoken
-    }
-    encrypted_session = HOYOLAB_FERNET.encrypt(json.dumps(session_data).encode()).decode()
-
-    response.set_cookie(
-        key=COOKIE_NAME,
-        value=encrypted_session,
-        **get_cookie_set_options(max_age=COOKIE_MAX_AGE)
-    )
+    await validate_hoyolab_credentials(client, payload.uid)
+    set_hoyolab_session_cookie(response, ltuid, ltoken)
 
     return {"connected": True}
 
