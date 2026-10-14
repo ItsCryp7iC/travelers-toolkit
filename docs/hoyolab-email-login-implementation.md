@@ -1,4 +1,4 @@
-﻿# HoYoLAB Email/Password Authentication Engine â€” Stage B1 Implementation
+# HoYoLAB Email/Password Authentication Engine â€” Stage B1 Implementation
 
 > **Document Status:** Backend Engine Implementation Complete & Mock Validated
 > **Repository:** `travelers-toolkit`
@@ -239,13 +239,78 @@ Once Stage B1 is accepted, Stage B2 will implement the client-side integration:
 
 The backend test suite executes 100% offline with synthetic mock data and zero live HoYoverse network traffic. All test numbers were mechanically derived from actual `python -m unittest discover` execution:
 
-- **Full Backend Suite:** **129 tests passed** (0 failures, 0 errors).
-- **New Authentication Engine (`backend/tests/test_hoyolab_auth.py`):** **26 tests passed**.
+- Full Backend Suite: 159 tests passed (0 failures, 0 errors).
+- New Authentication Engine (backend/tests/test_hoyolab_auth.py): 38 tests passed.
+- Distributed Rate Limiter (backend/tests/test_rate_limit.py): 18 tests passed.
 
 ### Mechanically Derived Discovery Breakdown
-- `backend/tests/test_achievements.py`: 50 tests passed
-- `backend/tests/test_config.py`: 17 tests passed
-- `backend/tests/test_hoyolab_auth.py`: 26 tests passed
-- `backend/tests/test_hoyolab_character_sync.py`: 16 tests passed
-- `backend/tests/test_security.py`: 20 tests passed
-- **Total:** 129 tests passed
+- backend/tests/test_achievements.py: 50 tests passed
+- backend/tests/test_config.py: 17 tests passed
+- backend/tests/test_hoyolab_auth.py: 38 tests passed
+- backend/tests/test_hoyolab_character_sync.py: 16 tests passed
+- backend/tests/test_rate_limit.py: 18 tests passed
+- backend/tests/test_security.py: 20 tests passed
+- Total: 159 tests passed
+
+---
+
+## 12. Stage B3: Production Readiness & Security Hardening
+
+### Production Validation Evidence
+Production HoYoLAB email/password authentication has been verified end-to-end on the live deployed application:
+- Local login passed offline and integration tests.
+- Production live deployment completed:
+  `credentials -> GeeTest -> email verification -> Genshin account discovery -> selected account -> persistent session -> live Toolkit sync`.
+- GeeTest challenge initialization, rendering, user interaction, and validation passed in production.
+- Email verification OTP delivery, submission, and validation passed in production.
+- Multi-account discovery and Genshin account selection passed in production.
+- Encrypted persistent session cookie creation and subsequent read-only data synchronization (real-time notes and character data) verified against live production endpoints.
+- Manual cookie entry (`ltuid` + `ltoken`) confirmed intact as an advanced fallback path.
+
+### Proxy Status
+- **Classification:** **NOT CURRENTLY REQUIRED FOR THIS DEPLOYMENT**.
+- The live production deployment successfully authenticated directly against HoYoverse endpoints without IP blocking or geographic friction.
+- The `HOYOLAB_LOGIN_PROXY` configuration hook remains fully supported and optional in `backend/config.py` and `backend/hoyolab_session.py`, preserving operational flexibility should upstream network or IP reputation policies change in the future.
+
+### Rate Limiting Architecture & External Launch Gate
+1. **Distributed Limiter Adapter (`backend/rate_limit.py`):**
+   - Implemented an atomic fixed-window counter using Redis Lua script (`EVAL`) over Upstash Redis REST via `httpx.AsyncClient`.
+   - Vercel serverless environments are ephemeral and multi-instance; in-process memory limiters are ineffective in serverless production.
+   - **Alternative Considered (Vercel WAF):** Vercel offers native WAF rate limiting, but availability/cost/features depend on the project plan. Traveler's Toolkit selected Upstash Redis REST for application-controlled per-action limits and testable behavior.
+   - **Endpoints Protected:**
+     - `POST /api/hoyolab/auth/email-password` (5 attempts / 15 min per client IP)
+     - `POST /api/hoyolab/auth/email-verify` (5 attempts / 15 min per client IP)
+     - `POST /api/hoyolab/auth/geetest` (10 attempts / 15 min per client IP)
+     - Global Auth Ceiling (20 auth attempts / 15 min per client IP across all sensitive endpoints)
+   - Excluded from rate limits: `GET /api/hoyolab/session`, read-only telemetry sync (`/notes`, `/characters`, `/achievements`).
+2. **Client IP Trust Model:**
+   - Platform-provided forwarding headers: `x-vercel-forwarded-for` (primary client IP) and `x-real-ip`.
+   - Client IPs are hashed with SHA-256 (`rate:hoyolab:{action}:{sha256(ip)}:{bucket}`) to guarantee that raw IP addresses, emails, or credentials never appear in cache keys or logs.
+3. **Provider Outage & Response:**
+   - **Fail-Closed on Auth Outage:** If Upstash Redis is configured but unreachable or returns a malformed response during sign-in attempts, auth endpoints return HTTP 503 (`Authentication service is temporarily unavailable. Please try again shortly.`). Read-only data sync remains unaffected.
+   - **Limit Exceeded:** Returns HTTP 429 with safe detail (`Too many sign-in attempts. Please wait before trying again.`) and standard relative integer `Retry-After: <seconds>` header (derived from remaining window TTL).
+4. **Current Launch Gate Status:**
+   - **Status:** **RATE LIMIT CODE READY; PRODUCTION ACTIVATION PENDING EXTERNAL CONFIGURATION**.
+   - Rate limiting is **NOT** active in production at this moment. Activation requires setting `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in the Vercel project environment dashboard.
+   - Without these credentials, local development and test suites cleanly bypass the check; production logs a single startup warning and leaves authentication non-blocking until the external provider is configured.
+
+### Privacy Policy & Terms of Service Disclosures
+- **Privacy Policy (`src/pages/PrivacyPolicy.jsx`):**
+  - Updated to October 15, 2026.
+  - Section 4 explains both Automated Sign-In and Manual Cookie Entry. Explains that credentials travel over encrypted HTTPS to the backend, passwords are never stored in databases, and during challenge steps credentials are held solely within a Fernet-encrypted HttpOnly flow cookie (`tt_hoyolab_flow_state`) with a 10-minute TTL before being discarded.
+  - Section 5 provides neutral, implementation-supported disclosure of third-party security verification via GeeTest (`static.geetest.com`, `gcaptcha4.captchami.com`), noting that GeeTest processes technical data necessary to deliver challenges under its own privacy practices.
+- **Terms of Service (`src/pages/TermsOfService.jsx`):**
+  - Updated to October 15, 2026.
+  - Section 4 clarifies automated sign-in, independent third-party verification availability, and user account security responsibilities.
+
+### Security Hardening & Logging Audit
+- **Origin Validation:** Mutating `/api/hoyolab/` routes (`POST`, `DELETE`, `PUT`) validate the `Origin` header against `FRONTEND_ORIGINS`, rejecting cross-origin attacks with HTTP 403 Forbidden.
+- **Security Headers:** Added `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy: geolocation=(), camera=(), microphone=()`.
+- **Content Security Policy (CSP):** Formally deferred. GeeTest v4 dynamically injects scripts, web workers, and regional validation endpoints; deploying an unvalidated CSP risks breaking live authentication.
+- **Credential & Logging Audit:** Verified zero logging of passwords, tokens (`ltoken`, `stoken`), verification codes, or ticket data across backend and frontend.
+- **External Script Hardening:** `src/utils/geetestLoader.js` enforces HTTPS-only allowlisted endpoints, singleton injection, DOM cleanup on failure, and `referrerPolicy="no-referrer"`.
+
+### Remaining Operational Risks
+1. **Upstream HoYoverse API / Auth Protocol Shifts:** HoYoverse may modify API routes, parameter signing, or authentication challenges at any time.
+2. **Third-Party CDN & Verification Availability:** Outages or network routing issues with GeeTest CDN endpoints (`static.geetest.com`, `gcaptcha4.captchami.com`) can prevent captcha presentation.
+3. **Upstream Rate Limiting / Geoblocking:** While currently operational without a proxy, changes in HoYoverse traffic policies could necessitate activating `HOYOLAB_LOGIN_PROXY`.

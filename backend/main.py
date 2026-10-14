@@ -35,11 +35,23 @@ app = FastAPI(
 
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
+    # Origin validation on mutating HoYoLAB routes for defense-in-depth against CSRF
+    if request.method in ("POST", "DELETE", "PUT") and request.url.path.startswith("/api/hoyolab/"):
+        origin = request.headers.get("origin")
+        if origin and origin not in FRONTEND_ORIGINS:
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Untrusted request origin."}
+            )
+
     response = await call_next(request)
     if request.url.path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
         response.headers["Pragma"] = "no-cache"
     response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
     return response
 
 @app.exception_handler(GoogleAuthError)

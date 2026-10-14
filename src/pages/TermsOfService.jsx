@@ -20,7 +20,7 @@ export default function TermsOfService() {
           Terms of Service
         </h1>
         <p className="text-xs text-[var(--muted,#8B8BA0)]">
-          Last updated: October 11, 2026
+          Last updated: October 15, 2026
         </p>
       </div>
 
@@ -56,8 +56,10 @@ export default function TermsOfService() {
             You are responsible for your use of the application and the security of any credentials you choose to provide:
           </p>
           <ul className="list-disc list-inside space-y-2 text-[var(--muted,#8B8BA0)]">
-            <li>You agree to comply with all applicable terms of service of third-party platforms, including Google and miHoYo/HoYoverse.</li>
-            <li>You understand that optional cookie synchronization features involve reading game telemetry data from official public endpoints on your behalf.</li>
+            <li>You agree to comply with all applicable terms of service of third-party platforms, including Google and miHoYo/Cognosphere/HoYoverse.</li>
+            <li>You understand that optional HoYoLAB synchronization features (whether through automated sign-in or manual cookie entry) involve communicating with official HoYoverse endpoints on your behalf to read game telemetry and progression data.</li>
+            <li>Third-party authentication mechanisms and security verifications (including GeeTest captcha) are operated independently by their respective providers. Availability of third-party integrations may be affected by upstream API, security, or network policy changes, and Traveler&apos;s Toolkit does not guarantee uninterrupted third-party service availability.</li>
+            <li>You remain solely responsible for your HoYoverse account credentials and overall account security.</li>
             <li>You are responsible for maintaining backups of your local data if desired.</li>
           </ul>
         </section>

@@ -69,7 +69,7 @@ async def get_batched_detailed_characters(client: genshin.Client, uid: Optional[
             details_wrapper = await client.get_genshin_detailed_characters(uid, characters=chunk)
             results.extend(details_wrapper.characters)
         except Exception as e:
-            logger.error(f"Failed to fetch details for chunk {chunk}: {e}")
+            logger.error("Failed to fetch character details chunk: %s", type(e).__name__)
             # If 429 or auth error, we'd raise it up, but for partial errors we might just continue or fail safely
             raise
     return results

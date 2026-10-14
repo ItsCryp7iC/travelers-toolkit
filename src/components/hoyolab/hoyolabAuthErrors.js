@@ -58,17 +58,28 @@ export function mapHoyolabAuthError(status, detail, stage = 'credentials') {
 
   if (status === 429) {
     if (
+      detailStr.includes('sign-in') ||
+      detailStr.includes('sign in') ||
+      detailStr.includes('attempt')
+    ) {
+      return 'Too many sign-in attempts. Please wait before trying again.';
+    }
+    if (
       detailStr.includes('verification') ||
       detailStr.includes('limit') ||
       stage === 'emailVerify'
     ) {
       return 'HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.';
     }
-    return 'Too many sign-in attempts. Please try again later.';
+    return 'Too many sign-in attempts. Please wait before trying again.';
   }
 
   if (status === 502) {
     return 'HoYoLAB authentication service is temporarily unavailable. Please try again.';
+  }
+
+  if (status === 503) {
+    return 'Authentication service is temporarily unavailable. Please try again shortly.';
   }
 
   if (status === 504) {

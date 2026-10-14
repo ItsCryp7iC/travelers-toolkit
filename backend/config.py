@@ -94,6 +94,11 @@ except Exception:
 # Optional HoYoLAB login proxy hook (defaults to None, used only for auth client if set)
 HOYOLAB_LOGIN_PROXY = os.getenv("HOYOLAB_LOGIN_PROXY", "").strip() or None
 
+# Optional Distributed Rate Limiting (Upstash Redis REST)
+UPSTASH_REDIS_REST_URL = os.getenv("UPSTASH_REDIS_REST_URL", "").strip() or None
+UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN", "").strip() or None
+IS_RATE_LIMIT_CONFIGURED = bool(UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN)
+
 # Google Variables
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()

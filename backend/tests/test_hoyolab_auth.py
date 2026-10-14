@@ -1169,5 +1169,154 @@ class TestHoyoLabAuthEngine(unittest.TestCase):
         self.assertGreater(len(ciphertext_2), 100)
 
 
+    # ------------------------------------------------------------------------
+    # 23. Manual cookie full lifecycle & disconnect regression (Stage B3)
+    # ------------------------------------------------------------------------
+    @patch("genshin.Client.get_genshin_notes", new_callable=AsyncMock)
+    def test_manual_cookie_full_lifecycle_and_disconnect(self, mock_get_notes):
+        mock_get_notes.return_value = MagicMock()
+
+        # Connect manually
+        resp = self.client.post(
+            "/api/hoyolab/session",
+            json={"ltuid": "12345678", "ltoken": "v2_ltoken_manual_abc"},
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), {"connected": True})
+
+        # Session status reports connected
+        status_resp = self.client.get("/api/hoyolab/session")
+        self.assertEqual(status_resp.status_code, 200)
+        self.assertTrue(status_resp.json().get("connected"))
+
+        # Disconnect clears session
+        del_resp = self.client.delete("/api/hoyolab/session")
+        self.assertEqual(del_resp.status_code, 200)
+        self.assertEqual(del_resp.json(), {"connected": False})
+
+        # Session status now reports disconnected
+        status_after = self.client.get("/api/hoyolab/session")
+        self.assertEqual(status_after.status_code, 200)
+        self.assertFalse(status_after.json().get("connected"))
+
+    # ------------------------------------------------------------------------
+    # 24. Disconnect and clean reconnect regression (Stage B3)
+    # ------------------------------------------------------------------------
+    @patch("genshin.Client.get_genshin_notes", new_callable=AsyncMock)
+    @patch("genshin.Client.get_game_accounts", new_callable=AsyncMock)
+    def test_disconnect_and_clean_reconnect(self, mock_get_accounts, mock_get_notes):
+        mock_get_accounts.return_value = [
+            GenshinAccount(
+                game_biz="hk4e_global",
+                game_uid=800123456,
+                region="os_asia",
+                region_name="Asia Server",
+                nickname="TravelerA",
+                level=60,
+            ),
+        ]
+        mock_get_notes.return_value = MagicMock()
+
+        # Seed authenticated flow and complete login
+        flow_state = {
+            "purpose": "hoyolab-login-flow",
+            "version": 1,
+            "stage": "authenticated",
+            "created_at": int(time.time()),
+            "device_id": "testdevice123456",
+            "cookies": {"ltuid_v2": FAKE_LTUID, "ltoken_v2": FAKE_LTOKEN_SECRET},
+        }
+        self.client.cookies.set("tt_hoyolab_flow_state", self.hoyolab_auth._encode_flow_state(flow_state), domain="testserver.local")
+
+        resp = self.client.post("/api/hoyolab/auth/complete", json={"uid": 800123456})
+        self.assertEqual(resp.status_code, 200)
+
+        # Confirm connected
+        status_resp = self.client.get("/api/hoyolab/session")
+        self.assertTrue(status_resp.json().get("connected"))
+
+        # Disconnect
+        del_resp = self.client.delete("/api/hoyolab/session")
+        self.assertEqual(del_resp.status_code, 200)
+
+        # Status is disconnected
+        status_after = self.client.get("/api/hoyolab/session")
+        self.assertFalse(status_after.json().get("connected"))
+
+        # No stale flow cookie remains
+        self.assertIsNone(self.client.cookies.get("tt_hoyolab_flow_state"))
+
+    # ------------------------------------------------------------------------
+    # 25. CSRF / Origin validation on mutating HoYoLAB routes (Stage B3)
+    # ------------------------------------------------------------------------
+    def test_untrusted_origin_rejected_on_mutating_auth_routes(self):
+        # 1. Untrusted Origin on POST -> 403 Forbidden
+        resp = self.client.post(
+            "/api/hoyolab/auth/email-password",
+            json={"account": "traveler@example.com", "password": SENTINEL_PASSWORD},
+            headers={"Origin": "https://malicious-phishing-site.com"},
+        )
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.json().get("detail"), "Untrusted request origin.")
+
+        # 2. Untrusted Origin on DELETE -> 403 Forbidden
+        del_resp = self.client.delete(
+            "/api/hoyolab/auth/flow",
+            headers={"Origin": "https://evil.org"},
+        )
+        self.assertEqual(del_resp.status_code, 403)
+
+        # 3. Trusted localhost Origin -> allowed
+        with patch("hoyolab_auth._execute_app_login", new_callable=AsyncMock) as mock_login:
+            mock_login.return_value = SessionMMT(
+                session_id="sess_1", gt="gt", challenge="ch", success=1, new_captcha=1
+            )
+            good_resp = self.client.post(
+                "/api/hoyolab/auth/email-password",
+                json={"account": "traveler@example.com", "password": SENTINEL_PASSWORD},
+                headers={"Origin": "http://localhost:5173"},
+            )
+            self.assertEqual(good_resp.status_code, 200)
+
+            # 4. Trusted production Origin -> allowed
+            prod_origin = self.config.FRONTEND_ORIGINS[0]
+            prod_resp = self.client.post(
+                "/api/hoyolab/auth/email-password",
+                json={"account": "traveler@example.com", "password": SENTINEL_PASSWORD},
+                headers={"Origin": prod_origin},
+            )
+            self.assertEqual(prod_resp.status_code, 200)
+
+            # 5. Missing Origin (same-origin / direct browser navigation) -> allowed
+            no_origin_resp = self.client.post(
+                "/api/hoyolab/auth/email-password",
+                json={"account": "traveler@example.com", "password": SENTINEL_PASSWORD},
+            )
+            self.assertEqual(no_origin_resp.status_code, 200)
+
+        # 6. OPTIONS preflight request with Origin -> handled cleanly by CORSMiddleware (not 403)
+        preflight_resp = self.client.options(
+            "/api/hoyolab/auth/email-password",
+            headers={
+                "Origin": "http://localhost:5173",
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "Content-Type",
+            },
+        )
+        self.assertEqual(preflight_resp.status_code, 200)
+        self.assertEqual(preflight_resp.headers.get("access-control-allow-origin"), "http://localhost:5173")
+
+    # ------------------------------------------------------------------------
+    # 26. Production security headers verification (Stage B3)
+    # ------------------------------------------------------------------------
+    def test_production_security_headers_present(self):
+        resp = self.client.get("/api/hoyolab/session")
+        self.assertEqual(resp.headers.get("X-Content-Type-Options"), "nosniff")
+        self.assertEqual(resp.headers.get("X-Frame-Options"), "DENY")
+        self.assertEqual(resp.headers.get("Referrer-Policy"), "strict-origin-when-cross-origin")
+        self.assertEqual(resp.headers.get("Permissions-Policy"), "geolocation=(), camera=(), microphone=()")
+        self.assertIn("no-store", resp.headers.get("Cache-Control", ""))
+
+
 if __name__ == "__main__":
     unittest.main()

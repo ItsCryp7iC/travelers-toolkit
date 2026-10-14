@@ -48,6 +48,7 @@ from hoyolab_session import (
     set_hoyolab_session_cookie,
     validate_hoyolab_credentials,
 )
+from rate_limit import check_rate_limit
 
 logger = logging.getLogger(__name__)
 
@@ -359,8 +360,9 @@ async def _derive_and_normalize_cookies(result: AppLoginResult) -> Dict[str, str
 # ============================================================================
 
 @auth_router.post("/email-password")
-async def email_password_login(payload: EmailPasswordRequest, response: Response):
+async def email_password_login(payload: EmailPasswordRequest, request: Request, response: Response):
     """Initiate HoYoLAB login using account credentials and return the next required step."""
+    await check_rate_limit(request, "email_password")
     logger.info("HoYoLAB login flow initiated")
     device_id = genshin.Client.generate_app_device_id()
     client = _create_auth_client()
@@ -464,6 +466,7 @@ async def email_password_login(payload: EmailPasswordRequest, response: Response
 @auth_router.post("/geetest")
 async def submit_geetest_solution(payload: GeetestRequest, request: Request, response: Response):
     """Submit Geetest captcha solution tokens and retry app login or email dispatch."""
+    await check_rate_limit(request, "geetest")
     flow = _decode_flow_state(request, response)
     if not flow:
         _delete_flow_cookie(response)
@@ -620,6 +623,7 @@ async def submit_geetest_solution(payload: GeetestRequest, request: Request, res
 @auth_router.post("/email-verify")
 async def verify_email_code(payload: EmailVerificationRequest, request: Request, response: Response):
     """Verify 6-digit email code and finalize login."""
+    await check_rate_limit(request, "email_verify")
     flow = _decode_flow_state(request, response)
     if not flow:
         _delete_flow_cookie(response)

@@ -71,7 +71,7 @@ export default function HoyoGeetestStep({
             try {
               captcha.showCaptcha();
             } catch (err) {
-              console.error('Failed to show GeeTest v4 captcha', err);
+              console.error('Failed to show GeeTest v4 captcha');
             }
           });
 
@@ -136,7 +136,7 @@ export default function HoyoGeetestStep({
             try {
               captchaObj.verify();
             } catch (err) {
-              console.error('Failed to trigger GeeTest v3 verify', err);
+              console.error('Failed to trigger GeeTest v3 verify');
             }
           });
 

@@ -1696,4 +1696,84 @@ describe('HoyoLoginModal Component & State Machine', () => {
 
     expect(container.querySelector('#hoyolab-login-account')).not.toBeNull();
   });
+
+  // -------------------------------------------------------------------------
+  // 21. Stage B3: Sign-In Rate Limiting (HTTP 429) Mapping
+  // -------------------------------------------------------------------------
+  it('maps HTTP 429 sign-in attempt rate limit to safe message on initial login', async () => {
+    mockFetch.mockResolvedValueOnce({
+      status: 429,
+      ok: false,
+      json: async () => ({
+        detail: 'Too many sign-in attempts. Please wait before trying again.',
+      }),
+    });
+
+    await act(async () => {
+      root.render(<HoyoLoginModal isOpen={true} onClose={vi.fn()} />);
+    });
+
+    const accountInput = container.querySelector('#hoyolab-login-account');
+    const passwordInput = container.querySelector('#hoyolab-login-password');
+    const submitBtn = container.querySelector('button[type="submit"]');
+
+    await act(async () => {
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+      ).set;
+      valueSetter.call(accountInput, 'testuser@example.com');
+      accountInput.dispatchEvent(new Event('input', { bubbles: true }));
+      valueSetter.call(passwordInput, 'testpassword');
+      passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    await act(async () => {
+      submitBtn.click();
+    });
+
+    expect(container.textContent).toContain(
+      'Too many sign-in attempts. Please wait before trying again.'
+    );
+  });
+
+  // -------------------------------------------------------------------------
+  // 22. Stage B3: Rate Limiter Outage / Service Unavailable (HTTP 503) Mapping
+  // -------------------------------------------------------------------------
+  it('maps HTTP 503 outage to friendly service unavailable message', async () => {
+    mockFetch.mockResolvedValueOnce({
+      status: 503,
+      ok: false,
+      json: async () => ({
+        detail: 'Authentication service is temporarily unavailable. Please try again shortly.',
+      }),
+    });
+
+    await act(async () => {
+      root.render(<HoyoLoginModal isOpen={true} onClose={vi.fn()} />);
+    });
+
+    const accountInput = container.querySelector('#hoyolab-login-account');
+    const passwordInput = container.querySelector('#hoyolab-login-password');
+    const submitBtn = container.querySelector('button[type="submit"]');
+
+    await act(async () => {
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+      ).set;
+      valueSetter.call(accountInput, 'testuser@example.com');
+      accountInput.dispatchEvent(new Event('input', { bubbles: true }));
+      valueSetter.call(passwordInput, 'testpassword');
+      passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    await act(async () => {
+      submitBtn.click();
+    });
+
+    expect(container.textContent).toContain(
+      'Authentication service is temporarily unavailable. Please try again shortly.'
+    );
+  });
 });
