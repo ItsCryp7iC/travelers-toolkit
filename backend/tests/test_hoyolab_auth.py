@@ -678,6 +678,117 @@ class TestHoyoLabAuthEngine(unittest.TestCase):
             self.assertEqual(resp.json().get("accounts"), [])
 
     # ------------------------------------------------------------------------
+    # 14b. Account discovery preserves flow cookie (no premature deletion)
+    # ------------------------------------------------------------------------
+    @patch("genshin.Client.get_game_accounts", new_callable=AsyncMock)
+    def test_accounts_discovery_preserves_flow_cookie(self, mock_get_accounts):
+        mock_get_accounts.return_value = [
+            GenshinAccount(
+                game_biz="hk4e_global",
+                game_uid=800123456,
+                region="os_asia",
+                region_name="Asia Server",
+                nickname="TravelerA",
+                level=60,
+            ),
+        ]
+        flow_state = {
+            "purpose": "hoyolab-login-flow",
+            "version": 1,
+            "stage": "authenticated",
+            "created_at": int(time.time()),
+            "device_id": "testdevice123456",
+            "cookies": {"ltuid_v2": FAKE_LTUID, "ltoken_v2": FAKE_LTOKEN_SECRET},
+        }
+        cookie_val = self.hoyolab_auth._encode_flow_state(flow_state)
+        self.client.cookies.set("tt_hoyolab_flow_state", cookie_val, domain="testserver.local")
+
+        resp = self.client.get("/api/hoyolab/auth/accounts")
+        self.assertEqual(resp.status_code, 200)
+
+        # Successful account discovery must NOT delete or expire the flow cookie
+        set_cookie_header = resp.headers.get("set-cookie", "")
+        self.assertNotIn("Max-Age=0", set_cookie_header)
+        self.assertNotIn("tt_hoyolab_flow_state=;", set_cookie_header)
+
+        # TestClient cookie jar must retain the flow cookie intact
+        client_cookie_val = self.client.cookies.get("tt_hoyolab_flow_state")
+        self.assertEqual(client_cookie_val, cookie_val)
+
+    # ------------------------------------------------------------------------
+    # 14c. Sequential regression: GET /accounts then POST /complete in same jar
+    # ------------------------------------------------------------------------
+    @patch("genshin.Client.get_genshin_notes", new_callable=AsyncMock)
+    @patch("genshin.Client.get_game_accounts", new_callable=AsyncMock)
+    def test_sequential_account_discovery_then_complete_login(self, mock_get_accounts, mock_get_notes):
+        """Sequential end-to-end regression: GET /accounts followed by POST /complete using same jar.
+
+        Reproduces the real bug where GET /accounts prematurely cleared tt_hoyolab_flow_state,
+        causing POST /complete to fail with 401 'No active authentication flow'.
+        """
+        mock_get_accounts.return_value = [
+            GenshinAccount(
+                game_biz="hk4e_global",
+                game_uid=800123456,
+                region="os_asia",
+                region_name="Asia Server",
+                nickname="TravelerA",
+                level=60,
+            ),
+        ]
+        mock_get_notes.return_value = MagicMock()
+
+        flow_state = {
+            "purpose": "hoyolab-login-flow",
+            "version": 1,
+            "stage": "authenticated",
+            "created_at": int(time.time()),
+            "device_id": "testdevice123456",
+            "cookies": {"ltuid_v2": FAKE_LTUID, "ltoken_v2": FAKE_LTOKEN_SECRET},
+        }
+        cookie_val = self.hoyolab_auth._encode_flow_state(flow_state)
+        self.client.cookies.set("tt_hoyolab_flow_state", cookie_val, domain="testserver.local")
+
+        # 1. GET /api/hoyolab/auth/accounts
+        resp1 = self.client.get("/api/hoyolab/auth/accounts")
+        self.assertEqual(resp1.status_code, 200)
+        data1 = resp1.json()
+        accounts = data1.get("accounts", [])
+        self.assertEqual(len(accounts), 1)
+        self.assertEqual(accounts[0]["uid"], 800123456)
+
+        # Assert response does NOT delete tt_hoyolab_flow_state
+        set_cookie_header1 = resp1.headers.get("set-cookie", "")
+        self.assertNotIn("Max-Age=0", set_cookie_header1)
+        self.assertNotIn("tt_hoyolab_flow_state=;", set_cookie_header1)
+
+        # Assert client still has tt_hoyolab_flow_state afterward
+        self.assertEqual(self.client.cookies.get("tt_hoyolab_flow_state"), cookie_val)
+
+        # 2. POST /api/hoyolab/auth/complete WITHOUT reseeding cookie
+        resp2 = self.client.post("/api/hoyolab/auth/complete", json={"uid": accounts[0]["uid"]})
+        self.assertEqual(resp2.status_code, 200)
+        data2 = resp2.json()
+        self.assertTrue(data2.get("success"))
+        self.assertEqual(data2.get("account", {}).get("uid"), 800123456)
+        self.assertEqual(data2.get("account", {}).get("nickname"), "TravelerA")
+
+        # Persistent tt_hoyolab_session created
+        persistent_cookie = resp2.cookies.get("tt_hoyolab_session")
+        self.assertIsNotNone(persistent_cookie)
+        session_data = json.loads(self.config.HOYOLAB_FERNET.decrypt(persistent_cookie.encode()).decode())
+        self.assertEqual(session_data["ltuid"], FAKE_LTUID)
+        self.assertEqual(session_data["ltoken"], FAKE_LTOKEN_SECRET)
+
+        # Temporary tt_hoyolab_flow_state deleted only NOW
+        set_cookie_header2 = resp2.headers.get("set-cookie", "")
+        self.assertTrue(
+            "tt_hoyolab_flow_state=;" in set_cookie_header2 or "Max-Age=0" in set_cookie_header2,
+            "tt_hoyolab_flow_state must be cleared upon login completion",
+        )
+        self.assertIsNone(self.client.cookies.get("tt_hoyolab_flow_state"))
+
+    # ------------------------------------------------------------------------
     # 15. Complete login flow & persistent session validation
     # ------------------------------------------------------------------------
     @patch("genshin.Client.get_genshin_notes", new_callable=AsyncMock)
@@ -808,6 +919,42 @@ class TestHoyoLabAuthEngine(unittest.TestCase):
 
         resp = self.client.get("/api/hoyolab/auth/accounts")
         self.assertEqual(resp.status_code, 401)
+        set_cookie_header = resp.headers.get("set-cookie", "")
+        self.assertTrue("tt_hoyolab_flow_state=;" in set_cookie_header or "Max-Age=0" in set_cookie_header)
+
+    def test_malformed_json_cookie_rejected(self):
+        token = self.config.HOYOLAB_FERNET.encrypt(b"invalid-not-json{").decode("utf-8")
+        self.client.cookies.set("tt_hoyolab_flow_state", token)
+
+        resp = self.client.get("/api/hoyolab/auth/accounts")
+        self.assertEqual(resp.status_code, 401)
+        self.assertIn("Authentication flow corrupted", resp.json().get("detail", ""))
+        set_cookie_header = resp.headers.get("set-cookie", "")
+        self.assertTrue("tt_hoyolab_flow_state=;" in set_cookie_header or "Max-Age=0" in set_cookie_header)
+
+    def test_unsupported_version_cookie_rejected(self):
+        wrong_version_state = {
+            "purpose": "hoyolab-login-flow",
+            "version": 999,
+            "stage": "authenticated",
+            "device_id": "testdevice123456",
+        }
+        token = self.config.HOYOLAB_FERNET.encrypt(json.dumps(wrong_version_state).encode("utf-8")).decode("utf-8")
+        self.client.cookies.set("tt_hoyolab_flow_state", token)
+
+        resp = self.client.get("/api/hoyolab/auth/accounts")
+        self.assertEqual(resp.status_code, 401)
+        self.assertIn("Authentication flow schema mismatch", resp.json().get("detail", ""))
+        set_cookie_header = resp.headers.get("set-cookie", "")
+        self.assertTrue("tt_hoyolab_flow_state=;" in set_cookie_header or "Max-Age=0" in set_cookie_header)
+
+    def test_non_dict_json_cookie_rejected(self):
+        token = self.config.HOYOLAB_FERNET.encrypt(json.dumps(["not", "a", "dict"]).encode("utf-8")).decode("utf-8")
+        self.client.cookies.set("tt_hoyolab_flow_state", token)
+
+        resp = self.client.get("/api/hoyolab/auth/accounts")
+        self.assertEqual(resp.status_code, 401)
+        self.assertIn("Authentication flow payload invalid", resp.json().get("detail", ""))
         set_cookie_header = resp.headers.get("set-cookie", "")
         self.assertTrue("tt_hoyolab_flow_state=;" in set_cookie_header or "Max-Age=0" in set_cookie_header)
 

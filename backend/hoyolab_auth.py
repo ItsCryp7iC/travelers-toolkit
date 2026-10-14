@@ -145,30 +145,47 @@ def _get_flow_delete_cookie_headers() -> Dict[str, str]:
 def _decode_flow_state(request: Request, response: Optional[Response] = None) -> Optional[Dict[str, Any]]:
     """Decrypt and validate the temporary login flow state cookie.
 
-    Clears the flow cookie on terminal/corrupted/expired errors.
+    Contract:
+    - VALID COOKIE: Decrypts and validates purpose and version; returns state payload.
+      Never mutates or deletes the flow cookie on successful decode.
+    - INVALID / EXPIRED / TAMPERED / CORRUPTED COOKIE: Clears the flow cookie via
+      HTTP 401 response headers and raises HTTPException(401).
+
+    Args:
+        request: FastAPI Request containing incoming cookies.
+        response: Optional FastAPI Response. If provided, cookie deletion is also
+            attached on terminal validation failure for defense-in-depth, but successful
+            decoding NEVER mutates response cookies.
+
     Raises:
-        HTTPException(401): If the cookie is invalid, expired, tampered with, or has wrong schema.
+        HTTPException(401): If the cookie is invalid, expired, tampered with, corrupted, or has wrong schema.
     """
     token = request.cookies.get(FLOW_COOKIE_NAME)
     if not token:
         return None
 
     delete_headers = _get_flow_delete_cookie_headers()
-    if response is not None:
-        _delete_flow_cookie(response)
 
     try:
         decrypted_bytes = HOYOLAB_FERNET.decrypt(token.encode("utf-8"), ttl=FLOW_COOKIE_MAX_AGE)
         data = json.loads(decrypted_bytes.decode("utf-8"))
     except InvalidToken:
+        if response is not None:
+            _delete_flow_cookie(response)
         raise HTTPException(status_code=401, detail="Authentication flow expired or invalid.", headers=delete_headers)
     except Exception:
+        if response is not None:
+            _delete_flow_cookie(response)
         raise HTTPException(status_code=401, detail="Authentication flow corrupted.", headers=delete_headers)
 
     if not isinstance(data, dict):
+        if response is not None:
+            _delete_flow_cookie(response)
         raise HTTPException(status_code=401, detail="Authentication flow payload invalid.", headers=delete_headers)
 
     if data.get("purpose") != "hoyolab-login-flow" or data.get("version") != 1:
+        if response is not None:
+            _delete_flow_cookie(response)
         raise HTTPException(status_code=401, detail="Authentication flow schema mismatch.", headers=delete_headers)
 
     return data
