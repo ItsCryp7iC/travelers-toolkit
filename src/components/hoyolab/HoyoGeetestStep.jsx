@@ -5,6 +5,7 @@ export default function HoyoGeetestStep({
   geetestData,
   onSuccess,
   onCancel,
+  onReset,
   isSubmitting,
   error,
 }) {
@@ -14,8 +15,24 @@ export default function HoyoGeetestStep({
   const captchaInstanceRef = useRef(null);
   const isMountedRef = useRef(true);
   const hasSubmittedRef = useRef(false);
+  const currentChallengeKeyRef = useRef(null);
+
+  const onSuccessRef = useRef(onSuccess);
+  const onCancelRef = useRef(onCancel);
+  const onResetRef = useRef(onReset);
+  useEffect(() => {
+    onSuccessRef.current = onSuccess;
+    onCancelRef.current = onCancel;
+    onResetRef.current = onReset;
+  });
 
   const { gtVersion = 4, apiServer, mmt = {} } = geetestData || {};
+  const sessionId = mmt.sessionId || mmt.session_id || '';
+  const challengeKey = geetestData
+    ? gtVersion === 4
+      ? `v4:${mmt.captchaId || ''}:${sessionId}:${apiServer || ''}`
+      : `v3:${mmt.gt || ''}:${mmt.challenge || ''}:${sessionId}:${apiServer || ''}`
+    : null;
 
   const initializeCaptcha = useCallback(async () => {
     setIsLoadingScript(true);
@@ -40,7 +57,6 @@ export default function HoyoGeetestStep({
           apiServers: [apiServer ?? 'gcaptcha4.captchami.com'],
         };
 
-        const sessionId = mmt.sessionId || mmt.session_id;
         if (sessionId) {
           params.userInfo = JSON.stringify({ session_id: sessionId });
         }
@@ -66,7 +82,7 @@ export default function HoyoGeetestStep({
               const validate = captcha.getValidate();
               if (validate) {
                 hasSubmittedRef.current = true;
-                onSuccess({
+                onSuccessRef.current?.({
                   gt_version: 4,
                   captcha_id: validate.captcha_id || mmt.captchaId,
                   lot_number: validate.lot_number,
@@ -131,7 +147,7 @@ export default function HoyoGeetestStep({
               const validate = captchaObj.getValidate();
               if (validate) {
                 hasSubmittedRef.current = true;
-                onSuccess({
+                onSuccessRef.current?.({
                   gt_version: 3,
                   geetest_challenge: validate.geetest_challenge,
                   geetest_validate: validate.geetest_validate,
@@ -164,48 +180,82 @@ export default function HoyoGeetestStep({
       setIsLoadingScript(false);
       setInitError(err.message || 'Failed to initialize security verification.');
     }
-  }, [gtVersion, apiServer, mmt, onSuccess]);
+  }, [gtVersion, apiServer, mmt, sessionId]);
 
+  // Main lifecycle: initializes ONLY when challenge identity actually changes
   useEffect(() => {
     isMountedRef.current = true;
-    initializeCaptcha();
+    if (!challengeKey) return;
+    if (currentChallengeKeyRef.current === challengeKey) {
+      // Same challenge: do NOT re-initialize on parent rerenders
+      return;
+    }
 
+    currentChallengeKeyRef.current = challengeKey;
+    hasSubmittedRef.current = false;
+    setHasClosed(false);
+    setInitError(null);
+
+    if (captchaInstanceRef.current?.destroy) {
+      try {
+        captchaInstanceRef.current.destroy();
+      } catch (_) {
+        /* ignore */
+      }
+    }
+    captchaInstanceRef.current = null;
+
+    initializeCaptcha();
+  }, [challengeKey, initializeCaptcha]);
+
+  useEffect(() => {
     return () => {
       isMountedRef.current = false;
       if (captchaInstanceRef.current?.destroy) {
         try {
           captchaInstanceRef.current.destroy();
-        } catch (_err) {
-          // Ignore cleanup error
+        } catch (_) {
+          /* ignore */
         }
       }
+      captchaInstanceRef.current = null;
     };
-  }, [initializeCaptcha]);
+  }, []);
 
-  const handleRetry = () => {
-    hasSubmittedRef.current = false;
-    if (captchaInstanceRef.current) {
+  const displayedError = error || initError;
+  const isChallengeConsumed = hasSubmittedRef.current;
+
+  const handleActionClick = () => {
+    if (isChallengeConsumed || (displayedError && !hasClosed)) {
+      // Already consumed challenge or server rejected: restart flow
+      if (onResetRef.current) {
+        onResetRef.current();
+      } else {
+        onCancelRef.current?.();
+      }
+      return;
+    }
+
+    if (hasClosed && captchaInstanceRef.current) {
       try {
+        setHasClosed(false);
+        setInitError(null);
         if (gtVersion === 4 && typeof captchaInstanceRef.current.showCaptcha === 'function') {
-          setHasClosed(false);
-          setInitError(null);
           captchaInstanceRef.current.showCaptcha();
           return;
         }
         if (gtVersion === 3 && typeof captchaInstanceRef.current.verify === 'function') {
-          setHasClosed(false);
-          setInitError(null);
           captchaInstanceRef.current.verify();
           return;
         }
-      } catch (_err) {
-        // Ignore retry invocation error
+      } catch (_) {
+        /* ignore */
       }
     }
+
+    currentChallengeKeyRef.current = null;
     initializeCaptcha();
   };
-
-  const displayedError = error || initError;
 
   return (
     <div className="flex flex-col gap-4 text-center py-2">
@@ -238,7 +288,7 @@ export default function HoyoGeetestStep({
         </div>
       )}
 
-      {hasClosed && !isSubmitting && (
+      {hasClosed && !isSubmitting && !displayedError && (
         <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-lg p-3 text-xs text-[var(--color-text-muted)]">
           Verification was dismissed. Click below to reopen the challenge.
         </div>
@@ -263,11 +313,13 @@ export default function HoyoGeetestStep({
         {(hasClosed || displayedError) && (
           <button
             type="button"
-            onClick={handleRetry}
+            onClick={handleActionClick}
             disabled={isSubmitting}
             className="genshin-btn px-6 py-2"
           >
-            Retry Verification
+            {isChallengeConsumed || (displayedError && !hasClosed)
+              ? 'Start Sign-In Again'
+              : 'Retry Verification'}
           </button>
         )}
       </div>

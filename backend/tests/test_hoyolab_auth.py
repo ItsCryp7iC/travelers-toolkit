@@ -364,30 +364,32 @@ class TestHoyoLabAuthEngine(unittest.TestCase):
     # 8. Geetest retry continuation with challenge_context='send_email'
     # ------------------------------------------------------------------------
     @patch("genshin.Client._send_verification_email", new_callable=AsyncMock)
-    def test_geetest_retry_resumes_send_email(self, mock_send_email):
-        # Captcha solved successfully -> send_verification_email returns None
-        mock_send_email.return_value = None
+    @patch("hoyolab_auth._execute_app_login", new_callable=AsyncMock)
+    def test_geetest_retry_resumes_send_email(self, mock_login, mock_send_email):
+        # 1. Initial login returns ActionTicket
+        mock_login.return_value = ActionTicket(
+            risk_ticket="risk_ticket_abc",
+            verify_str={"ticket": "ticket_str_xyz", "verify_type": "email"},
+        )
+        # 2. Initial _send_verification_email returns SessionMMT (geetest challenge)
+        mock_send_email.return_value = SessionMMT(
+            session_id="email_send_captcha_sess",
+            gt="gt_email_send",
+            challenge="chal_email_send",
+            success=1,
+            new_captcha=1,
+        )
 
-        flow_state = {
-            "purpose": "hoyolab-login-flow",
-            "version": 1,
-            "stage": "challenge",
-            "challenge_context": "send_email",
-            "created_at": int(time.time()),
-            "device_id": "testdevice123456",
-            "account": "traveler@example.com",
-            "password": SENTINEL_PASSWORD,
-            "gt_version": 3,
-            "session_id": "email_send_captcha_sess",
-            "action_ticket": {
-                "risk_ticket": "risk_ticket_abc",
-                "verify_str": {"ticket": "ticket_str_xyz", "verify_type": "email"},
-            },
-        }
-        cookie_val = self.hoyolab_auth._encode_flow_state(flow_state)
-        self.client.cookies.set("tt_hoyolab_flow_state", cookie_val)
+        resp1 = self.client.post(
+            "/api/hoyolab/auth/email-password",
+            json={"account": "traveler@example.com", "password": SENTINEL_PASSWORD},
+        )
+        self.assertEqual(resp1.status_code, 200)
+        self.assertEqual(resp1.json().get("nextStep"), "geetest")
+        self.assertEqual(mock_send_email.call_count, 1)
 
-        resp = self.client.post(
+        # 3. User solves Geetest challenge and submits solution
+        resp2 = self.client.post(
             "/api/hoyolab/auth/geetest",
             json={
                 "gt_version": 3,
@@ -396,21 +398,62 @@ class TestHoyoLabAuthEngine(unittest.TestCase):
                 "geetest_seccode": "val_sol|sec",
             },
         )
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json().get("nextStep"), "emailVerify")
+        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(resp2.json().get("nextStep"), "emailVerify")
 
-        # Upstream _send_verification_email must have been called with reconstructed ActionTicket and mmt_result
-        mock_send_email.assert_called_once()
-        args, kwargs = mock_send_email.call_args
-        self.assertIsInstance(args[0], ActionTicket)
-        self.assertEqual(args[0].risk_ticket, "risk_ticket_abc")
-        self.assertIsInstance(kwargs.get("mmt_result"), SessionMMTResult)
+        # Invariant: _send_verification_email was called exactly ONCE overall
+        # and was NOT called again after Geetest submission!
+        self.assertEqual(mock_send_email.call_count, 1)
 
-        # Flow state must transition to email_verify
-        new_cookie = resp.cookies.get("tt_hoyolab_flow_state")
-        decrypted = json.loads(self.config.HOYOLAB_FERNET.decrypt(new_cookie.encode()).decode())
+        # Resulting flow cookie assertions
+        flow_cookie = resp2.cookies.get("tt_hoyolab_flow_state")
+        decrypted = json.loads(self.config.HOYOLAB_FERNET.decrypt(flow_cookie.encode()).decode())
         self.assertEqual(decrypted["stage"], "email_verify")
         self.assertEqual(decrypted["action_ticket"]["risk_ticket"], "risk_ticket_abc")
+        self.assertEqual(decrypted["account"], "traveler@example.com")
+        self.assertEqual(decrypted["password"], SENTINEL_PASSWORD)
+        self.assertTrue(decrypted.get("device_id"))
+        self.assertNotIn("challenge_context", decrypted)
+        self.assertNotIn("session_id", decrypted)
+        self.assertNotIn("gt_version", decrypted)
+
+    @patch("genshin.Client._send_verification_email", new_callable=AsyncMock)
+    @patch("hoyolab_auth._execute_app_login", new_callable=AsyncMock)
+    def test_verification_code_rate_limited_mapped_to_429(self, mock_login, mock_send_email):
+        mock_login.return_value = ActionTicket(
+            risk_ticket="risk_ticket_abc",
+            verify_str={"ticket": "ticket_str_xyz", "verify_type": "email"},
+        )
+        # Mock VerificationCodeRateLimited exception from genshin
+        mock_send_email.side_effect = genshin.errors.VerificationCodeRateLimited(
+            {}, "Verification code send frequency is too high."
+        )
+
+        resp = self.client.post(
+            "/api/hoyolab/auth/email-password",
+            json={"account": "traveler@example.com", "password": SENTINEL_PASSWORD},
+        )
+        self.assertEqual(resp.status_code, 429)
+        self.assertEqual(
+            resp.json().get("detail"),
+            "HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.",
+        )
+
+    @patch("genshin.Client._app_login", new_callable=AsyncMock)
+    def test_geetest_failed_mapped_to_400_and_cookie_deleted(self, mock_login):
+        mock_login.side_effect = genshin.errors.GeetestFailed(
+            {}, "Geetest captcha verification failed."
+        )
+
+        resp = self.client.post(
+            "/api/hoyolab/auth/email-password",
+            json={"account": "traveler@example.com", "password": SENTINEL_PASSWORD},
+        )
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(
+            resp.json().get("detail"),
+            "Security verification expired or was rejected. Please start sign-in again.",
+        )
 
     # ------------------------------------------------------------------------
     # 9. Invalid or missing challenge context rejected

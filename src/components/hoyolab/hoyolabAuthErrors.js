@@ -37,6 +37,13 @@ export function mapHoyolabAuthError(status, detail, stage = 'credentials') {
   }
 
   if (status === 400) {
+    if (
+      detailStr.includes('security verification') ||
+      detailStr.includes('expired or was rejected') ||
+      detailStr.includes('geetest')
+    ) {
+      return 'Security verification expired or was rejected. Please start sign-in again.';
+    }
     if (stage === 'emailVerify' || detailStr.includes('code') || detailStr.includes('otp')) {
       return 'Invalid or expired verification code. Please check and try again.';
     }
@@ -50,6 +57,13 @@ export function mapHoyolabAuthError(status, detail, stage = 'credentials') {
   }
 
   if (status === 429) {
+    if (
+      detailStr.includes('verification') ||
+      detailStr.includes('limit') ||
+      stage === 'emailVerify'
+    ) {
+      return 'HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.';
+    }
     return 'Too many sign-in attempts. Please try again later.';
   }
 

@@ -63,6 +63,11 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
     onClose?.();
   }, [cancelBackendFlow, resetAllState, onClose]);
 
+  const handleReset = useCallback(async () => {
+    await cancelBackendFlow();
+    resetAllState();
+  }, [cancelBackendFlow, resetAllState]);
+
   // Keyboard accessibility
   useEffect(() => {
     if (!isOpen) return;
@@ -86,8 +91,6 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
       }
     };
   }, [clearSensitiveData, cancelBackendFlow]);
-
-  if (!isOpen) return null;
 
   // Process nextStep directives from backend
   const handleNextStep = async (data) => {
@@ -164,8 +167,7 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
   };
 
   // Step 2: Geetest Callback Submission
-  const handleGeetestSuccess = async (validatePayload) => {
-    if (isSubmitting) return;
+  const handleGeetestSuccess = useCallback(async (validatePayload) => {
     setIsSubmitting(true);
     setError(null);
 
@@ -186,7 +188,7 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [handleApiResponse, handleNextStep]);
 
   // Step 3: Email OTP Verification
   const handleEmailVerifySubmit = async (code) => {
@@ -278,6 +280,8 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in"
@@ -325,6 +329,7 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
             geetestData={geetestData}
             onSuccess={handleGeetestSuccess}
             onCancel={handleClose}
+            onReset={handleReset}
             isSubmitting={isSubmitting}
             error={error}
           />

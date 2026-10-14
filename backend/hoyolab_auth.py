@@ -232,6 +232,16 @@ async def _execute_app_login(
         raise HTTPException(status_code=504, detail="Upstream request timed out. Please try again later.")
     except genshin.errors.InvalidCookies:
         raise HTTPException(status_code=401, detail="Invalid account or password.")
+    except genshin.errors.VerificationCodeRateLimited:
+        raise HTTPException(
+            status_code=429,
+            detail="HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.",
+        )
+    except genshin.errors.GeetestFailed:
+        raise HTTPException(
+            status_code=400,
+            detail="Security verification expired or was rejected. Please start sign-in again.",
+        )
     except genshin.errors.GenshinException as e:
         logger.warning("HoYoLAB app login upstream error: %s", type(e).__name__)
         err_msg = str(e).lower()
@@ -390,6 +400,17 @@ async def email_password_login(payload: EmailPasswordRequest, response: Response
         # Dispatch verification code to user's registered email
         try:
             dispatch_res = await client._send_verification_email(data)
+        except genshin.errors.VerificationCodeRateLimited:
+            raise HTTPException(
+                status_code=429,
+                detail="HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.",
+            )
+        except genshin.errors.GeetestFailed:
+            _delete_flow_cookie(response)
+            raise HTTPException(
+                status_code=400,
+                detail="Security verification expired or was rejected. Please start sign-in again.",
+            )
         except Exception as e:
             logger.warning("Verification email dispatch failed: %s", type(e).__name__)
             raise HTTPException(status_code=502, detail="Failed to dispatch verification email.")
@@ -469,28 +490,17 @@ async def submit_geetest_solution(payload: GeetestRequest, request: Request, res
             _delete_flow_cookie(response)
             raise HTTPException(status_code=400, detail="Action ticket missing for email challenge continuation.")
 
-        ticket = ActionTicket(**ticket_raw)
-        try:
-            dispatch_res = await client._send_verification_email(ticket, mmt_result=mmt_result)
-        except Exception as e:
-            logger.warning("Verification email dispatch failed after captcha: %s", type(e).__name__)
-            raise HTTPException(status_code=502, detail="Failed to dispatch verification email.")
-
-        if isinstance(dispatch_res, SessionMMT):
-            # Captcha triggered again
-            new_flow = dict(flow)
-            new_flow["session_id"] = dispatch_res.session_id
-            new_flow["created_at"] = int(time.time())
-            _set_flow_cookie(response, new_flow)
-            return _build_safe_geetest_v3_response(dispatch_res)
-
+        # The initial _send_verification_email() operation returned the Geetest challenge.
+        # Once that Geetest challenge is successfully solved, the flow proceeds directly to verification-code entry.
+        # Re-dispatching the email-send operation after solving the challenge caused a real HoYoLAB response:
+        # VerificationCodeRateLimited.
         new_flow = {
             "stage": "email_verify",
             "created_at": int(time.time()),
             "device_id": flow["device_id"],
             "account": flow["account"],
             "password": flow["password"],
-            "action_ticket": flow["action_ticket"],
+            "action_ticket": ticket_raw,
         }
         _set_flow_cookie(response, new_flow)
         return {"nextStep": "emailVerify"}
@@ -520,6 +530,17 @@ async def submit_geetest_solution(payload: GeetestRequest, request: Request, res
     elif branch == "email_verify":
         try:
             dispatch_res = await client._send_verification_email(data)
+        except genshin.errors.VerificationCodeRateLimited:
+            raise HTTPException(
+                status_code=429,
+                detail="HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.",
+            )
+        except genshin.errors.GeetestFailed:
+            _delete_flow_cookie(response)
+            raise HTTPException(
+                status_code=400,
+                detail="Security verification expired or was rejected. Please start sign-in again.",
+            )
         except Exception as e:
             logger.warning("Verification email dispatch failed: %s", type(e).__name__)
             raise HTTPException(status_code=502, detail="Failed to dispatch verification email.")
@@ -600,6 +621,11 @@ async def verify_email_code(payload: EmailVerificationRequest, request: Request,
 
     try:
         await client._verify_email(payload.code, ticket)
+    except genshin.errors.VerificationCodeRateLimited:
+        raise HTTPException(
+            status_code=429,
+            detail="HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.",
+        )
     except genshin.errors.GenshinException as e:
         logger.warning("Email code verification failed: %s", type(e).__name__)
         raise HTTPException(status_code=400, detail="Invalid or expired verification code.")

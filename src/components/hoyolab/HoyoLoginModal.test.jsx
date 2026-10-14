@@ -2,6 +2,7 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import HoyoLoginModal from './HoyoLoginModal';
+import HoyoGeetestStep from './HoyoGeetestStep';
 import useStore from '../../store/useStore';
 import * as geetestLoader from '../../utils/geetestLoader';
 
@@ -1177,5 +1178,522 @@ describe('HoyoLoginModal Component & State Machine', () => {
     expect(displayedText).not.toContain('stoken=abc');
     expect(displayedText).not.toContain('Traceback');
     expect(displayedText).toContain('Invalid request. Please check your input and try again.');
+  });
+
+  // -------------------------------------------------------------------------
+  // 16. Section 14: Mock Real Observed Sequence (Two-Captcha to Email Verify)
+  // -------------------------------------------------------------------------
+  it('reproduces exact real flow: two sequential Geetest challenges transition cleanly to emailVerify', async () => {
+    // 1. Initial login returns Geetest #1
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        nextStep: 'geetest',
+        gtVersion: 4,
+        apiServer: 'gcaptcha4.captchami.com',
+        mmt: {
+          captchaId: 'captcha_id_1',
+          sessionId: 'session_1',
+        },
+      }),
+    });
+
+    const instances = [];
+    window.initGeetest4 = vi.fn((params, callback) => {
+      const inst = {
+        _id: params.captchaId,
+        showCaptcha: vi.fn(),
+        getValidate: vi.fn(() => ({
+          captcha_id: params.captchaId,
+          lot_number: 'lot_' + params.captchaId,
+          pass_token: 'token_' + params.captchaId,
+          gen_time: '123456',
+          captcha_output: 'output_' + params.captchaId,
+        })),
+        onReady: vi.fn((cb) => cb()),
+        onSuccess: vi.fn((cb) => {
+          inst._triggerSuccess = cb;
+        }),
+        onClose: vi.fn((cb) => {
+          inst._triggerClose = cb;
+        }),
+        onError: vi.fn((cb) => {
+          inst._triggerError = cb;
+        }),
+        destroy: vi.fn(),
+      };
+      instances.push(inst);
+      callback(inst);
+    });
+
+    await act(async () => {
+      root.render(<HoyoLoginModal isOpen={true} onClose={vi.fn()} />);
+    });
+
+    // Enter email/password
+    const accountInput = container.querySelector('#hoyolab-login-account');
+    const passwordInput = container.querySelector('#hoyolab-login-password');
+    const submitBtn = container.querySelector('button[type="submit"]');
+
+    await act(async () => {
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+      ).set;
+      valueSetter.call(accountInput, 'testuser@example.com');
+      accountInput.dispatchEvent(new Event('input', { bubbles: true }));
+      valueSetter.call(passwordInput, 'testpassword');
+      passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    await act(async () => {
+      submitBtn.click();
+    });
+
+    // Assert Captcha #1 initialized
+    expect(window.initGeetest4).toHaveBeenCalledTimes(1);
+    expect(instances.length).toBe(1);
+    expect(instances[0]._id).toBe('captcha_id_1');
+    expect(instances[0].showCaptcha).toHaveBeenCalledTimes(1);
+
+    // Backend response for solving Captcha #1: returns Geetest #2 (email-send challenge)
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        nextStep: 'geetest',
+        gtVersion: 4,
+        apiServer: 'gcaptcha4.captchami.com',
+        mmt: {
+          captchaId: 'captcha_id_2',
+          sessionId: 'session_2',
+        },
+      }),
+    });
+
+    // User solves challenge #1
+    await act(async () => {
+      instances[0]._triggerSuccess();
+    });
+
+    // Assert Captcha #1 was destroyed and Captcha #2 initialized exactly once
+    expect(instances[0].destroy).toHaveBeenCalledTimes(1);
+    expect(window.initGeetest4).toHaveBeenCalledTimes(2);
+    expect(instances.length).toBe(2);
+    expect(instances[1]._id).toBe('captcha_id_2');
+    expect(instances[1].showCaptcha).toHaveBeenCalledTimes(1);
+
+    // Backend response for solving Captcha #2: returns emailVerify
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        nextStep: 'emailVerify',
+      }),
+    });
+
+    // User solves challenge #2
+    await act(async () => {
+      instances[1]._triggerSuccess();
+    });
+
+    // Assertions:
+    // - Email verification screen appears
+    expect(container.textContent).toContain('Email Verification Required');
+    const verifyCodeInput = container.querySelector('#hoyolab-verify-code');
+    expect(verifyCodeInput).not.toBeNull();
+
+    // - Captcha does NOT initialize again
+    expect(window.initGeetest4).toHaveBeenCalledTimes(2);
+    expect(instances.length).toBe(2);
+
+    // - Total POST /api/hoyolab/auth/geetest calls = 2
+    const geetestCalls = mockFetch.mock.calls.filter(([url]) => url === '/api/hoyolab/auth/geetest');
+    expect(geetestCalls.length).toBe(2);
+  });
+
+  // -------------------------------------------------------------------------
+  // 17. Section 15: Rerender Regression Test (HoyoGeetestStep)
+  // -------------------------------------------------------------------------
+  it('does NOT reinitialize Geetest when parent rerenders with same challenge', async () => {
+    let mockCaptcha = null;
+    window.initGeetest4 = vi.fn((params, callback) => {
+      mockCaptcha = {
+        showCaptcha: vi.fn(),
+        getValidate: vi.fn(),
+        onReady: vi.fn((cb) => cb()),
+        onSuccess: vi.fn(),
+        onClose: vi.fn(),
+        onError: vi.fn(),
+        destroy: vi.fn(),
+      };
+      callback(mockCaptcha);
+    });
+
+    const challengeA = {
+      captchaId: 'test_challenge_a',
+      sessionId: 'session_a',
+    };
+    const onSuccess = vi.fn();
+    const onCancel = vi.fn();
+
+    // 1. Initial render with challenge A
+    await act(async () => {
+      root.render(
+        <HoyoGeetestStep
+          geetestData={{
+            gtVersion: 4,
+            apiServer: 'gcaptcha4.captchami.com',
+            mmt: challengeA,
+          }}
+          onSuccess={onSuccess}
+          onCancel={onCancel}
+          isSubmitting={false}
+          error={null}
+        />
+      );
+    });
+
+    expect(window.initGeetest4).toHaveBeenCalledTimes(1);
+
+    // 2. Trigger parent rerender: isSubmitting changes false -> true
+    await act(async () => {
+      root.render(
+        <HoyoGeetestStep
+          geetestData={{
+            gtVersion: 4,
+            apiServer: 'gcaptcha4.captchami.com',
+            mmt: challengeA,
+          }}
+          onSuccess={onSuccess}
+          onCancel={onCancel}
+          isSubmitting={true}
+          error={null}
+        />
+      );
+    });
+
+    // 3. Trigger parent rerender: error changes null -> value
+    await act(async () => {
+      root.render(
+        <HoyoGeetestStep
+          geetestData={{
+            gtVersion: 4,
+            apiServer: 'gcaptcha4.captchami.com',
+            mmt: challengeA,
+          }}
+          onSuccess={onSuccess}
+          onCancel={onCancel}
+          isSubmitting={false}
+          error="A temporary validation warning"
+        />
+      );
+    });
+
+    // 4. Trigger parent rerender: error changes value -> null
+    await act(async () => {
+      root.render(
+        <HoyoGeetestStep
+          geetestData={{
+            gtVersion: 4,
+            apiServer: 'gcaptcha4.captchami.com',
+            mmt: challengeA,
+          }}
+          onSuccess={onSuccess}
+          onCancel={onCancel}
+          isSubmitting={false}
+          error={null}
+        />
+      );
+    });
+
+    // Window.initGeetest4 MUST STILL HAVE BEEN CALLED EXACTLY ONCE
+    expect(window.initGeetest4).toHaveBeenCalledTimes(1);
+    expect(mockCaptcha.destroy).not.toHaveBeenCalled();
+  });
+
+  // -------------------------------------------------------------------------
+  // 18. Section 16: Callback Identity Test
+  // -------------------------------------------------------------------------
+  it('does NOT reinitialize when callback identity changes, but initializes once for a new challenge', async () => {
+    let currentTriggerSuccess = null;
+    window.initGeetest4 = vi.fn((params, callback) => {
+      const inst = {
+        showCaptcha: vi.fn(),
+        getValidate: vi.fn(() => ({
+          captcha_id: params.captchaId,
+          lot_number: 'lot_num',
+          pass_token: 'pass_tok',
+          gen_time: '123456',
+          captcha_output: 'output',
+        })),
+        onReady: vi.fn((cb) => cb()),
+        onSuccess: vi.fn((cb) => {
+          currentTriggerSuccess = cb;
+        }),
+        onClose: vi.fn(),
+        onError: vi.fn(),
+        destroy: vi.fn(),
+      };
+      callback(inst);
+    });
+
+    const challengeA = {
+      captchaId: 'challenge_alpha',
+      sessionId: 'sess_alpha',
+    };
+    const onSuccess1 = vi.fn();
+
+    // 1. Render with challenge A and onSuccess1
+    await act(async () => {
+      root.render(
+        <HoyoGeetestStep
+          geetestData={{
+            gtVersion: 4,
+            apiServer: 'gcaptcha4.captchami.com',
+            mmt: challengeA,
+          }}
+          onSuccess={onSuccess1}
+          onCancel={vi.fn()}
+          isSubmitting={false}
+          error={null}
+        />
+      );
+    });
+
+    expect(window.initGeetest4).toHaveBeenCalledTimes(1);
+
+    // 2. Rerender with NEW onSuccess callback identity but SAME challenge A
+    const onSuccess2 = vi.fn();
+    await act(async () => {
+      root.render(
+        <HoyoGeetestStep
+          geetestData={{
+            gtVersion: 4,
+            apiServer: 'gcaptcha4.captchami.com',
+            mmt: challengeA,
+          }}
+          onSuccess={onSuccess2}
+          onCancel={vi.fn()}
+          isSubmitting={false}
+          error={null}
+        />
+      );
+    });
+
+    // Must NOT reinitialize
+    expect(window.initGeetest4).toHaveBeenCalledTimes(1);
+
+    // Triggering success now should call the latest callback onSuccess2
+    await act(async () => {
+      currentTriggerSuccess();
+    });
+    expect(onSuccess1).not.toHaveBeenCalled();
+    expect(onSuccess2).toHaveBeenCalledTimes(1);
+
+    // 3. Now provide genuinely new challenge B
+    const challengeB = {
+      captchaId: 'challenge_beta',
+      sessionId: 'sess_beta',
+    };
+    await act(async () => {
+      root.render(
+        <HoyoGeetestStep
+          geetestData={{
+            gtVersion: 4,
+            apiServer: 'gcaptcha4.captchami.com',
+            mmt: challengeB,
+          }}
+          onSuccess={onSuccess2}
+          onCancel={vi.fn()}
+          isSubmitting={false}
+          error={null}
+        />
+      );
+    });
+
+    // MUST initialize second challenge exactly once
+    expect(window.initGeetest4).toHaveBeenCalledTimes(2);
+  });
+
+  // -------------------------------------------------------------------------
+  // 19. Section 11: VerificationCodeRateLimited (HTTP 429) Mapping
+  // -------------------------------------------------------------------------
+  it('maps HTTP 429 VerificationCodeRateLimited to safe user message and does not reopen captcha', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        nextStep: 'geetest',
+        gtVersion: 4,
+        apiServer: 'gcaptcha4.captchami.com',
+        mmt: { captchaId: 'test_captcha_id' },
+      }),
+    });
+
+    let mockCaptcha = null;
+    window.initGeetest4 = vi.fn((params, callback) => {
+      mockCaptcha = {
+        showCaptcha: vi.fn(),
+        getValidate: vi.fn(() => ({
+          captcha_id: 'test_captcha_id',
+          lot_number: 'lot',
+          pass_token: 'token',
+          gen_time: '123',
+          captcha_output: 'out',
+        })),
+        onReady: vi.fn((cb) => cb()),
+        onSuccess: vi.fn((cb) => {
+          mockCaptcha._triggerSuccess = cb;
+        }),
+        onClose: vi.fn(),
+        onError: vi.fn(),
+        destroy: vi.fn(),
+      };
+      callback(mockCaptcha);
+    });
+
+    await act(async () => {
+      root.render(<HoyoLoginModal isOpen={true} onClose={vi.fn()} />);
+    });
+
+    const accountInput = container.querySelector('#hoyolab-login-account');
+    const passwordInput = container.querySelector('#hoyolab-login-password');
+    const submitBtn = container.querySelector('button[type="submit"]');
+
+    await act(async () => {
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+      ).set;
+      valueSetter.call(accountInput, 'testuser@example.com');
+      accountInput.dispatchEvent(new Event('input', { bubbles: true }));
+      valueSetter.call(passwordInput, 'testpassword');
+      passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    await act(async () => {
+      submitBtn.click();
+    });
+
+    expect(window.initGeetest4).toHaveBeenCalledTimes(1);
+
+    // Mock backend 429 rate limit error
+    mockFetch.mockResolvedValueOnce({
+      status: 429,
+      ok: false,
+      json: async () => ({
+        detail: 'HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.',
+      }),
+    });
+
+    await act(async () => {
+      mockCaptcha._triggerSuccess();
+    });
+
+    // Assert safe user message
+    expect(container.textContent).toContain(
+      'HoYoverse is temporarily limiting verification-code requests. Please wait before trying again.'
+    );
+
+    // Captcha should NOT have re-initialized or reopened
+    expect(window.initGeetest4).toHaveBeenCalledTimes(1);
+    expect(mockCaptcha.showCaptcha).toHaveBeenCalledTimes(1);
+
+    // Stale challenge retry behavior: action button shows "Start Sign-In Again"
+    const actionBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent.includes('Start Sign-In Again')
+    );
+    expect(actionBtn).not.toBeNull();
+  });
+
+  // -------------------------------------------------------------------------
+  // 20. Section 12: GeetestFailed (HTTP 400) Mapping & Reset Behavior
+  // -------------------------------------------------------------------------
+  it('maps HTTP 400 GeetestFailed to safe message and allows starting sign-in again', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        nextStep: 'geetest',
+        gtVersion: 4,
+        apiServer: 'gcaptcha4.captchami.com',
+        mmt: { captchaId: 'test_failed_id' },
+      }),
+    });
+
+    let mockCaptcha = null;
+    window.initGeetest4 = vi.fn((params, callback) => {
+      mockCaptcha = {
+        showCaptcha: vi.fn(),
+        getValidate: vi.fn(() => ({
+          captcha_id: 'test_failed_id',
+          lot_number: 'lot',
+          pass_token: 'token',
+          gen_time: '123',
+          captcha_output: 'out',
+        })),
+        onReady: vi.fn((cb) => cb()),
+        onSuccess: vi.fn((cb) => {
+          mockCaptcha._triggerSuccess = cb;
+        }),
+        onClose: vi.fn(),
+        onError: vi.fn(),
+        destroy: vi.fn(),
+      };
+      callback(mockCaptcha);
+    });
+
+    await act(async () => {
+      root.render(<HoyoLoginModal isOpen={true} onClose={vi.fn()} />);
+    });
+
+    const accountInput = container.querySelector('#hoyolab-login-account');
+    const passwordInput = container.querySelector('#hoyolab-login-password');
+    const submitBtn = container.querySelector('button[type="submit"]');
+
+    await act(async () => {
+      const valueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+      ).set;
+      valueSetter.call(accountInput, 'testuser@example.com');
+      accountInput.dispatchEvent(new Event('input', { bubbles: true }));
+      valueSetter.call(passwordInput, 'testpassword');
+      passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    await act(async () => {
+      submitBtn.click();
+    });
+
+    // Mock backend 400 GeetestFailed response
+    mockFetch.mockResolvedValueOnce({
+      status: 400,
+      ok: false,
+      json: async () => ({
+        detail: 'Security verification expired or was rejected. Please start sign-in again.',
+      }),
+    });
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ active: false }),
+    });
+
+    await act(async () => {
+      mockCaptcha._triggerSuccess();
+    });
+
+    expect(container.textContent).toContain(
+      'Security verification expired or was rejected. Please start sign-in again.'
+    );
+
+    const restartBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent.includes('Start Sign-In Again')
+    );
+    expect(restartBtn).not.toBeNull();
+
+    // Clicking "Start Sign-In Again" resets flow to credentials screen
+    await act(async () => {
+      restartBtn.click();
+    });
+
+    expect(container.querySelector('#hoyolab-login-account')).not.toBeNull();
   });
 });
