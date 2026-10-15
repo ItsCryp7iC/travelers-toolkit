@@ -1,4 +1,5 @@
 import { recalculateCharacterCosts, syncTravelerCurrentProgression } from '../store/helpers/rosterHelpers';
+import { getSafeWeaponCycles } from './hoyolabCharacterReconciliation';
 
 /**
  * Validates the apply plan against current state to prevent stale overwrites.
@@ -68,6 +69,8 @@ export function buildHoyolabApplyPlan({ reconciliationResult, selectedChars, wea
 
   if (!reconciliationResult) return plan;
 
+  const safeCycles = getSafeWeaponCycles(reconciliationResult.characters, (c) => !!selectedChars[c.hoyolabId]);
+
   for (const char of reconciliationResult.characters) {
     if (!selectedChars[char.hoyolabId]) continue;
 
@@ -105,7 +108,14 @@ export function buildHoyolabApplyPlan({ reconciliationResult, selectedChars, wea
     }
 
     let weapon = null;
-    const wChoice = weaponChoices[char.hoyolabId];
+    let wChoice = weaponChoices[char.hoyolabId];
+    if (char.weaponReconciliation && (char.weaponReconciliation.status === 'existing-tracked-match' || char.weaponReconciliation.status === 'suggested-instance') && !wChoice) {
+      const candidate = char.weaponReconciliation.candidateInstance || char.weaponReconciliation.candidates?.[0];
+      if (candidate && (!candidate.assignedTo || safeCycles.has(char.rosterKey))) {
+        wChoice = `assign|${candidate.id}`;
+      }
+    }
+
     if (wChoice !== 'ignore' && char.weaponReconciliation && char.weaponReconciliation.status !== 'unmapped') {
       if (wChoice === 'create' || (char.weaponReconciliation.status === 'would-create' && !wChoice)) {
         weapon = {
@@ -124,6 +134,8 @@ export function buildHoyolabApplyPlan({ reconciliationResult, selectedChars, wea
         let chosenCandidate = null;
         if (char.weaponReconciliation.equippedInstanceId === uuid) {
           chosenCandidate = char.weaponReconciliation.equippedInstance;
+        } else if (char.weaponReconciliation.candidateInstance?.id === uuid) {
+          chosenCandidate = char.weaponReconciliation.candidateInstance;
         } else if (char.weaponReconciliation.candidates) {
           chosenCandidate = char.weaponReconciliation.candidates.find(c => c.id === uuid);
         }
@@ -154,17 +166,18 @@ export function buildHoyolabApplyPlan({ reconciliationResult, selectedChars, wea
           uuid,
           updateFields: wUpdate
         };
-      } else if (char.weaponReconciliation.status === 'matched-instance' && !wChoice) {
-        // Safe default for matched instance
-        const uuid = char.weaponReconciliation.equippedInstanceId;
+      } else if (char.weaponReconciliation.status === 'matched-instance' && (!wChoice || wChoice === 'update-existing')) {
+        // Safe default or explicit update for matched instance
+        const uuid = char.weaponReconciliation.equippedInstanceId || char.weaponReconciliation.instance?.id;
         const wUpdate = {};
         const changes = char.weaponReconciliation.changes || {};
 
         const applyWField = (fieldKey, cmpObj) => {
           if (!cmpObj) return;
-          if (cmpObj.direction === 'remote-ahead') {
+          const direction = cmpObj.direction || (cmpObj.local < cmpObj.remote ? 'remote-ahead' : (cmpObj.local > cmpObj.remote ? 'local-ahead' : 'same'));
+          if (direction === 'remote-ahead') {
             wUpdate[fieldKey] = cmpObj.remote;
-          } else if (cmpObj.direction === 'local-ahead') {
+          } else if (direction === 'local-ahead') {
             if (localAheadOverrides[char.hoyolabId] && localAheadOverrides[char.hoyolabId][`weapon_${fieldKey}`]) {
               wUpdate[fieldKey] = cmpObj.remote;
             }
@@ -199,6 +212,10 @@ export function buildHoyolabApplyPlan({ reconciliationResult, selectedChars, wea
         let expectedWep = null;
         if (char.weaponReconciliation?.equippedInstanceId === weapon.uuid) {
           expectedWep = char.weaponReconciliation.equippedInstance;
+        } else if (char.weaponReconciliation?.candidateInstance?.id === weapon.uuid) {
+          expectedWep = char.weaponReconciliation.candidateInstance;
+        } else if (char.weaponReconciliation?.candidates) {
+          expectedWep = char.weaponReconciliation.candidates.find(w => w.id === weapon.uuid);
         } else if (char.weaponReconciliation?.candidateInstances) {
           expectedWep = char.weaponReconciliation.candidateInstances.find(w => w.id === weapon.uuid);
         }
@@ -270,7 +287,7 @@ export function applyHoyolabPlanToState({ roster, trackedWeapons, plan, uuidFact
   const result = {
     charactersAdded: 0,
     charactersUpdated: 0,
-    charactersFieldsUpdated: 0,
+    characterFieldsUpdated: 0,
     weaponsCreated: 0,
     weaponsUpdatedOrReassigned: 0,
     travelerVariantsAdded: 0,
@@ -282,36 +299,9 @@ export function applyHoyolabPlanToState({ roster, trackedWeapons, plan, uuidFact
     return { roster: nextRoster, trackedWeapons: nextWeapons, result };
   }
 
-  // Helper to resolve traveler's shared weapon logic
-  const getTravelerAwareWeaponId = (weaps, rosterKey) => {
-    if (rosterKey.startsWith('Traveler ')) {
-      const w = weaps.find(w => w.assignedTo && w.assignedTo.startsWith('Traveler '));
-      return w ? w.id : null;
-    }
-    const w = weaps.find(w => w.assignedTo === rosterKey);
-    return w ? w.id : null;
-  };
-
-  const unassignWeapon = (weaponId) => {
-    const wIndex = nextWeapons.findIndex(w => w.id === weaponId);
-    if (wIndex !== -1) {
-      if (nextWeapons[wIndex].assignedTo !== null) {
-        affectedExistingWeaponIds.add(weaponId);
-      }
-      nextWeapons[wIndex] = { ...nextWeapons[wIndex], assignedTo: null };
-    }
-  };
-
-  const assignWeapon = (weaponId, rosterKey) => {
-    const wIndex = nextWeapons.findIndex(w => w.id === weaponId);
-    if (wIndex !== -1) {
-      if (nextWeapons[wIndex].assignedTo !== rosterKey) {
-        affectedExistingWeaponIds.add(weaponId);
-      }
-      nextWeapons[wIndex] = { ...nextWeapons[wIndex], assignedTo: rosterKey };
-    }
-  };
-
+  const initialWeaponIds = new Set(trackedWeapons.map(w => w.id));
+  const desiredCharToWeapon = new Map();
+  const desiredWeaponToChar = new Map();
   const affectedExistingWeaponIds = new Set();
 
   for (const instruction of plan.characters) {
@@ -400,7 +390,7 @@ export function applyHoyolabPlanToState({ roster, trackedWeapons, plan, uuidFact
 
       if (weapon.action === 'create') {
         finalWeaponId = uuidFactory();
-        const targetRefinement = Math.max(weapon.refinement || 1, 1); // targetRefinement shouldn't be lower
+        const targetRefinement = Math.max(weapon.refinement || 1, 1);
         const newWep = {
           id: finalWeaponId,
           weapon_id: weapon.weapon_id,
@@ -421,44 +411,58 @@ export function applyHoyolabPlanToState({ roster, trackedWeapons, plan, uuidFact
         finalWeaponId = weapon.uuid;
         const wIndex = nextWeapons.findIndex(w => w.id === weapon.uuid);
         if (wIndex !== -1) {
-          const oldAssignedTo = nextWeapons[wIndex].assignedTo;
           let updated = false;
-
           const updatedWeapon = { ...nextWeapons[wIndex] };
           if (weapon.updateFields) {
             if ('level' in weapon.updateFields) { updatedWeapon.level = weapon.updateFields.level; updated = true; }
             if ('ascension' in weapon.updateFields) { updatedWeapon.ascension = weapon.updateFields.ascension; updated = true; }
             if ('refinement' in weapon.updateFields) { updatedWeapon.currentRefinement = weapon.updateFields.refinement; updated = true; }
           }
-
-          if (oldAssignedTo !== rosterKey) {
-            // Need to change assignment
-            updatedWeapon.assignedTo = rosterKey;
-            affectedExistingWeaponIds.add(weapon.uuid);
-          }
-
           nextWeapons[wIndex] = updatedWeapon;
-          if (updated) {
+          if (updated && initialWeaponIds.has(weapon.uuid)) {
             affectedExistingWeaponIds.add(weapon.uuid);
           }
         }
       }
 
-      // Now set equippedWeaponId on the character safely
       if (finalWeaponId) {
-        // Find existing assigned weapon (using traveler semantics if necessary)
-        const oldWeaponId = getTravelerAwareWeaponId(nextWeapons, rosterKey);
-
-        if (oldWeaponId && oldWeaponId !== finalWeaponId) {
-          unassignWeapon(oldWeaponId);
-        }
-
-        // For Traveler, we don't store equippedWeaponId directly on the variant to avoid desync
-        if (!rosterKey.startsWith('Traveler ')) {
-          nextRoster[rosterKey].equippedWeaponId = finalWeaponId;
-        }
-        assignWeapon(finalWeaponId, rosterKey);
+        desiredCharToWeapon.set(rosterKey, finalWeaponId);
+        desiredWeaponToChar.set(finalWeaponId, rosterKey);
       }
+    }
+  }
+
+  // Coherent Weapon Assignment Graph Transition
+  for (let i = 0; i < nextWeapons.length; i++) {
+    const w = nextWeapons[i];
+    const prevOwner = w.assignedTo;
+
+    if (desiredWeaponToChar.has(w.id)) {
+      const newOwner = desiredWeaponToChar.get(w.id);
+      if (w.assignedTo !== newOwner) {
+        nextWeapons[i] = { ...w, assignedTo: newOwner };
+        if (initialWeaponIds.has(w.id)) {
+          affectedExistingWeaponIds.add(w.id);
+        }
+      }
+    } else if (prevOwner && desiredCharToWeapon.has(prevOwner)) {
+      // The weapon's previous owner was assigned a different weapon in this plan,
+      // and this weapon is not claimed by anyone else in the plan.
+      // Therefore, it becomes unassigned.
+      nextWeapons[i] = { ...w, assignedTo: null };
+      if (initialWeaponIds.has(w.id)) {
+        affectedExistingWeaponIds.add(w.id);
+      }
+    }
+  }
+
+  // Update equippedWeaponId on non-Traveler roster characters
+  for (const [rKey, charObj] of Object.entries(nextRoster)) {
+    if (rKey.startsWith('Traveler ')) continue;
+    const assignedWep = nextWeapons.find(w => w.assignedTo === rKey);
+    const expectedWepId = assignedWep ? assignedWep.id : null;
+    if (charObj.equippedWeaponId !== expectedWepId) {
+      nextRoster[rKey] = { ...charObj, equippedWeaponId: expectedWepId };
     }
   }
 

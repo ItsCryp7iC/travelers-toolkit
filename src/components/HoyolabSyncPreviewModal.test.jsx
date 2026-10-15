@@ -486,4 +486,436 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
     });
   });
 
+  describe('Phase C1: Weapon Reconciliation and Modal UX', () => {
+    it('Ayaka Lv80 -> Lv90 weapon-only update is classified as Update, safe default, and shows diff', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            {
+              id: 10000002, // Kamisato Ayaka
+              level: 90,
+              ascension: 6,
+              talents: { normal: 10, skill: 10, burst: 10 },
+              weapon: { id: 11414, level: 90, ascension: 6, refinement: 1 } // Amenoma Kageuchi Lv 90
+            }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': {
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: 'amenoma-inst-1'
+        }
+      };
+      mockState.trackedWeapons = [
+        {
+          id: 'amenoma-inst-1',
+          weapon_id: 'AmenomaKageuchi',
+          weaponName: 'Amenoma Kageuchi',
+          level: 80,
+          ascension: 5,
+          currentRefinement: 1,
+          assignedTo: 'Kamisato Ayaka'
+        }
+      ];
+
+      await renderAndFetch();
+
+      // Summary shows Updates 1, Up to Date 0
+      expect(container.textContent).toContain('1Updates');
+      expect(container.textContent).toContain('0Up to date');
+
+      // Card shows weapon diff
+      expect(container.textContent).toContain('Amenoma Kageuchi');
+      expect(container.textContent).toContain('Lv 80 → Lv 90');
+
+      // Default selected
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      expect(getApplyBtn().textContent).toContain('(1)');
+      expect(getApplyBtn().disabled).toBe(false);
+
+      // Weapon resolver shows Update Existing Weapon
+      const updateExistingRadio = Array.from(container.querySelectorAll('input[type="radio"]')).find(r => r.value === 'update-existing');
+      expect(updateExistingRadio).toBeDefined();
+      expect(updateExistingRadio.checked).toBe(true);
+
+      // Tab filtering: Updates tab includes Ayaka, Unchanged tab excludes Ayaka
+      const updatesTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Updates'));
+      const unchangedTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Unchanged'));
+
+      act(() => { updatesTab.click(); });
+      expect(container.textContent).toContain('Kamisato Ayaka');
+
+      act(() => { unchangedTab.click(); });
+      expect(container.textContent).not.toContain('Kamisato Ayaka');
+      expect(container.textContent).toContain('No characters match this filter.');
+    });
+
+    it('Odette equipment-mismatch disables Apply Selected with visible reason until resolved', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            {
+              id: 10000150, // Odette
+              level: 90,
+              ascension: 6,
+              weapon: { id: 11518, level: 90, ascension: 6, refinement: 1 } // Athame Artis
+            }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Odette': {
+          level: 80,
+          ascension: 5,
+          equippedWeaponId: 'finale-inst-1'
+        }
+      };
+      mockState.trackedWeapons = [
+        {
+          id: 'finale-inst-1',
+          weapon_id: 'FinaleOfTheDeep',
+          weaponName: 'Finale of the Deep',
+          level: 80,
+          ascension: 5,
+          assignedTo: 'Odette'
+        }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+
+      // 1. Select All Safe must NOT select Odette because she has unresolved equipment mismatch
+      const selectSafeBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'Select All Safe');
+      act(() => { selectSafeBtn.click(); });
+      expect(getApplyBtn().textContent).toContain('(0)');
+
+      // 2. User manually selects Odette
+      const checkbox = container.querySelector('input[type="checkbox"]');
+      act(() => { checkbox.click(); });
+
+      // Apply button is disabled
+      expect(getApplyBtn().textContent).toContain('(1)');
+      expect(getApplyBtn().disabled).toBe(true);
+
+      // Visible reasons shown
+      expect(container.textContent).toContain('Please resolve weapon assignment for: Odette.');
+      expect(container.textContent).toContain('Weapon decision required to apply this character');
+
+      // 3. User resolves by choosing "Leave Weapon Unchanged"
+      const leaveRadio = Array.from(container.querySelectorAll('input[type="radio"]')).find(r => r.value === 'ignore');
+      expect(leaveRadio).toBeDefined();
+      act(() => { leaveRadio.click(); });
+
+      // Apply button enables!
+      expect(getApplyBtn().disabled).toBe(false);
+      expect(container.textContent).not.toContain('Please resolve weapon assignment for: Odette.');
+    });
+
+    it('Search filters by character name, local weapon, and remote weapon, preserving selections', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            {
+              id: 10000002, // Ayaka
+              level: 90,
+              ascension: 6,
+              weapon: { id: 11414, level: 90, refinement: 1 } // Amenoma Kageuchi
+            },
+            {
+              id: 10000046, // Hu Tao
+              level: 90,
+              ascension: 6,
+              weapon: { id: 13501, level: 90, refinement: 1 } // Staff of Homa
+            }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w-ayaka' }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-ayaka', weapon_id: 'AmenomaKageuchi', weaponName: 'Amenoma Kageuchi', level: 80, assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      await renderAndFetch();
+
+      const searchInput = container.querySelector('input[placeholder="Search characters or weapons..."]');
+      expect(searchInput).not.toBeNull();
+
+      const setSearch = (val) => {
+        act(() => {
+          const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+          nativeSetter.call(searchInput, val);
+          searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+      };
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      // Initially both are selected safe (Ayaka weapon update + Hu Tao new)
+      expect(getApplyBtn().textContent).toContain('(2)');
+
+      // 1. Search by character name
+      setSearch('Ayaka');
+      expect(container.textContent).toContain('Kamisato Ayaka');
+      expect(container.textContent).not.toContain('Hu Tao');
+      // Apply button count is still 2 (preserved selection)
+      expect(getApplyBtn().textContent).toContain('(2)');
+
+      // 2. Search by local weapon name
+      setSearch('Amenoma');
+      expect(container.textContent).toContain('Kamisato Ayaka');
+      expect(container.textContent).not.toContain('Hu Tao');
+
+      // 3. Search by remote weapon name
+      setSearch('Staff of Homa');
+      expect(container.textContent).toContain('Hu Tao');
+      expect(container.textContent).not.toContain('Kamisato Ayaka');
+
+      // 4. Empty search state
+      setSearch('NonexistentQuery');
+      expect(container.textContent).toContain('No matching characters or weapons.');
+      expect(getApplyBtn().textContent).toContain('(2)');
+
+      // 5. Clear search restores all rows
+      const clearSearchBtn = container.querySelector('button[aria-label="Clear search"]');
+      expect(clearSearchBtn).not.toBeNull();
+      act(() => { clearSearchBtn.click(); });
+      expect(container.textContent).toContain('Kamisato Ayaka');
+      expect(container.textContent).toContain('Hu Tao');
+      expect(getApplyBtn().textContent).toContain('(2)');
+    });
+
+    it('Search filters Traveler variants section appropriately', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            { id: 10000007, level: 80, ascension: 5, element: 'Cryo' },
+            { id: 10000046, level: 90, ascension: 6 }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Traveler Cryo': { level: 80, ascension: 5 }
+      };
+
+      await renderAndFetch();
+
+      const searchInput = container.querySelector('input[placeholder="Search characters or weapons..."]');
+
+      const setSearch = (val) => {
+        act(() => {
+          const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+          nativeSetter.call(searchInput, val);
+          searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+      };
+
+      // Searching Traveler or Cryo keeps Traveler section visible
+      setSearch('Traveler');
+      expect(container.textContent).toContain('Variants');
+
+      // Searching Hu Tao hides Traveler section
+      setSearch('Hu Tao');
+      expect(container.textContent).not.toContain('Variants');
+      expect(container.textContent).toContain('Hu Tao');
+    });
+  });
+
+  describe('Phase C1.1: Existing-Weapon Reassignment & Toolbar Polish', () => {
+    it('Toolbar renders two distinct rows: Row 1 search & actions, Row 2 status filter chips', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            { id: 10000002, level: 90, weapon: { id: 11414, level: 90 } }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-ayaka' }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-ayaka', weapon_id: 'AmenomaKageuchi', weaponName: 'Amenoma Kageuchi', level: 90, assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      await renderAndFetch();
+
+      const searchInput = container.querySelector('input[placeholder="Search characters or weapons..."]');
+      expect(searchInput).not.toBeNull();
+      expect(searchInput.getAttribute('aria-label')).toBe('Search characters or weapons');
+
+      // Verify search icon SVG exists inside search container
+      const searchContainer = searchInput.parentElement;
+      const svgIcon = searchContainer.querySelector('svg');
+      expect(svgIcon).not.toBeNull();
+
+      // Verify Row 1 contains search and actions
+      const row1 = searchContainer.parentElement;
+      const selectAllSafeBtn = Array.from(row1.querySelectorAll('button')).find(b => b.textContent.includes('Select All Safe'));
+      const clearAllBtn = Array.from(row1.querySelectorAll('button')).find(b => b.textContent.includes('Clear All'));
+      expect(selectAllSafeBtn).not.toBeNull();
+      expect(clearAllBtn).not.toBeNull();
+
+      // Verify Row 2 contains status filter chips
+      const toolbar = row1.parentElement;
+      const filterChips = Array.from(toolbar.querySelectorAll('button')).filter(b =>
+        ['All', 'New', 'Updates', 'Unchanged', 'Needs Attention'].includes(b.textContent.trim())
+      );
+      expect(filterChips.length).toBe(5);
+    });
+
+    it('Ayaka and Jean two-way swap in Modal: both auto-select safe when in cycle and apply swaps assignments', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            { id: 10000002, level: 90, weapon: { id: 11414, level: 90 } }, // Ayaka remote Amenoma
+            { id: 10000003, level: 90, weapon: { id: 11509, level: 90 } }  // Jean remote Mistsplitter
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-mistsplitter' },
+        'Jean': { level: 90, equippedWeaponId: 'w-amenoma' }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-mistsplitter', weapon_id: 'mistsplitterreforged', weaponName: 'Mistsplitter Reforged', assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', assignedTo: 'Jean' }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      // Both Ayaka and Jean form a closed cycle, so both are auto-selected safe!
+      expect(getApplyBtn().textContent).toContain('(2)');
+      expect(getApplyBtn().disabled).toBe(false);
+
+      // Click Apply Selected -> confirmation modal opens
+      act(() => { getApplyBtn().click(); });
+      expect(container.textContent).toContain('Apply HoYoLAB Sync?');
+
+      // Confirm Apply
+      const confirmBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'Apply Sync');
+      mockApply.mockReturnValueOnce({
+        charactersAdded: 0,
+        charactersUpdated: 2,
+        weaponsCreated: 0,
+        weaponsUpdatedOrReassigned: 2,
+        travelerVariantsAdded: 0
+      });
+      act(() => { confirmBtn.click(); });
+
+      expect(mockApply).toHaveBeenCalledTimes(1);
+      const passedPlan = mockApply.mock.calls[0][0];
+
+      // Plan should assign existing Amenoma to Ayaka and existing Mistsplitter to Jean
+      const ayakaInstruction = passedPlan.characters.find(c => c.rosterKey === 'Kamisato Ayaka');
+      const jeanInstruction = passedPlan.characters.find(c => c.rosterKey === 'Jean');
+
+      expect(ayakaInstruction.weapon.action).toBe('assign');
+      expect(ayakaInstruction.weapon.uuid).toBe('w-amenoma');
+
+      expect(jeanInstruction.weapon.action).toBe('assign');
+      expect(jeanInstruction.weapon.uuid).toBe('w-mistsplitter');
+    });
+
+    it('Unselected owner conflict: selecting Ayaka when Skirk is unselected blocks Apply with exact message', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            { id: 10000002, level: 90, weapon: { id: 11414, level: 90 } } // Ayaka remote Amenoma
+          ]
+        })
+      });
+
+      // Skirk is NOT in the sync preview, but owns Amenoma locally
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-mistsplitter' },
+        'Skirk': { level: 90, equippedWeaponId: 'w-amenoma' }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-mistsplitter', weapon_id: 'mistsplitterreforged', weaponName: 'Mistsplitter Reforged', assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', assignedTo: 'Skirk' }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+
+      // Not auto-selected because Amenoma is assigned to unselected Skirk
+      expect(getApplyBtn().disabled).toBe(true);
+      expect(getApplyBtn().textContent).toContain('(0)');
+
+      // User manually selects Ayaka
+      const checkbox = container.querySelector('input[type="checkbox"]');
+      act(() => { checkbox.click(); });
+
+      // Apply button should be disabled because weapon decision is required
+      expect(getApplyBtn().disabled).toBe(true);
+      expect(container.textContent).toContain('Amenoma Kageuchi is currently assigned to Skirk. Resolve the assignment before applying.');
+
+      // Card communicates the assignment warning clearly
+      expect(container.textContent).toContain('Amenoma Kageuchi is currently assigned to Skirk. Using it will remove that assignment.');
+
+      // User resolves by explicitly selecting "Use Existing Tracked Weapon"
+      const assignRadio = Array.from(container.querySelectorAll('input[type="radio"]')).find(r => r.value === 'assign|w-amenoma');
+      expect(assignRadio).not.toBeNull();
+      act(() => { assignRadio.click(); });
+
+      // Now Apply is enabled!
+      expect(getApplyBtn().disabled).toBe(false);
+    });
+
+    it('Duplicate assignment conflict: two selected characters choosing same weapon blocks Apply with exact conflict message', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            { id: 10000002, level: 90, weapon: { id: 11414, level: 90 } }, // Ayaka
+            { id: 10000003, level: 90, weapon: { id: 11414, level: 90 } }  // Jean
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: null },
+        'Jean': { level: 90, equippedWeaponId: null }
+      };
+      // Only ONE Amenoma exists unassigned in Armory
+      mockState.trackedWeapons = [
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', assignedTo: null }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+
+      // Both try to claim the same unassigned Amenoma
+      expect(getApplyBtn().disabled).toBe(true);
+      expect(container.textContent).toContain('Weapon assignment conflict: Amenoma Kageuchi is selected for both Kamisato Ayaka and Jean.');
+
+      // Resolve conflict by changing Jean to "Leave Weapon Unchanged"
+      const ignoreRadioJean = container.querySelector('input[name="w_10000003"][value="ignore"]');
+      expect(ignoreRadioJean).not.toBeNull();
+      act(() => { ignoreRadioJean.click(); });
+
+      // Conflict is resolved!
+      expect(getApplyBtn().disabled).toBe(false);
+    });
+  });
 });

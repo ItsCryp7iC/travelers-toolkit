@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import useStore from '../store/useStore';
-import { reconcileCharacters } from '../utils/hoyolabCharacterReconciliation';
+import { reconcileCharacters, getSafeWeaponCycles } from '../utils/hoyolabCharacterReconciliation';
 import { buildHoyolabApplyPlan } from '../utils/hoyolabSyncApply';
 import { getElementIcon } from '../utils/assetHelper';
 import HoyolabCharacterCard from './hoyolabSync/HoyolabCharacterCard';
@@ -13,7 +13,7 @@ export const isCharacterActionable = (char) => {
   if (Object.values(char.changes || {}).some(x => x && x.direction === 'local-ahead')) return true;
 
   const wStatus = char.weaponReconciliation?.status;
-  if (['would-create', 'suggested-instance', 'ambiguous', 'equipment-mismatch'].includes(wStatus)) return true;
+  if (['would-create', 'existing-tracked-match', 'suggested-instance', 'ambiguous', 'ambiguous-existing-match', 'equipment-mismatch'].includes(wStatus)) return true;
   if (wStatus === 'matched-instance' && char.weaponReconciliation?.changes && Object.keys(char.weaponReconciliation.changes).length > 0) return true;
 
   return false;
@@ -24,6 +24,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   const [error, setError] = useState(null);
   const [reconciliationResult, setReconciliationResult] = useState(null);
   const [filter, setFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // UI Selections State
   const [selectedChars, setSelectedChars] = useState({});
@@ -47,6 +48,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       setReconciliationResult(null);
       setError(null);
       setFilter('All');
+      setSearchQuery('');
       setSelectedChars({});
       setWeaponChoices({});
       setLocalAheadOverrides({});
@@ -76,6 +78,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     setLoading(true);
     setError(null);
     setReconciliationResult(null);
+    setSearchQuery('');
     setSelectedChars({});
     setWeaponChoices({});
     setLocalAheadOverrides({});
@@ -97,8 +100,23 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
       // Default Selection
       const defaultSelected = {};
+      const safeCycles = getSafeWeaponCycles(result.characters);
+
       result.characters.forEach(c => {
         if (c.status === 'ignored' || c.status === 'unmapped' || c.status === 'conflict') return;
+
+        // An equipment-mismatch or ambiguous weapon row requires user decision;
+        // do not auto-select it.
+        const wStatus = c.weaponReconciliation?.status;
+        if (['equipment-mismatch', 'ambiguous', 'ambiguous-existing-match'].includes(wStatus)) return;
+
+        // For existing-tracked-match assigned to another character, only auto-select if part of a safe cycle!
+        if (wStatus === 'existing-tracked-match' || wStatus === 'suggested-instance') {
+          const cand = c.weaponReconciliation?.candidateInstance || c.weaponReconciliation?.candidates?.[0];
+          if (cand?.assignedTo && !safeCycles.has(c.rosterKey)) {
+            return;
+          }
+        }
 
         let hasRemoteAhead = false;
         if (c.status === 'new') hasRemoteAhead = true;
@@ -116,7 +134,8 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
         let hasWeaponChange = false;
         if (c.weaponReconciliation && c.weaponReconciliation.status === 'would-create') hasWeaponChange = true;
-        if (c.weaponReconciliation && c.weaponReconciliation.status === 'matched-instance' && Object.keys(c.weaponReconciliation.changes || {}).length > 0) hasWeaponChange = true;
+        if (c.weaponReconciliation && (c.weaponReconciliation.status === 'existing-tracked-match' || c.weaponReconciliation.status === 'suggested-instance')) hasWeaponChange = true;
+        if (c.weaponReconciliation && c.weaponReconciliation.status === 'matched-instance' && (c.weaponReconciliation.hasWeaponUpdate || Object.keys(c.weaponReconciliation.changes || {}).length > 0)) hasWeaponChange = true;
 
         if (hasRemoteAhead || hasWeaponChange) {
           defaultSelected[c.hoyolabId] = true;
@@ -144,10 +163,26 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
   const handleSelectAllSafe = () => {
     if (!reconciliationResult) return;
+    const safeCycles = getSafeWeaponCycles(reconciliationResult.characters);
     const newSelected = {};
     reconciliationResult.characters.forEach(c => {
       if (c.rosterKey?.startsWith('Traveler ') && !isCharacterActionable(c)) return;
-      if (['new', 'update', 'unchanged'].includes(c.status) && !['unmapped', 'conflict'].includes(c.status)) {
+      if (['unmapped', 'conflict', 'ignored'].includes(c.status)) return;
+
+      const wStatus = c.weaponReconciliation?.status;
+      const wChoice = weaponChoices[c.hoyolabId];
+      if (['equipment-mismatch', 'ambiguous', 'ambiguous-existing-match'].includes(wStatus) && !wChoice) {
+        return;
+      }
+
+      if (wStatus === 'existing-tracked-match' || wStatus === 'suggested-instance') {
+        const cand = c.weaponReconciliation?.candidateInstance || c.weaponReconciliation?.candidates?.[0];
+        if (cand?.assignedTo && !safeCycles.has(c.rosterKey) && !wChoice) {
+          return;
+        }
+      }
+
+      if (['new', 'update', 'unchanged'].includes(c.status)) {
         newSelected[c.hoyolabId] = true;
       }
     });
@@ -217,7 +252,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     setShowConfirmation(false);
   };
 
-  const { activeTraveler, travelerVariants } = useMemo(() => {
+  const { activeTraveler, activeTravelerElement, travelerVariants } = useMemo(() => {
     let activeTraveler = null;
     let activeTravelerElement = null;
     let travelerVariants = [];
@@ -259,18 +294,64 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     return map;
   }, [trackedWeapons]);
 
+  const isTravelerVisible = useMemo(() => {
+    if (!activeTraveler) return false;
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return true;
+
+    const activeName = (activeTraveler.rosterKey || '').toLowerCase();
+    const activeElement = (activeTravelerElement || '').toLowerCase();
+    const localWeapon = (trackedWeaponsMap?.[activeTraveler.local?.equippedWeaponId]?.weaponName || activeTraveler.weaponReconciliation?.equippedInstance?.weaponName || '').toLowerCase();
+    const remoteWeapon = (activeTraveler.weaponReconciliation?.weaponName || activeTraveler.hoyolab?.weapon?.name || '').toLowerCase();
+
+    if (
+      activeName.includes(query) ||
+      'traveler'.includes(query) ||
+      activeElement.includes(query) ||
+      localWeapon.includes(query) ||
+      remoteWeapon.includes(query)
+    ) {
+      return true;
+    }
+
+    return travelerVariants.some(tv => tv.element.toLowerCase().includes(query));
+  }, [activeTraveler, searchQuery, activeTravelerElement, trackedWeaponsMap, travelerVariants]);
+
   const filteredChars = useMemo(() => {
     if (!reconciliationResult) return [];
+    const query = searchQuery.trim().toLowerCase();
+
     return reconciliationResult.characters.filter(c => {
       if (activeTraveler && c.hoyolabId === activeTraveler.hoyolabId) return false;
-      if (filter === 'All') return true;
-      if (filter === 'New') return c.status === 'new';
-      if (filter === 'Updates') return c.status === 'update';
-      if (filter === 'Unchanged') return c.status === 'unchanged';
-      if (filter === 'Needs Attention') return ['conflict', 'unmapped'].includes(c.status) || c.weaponReconciliation?.status === 'equipment-mismatch' || Object.values(c.changes || {}).some(x => x && x.direction === 'local-ahead');
+      if (filter === 'New' && c.status !== 'new') return false;
+      if (filter === 'Updates' && c.status !== 'update') return false;
+      if (filter === 'Unchanged' && c.status !== 'unchanged') return false;
+      if (filter === 'Needs Attention') {
+        const isNeedsAttention = ['conflict', 'unmapped'].includes(c.status) ||
+          c.needsAttention ||
+          c.weaponReconciliation?.status === 'equipment-mismatch' ||
+          c.weaponReconciliation?.status === 'ambiguous' ||
+          Object.values(c.changes || {}).some(x => x && x.direction === 'local-ahead');
+        if (!isNeedsAttention) return false;
+      }
+
+      if (query) {
+        const charName = (c.rosterKey || c.hoyolab?.name || '').toLowerCase();
+        const localWeapon = (trackedWeaponsMap?.[c.local?.equippedWeaponId]?.weaponName || c.weaponReconciliation?.equippedInstance?.weaponName || '').toLowerCase();
+        const remoteWeapon = (c.weaponReconciliation?.weaponName || c.hoyolab?.weapon?.name || '').toLowerCase();
+        const element = (c.hoyolab?.element || '').toLowerCase();
+
+        const matches = charName.includes(query) ||
+          localWeapon.includes(query) ||
+          remoteWeapon.includes(query) ||
+          element.includes(query);
+
+        if (!matches) return false;
+      }
+
       return true;
     });
-  }, [reconciliationResult, activeTraveler, filter]);
+  }, [reconciliationResult, activeTraveler, filter, searchQuery, trackedWeaponsMap]);
 
   const selectedCharCount = useMemo(() => {
     return Object.keys(selectedChars).filter(id => {
@@ -288,8 +369,14 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   const { canApply, applyBlockReason } = useMemo(() => {
     if (!reconciliationResult || !hasSelections) return { canApply: false, applyBlockReason: 'No characters selected.' };
 
-    let hasUnresolvedAmbiguity = false;
-    let hasInvalidConflict = false;
+    const conflicts = [];
+    const unmapped = [];
+    const weaponUnresolved = [];
+    const assignedUnresolved = [];
+    const weaponClaimants = new Map(); // uuid -> { weaponName, names: [] }
+
+    // Safe cycles among selected characters only
+    const safeCycleCharKeys = getSafeWeaponCycles(reconciliationResult.characters, (c) => !!selectedChars[c.hoyolabId]);
 
     Object.keys(selectedChars).forEach(hoyolabId => {
       if (!selectedChars[hoyolabId]) return;
@@ -297,14 +384,95 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       const c = charactersByHoyolabId.get(hoyolabId);
       if (!c) return;
 
-      const weaponChoice = weaponChoices[hoyolabId];
-      if (c.status === 'conflict') hasInvalidConflict = true;
-      if (c.weaponReconciliation?.status === 'ambiguous' && !weaponChoice) hasUnresolvedAmbiguity = true;
-      if (c.weaponReconciliation?.status === 'equipment-mismatch' && !weaponChoice) hasUnresolvedAmbiguity = true;
+      const name = c.rosterKey || c.hoyolab?.name || `ID:${hoyolabId}`;
+      const wChoice = weaponChoices[hoyolabId];
+      const wRecon = c.weaponReconciliation;
+      const wStatus = wRecon?.status;
+
+      if (c.status === 'conflict') conflicts.push(name);
+      if (c.status === 'unmapped') unmapped.push(name);
+
+      if (['ambiguous', 'ambiguous-existing-match'].includes(wStatus) && !wChoice) {
+        weaponUnresolved.push({ name, type: 'ambiguous' });
+      } else if (wStatus === 'equipment-mismatch' && !wChoice) {
+        weaponUnresolved.push({ name, type: 'mismatch' });
+      } else if (['existing-tracked-match', 'suggested-instance'].includes(wStatus)) {
+        const cand = wRecon?.candidateInstance || wRecon?.candidates?.[0];
+        const isAssigned = !!cand?.assignedTo;
+        const isSafeCycle = isAssigned && safeCycleCharKeys.has(c.rosterKey);
+
+        if (isAssigned && !isSafeCycle && (!wChoice || wChoice === '')) {
+          assignedUnresolved.push({
+            name,
+            weaponName: cand?.weaponName || wRecon?.weaponName,
+            assignedTo: cand?.assignedTo
+          });
+        }
+      }
+
+      // Track weapon instance assignments to detect duplicate assignments
+      if (wChoice && wChoice.startsWith('assign|')) {
+        const uuid = wChoice.split('|')[1];
+        const weaponName = wRecon?.weaponName || 'Tracked weapon';
+        if (!weaponClaimants.has(uuid)) {
+          weaponClaimants.set(uuid, { weaponName, names: [] });
+        }
+        weaponClaimants.get(uuid).names.push(name);
+      } else if (!wChoice && ['existing-tracked-match', 'suggested-instance'].includes(wStatus)) {
+        const cand = wRecon?.candidateInstance || wRecon?.candidates?.[0];
+        const isAssigned = !!cand?.assignedTo;
+        const isSafeCycle = isAssigned && safeCycleCharKeys.has(c.rosterKey);
+        if (!isAssigned || isSafeCycle) {
+          const uuid = cand?.id;
+          if (uuid) {
+            const weaponName = cand?.weaponName || wRecon?.weaponName || 'Tracked weapon';
+            if (!weaponClaimants.has(uuid)) {
+              weaponClaimants.set(uuid, { weaponName, names: [] });
+            }
+            weaponClaimants.get(uuid).names.push(name);
+          }
+        }
+      } else if ((!wChoice || wChoice === 'update-existing') && wStatus === 'matched-instance') {
+        const uuid = wRecon?.equippedInstanceId;
+        if (uuid) {
+          const weaponName = wRecon?.weaponName || 'Tracked weapon';
+          if (!weaponClaimants.has(uuid)) {
+            weaponClaimants.set(uuid, { weaponName, names: [] });
+          }
+          weaponClaimants.get(uuid).names.push(name);
+        }
+      }
     });
 
-    if (hasInvalidConflict) return { canApply: false, applyBlockReason: 'Please deselect conflicting characters.' };
-    if (hasUnresolvedAmbiguity) return { canApply: false, applyBlockReason: 'Please resolve weapon ambiguities.' };
+    if (conflicts.length > 0) {
+      return { canApply: false, applyBlockReason: `Conflict in: ${conflicts.join(', ')}. Please deselect conflicting characters.` };
+    }
+    if (unmapped.length > 0) {
+      return { canApply: false, applyBlockReason: `Cannot apply unmapped character: ${unmapped.join(', ')}.` };
+    }
+    if (weaponUnresolved.length > 0) {
+      const hasAmbiguous = weaponUnresolved.some(u => u.type === 'ambiguous');
+      const prefix = hasAmbiguous ? 'Please resolve weapon ambiguities' : 'Please resolve weapon assignment';
+      return { canApply: false, applyBlockReason: `${prefix} for: ${weaponUnresolved.map(u => u.name).join(', ')}.` };
+    }
+    if (assignedUnresolved.length > 0) {
+      const first = assignedUnresolved[0];
+      return {
+        canApply: false,
+        applyBlockReason: `${first.weaponName} is currently assigned to ${first.assignedTo}. Resolve the assignment before applying.`
+      };
+    }
+
+    // Validate uniqueness: no 2 characters claim the same weapon instance
+    for (const [, { weaponName, names }] of weaponClaimants.entries()) {
+      if (names.length > 1) {
+        return {
+          canApply: false,
+          applyBlockReason: `Weapon assignment conflict: ${weaponName} is selected for both ${names.join(' and ')}.`
+        };
+      }
+    }
+
     return { canApply: true, applyBlockReason: '' };
   }, [reconciliationResult, hasSelections, selectedChars, weaponChoices, charactersByHoyolabId]);
 
@@ -379,7 +547,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
               <HoyolabSyncSummary summary={reconciliationResult.summary} />
 
               {/* Traveler Section */}
-              {activeTraveler && (
+              {activeTraveler && isTravelerVisible && (
                 <div className="mx-6 mt-4 p-4 bg-[var(--surface-light)] border border-[var(--border)] rounded-xl relative overflow-hidden">
                   <div className="flex flex-col gap-4">
                     <div className="flex justify-between items-start">
@@ -478,8 +646,61 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                 </div>
               )}
 
-              <div className="px-6 py-3 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg)] sticky top-0 z-10 mt-2">
-                <div className="flex gap-2 overflow-x-auto">
+              {/* Sticky Search & Filter Toolbar */}
+              <div className="px-6 py-3 border-b border-[var(--border)] bg-[var(--bg)] sticky top-0 z-10 mt-2 flex flex-col gap-2.5">
+                {/* ROW 1: Search + Actions */}
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
+                  <div className="relative flex-1 min-w-[280px]">
+                    <svg
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)] pointer-events-none"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search characters or weapons..."
+                      aria-label="Search characters or weapons"
+                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-xl pl-9 pr-8 py-2 text-sm text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        aria-label="Clear search"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)] text-xs p-1 rounded-md"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={handleSelectAllSafe}
+                      className="whitespace-nowrap px-4 py-2 text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded-xl text-cyan-400 transition-colors"
+                    >
+                      Select All Safe
+                    </button>
+                    <button
+                      onClick={handleClearAll}
+                      className="whitespace-nowrap px-4 py-2 text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded-xl text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                </div>
+
+                {/* ROW 2: Filter Chips */}
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
                   {['All', 'New', 'Updates', 'Unchanged', 'Needs Attention'].map(f => (
                     <button
                       key={f}
@@ -489,14 +710,6 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                       {f}
                     </button>
                   ))}
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  <button onClick={handleSelectAllSafe} className="px-3 py-1.5 text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded text-cyan-400">
-                    Select All Safe
-                  </button>
-                  <button onClick={handleClearAll} className="px-3 py-1.5 text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded text-[var(--muted)]">
-                    Clear All
-                  </button>
                 </div>
               </div>
 
@@ -519,7 +732,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                 ))}
                 {filteredChars.length === 0 && (
                   <div className="text-center py-10 text-[var(--muted)] italic">
-                    No characters match this filter.
+                    {searchQuery.trim() ? "No matching characters or weapons." : "No characters match this filter."}
                   </div>
                 )}
               </div>
@@ -533,14 +746,21 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
             <button onClick={onClose} className="px-5 py-2 text-[var(--muted)] hover:text-[var(--text)] transition-colors font-bold text-sm">
               Cancel
             </button>
-            <button
-              onClick={prepareApply}
-              disabled={!canApply}
-              title={applyBlockReason}
-              className={`px-5 py-2 rounded-xl font-bold text-sm shadow-lg transition-all ${canApply ? 'bg-[var(--gold)] text-[var(--bg)] hover:scale-105' : 'bg-[var(--surface-light)] text-[var(--muted)] opacity-50 cursor-not-allowed'}`}
-            >
-              Apply Selected ({totalSelectedCount})
-            </button>
+            <div className="flex items-center gap-3">
+              {!canApply && applyBlockReason && (
+                <span className="text-xs text-amber-400 font-medium max-w-md text-right">
+                  {applyBlockReason}
+                </span>
+              )}
+              <button
+                onClick={prepareApply}
+                disabled={!canApply}
+                title={applyBlockReason}
+                className={`px-5 py-2 rounded-xl font-bold text-sm shadow-lg transition-all ${canApply ? 'bg-[var(--gold)] text-[var(--bg)] hover:scale-105' : 'bg-[var(--surface-light)] text-[var(--muted)] opacity-50 cursor-not-allowed'}`}
+              >
+                Apply Selected ({totalSelectedCount})
+              </button>
+            </div>
           </div>
         )}
       </div>

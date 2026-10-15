@@ -135,7 +135,39 @@ export default function HoyolabCharacterCard({
                   </span>
                   <span className="text-yellow-400">{char.weaponReconciliation?.weaponName} Lv {char.hoyolab?.weapon?.level}</span>
                 </div>
-              ) : char.weaponReconciliation?.status === 'ambiguous' ? (
+              ) : char.weaponReconciliation?.status === 'existing-tracked-match' ? (
+                <div className="flex flex-col">
+                  {char.weaponReconciliation.equippedInstanceId && (
+                    <span className="text-[var(--text)] line-through opacity-70">
+                      {trackedWeaponsMap?.[char.weaponReconciliation.equippedInstanceId]?.weaponName || 'Unknown'}
+                    </span>
+                  )}
+                  <span className="text-cyan-400 font-medium">
+                    {char.weaponReconciliation?.weaponName}
+                    <span className="text-xs text-[var(--muted)] ml-1 font-normal">
+                      (Armory{char.weaponReconciliation.candidateAssignedTo ? `: ${char.weaponReconciliation.candidateAssignedTo}` : ': Unassigned'})
+                    </span>
+                  </span>
+                  {char.weaponReconciliation.hasWeaponUpdate && (
+                    <div className="flex flex-wrap items-center gap-x-2 text-xs font-mono">
+                      {char.weaponReconciliation.changes?.level && (
+                        <span className="text-cyan-400">
+                          <span className="text-[var(--muted)]">Lv {char.weaponReconciliation.changes.level.local}</span>
+                          {' → '}
+                          Lv {char.weaponReconciliation.changes.level.remote}
+                        </span>
+                      )}
+                      {char.weaponReconciliation.changes?.refinement && (
+                        <span className="text-cyan-400">
+                          <span className="text-[var(--muted)]">R{char.weaponReconciliation.changes.refinement.local}</span>
+                          {' → '}
+                          R{char.weaponReconciliation.changes.refinement.remote}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (char.weaponReconciliation?.status === 'ambiguous' || char.weaponReconciliation?.status === 'ambiguous-existing-match') ? (
                 <span className="text-yellow-400">
                   {char.weaponReconciliation?.weaponName} Lv {char.hoyolab?.weapon?.level} (Ambiguous)
                 </span>
@@ -144,14 +176,55 @@ export default function HoyolabCharacterCard({
                   {char.weaponReconciliation?.weaponName} (Suggest unassigned)
                 </span>
               ) : char.weaponReconciliation?.status === 'matched-instance' ? (
-                <span className={Object.keys(char.weaponReconciliation?.changes || {}).length > 0 ? "text-cyan-400" : "text-[var(--text)]"}>
-                  {char.weaponReconciliation?.weaponName} Lv {char.hoyolab?.weapon?.level} R{char.hoyolab?.weapon?.refinement || 1}
-                </span>
+                <div className="flex flex-col font-mono text-sm">
+                  <span className="font-sans font-medium text-[var(--text)]">
+                    {char.weaponReconciliation?.weaponName}
+                  </span>
+                  {char.weaponReconciliation?.hasWeaponUpdate ? (
+                    <div className="flex flex-wrap items-center gap-x-2 text-xs">
+                      {char.weaponReconciliation.changes?.level ? (
+                        <span className="text-cyan-400">
+                          <span className="text-[var(--muted)]">Lv {char.weaponReconciliation.changes.level.local}</span>
+                          {' → '}
+                          Lv {char.weaponReconciliation.changes.level.remote}
+                        </span>
+                      ) : (
+                        <span className="text-[var(--muted)]">Lv {char.hoyolab?.weapon?.level}</span>
+                      )}
+                      {char.weaponReconciliation.changes?.refinement ? (
+                        <span className="text-cyan-400">
+                          <span className="text-[var(--muted)]">R{char.weaponReconciliation.changes.refinement.local}</span>
+                          {' → '}
+                          R{char.weaponReconciliation.changes.refinement.remote}
+                        </span>
+                      ) : (
+                        <span className="text-[var(--muted)]">R{char.hoyolab?.weapon?.refinement || 1}</span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-[var(--muted)]">
+                      Lv {char.hoyolab?.weapon?.level} R{char.hoyolab?.weapon?.refinement || 1}
+                    </span>
+                  )}
+                </div>
               ) : null}
             </div>
 
+            {/* Decision warning when required */}
+            {isSelected && (
+              ['equipment-mismatch', 'ambiguous', 'ambiguous-existing-match'].includes(char.weaponReconciliation?.status) ||
+              (char.weaponReconciliation?.status === 'existing-tracked-match' && char.weaponReconciliation.candidateAssignedTo)
+            ) && !weaponChoice && (
+              <div className="text-xs text-amber-400 flex items-center gap-1 font-medium mt-1">
+                ⚠️ Weapon decision required to apply this character
+              </div>
+            )}
+
             {/* Weapon Action Resolver */}
-            {isSelected && ['ambiguous', 'suggested-instance', 'equipment-mismatch'].includes(char.weaponReconciliation?.status) && (
+            {isSelected && (
+              ['ambiguous', 'ambiguous-existing-match', 'suggested-instance', 'equipment-mismatch', 'existing-tracked-match'].includes(char.weaponReconciliation?.status) ||
+              (char.weaponReconciliation?.status === 'matched-instance' && char.weaponReconciliation?.hasWeaponUpdate)
+            ) && (
               <HoyolabWeaponResolver
                 char={char}
                 choice={weaponChoice}

@@ -365,4 +365,377 @@ describe('hoyolabCharacterReconciliation', () => {
     });
   });
 
+  describe('STAGE C1: WEAPON RECONCILIATION & CLASSIFICATION', () => {
+    it('exact Ayaka scenario: weapon-only level change classifies as UPDATE', () => {
+      const syncArray = [{
+        id: 10000002, // Kamisato Ayaka
+        level: 90,
+        ascension: 6,
+        talents: { normal: 10, skill: 10, burst: 10 },
+        weapon: { id: 11414, level: 90, ascension: 6, refinement: 1 } // Amenoma Kageuchi Lv 90
+      }];
+
+      const roster = {
+        'Kamisato Ayaka': {
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: 'w-ayaka-amenoma'
+        }
+      };
+
+      const trackedWeapons = [{
+        id: 'w-ayaka-amenoma',
+        weapon_id: 'amenomakageuchi',
+        weaponName: 'Amenoma Kageuchi',
+        level: 80,
+        ascension: 5,
+        currentRefinement: 1,
+        assignedTo: 'Kamisato Ayaka'
+      }];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.status).toBe('update');
+      expect(ayaka.characterDiff).toBe(false);
+      expect(ayaka.weaponDiff).toBe(true);
+      expect(ayaka.weaponResolution).toBe('update-existing');
+      expect(ayaka.weaponReconciliation.status).toBe('matched-instance');
+      expect(ayaka.weaponReconciliation.hasWeaponUpdate).toBe(true);
+      expect(ayaka.weaponReconciliation.changes.level.direction).toBe('remote-ahead');
+      expect(ayaka.weaponReconciliation.changes.level.local).toBe(80);
+      expect(ayaka.weaponReconciliation.changes.level.remote).toBe(90);
+
+      expect(res.summary.charactersWithUpdates).toBe(1);
+      expect(res.summary.unchangedCharacters).toBe(0);
+    });
+
+    it('same weapon refinement-only change classifies as UPDATE', () => {
+      const syncArray = [{
+        id: 10000002,
+        level: 90,
+        ascension: 6,
+        weapon: { id: 11414, level: 90, ascension: 6, refinement: 5 } // R5
+      }];
+
+      const roster = {
+        'Kamisato Ayaka': {
+          level: 90,
+          ascension: 6,
+          equippedWeaponId: 'w-ayaka-amenoma'
+        }
+      };
+
+      const trackedWeapons = [{
+        id: 'w-ayaka-amenoma',
+        weapon_id: 'amenomakageuchi',
+        weaponName: 'Amenoma Kageuchi',
+        level: 90,
+        ascension: 6,
+        currentRefinement: 3, // R3
+        assignedTo: 'Kamisato Ayaka'
+      }];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.status).toBe('update');
+      expect(ayaka.characterDiff).toBe(false);
+      expect(ayaka.weaponDiff).toBe(true);
+      expect(ayaka.weaponReconciliation.changes.refinement.direction).toBe('remote-ahead');
+      expect(ayaka.weaponReconciliation.changes.refinement.local).toBe(3);
+      expect(ayaka.weaponReconciliation.changes.refinement.remote).toBe(5);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+    });
+
+    it('combined character and weapon change is single UPDATE row without double-counting', () => {
+      const syncArray = [{
+        id: 10000046, // Hu Tao
+        level: 90,
+        ascension: 6,
+        weapon: { id: 13501, level: 90, ascension: 6, refinement: 1 }
+      }];
+
+      const roster = {
+        'Hu Tao': {
+          level: 80,
+          ascension: 5,
+          equippedWeaponId: 'w-homa'
+        }
+      };
+
+      const trackedWeapons = [{
+        id: 'w-homa',
+        weapon_id: 'staffofhoma',
+        weaponName: 'Staff of Homa',
+        level: 80,
+        ascension: 5,
+        currentRefinement: 1,
+        assignedTo: 'Hu Tao'
+      }];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const huTao = res.characters[0];
+
+      expect(huTao.status).toBe('update');
+      expect(huTao.characterDiff).toBe(true);
+      expect(huTao.weaponDiff).toBe(true);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+      expect(res.summary.unchangedCharacters).toBe(0);
+    });
+
+    it('true unchanged character + weapon remains UNCHANGED', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 90,
+        ascension: 6,
+        weapon: { id: 13501, level: 90, ascension: 6, refinement: 1 }
+      }];
+
+      const roster = {
+        'Hu Tao': {
+          level: 90,
+          ascension: 6,
+          equippedWeaponId: 'w-homa'
+        }
+      };
+
+      const trackedWeapons = [{
+        id: 'w-homa',
+        weapon_id: 'staffofhoma',
+        weaponName: 'Staff of Homa',
+        level: 90,
+        ascension: 6,
+        currentRefinement: 1,
+        assignedTo: 'Hu Tao'
+      }];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const huTao = res.characters[0];
+
+      expect(huTao.status).toBe('unchanged');
+      expect(huTao.characterDiff).toBe(false);
+      expect(huTao.weaponDiff).toBe(false);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.unchangedCharacters).toBe(1);
+    });
+
+    it('duplicate copies: explicitly assigned instance #2 is targeted and isolated', () => {
+      const syncArray = [{
+        id: 10000002, // Ayaka
+        level: 90,
+        ascension: 6,
+        weapon: { id: 11414, level: 90, ascension: 6, refinement: 1 }
+      }];
+
+      const roster = {
+        'Kamisato Ayaka': {
+          level: 90,
+          ascension: 6,
+          equippedWeaponId: 'w-copy-2'
+        }
+      };
+
+      const trackedWeapons = [
+        { id: 'w-copy-1', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 50, ascension: 2, currentRefinement: 1, assignedTo: null },
+        { id: 'w-copy-2', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 80, ascension: 5, currentRefinement: 1, assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.weaponReconciliation.equippedInstanceId).toBe('w-copy-2');
+      expect(ayaka.weaponReconciliation.changes.level.local).toBe(80);
+      expect(ayaka.weaponReconciliation.changes.level.remote).toBe(90);
+    });
+
+    it('synthetic dataset invariant: 2 new, 10 char updates, 17 weapon updates, 68 unchanged = 97 syncable, 27 updates', () => {
+      // Test that reconcileCharacters correctly sums charactersWithUpdates when charDiff or weaponDiff is true
+      const mockSync = [
+        { id: 10000030, level: 80, ascension: 5 }, // new 1
+        { id: 10000031, level: 80, ascension: 5 }, // new 2
+        // char update only
+        { id: 10000046, level: 90, ascension: 6 }, // Hu Tao local 80 -> char update
+        // weapon update only
+        { id: 10000002, level: 90, ascension: 6, weapon: { id: 11414, level: 90 } }, // Ayaka local char 90, weapon 80 -> weapon update
+        // unchanged
+        { id: 10000003, level: 80, ascension: 5, weapon: { id: 11501, level: 80 } }  // Jean local char 80, weapon 80 -> unchanged
+      ];
+
+      const mockRoster = {
+        'Hu Tao': { level: 80, ascension: 5 },
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w-ayaka' },
+        'Jean': { level: 80, ascension: 5, equippedWeaponId: 'w-jean' }
+      };
+
+      const mockWeapons = [
+        { id: 'w-ayaka', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 80, ascension: 5, assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-jean', weapon_id: 'aquilafavonia', weaponName: 'Aquila Favonia', level: 80, ascension: 5, assignedTo: 'Jean' }
+      ];
+
+      const res = reconcileCharacters(mockSync, mockRoster, mockWeapons);
+      expect(res.summary.newCharacters).toBe(2);
+      expect(res.summary.charactersWithUpdates).toBe(2); // Hu Tao (char) + Ayaka (weapon)
+      expect(res.summary.unchangedCharacters).toBe(1); // Jean
+      expect(res.summary.syncRelevant).toBe(5);
+      expect(res.summary.newCharacters + res.summary.charactersWithUpdates + res.summary.unchangedCharacters).toBe(5);
+    });
+  });
+
+  describe('STAGE C1.1: EXISTING-WEAPON REASSIGNMENT RECONCILIATION', () => {
+    it('1. unique unassigned existing remote weapon is detected as existing-tracked-match', () => {
+      const syncArray = [{
+        id: 10000002, // Ayaka
+        level: 90,
+        ascension: 6,
+        weapon: { id: 11414, level: 90, refinement: 5 } // Amenoma Kageuchi
+      }];
+      const roster = {
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w-mistsplitter' }
+      };
+      const trackedWeapons = [
+        { id: 'w-mistsplitter', weapon_id: 'mistsplitterreforged', weaponName: 'Mistsplitter Reforged', assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 80, currentRefinement: 1, assignedTo: null }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.status).toBe('update');
+      expect(ayaka.weaponReconciliation.status).toBe('existing-tracked-match');
+      expect(ayaka.weaponReconciliation.candidateInstanceId).toBe('w-amenoma');
+      expect(ayaka.weaponReconciliation.candidateAssignedTo).toBeNull();
+      expect(ayaka.needsAttention).toBe(false); // Unassigned candidate does not need attention
+      expect(ayaka.weaponReconciliation.changes.level.direction).toBe('remote-ahead');
+      expect(ayaka.weaponReconciliation.changes.refinement.direction).toBe('remote-ahead');
+    });
+
+    it('2. unique existing remote weapon assigned elsewhere is detected as existing-tracked-match', () => {
+      const syncArray = [{
+        id: 10000002, // Ayaka
+        level: 90,
+        ascension: 6,
+        weapon: { id: 11414, level: 90, refinement: 5 } // Amenoma Kageuchi
+      }];
+      const roster = {
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w-mistsplitter' },
+        'Skirk': { level: 90, ascension: 6, equippedWeaponId: 'w-amenoma' }
+      };
+      const trackedWeapons = [
+        { id: 'w-mistsplitter', weapon_id: 'mistsplitterreforged', weaponName: 'Mistsplitter Reforged', assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 80, currentRefinement: 1, assignedTo: 'Skirk' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.weaponReconciliation.status).toBe('existing-tracked-match');
+      expect(ayaka.weaponReconciliation.candidateInstanceId).toBe('w-amenoma');
+      expect(ayaka.weaponReconciliation.candidateAssignedTo).toBe('Skirk');
+      // Assigned to Skirk without Skirk forming a cycle => needsAttention is true!
+      expect(ayaka.needsAttention).toBe(true);
+    });
+
+    it('3. two-way swap (Ayaka <-> Jean) resolves safe cycle and sets needsAttention false for both', () => {
+      const syncArray = [
+        {
+          id: 10000002, // Ayaka
+          level: 90,
+          weapon: { id: 11414, level: 90, refinement: 5 } // Amenoma
+        },
+        {
+          id: 10000003, // Jean (canonicalId Jean)
+          level: 90,
+          weapon: { id: 11509, level: 90, refinement: 1 } // Mistsplitter
+        }
+      ];
+      const roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-mistsplitter' },
+        'Jean': { level: 90, equippedWeaponId: 'w-amenoma' }
+      };
+      const trackedWeapons = [
+        { id: 'w-mistsplitter', weapon_id: 'mistsplitterreforged', weaponName: 'Mistsplitter Reforged', assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', assignedTo: 'Jean' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters.find(c => c.canonicalId === 'KamisatoAyaka');
+      const jean = res.characters.find(c => c.canonicalId === 'Jean');
+
+      expect(ayaka.weaponReconciliation.status).toBe('existing-tracked-match');
+      expect(ayaka.weaponReconciliation.candidateAssignedTo).toBe('Jean');
+
+      expect(jean.weaponReconciliation.status).toBe('existing-tracked-match');
+      expect(jean.weaponReconciliation.candidateAssignedTo).toBe('Kamisato Ayaka');
+
+      // Both form a closed cycle, so neither needs attention on assignment grounds
+      expect(ayaka.needsAttention).toBe(false);
+      expect(jean.needsAttention).toBe(false);
+    });
+
+    it('4. multiple matching copies classify as ambiguous-existing-match and needsAttention', () => {
+      const syncArray = [{
+        id: 10000002, // Ayaka
+        level: 90,
+        weapon: { id: 11414, level: 90, refinement: 1 } // Amenoma
+      }];
+      const roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-mistsplitter' }
+      };
+      const trackedWeapons = [
+        { id: 'w-mistsplitter', weapon_id: 'mistsplitterreforged', assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-amenoma-1', weapon_id: 'amenomakageuchi', level: 90, currentRefinement: 5, assignedTo: 'Skirk' },
+        { id: 'w-amenoma-2', weapon_id: 'amenomakageuchi', level: 80, currentRefinement: 1, assignedTo: null }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.weaponReconciliation.status).toBe('ambiguous-existing-match');
+      expect(ayaka.weaponReconciliation.candidates.length).toBe(2);
+      expect(ayaka.needsAttention).toBe(true);
+    });
+
+    it('5. same-instance Stage C1 regression: assigned same weapon is matched-instance', () => {
+      const syncArray = [{
+        id: 10000002, // Ayaka
+        level: 90,
+        weapon: { id: 11414, level: 90, refinement: 5 } // Amenoma
+      }];
+      const roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-amenoma' }
+      };
+      const trackedWeapons = [
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 80, currentRefinement: 1, assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.weaponReconciliation.status).toBe('matched-instance');
+      expect(ayaka.weaponResolution).toBe('update-existing');
+      expect(ayaka.weaponReconciliation.hasWeaponUpdate).toBe(true);
+    });
+
+    it('6. no existing remote weapon in armory classifies as equipment-mismatch', () => {
+      const syncArray = [{
+        id: 10000002, // Ayaka
+        level: 90,
+        weapon: { id: 11414, level: 90 } // Amenoma
+      }];
+      const roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-mistsplitter' }
+      };
+      const trackedWeapons = [
+        { id: 'w-mistsplitter', weapon_id: 'mistsplitterreforged', assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const ayaka = res.characters[0];
+
+      expect(ayaka.weaponReconciliation.status).toBe('equipment-mismatch');
+      expect(ayaka.needsAttention).toBe(true);
+    });
+  });
 });

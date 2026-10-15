@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { applyHoyolabPlanToState, validateHoyolabApplyPlan, buildHoyolabApplyPlan } from './hoyolabSyncApply';
 
 describe('hoyolabSyncApply', () => {
@@ -403,6 +403,244 @@ describe('hoyolabSyncApply', () => {
       const plan = buildHoyolabApplyPlan({ reconciliationResult, selectedChars: { '6': true }, weaponChoices: { '6': 'assign|w1' }, localAheadOverrides: {} });
       expect(plan.characters[0].weapon.updateFields.level).toBeUndefined(); // kept local
     });
+
+    describe('SAME WEAPON RECONCILIATION & RESOLUTION', () => {
+      it('matched-instance defaults to update-existing and preserves targets when remote exceeds target', () => {
+        const reconciliationResult = {
+          characters: [{
+            status: 'update',
+            hoyolabId: 'ayaka-1',
+            canonicalId: 'Kamisato Ayaka',
+            rosterKey: 'Kamisato Ayaka',
+            hoyolab: {
+              level: 90,
+              weapon: { name: 'Amenoma Kageuchi', level: 90, ascension: 6, refinement: 5 }
+            },
+            local: { level: 90, equippedWeaponId: 'amenoma-inst-1' },
+            weaponReconciliation: {
+              status: 'matched-instance',
+              instance: {
+                id: 'amenoma-inst-1',
+                weapon_id: 'amenomakageuchi',
+                level: 80,
+                ascension: 5,
+                currentRefinement: 3,
+                targetLevel: 80,
+                targetAscension: 5,
+                targetRefinement: 3,
+                assignedTo: 'Kamisato Ayaka'
+              },
+              hasWeaponUpdate: true,
+              changes: {
+                level: { local: 80, remote: 90 },
+                ascension: { local: 5, remote: 6 },
+                refinement: { local: 3, remote: 5 }
+              }
+            }
+          }]
+        };
+
+        // 1. Plan built with default (empty weaponChoices)
+        const plan = buildHoyolabApplyPlan({
+          reconciliationResult,
+          selectedChars: { 'ayaka-1': true },
+          weaponChoices: {},
+          localAheadOverrides: {}
+        });
+
+        expect(plan.characters[0].weapon).toEqual({
+          action: 'assign',
+          uuid: 'amenoma-inst-1',
+          updateFields: { level: 90, ascension: 6, refinement: 5 }
+        });
+
+        // 2. Apply plan
+        const trackedWeapons = [
+          {
+            id: 'amenoma-inst-1',
+            weapon_id: 'amenomakageuchi',
+            level: 80,
+            ascension: 5,
+            currentRefinement: 3,
+            targetLevel: 80,
+            targetAscension: 5,
+            targetRefinement: 3,
+            assignedTo: 'Kamisato Ayaka'
+          }
+        ];
+        const roster = {
+          'Kamisato Ayaka': {
+            level: 90,
+            ascension: 6,
+            equippedWeaponId: 'amenoma-inst-1'
+          }
+        };
+
+        const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+
+        const updatedWep = res.trackedWeapons.find(w => w.id === 'amenoma-inst-1');
+        expect(updatedWep.level).toBe(90);
+        expect(updatedWep.ascension).toBe(6);
+        expect(updatedWep.currentRefinement).toBe(5);
+        // Targets preserved even though remote exceeds target
+        expect(updatedWep.targetLevel).toBe(80);
+        expect(updatedWep.targetAscension).toBe(5);
+        expect(updatedWep.targetRefinement).toBe(3);
+        // Assignment preserved
+        expect(updatedWep.assignedTo).toBe('Kamisato Ayaka');
+        expect(res.roster['Kamisato Ayaka'].equippedWeaponId).toBe('amenoma-inst-1');
+        expect(res.result.weaponsCreated).toBe(0);
+        expect(res.result.weaponsUpdatedOrReassigned).toBe(1);
+      });
+
+      it('isolates duplicate copies: only the assigned instance is updated', () => {
+        const reconciliationResult = {
+          characters: [{
+            status: 'update',
+            hoyolabId: 'ayaka-1',
+            canonicalId: 'Kamisato Ayaka',
+            rosterKey: 'Kamisato Ayaka',
+            hoyolab: {
+              level: 90,
+              weapon: { name: 'Amenoma Kageuchi', level: 90, ascension: 6, refinement: 5 }
+            },
+            local: { level: 90, equippedWeaponId: 'amenoma-copy-2' },
+            weaponReconciliation: {
+              status: 'matched-instance',
+              instance: {
+                id: 'amenoma-copy-2',
+                weapon_id: 'amenomakageuchi',
+                level: 80,
+                ascension: 5,
+                currentRefinement: 1,
+                assignedTo: 'Kamisato Ayaka'
+              },
+              hasWeaponUpdate: true,
+              changes: {
+                level: { local: 80, remote: 90 },
+                ascension: { local: 5, remote: 6 }
+              }
+            }
+          }]
+        };
+
+        const plan = buildHoyolabApplyPlan({
+          reconciliationResult,
+          selectedChars: { 'ayaka-1': true },
+          weaponChoices: { 'ayaka-1': 'update-existing' },
+          localAheadOverrides: {}
+        });
+
+        const trackedWeapons = [
+          {
+            id: 'amenoma-copy-1',
+            weapon_id: 'amenomakageuchi',
+            level: 70,
+            ascension: 4,
+            currentRefinement: 1,
+            assignedTo: 'Jean'
+          },
+          {
+            id: 'amenoma-copy-2',
+            weapon_id: 'amenomakageuchi',
+            level: 80,
+            ascension: 5,
+            currentRefinement: 1,
+            assignedTo: 'Kamisato Ayaka'
+          }
+        ];
+        const roster = {
+          'Kamisato Ayaka': { level: 90, equippedWeaponId: 'amenoma-copy-2' },
+          'Jean': { level: 80, equippedWeaponId: 'amenoma-copy-1' }
+        };
+
+        const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+
+        const copy1 = res.trackedWeapons.find(w => w.id === 'amenoma-copy-1');
+        const copy2 = res.trackedWeapons.find(w => w.id === 'amenoma-copy-2');
+
+        // Copy 1 remains completely untouched
+        expect(copy1.level).toBe(70);
+        expect(copy1.ascension).toBe(4);
+        expect(copy1.assignedTo).toBe('Jean');
+
+        // Copy 2 updated
+        expect(copy2.level).toBe(90);
+        expect(copy2.ascension).toBe(6);
+        expect(copy2.assignedTo).toBe('Kamisato Ayaka');
+      });
+
+      it('odette equipment-mismatch with ignore weapon applies character update safely', () => {
+        const reconciliationResult = {
+          characters: [{
+            status: 'update',
+            hoyolabId: 'odette-1',
+            canonicalId: 'Odette',
+            rosterKey: 'Odette',
+            hoyolab: {
+              level: 90,
+              talents: { normal: 9, skill: 9, burst: 9 },
+              weapon: { name: 'Athame Artis', level: 90, ascension: 6, refinement: 1 }
+            },
+            local: {
+              level: 80,
+              talents: { normal: 8, skill: 8, burst: 8 },
+              equippedWeaponId: 'finale-inst-1'
+            },
+            changes: {
+              level: { direction: 'remote-ahead', local: 80, remote: 90 },
+              talents: {
+                normal: { direction: 'remote-ahead', local: 8, remote: 9 }
+              }
+            },
+            weaponReconciliation: {
+              status: 'equipment-mismatch',
+              remoteWeapon: { name: 'Athame Artis', level: 90 },
+              localInstance: { id: 'finale-inst-1', weapon_id: 'finaleofthedeep', name: 'Finale of the Deep' }
+            }
+          }]
+        };
+
+        // User chose 'ignore' (Leave Weapon Unchanged)
+        const plan = buildHoyolabApplyPlan({
+          reconciliationResult,
+          selectedChars: { 'odette-1': true },
+          weaponChoices: { 'odette-1': 'ignore' },
+          localAheadOverrides: {}
+        });
+
+        // Weapon action should be omitted / none (null)
+        expect(plan.characters[0].weapon).toBeNull();
+        expect(plan.characters[0].fields.level).toBe(90);
+
+        const trackedWeapons = [
+          {
+            id: 'finale-inst-1',
+            weapon_id: 'finaleofthedeep',
+            level: 80,
+            assignedTo: 'Odette'
+          }
+        ];
+        const roster = {
+          'Odette': {
+            level: 80,
+            talents: { normal: 8, skill: 8, burst: 8 },
+            equippedWeaponId: 'finale-inst-1'
+          }
+        };
+
+        const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+
+        expect(res.roster['Odette'].level).toBe(90);
+        expect(res.roster['Odette'].talents.normal).toBe(9);
+        expect(res.roster['Odette'].equippedWeaponId).toBe('finale-inst-1');
+        // Weapon remains unchanged
+        expect(res.trackedWeapons[0].id).toBe('finale-inst-1');
+        expect(res.trackedWeapons[0].level).toBe(80);
+        expect(res.result.weaponsCreated).toBe(0);
+        expect(res.result.weaponsUpdatedOrReassigned).toBe(0);
+      });
+    });
   });
 
   describe('RESULT METRIC SEMANTICS', () => {
@@ -492,7 +730,7 @@ describe('hoyolabSyncApply', () => {
     it('applies completely isolated nested copies (tested by nature of spread operator and validation)', () => {
       const roster = { 'Hu Tao': { level: 80 } };
       const plan = { characters: [{ rosterKey: 'Hu Tao', isNew: false, fields: { level: 90 } }] };
-      const res = applyHoyolabPlanToState({ roster, trackedWeapons: [], plan });
+      applyHoyolabPlanToState({ roster, trackedWeapons: [], plan });
       expect(roster['Hu Tao'].level).toBe(80); // Original untouched
     });
 
@@ -699,6 +937,202 @@ describe('hoyolabSyncApply', () => {
       expect(anemo.talents.normal).toBe(6); // Not reset to 1
       expect(anemo.targetLevel).toBe(80); // Not reset to 90
       expect(res.result.travelerVariantsAdded).toBe(0); // Not counted as added
+    });
+  });
+
+  describe('STAGE C1.1: EXISTING-WEAPON REASSIGNMENT APPLY & CYCLES', () => {
+    it('1. unique unassigned weapon reassignment: assigns UUID, unassigns old weapon, no instances created', () => {
+      const roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'uuid-mistsplitter' }
+      };
+      const trackedWeapons = [
+        { id: 'uuid-mistsplitter', weapon_id: 'mistsplitterreforged', assignedTo: 'Kamisato Ayaka' },
+        { id: 'uuid-amenoma', weapon_id: 'amenomakageuchi', level: 80, currentRefinement: 1, assignedTo: null }
+      ];
+
+      const plan = {
+        characters: [{
+          rosterKey: 'Kamisato Ayaka',
+          isNew: false,
+          fields: {},
+          weapon: {
+            action: 'assign',
+            uuid: 'uuid-amenoma',
+            updateFields: { level: 90, refinement: 5 }
+          }
+        }]
+      };
+
+      const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+
+      expect(res.trackedWeapons.length).toBe(2);
+      expect(res.result.weaponsCreated).toBe(0);
+      expect(res.result.weaponsUpdatedOrReassigned).toBe(2); // old unassigned + new assigned & updated
+
+      const mist = res.trackedWeapons.find(w => w.id === 'uuid-mistsplitter');
+      const amenoma = res.trackedWeapons.find(w => w.id === 'uuid-amenoma');
+
+      expect(mist.assignedTo).toBeNull();
+      expect(amenoma.assignedTo).toBe('Kamisato Ayaka');
+      expect(amenoma.level).toBe(90);
+      expect(amenoma.currentRefinement).toBe(5);
+      expect(res.roster['Kamisato Ayaka'].equippedWeaponId).toBe('uuid-amenoma');
+    });
+
+    it('2. Ayaka/Skirk two-way swap: swaps UUIDs coherently without creating instances', () => {
+      const roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'uuid-mistsplitter' },
+        'Skirk': { level: 90, equippedWeaponId: 'uuid-amenoma' }
+      };
+      const trackedWeapons = [
+        { id: 'uuid-mistsplitter', weapon_id: 'mistsplitterreforged', assignedTo: 'Kamisato Ayaka', level: 90 },
+        { id: 'uuid-amenoma', weapon_id: 'amenomakageuchi', assignedTo: 'Skirk', level: 90 }
+      ];
+
+      const plan = {
+        characters: [
+          {
+            rosterKey: 'Kamisato Ayaka',
+            isNew: false,
+            fields: {},
+            weapon: { action: 'assign', uuid: 'uuid-amenoma' }
+          },
+          {
+            rosterKey: 'Skirk',
+            isNew: false,
+            fields: {},
+            weapon: { action: 'assign', uuid: 'uuid-mistsplitter' }
+          }
+        ]
+      };
+
+      const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+
+      // Invariants:
+      expect(res.trackedWeapons.length).toBe(2);
+      expect(res.result.weaponsCreated).toBe(0);
+
+      // UUIDs preserved
+      const mist = res.trackedWeapons.find(w => w.id === 'uuid-mistsplitter');
+      const amenoma = res.trackedWeapons.find(w => w.id === 'uuid-amenoma');
+      expect(mist).toBeDefined();
+      expect(amenoma).toBeDefined();
+
+      // Desired assignments swapped
+      expect(amenoma.assignedTo).toBe('Kamisato Ayaka');
+      expect(mist.assignedTo).toBe('Skirk');
+
+      expect(res.roster['Kamisato Ayaka'].equippedWeaponId).toBe('uuid-amenoma');
+      expect(res.roster['Skirk'].equippedWeaponId).toBe('uuid-mistsplitter');
+    });
+
+    it('3. three-character cyclic reassignment (A -> B, B -> C, C -> A)', () => {
+      const roster = {
+        'CharA': { equippedWeaponId: 'w-a' },
+        'CharB': { equippedWeaponId: 'w-b' },
+        'CharC': { equippedWeaponId: 'w-c' }
+      };
+      const trackedWeapons = [
+        { id: 'w-a', weapon_id: 'weapona', assignedTo: 'CharA' },
+        { id: 'w-b', weapon_id: 'weaponb', assignedTo: 'CharB' },
+        { id: 'w-c', weapon_id: 'weaponc', assignedTo: 'CharC' }
+      ];
+
+      const plan = {
+        characters: [
+          { rosterKey: 'CharA', isNew: false, fields: {}, weapon: { action: 'assign', uuid: 'w-b' } },
+          { rosterKey: 'CharB', isNew: false, fields: {}, weapon: { action: 'assign', uuid: 'w-c' } },
+          { rosterKey: 'CharC', isNew: false, fields: {}, weapon: { action: 'assign', uuid: 'w-a' } }
+        ]
+      };
+
+      const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+
+      expect(res.trackedWeapons.length).toBe(3);
+      expect(res.result.weaponsCreated).toBe(0);
+
+      expect(res.trackedWeapons.find(w => w.id === 'w-b').assignedTo).toBe('CharA');
+      expect(res.trackedWeapons.find(w => w.id === 'w-c').assignedTo).toBe('CharB');
+      expect(res.trackedWeapons.find(w => w.id === 'w-a').assignedTo).toBe('CharC');
+
+      expect(res.roster['CharA'].equippedWeaponId).toBe('w-b');
+      expect(res.roster['CharB'].equippedWeaponId).toBe('w-c');
+      expect(res.roster['CharC'].equippedWeaponId).toBe('w-a');
+    });
+
+    it('4. reused existing instance stat update while preserving planner target fields', () => {
+      const roster = {
+        'Kamisato Ayaka': { equippedWeaponId: null }
+      };
+      const trackedWeapons = [
+        {
+          id: 'w-amenoma',
+          weapon_id: 'amenomakageuchi',
+          level: 80,
+          ascension: 5,
+          currentRefinement: 1,
+          targetLevel: 90,
+          targetAscension: 6,
+          targetRefinement: 5,
+          assignedTo: null
+        }
+      ];
+
+      const plan = {
+        characters: [{
+          rosterKey: 'Kamisato Ayaka',
+          isNew: false,
+          fields: {},
+          weapon: {
+            action: 'assign',
+            uuid: 'w-amenoma',
+            updateFields: { level: 90, ascension: 6, refinement: 5 }
+          }
+        }]
+      };
+
+      const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+      const w = res.trackedWeapons[0];
+
+      // Current stats updated
+      expect(w.level).toBe(90);
+      expect(w.ascension).toBe(6);
+      expect(w.currentRefinement).toBe(5);
+
+      // Planner target fields preserved
+      expect(w.targetLevel).toBe(90);
+      expect(w.targetAscension).toBe(6);
+      expect(w.targetRefinement).toBe(5);
+      expect(w.assignedTo).toBe('Kamisato Ayaka');
+    });
+
+    it('5. final assignment uniqueness invariant: no duplicate assignment', () => {
+      const roster = {
+        'CharA': { equippedWeaponId: 'w1' },
+        'CharB': { equippedWeaponId: 'w2' }
+      };
+      const trackedWeapons = [
+        { id: 'w1', assignedTo: 'CharA' },
+        { id: 'w2', assignedTo: 'CharB' }
+      ];
+
+      const plan = {
+        characters: [
+          { rosterKey: 'CharA', isNew: false, fields: {}, weapon: { action: 'assign', uuid: 'w2' } }
+        ]
+      };
+
+      const res = applyHoyolabPlanToState({ roster, trackedWeapons, plan });
+
+      // w2 assigned to CharA
+      expect(res.trackedWeapons.find(w => w.id === 'w2').assignedTo).toBe('CharA');
+      // w1 became unassigned
+      expect(res.trackedWeapons.find(w => w.id === 'w1').assignedTo).toBeNull();
+
+      // Invariant: each weapon is assigned to at most 1 character
+      const assignments = res.trackedWeapons.map(w => w.assignedTo).filter(Boolean);
+      const uniqueAssignments = new Set(assignments);
+      expect(assignments.length).toBe(uniqueAssignments.size);
     });
   });
 });
