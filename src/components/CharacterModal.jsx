@@ -184,42 +184,89 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
   const [burstTo, setBurstTo] = useState(rosterEntry?.targetTalents?.burst ?? 10)
 
   // ── Weapon state — local draft mirrors equippedWeaponId until Save ──────────
-  const getInitialWeapon = () => {
+  const getInitialWeapon = useCallback(() => {
     const initialId = getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
     return initialId ? trackedWeapons.find((w) => w.id === initialId) : null;
-  };
+  }, [name, rosterEntry, trackedWeapons]);
 
-  const [draftWeaponName, setDraftWeaponName] = useState(() => getInitialWeapon()?.weaponName ?? null);
-
-  const equippedWeaponName = draftWeaponName;
+  const [draftWeaponId, setDraftWeaponId] = useState(() => {
+    return getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
+  });
 
   // Local slider state — mirrors the draft weapon's progression
-  const [weaponFromAsc, setWeaponFromAsc] = useState(() => getInitialWeapon()?.ascension ?? 0);
-  const [weaponFromLevel, setWeaponFromLevel] = useState(() => getInitialWeapon()?.level ?? 1);
-  const [weaponToAsc, setWeaponToAsc] = useState(() => getInitialWeapon()?.targetAscension ?? 6);
-  const [weaponToLevel, setWeaponToLevel] = useState(() => getInitialWeapon()?.targetLevel ?? 90);
+  const [weaponFromAsc, setWeaponFromAsc] = useState(() => {
+    const initialId = getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
+    const w = initialId ? trackedWeapons.find((item) => item.id === initialId) : null;
+    return w?.ascension ?? 0;
+  });
+  const [weaponFromLevel, setWeaponFromLevel] = useState(() => {
+    const initialId = getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
+    const w = initialId ? trackedWeapons.find((item) => item.id === initialId) : null;
+    return w?.level ?? 1;
+  });
+  const [weaponToAsc, setWeaponToAsc] = useState(() => {
+    const initialId = getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
+    const w = initialId ? trackedWeapons.find((item) => item.id === initialId) : null;
+    return w?.targetAscension ?? 6;
+  });
+  const [weaponToLevel, setWeaponToLevel] = useState(() => {
+    const initialId = getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
+    const w = initialId ? trackedWeapons.find((item) => item.id === initialId) : null;
+    return w?.targetLevel ?? 90;
+  });
 
-  // Pre-filter valid weapons for this character's weapon type strictly
-  const compatibleWeapons = useMemo(() => {
-    return (weaponsData || [])
-      .filter(w => {
-        const wType = (w.type || w.weapon_type || '').toLowerCase().trim();
-        const cType = (character.weapon || character.weapon_type || '').toLowerCase().trim();
-        return wType === cType;
+  // Pre-filter valid weapons for this character's weapon type from trackedWeapons only
+  const compatibleOwnedWeapons = useMemo(() => {
+    const cType = (character.weapon || character.weapon_type || '').toLowerCase().trim();
+
+    return (trackedWeapons || [])
+      .map((tw) => {
+        const staticData = (weaponsData || []).find(
+          (sw) =>
+            sw.name === tw.weaponName ||
+            (tw.weapon_id && sw.id && sw.id.toLowerCase() === tw.weapon_id.toLowerCase())
+        );
+        if (!staticData) return null; // Safely exclude invalid / unmapped static instances
+        const wType = (staticData.type || staticData.weapon_type || '').toLowerCase().trim();
+        if (wType !== cType) return null; // Safely exclude incompatible weapon types
+        return {
+          instance: tw,
+          staticData,
+        };
       })
+      .filter(Boolean)
       .sort((a, b) => {
-        // Sort by string length of the stars (e.g., '★★★★★' is 5, '★★★★' is 4)
-        const rarityA = (a.rarity || '').length;
-        const rarityB = (b.rarity || '').length;
-        return rarityB - rarityA;
+        const rarityA =
+          typeof a.staticData.rarity === 'string'
+            ? a.staticData.rarity.match(/★/g)?.length || parseInt(a.staticData.rarity, 10) || 0
+            : Number(a.staticData.rarity) || 0;
+        const rarityB =
+          typeof b.staticData.rarity === 'string'
+            ? b.staticData.rarity.match(/★/g)?.length || parseInt(b.staticData.rarity, 10) || 0
+            : Number(b.staticData.rarity) || 0;
+        if (rarityB !== rarityA) return rarityB - rarityA;
+        const levelDiff = (b.instance.level ?? 1) - (a.instance.level ?? 1);
+        if (levelDiff !== 0) return levelDiff;
+        return (a.instance.weaponName || '').localeCompare(b.instance.weaponName || '');
       });
-  }, [character])
+  }, [trackedWeapons, character]);
 
-  const selectedWeaponData = useMemo(() => {
-    return equippedWeaponName ? weaponsData.find(w => w.name === equippedWeaponName) : null
-  }, [equippedWeaponName])
+  const weaponOptions = useMemo(() => {
+    return [
+      { id: '', name: '— No Weapon Equipped —', subtitle: null, icon: null, rarity: 0 },
+      ...compatibleOwnedWeapons.map(({ instance, staticData }) => ({
+        id: instance.id,
+        name: formatName(staticData.name || instance.weaponName),
+        subtitle: `Lv ${instance.level ?? 1} R${instance.currentRefinement || 1} • ${
+          instance.assignedTo ? `Assigned to: ${formatName(instance.assignedTo)}` : 'Unassigned'
+        }`,
+        icon: getWeaponIcon(staticData.name || instance.weaponName),
+        rarity: staticData.rarity,
+      })),
+    ];
+  }, [compatibleOwnedWeapons]);
 
-  // ── Sync externally (re-opening same modal) ───────────────────────────────
+  // ── Sync externally (re-opening same modal or navigating next/prev) ─────────
   useEffect(() => {
     if (rosterEntry) {
       setFromAsc(rosterEntry.ascension ?? 0)
@@ -232,18 +279,31 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
       setNormalTo(rosterEntry.targetTalents?.normal ?? 10)
       setSkillTo(rosterEntry.targetTalents?.skill ?? 10)
       setBurstTo(rosterEntry.targetTalents?.burst ?? 10)
-      const w = getInitialWeapon();
-      setDraftWeaponName(w?.weaponName ?? null);
+      const currentId = getTravelerAwareWeaponId(name, rosterEntry, trackedWeapons);
+      const w = currentId ? trackedWeapons.find((item) => item.id === currentId) : null;
+      setDraftWeaponId(w?.id ?? null);
       setWeaponFromAsc(w?.ascension ?? 0);
       setWeaponFromLevel(w?.level ?? 1);
       setWeaponToAsc(w?.targetAscension ?? 6);
       setWeaponToLevel(w?.targetLevel ?? 90);
     } else {
-      setDraftWeaponName(null);
-      setWeaponFromAsc(0);
-      setWeaponFromLevel(1);
-      setWeaponToAsc(6);
-      setWeaponToLevel(90);
+      setFromAsc(0);
+      setFromLevel(1);
+      setToAsc(6);
+      setToLevel(90);
+      setNormalFrom(1);
+      setSkillFrom(1);
+      setBurstFrom(1);
+      setNormalTo(10);
+      setSkillTo(10);
+      setBurstTo(10);
+      const currentId = getTravelerAwareWeaponId(name, null, trackedWeapons);
+      const w = currentId ? trackedWeapons.find((item) => item.id === currentId) : null;
+      setDraftWeaponId(w?.id ?? null);
+      setWeaponFromAsc(w?.ascension ?? 0);
+      setWeaponFromLevel(w?.level ?? 1);
+      setWeaponToAsc(w?.targetAscension ?? 6);
+      setWeaponToLevel(w?.targetLevel ?? 90);
     }
   }, [name]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -269,8 +329,8 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
       targetAscension: safeToAsc,
       talents: { normal: normalFrom, skill: skillFrom, burst: burstFrom },
       targetTalents: { normal: normalTo, skill: skillTo, burst: burstTo },
-      weaponName: draftWeaponName,
-      weaponProgression: draftWeaponName ? {
+      weaponId: draftWeaponId,
+      weaponProgression: draftWeaponId ? {
         ascension: weaponFromAsc,
         level: weaponFromLevel,
         targetAscension: safeWeaponToAsc,
@@ -444,16 +504,19 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
             <h3 className="modal-section-title">🗡️ Equipped Weapon</h3>
             <div className="mb-4">
               <CustomSelect
-                placeholder="-- No Weapon Equipped --"
-                value={equippedWeaponName || ''}
-                onChange={(newName) => {
-                  setDraftWeaponName(newName || null);
-                  const w = getInitialWeapon();
-                  if (newName && w && newName === w.weaponName) {
-                    setWeaponFromAsc(w.ascension ?? 0);
-                    setWeaponFromLevel(w.level ?? 1);
-                    setWeaponToAsc(w.targetAscension ?? 6);
-                    setWeaponToLevel(w.targetLevel ?? 90);
+                placeholder="— No Weapon Equipped —"
+                value={draftWeaponId || ''}
+                onChange={(newId) => {
+                  const selectedId = newId || null;
+                  setDraftWeaponId(selectedId);
+                  if (selectedId) {
+                    const targetWeapon = trackedWeapons.find((w) => w.id === selectedId);
+                    if (targetWeapon) {
+                      setWeaponFromAsc(targetWeapon.ascension ?? 0);
+                      setWeaponFromLevel(targetWeapon.level ?? 1);
+                      setWeaponToAsc(targetWeapon.targetAscension ?? 6);
+                      setWeaponToLevel(targetWeapon.targetLevel ?? 90);
+                    }
                   } else {
                     setWeaponFromAsc(0);
                     setWeaponFromLevel(1);
@@ -461,32 +524,29 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
                     setWeaponToLevel(90);
                   }
                 }}
-                options={[
-                  { id: '', name: '— No Weapon Equipped —', icon: null, rarity: 0 },
-                  ...compatibleWeapons.map(w => ({
-                    id: w.name,
-                    name: formatName(w.name),
-                    icon: getWeaponIcon(w.name),
-                    rarity: w.rarity
-                  }))
-                ]}
+                options={weaponOptions}
               />
+              {compatibleOwnedWeapons.length === 0 && (
+                <p className="text-xs text-[var(--muted)] mt-1.5">
+                  No compatible tracked weapons in your Armory.
+                </p>
+              )}
             </div>
 
-            {equippedWeaponName && (
+            {draftWeaponId && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                 <div className="modal-state-panel">
                   <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
-                  <AscensionSelector value={weaponFromAsc} onChange={(a) => { setWeaponFromAsc(a);  }} label="Ascension" elementColor="#9CA3AF" isCharacter={false} />
+                  <AscensionSelector value={weaponFromAsc} onChange={handleWeaponFromAscChange} label="Ascension" elementColor="#9CA3AF" isCharacter={false} />
                   <div className="mt-4">
-                    <LevelSlider value={weaponFromLevel} onChange={(lv) => { setWeaponFromLevel(lv);  }} ascension={weaponFromAsc} label="Level" elementColor="#9CA3AF" isCharacter={false} />
+                    <LevelSlider value={weaponFromLevel} onChange={setWeaponFromLevel} ascension={weaponFromAsc} label="Level" elementColor="#9CA3AF" isCharacter={false} />
                   </div>
                 </div>
                 <div className="modal-state-panel">
                   <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-4">🎯 Weapon Target</p>
-                  <AscensionSelector value={safeWeaponToAsc} onChange={(a) => { setWeaponToAsc(a);  }} label="Ascension" elementColor="var(--gold)" isCharacter={false} />
+                  <AscensionSelector value={safeWeaponToAsc} onChange={handleWeaponToAscChange} label="Ascension" elementColor="var(--gold)" isCharacter={false} />
                   <div className="mt-4">
-                    <LevelSlider value={safeWeaponToLevel} onChange={(lv) => { setWeaponToLevel(lv);  }} ascension={safeWeaponToAsc} label="Level" elementColor="var(--gold)" isCharacter={false} />
+                    <LevelSlider value={safeWeaponToLevel} onChange={setWeaponToLevel} ascension={safeWeaponToAsc} label="Level" elementColor="var(--gold)" isCharacter={false} />
                   </div>
                 </div>
               </div>

@@ -29,7 +29,7 @@ export const createRosterSlice = (set, get) => ({
     set((state) => {
       const {
         level, ascension, targetLevel, targetAscension, talents, targetTalents,
-        weaponName, weaponProgression
+        weaponId, weaponProgression
       } = draft;
 
       const newRoster = { ...state.roster };
@@ -42,46 +42,89 @@ export const createRosterSlice = (set, get) => ({
         equippedWeaponId: null, tracked: true, calculatedCosts: null
       };
 
-      let finalWeaponId = getTravelerAwareWeaponId(name, charEntry, updatedWeapons);
-      const currentWeapon = finalWeaponId ? updatedWeapons.find(w => w.id === finalWeaponId) : null;
+      const isTraveler = name.startsWith('Traveler ');
+      const currentWeaponId = getTravelerAwareWeaponId(name, charEntry, updatedWeapons);
 
-      if (!weaponName) {
-        if (finalWeaponId) {
-          updatedWeapons = updatedWeapons.map(w => w.id === finalWeaponId ? { ...w, assignedTo: null } : w);
-          finalWeaponId = null;
-        }
-      } else {
-        if (currentWeapon && currentWeapon.weaponName === weaponName) {
-          updatedWeapons = updatedWeapons.map(w => w.id === finalWeaponId ? { ...w, ...weaponProgression } : w);
-        } else {
-          if (finalWeaponId) {
-            updatedWeapons = updatedWeapons.map(w => w.id === finalWeaponId ? { ...w, assignedTo: null } : w);
+      if ('weaponId' in draft) {
+        const targetWeaponId = weaponId || null;
+        const targetWeapon = targetWeaponId ? updatedWeapons.find(w => w.id === targetWeaponId) : null;
+
+        if (!targetWeapon) {
+          // Unassign any currently equipped weapon
+          if (currentWeaponId) {
+            if (isTraveler) {
+              updatedWeapons = updatedWeapons.map(w =>
+                w.assignedTo?.startsWith('Traveler ') ? { ...w, assignedTo: null } : w
+              );
+            } else {
+              updatedWeapons = updatedWeapons.map(w =>
+                w.id === currentWeaponId ? { ...w, assignedTo: null } : w
+              );
+            }
           }
-          finalWeaponId = crypto.randomUUID();
-          updatedWeapons.push({
-            id: finalWeaponId,
-            weapon_id: weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
-            weaponName: weaponName,
-            assignedTo: name,
-            createdAt: Date.now(),
-            currentRefinement: 1,
-            targetRefinement: 1,
-            ...weaponProgression
+          charEntry = {
+            ...charEntry,
+            equippedWeaponId: null,
+          };
+        } else {
+          // A valid existing weapon was selected
+          // 1. If character had a different weapon before, unassign it
+          if (currentWeaponId && currentWeaponId !== targetWeaponId) {
+            if (isTraveler) {
+              updatedWeapons = updatedWeapons.map(w =>
+                w.assignedTo?.startsWith('Traveler ') && w.id !== targetWeaponId ? { ...w, assignedTo: null } : w
+              );
+            } else {
+              updatedWeapons = updatedWeapons.map(w =>
+                w.id === currentWeaponId ? { ...w, assignedTo: null } : w
+              );
+            }
+          }
+
+          // 2. If target weapon was assigned to another character, clean up previous owner
+          if (targetWeapon.assignedTo && targetWeapon.assignedTo !== name) {
+            const previousOwner = targetWeapon.assignedTo;
+            if (!previousOwner.startsWith('Traveler ') && newRoster[previousOwner]) {
+              newRoster[previousOwner] = {
+                ...newRoster[previousOwner],
+                equippedWeaponId: null,
+              };
+            }
+          }
+
+          // 3. Assign target weapon and update its progression
+          updatedWeapons = updatedWeapons.map(w => {
+            if (w.id === targetWeaponId) {
+              return {
+                ...w,
+                assignedTo: name,
+                ...(weaponProgression || {}),
+              };
+            }
+            return w;
           });
+
+          // 4. Update charEntry equippedWeaponId
+          charEntry = {
+            ...charEntry,
+            equippedWeaponId: isTraveler ? null : targetWeaponId,
+          };
         }
       }
 
-      const isTraveler = name.startsWith('Traveler ');
       charEntry = {
         ...charEntry,
-        level, ascension, targetLevel, targetAscension,
-        talents, targetTalents,
-        equippedWeaponId: isTraveler ? null : finalWeaponId
+        level: level ?? charEntry.level,
+        ascension: ascension ?? charEntry.ascension,
+        targetLevel: targetLevel ?? charEntry.targetLevel,
+        targetAscension: targetAscension ?? charEntry.targetAscension,
+        talents: talents ?? charEntry.talents,
+        targetTalents: targetTalents ?? charEntry.targetTalents,
       };
       charEntry = recalculateCharacterCosts(name, charEntry);
       newRoster[name] = charEntry;
 
-      if (name.startsWith('Traveler ')) {
+      if (isTraveler) {
         syncTravelerAscension(newRoster, name);
       }
 
