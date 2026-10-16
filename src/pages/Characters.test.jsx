@@ -192,4 +192,16 @@ describe('Characters Page Component Architecture', () => {
 
     expect(container.querySelector('[data-testid="add-character-modal"]')).toBeTruthy();
   });
+
+  it('no longer renders page-specific Sync from HoYoLAB button even when connected', async () => {
+    mockState.hoyolabConnected = true;
+    mockState.lastHoyolabCharacterSyncAt = Date.now() - 120000;
+    await renderComponent();
+
+    const syncBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+      b.textContent.includes('Sync from HoYoLAB')
+    );
+    expect(syncBtn).toBeUndefined();
+    expect(container.querySelector('[data-testid="sync-modal"]')).toBeNull();
+  });
 });

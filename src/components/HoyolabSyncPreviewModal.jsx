@@ -37,8 +37,8 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   const [applyResult, setApplyResult] = useState(null);
   const [planSummary, setPlanSummary] = useState(null);
 
-  const roster = useStore(s => s.roster);
-  const trackedWeapons = useStore(s => s.trackedWeapons);
+  const roster = useStore(s => s.roster) || {};
+  const trackedWeapons = useStore(s => s.trackedWeapons) || [];
   const applyHoyolabSync = useStore(s => s.applyHoyolabSync);
 
   useEffect(() => {
@@ -288,7 +288,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
   const trackedWeaponsMap = useMemo(() => {
     const map = {};
-    trackedWeapons.forEach(w => {
+    (trackedWeapons || []).forEach(w => {
       map[w.id] = w;
     });
     return map;

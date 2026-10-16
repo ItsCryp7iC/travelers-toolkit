@@ -4,7 +4,6 @@ import CharactersTable from '../components/CharactersTable'
 import CharacterModal from '../components/CharacterModal'
 import AddCharacterModal from '../components/AddCharacterModal'
 import BulkEditCharacterModal from '../components/BulkEditCharacterModal'
-import HoyolabSyncPreviewModal from '../components/HoyolabSyncPreviewModal'
 import SortDirectionButton from '../components/SortDirectionButton'
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import charactersData from '../utils/characters'
@@ -32,19 +31,6 @@ export default function Characters() {
   const removeCharacter = useStore((s) => s.removeCharacter)
   const batchRemoveCharacters = useStore((s) => s.batchRemoveCharacters)
   const bulkUpdateCharacters = useStore((s) => s.bulkUpdateCharacters)
-  const hoyolabConnected = useStore((s) => s.hoyolabConnected)
-  const lastHoyolabCharacterSyncAt = useStore((s) => s.lastHoyolabCharacterSyncAt)
-
-  const getTimeAgo = (ts) => {
-    if (!ts) return '';
-    const diff = Date.now() - ts;
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'just now';
-    if (mins < 60) return `${mins} min ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs} hr ago`;
-    return `${Math.floor(hrs / 24)} days ago`;
-  };
 
   const [search,        setSearch]        = useState('')
   const [elementFilter, setElementFilter] = useState('All')
@@ -55,7 +41,6 @@ export default function Characters() {
   const [viewMode,      setViewMode]      = useState('table') // 'table' | 'card'
 
   const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
-  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)
   const [bulkModalOpen, setBulkModalOpen] = useState(false)
   const [editingChar, setEditingChar] = useState(null)
   const [selectedNames, setSelectedNames] = useState([])
@@ -154,10 +139,6 @@ export default function Characters() {
 
   return (
     <div className="animate-fade-in">
-      <HoyolabSyncPreviewModal
-        isOpen={isSyncModalOpen}
-        onClose={() => setIsSyncModalOpen(false)}
-      />
       <BulkEditCharacterModal
         isOpen={bulkModalOpen}
         onClose={() => setBulkModalOpen(false)}
@@ -216,21 +197,6 @@ export default function Characters() {
                 Bulk Edit ({selectedNames.length})
               </button>
             </>
-          )}
-          {hoyolabConnected && (
-            <div className="flex flex-col items-end relative group">
-              <button
-                onClick={() => setIsSyncModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 hover:text-blue-300 transition-colors shadow-md h-full"
-              >
-                Sync from HoYoLAB
-              </button>
-              <div className="absolute top-full right-0 mt-1 whitespace-nowrap">
-                <span className="text-[10px] text-[var(--muted)] opacity-70 group-hover:opacity-100 transition-opacity">
-                  Connected {lastHoyolabCharacterSyncAt ? `• Last synced ${getTimeAgo(lastHoyolabCharacterSyncAt)}` : ''}
-                </span>
-              </div>
-            </div>
           )}
           <button
             id="add-character-btn"

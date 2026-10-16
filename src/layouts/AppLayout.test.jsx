@@ -13,6 +13,15 @@ vi.mock('../utils/driveSync', () => ({
   upsertAutoBackupToDrive: vi.fn(),
   downloadBackupFromDrive: vi.fn(),
 }));
+vi.mock('../components/HoyolabSyncPreviewModal', () => ({
+  default: ({ isOpen, onClose }) =>
+    isOpen ? (
+      <div data-testid="global-sync-modal">
+        Global Sync Modal
+        <button onClick={onClose} data-testid="close-sync-modal">Close</button>
+      </div>
+    ) : null,
+}));
 
 describe('AppLayout Accessibility & Polish', () => {
   let container = null;
@@ -218,5 +227,310 @@ describe('AppLayout Accessibility & Polish', () => {
 
     expect(collapsedPrivacyLink.getAttribute('href')).toBe('/privacy');
     expect(collapsedTermsLink.getAttribute('href')).toBe('/terms');
+  });
+
+  describe('Global HoYoLAB Character Sync Button & Modal Integration', () => {
+    it('hides global sync button when hoyolab is disconnected', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          hoyolabConnected: false,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const syncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      expect(syncBtn).toBeNull();
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).toBeNull();
+    });
+
+    it('shows global sync button with accessible name when hoyolab is connected', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          hoyolabConnected: true,
+          lastHoyolabCharacterSyncAt: null,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const syncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      expect(syncBtn).not.toBeNull();
+      expect(syncBtn.getAttribute('aria-label')).toBe('Sync characters with HoYoLAB');
+      expect(syncBtn.getAttribute('title')).toBe('Sync characters with HoYoLAB');
+      expect(syncBtn.textContent).toContain('Sync with HoYoLAB');
+
+      const desktopLabel = syncBtn.querySelector('[data-testid="hoyolab-sync-desktop-label"]');
+      expect(desktopLabel).not.toBeNull();
+      expect(desktopLabel.textContent).toBe('Sync with HoYoLAB');
+
+      const mediumLabel = syncBtn.querySelector('[data-testid="hoyolab-sync-medium-label"]');
+      expect(mediumLabel).not.toBeNull();
+      expect(mediumLabel.textContent).toBe('HoYoLAB Sync');
+    });
+
+    it('formats last-sync time in button title when timestamp is present', () => {
+      const threeMinsAgo = Date.now() - 3 * 60 * 1000;
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          hoyolabConnected: true,
+          lastHoyolabCharacterSyncAt: threeMinsAgo,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const syncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      expect(syncBtn).not.toBeNull();
+      expect(syncBtn.getAttribute('title')).toContain('Sync characters with HoYoLAB • Last synced 3 min ago');
+    });
+
+    it('opens HoyolabSyncPreviewModal when global sync button is clicked and closes on onClose', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          hoyolabConnected: true,
+          lastHoyolabCharacterSyncAt: null,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).toBeNull();
+
+      const syncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      act(() => {
+        syncBtn.click();
+      });
+
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).not.toBeNull();
+
+      const closeBtn = container.querySelector('[data-testid="close-sync-modal"]');
+      act(() => {
+        closeBtn.click();
+      });
+
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).toBeNull();
+    });
+
+    it('renders only ONE sync button trigger globally in the header', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          hoyolabConnected: true,
+          lastHoyolabCharacterSyncAt: null,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const syncButtons = container.querySelectorAll('#global-hoyolab-sync-btn');
+      expect(syncButtons.length).toBe(1);
+    });
+
+    it('preserves compact Resin and Realm Currency trackers next to the global sync button', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: { 'Kamisato Ayaka': {} },
+          trackedWeapons: [{ id: 'w1', name: 'Amenoma Kageuchi' }],
+          resinCount: 160,
+          resinTimestamp: Date.now(),
+          displayTimeZone: 'UTC',
+          hoyolabConnected: true,
+          lastHoyolabCharacterSyncAt: null,
+          syncPayload: {
+            resin: { targetFullTime: Date.now() + 3600000, max: 200 },
+            realm_currency: { current: 1200, max: 2400 }
+          },
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const header = container.querySelector('#app-topbar');
+      const resin = container.querySelector('[aria-label="Resin Tracker"]');
+      const syncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      const armory = container.querySelector('div[title="My Armory"]');
+
+      expect(resin).not.toBeNull();
+      expect(syncBtn).not.toBeNull();
+      expect(armory).not.toBeNull();
+      expect(container.querySelector('div[title="Roster"]')).not.toBeNull();
+
+      // Verify DOM sequence: Resin Tracker precedes sync button, which precedes Armory
+      expect(resin.compareDocumentPosition(syncBtn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(syncBtn.compareDocumentPosition(armory) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('opens sync modal route-independently on non-character routes like /weapons and /planner', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          hoyolabConnected: true,
+          lastHoyolabCharacterSyncAt: null,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      // Render on /weapons
+      act(() => {
+        root.render(
+          <MemoryRouter initialEntries={['/weapons']}>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).toBeNull();
+      const weaponsSyncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      expect(weaponsSyncBtn).not.toBeNull();
+
+      act(() => {
+        weaponsSyncBtn.click();
+      });
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).not.toBeNull();
+
+      // Close modal
+      act(() => {
+        container.querySelector('[data-testid="close-sync-modal"]').click();
+      });
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).toBeNull();
+
+      // Render on /planner
+      act(() => {
+        root.render(
+          <MemoryRouter initialEntries={['/planner']}>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const plannerSyncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      expect(plannerSyncBtn).not.toBeNull();
+      act(() => {
+        plannerSyncBtn.click();
+      });
+      expect(container.querySelector('[data-testid="global-sync-modal"]')).not.toBeNull();
+    });
   });
 });

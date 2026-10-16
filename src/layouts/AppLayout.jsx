@@ -6,6 +6,7 @@ import { triggerGoogleAuth } from '../utils/googleAuthHelper'
 import { getBackupPayload, isLocalUserDataEmpty } from '../utils/backupPayload'
 import ResinTracker from '../components/ResinTracker'
 import RealmCurrencyTracker from '../components/RealmCurrencyTracker'
+import HoyolabSyncPreviewModal from '../components/HoyolabSyncPreviewModal'
 import NotificationContainer from '../components/NotificationContainer'
 import { notify } from '../utils/notify'
 
@@ -54,6 +55,18 @@ const devItems = [
  { to: '/builder', label: 'DB Builder', icon: '🔧', id: 'nav-builder' },
 ]
 
+function getTimeAgo(ts) {
+  if (!ts) return '';
+  const diff = Date.now() - ts;
+  if (diff < 0) return 'just now';
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hr ago`;
+  return `${Math.floor(hrs / 24)} days ago`;
+}
+
 export default function AppLayout() {
  const location = useLocation();
  const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -66,7 +79,9 @@ export default function AppLayout() {
   const syncPayload = useStore((s) => s.syncPayload)
   const trackedWeapons = useStore((s) => s.trackedWeapons) || []
   const hoyolabConnected = useStore((s) => s.hoyolabConnected);
+  const lastHoyolabCharacterSyncAt = useStore((s) => s.lastHoyolabCharacterSyncAt);
   const hasCookie = hoyolabConnected;
+  const [isHoyolabSyncOpen, setIsHoyolabSyncOpen] = useState(false);
 
   useEffect(() => {
     handleSyncNotes(true)
@@ -238,7 +253,7 @@ export default function AppLayout() {
   {/* ── Top Bar (Full Width) ────────────────────────────────── */}
   <header className="topbar" id="app-topbar">
     {/* Brand */}
-    <Link to="/" className="flex items-center gap-3 pl-0 md:pl-5 transition-all w-[240px] cursor-pointer hover:opacity-80">
+    <Link to="/" className="flex items-center gap-3 pl-0 md:pl-5 transition-all w-auto lg:w-[240px] shrink-0 cursor-pointer hover:opacity-80">
       <img src="/logo.svg" alt="Site Logo" className="w-10 h-10 object-contain drop-shadow-md" />
       <div className="brand-text">
         <h1 className="text-lg leading-tight text-[var(--text)]">
@@ -263,32 +278,54 @@ export default function AppLayout() {
       ☰
     </button>
 
-    <div className="flex-1" />
+    {/* Left stats: Resin & Realm Currency counters */}
+    {hasCookie && syncPayload && (
+      <div className="hidden sm:flex items-center gap-3 shrink-0">
+        <ResinTracker syncData={syncPayload.resin} variant="compact" />
+        <RealmCurrencyTracker syncData={syncPayload.realm_currency} variant="compact" />
+      </div>
+    )}
 
-    {/* Quick stats */}
-    <div className="hidden sm:flex items-center gap-3">
-      {hasCookie && syncPayload && (
-        <>
-          <ResinTracker syncData={syncPayload.resin} variant="compact" />
-          <RealmCurrencyTracker syncData={syncPayload.realm_currency} variant="compact" />
-        </>
+    {/* Center action: HoYoLAB Sync Button */}
+    <div className="flex-1 flex items-center justify-center min-w-0 px-2">
+      {hoyolabConnected && (
+        <button
+          type="button"
+          id="global-hoyolab-sync-btn"
+          data-testid="global-hoyolab-sync-btn"
+          onClick={() => setIsHoyolabSyncOpen(true)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 hover:text-blue-300 hover:border-blue-400/50 transition-all shrink-0 cursor-pointer shadow-sm text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
+          aria-label="Sync characters with HoYoLAB"
+          title={
+            lastHoyolabCharacterSyncAt
+              ? `Sync characters with HoYoLAB • Last synced ${getTimeAgo(lastHoyolabCharacterSyncAt)}`
+              : 'Sync characters with HoYoLAB'
+          }
+        >
+          <span aria-hidden="true" className="text-sm shrink-0">🔄</span>
+          <span className="hidden lg:inline whitespace-nowrap" data-testid="hoyolab-sync-desktop-label">Sync with HoYoLAB</span>
+          <span className="hidden md:inline lg:hidden whitespace-nowrap" data-testid="hoyolab-sync-medium-label">HoYoLAB Sync</span>
+        </button>
       )}
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="My Armory">
+    </div>
+
+    {/* Right controls: Armory, Roster, Profile */}
+    <div className="flex items-center gap-3 shrink-0">
+      <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="My Armory">
         <img src="/Weapons.png" alt="My Armory" className="w-5 h-5 object-contain" />
         <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
           {trackedWeapons.length}
         </span>
       </div>
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="Roster">
+      <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="Roster">
         <img src="/Characters.png" alt="Roster" className="w-5 h-5 object-contain" />
         <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
           {rosterCount}
         </span>
       </div>
-    </div>
 
-    {/* Avatar & Dropdown */}
-    <div className="relative" ref={dropdownRef}>
+      {/* Avatar & Dropdown */}
+      <div className="relative" ref={dropdownRef}>
       {!googleUser ? (
         <button
           type="button"
@@ -336,6 +373,7 @@ export default function AppLayout() {
           </button>
         </div>
       )}
+      </div>
     </div>
   </header>
 
@@ -618,7 +656,11 @@ export default function AppLayout() {
   </footer>
   </div>
 
-  <NotificationContainer />
+    <HoyolabSyncPreviewModal
+      isOpen={isHoyolabSyncOpen}
+      onClose={() => setIsHoyolabSyncOpen(false)}
+    />
+    <NotificationContainer />
  </div>
  )
 }
