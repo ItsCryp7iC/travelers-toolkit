@@ -28,6 +28,7 @@ describe('AppLayout Accessibility & Polish', () => {
   let root = null;
 
   beforeEach(() => {
+    localStorage.clear();
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
@@ -65,6 +66,7 @@ describe('AppLayout Accessibility & Polish', () => {
       root.unmount();
     });
     container.remove();
+    localStorage.clear();
     vi.clearAllMocks();
   });
 
@@ -531,6 +533,302 @@ describe('AppLayout Accessibility & Polish', () => {
         plannerSyncBtn.click();
       });
       expect(container.querySelector('[data-testid="global-sync-modal"]')).not.toBeNull();
+    });
+  });
+
+  describe('Sidebar Navigation Grouping (Stage C4)', () => {
+    it('renders section group headings (Progression, Records, System) in expanded mode', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const progTitle = container.querySelector('#nav-group-title-progression');
+      const recTitle = container.querySelector('#nav-group-title-records');
+      const sysTitle = container.querySelector('#nav-group-title-system');
+
+      expect(progTitle).not.toBeNull();
+      expect(recTitle).not.toBeNull();
+      expect(sysTitle).not.toBeNull();
+
+      expect(progTitle.textContent.trim()).toBe('Progression');
+      expect(recTitle.textContent.trim()).toBe('Records');
+      expect(sysTitle.textContent.trim()).toBe('System');
+    });
+
+    it('places the correct navigation items in each section group', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Progression group
+      const progGroup = container.querySelector('#nav-section-progression');
+      expect(progGroup).not.toBeNull();
+      expect(progGroup.querySelector('a[href="/"]')).not.toBeNull();
+      expect(progGroup.querySelector('a[href="/characters"]')).not.toBeNull();
+      expect(progGroup.querySelector('a[href="/weapons"]')).not.toBeNull();
+      expect(progGroup.textContent).toContain('Planner');
+      expect(progGroup.textContent).toContain('Inventory');
+      expect(progGroup.querySelector('a[href="/achievements"]')).toBeNull();
+      expect(progGroup.querySelector('a[href="/changelog"]')).toBeNull();
+      expect(progGroup.querySelector('a[href="/settings"]')).toBeNull();
+
+      // Records group
+      const recGroup = container.querySelector('#nav-section-records');
+      expect(recGroup).not.toBeNull();
+      expect(recGroup.querySelector('a[href="/achievements"]')).not.toBeNull();
+      expect(recGroup.querySelector('a[href="/"]')).toBeNull();
+      expect(recGroup.querySelector('a[href="/characters"]')).toBeNull();
+      expect(recGroup.querySelector('a[href="/settings"]')).toBeNull();
+
+      // System group
+      const sysGroup = container.querySelector('#nav-section-system');
+      expect(sysGroup).not.toBeNull();
+      expect(sysGroup.querySelector('a[href="/changelog"]')).not.toBeNull();
+      expect(sysGroup.querySelector('a[href="/settings"]')).not.toBeNull();
+      expect(sysGroup.querySelector('a[href="/achievements"]')).toBeNull();
+      expect(sysGroup.querySelector('a[href="/weapons"]')).toBeNull();
+    });
+
+    it('keeps Dev Tools separate from System when enabled', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: true,
+          roster: {},
+          trackedWeapons: [],
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const devNav = container.querySelector('.sidebar-dev-nav');
+      expect(devNav).not.toBeNull();
+      expect(devNav.textContent).toContain('Dev Tools');
+      expect(devNav.querySelector('a[href="/builder"]')).not.toBeNull();
+
+      // Ensure DB Builder is NOT in the System group
+      const sysGroup = container.querySelector('#nav-section-system');
+      expect(sysGroup.querySelector('a[href="/builder"]')).toBeNull();
+    });
+
+    it('keeps Legal Links separate from System navigation', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const legalNav = container.querySelector('.sidebar-legal-nav');
+      expect(legalNav).not.toBeNull();
+      expect(legalNav.querySelector('#sidebar-privacy-link')).not.toBeNull();
+      expect(legalNav.querySelector('#sidebar-terms-link')).not.toBeNull();
+
+      const sysGroup = container.querySelector('#nav-section-system');
+      expect(sysGroup.querySelector('#sidebar-privacy-link')).toBeNull();
+      expect(sysGroup.querySelector('#sidebar-terms-link')).toBeNull();
+    });
+
+    it('maintains group structure and separators when desktop sidebar is collapsed', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Toggle collapsed mode
+      const toggle = container.querySelector('.nav-toggle-btn');
+      act(() => {
+        toggle.click();
+      });
+
+      const layoutRoot = container.querySelector('.desktop-collapsed');
+      expect(layoutRoot).not.toBeNull();
+
+      // Sections and separators remain rendered
+      expect(container.querySelector('#nav-section-progression')).not.toBeNull();
+      expect(container.querySelector('#nav-section-records')).not.toBeNull();
+      expect(container.querySelector('#nav-section-system')).not.toBeNull();
+
+      const dividers = container.querySelectorAll('.nav-group-divider');
+      expect(dividers.length).toBeGreaterThanOrEqual(2);
+
+      // Section labels have nav-group-label class
+      const labels = container.querySelectorAll('.nav-group-label');
+      expect(labels.length).toBe(3);
+    });
+
+    it('retains expandable submenu behavior for Planner in expanded sidebar', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Planner tabs should initially be closed on non-planner route
+      expect(container.querySelector('a[href="/planner?tab=daily_action"]')).toBeNull();
+
+      // Find Planner toggle
+      const progGroup = container.querySelector('#nav-section-progression');
+      const plannerToggle = Array.from(progGroup.querySelectorAll('.sidebar-nav-link')).find(
+        (el) => el.textContent.includes('Planner')
+      );
+      expect(plannerToggle).not.toBeNull();
+
+      // Click to expand
+      act(() => {
+        plannerToggle.click();
+      });
+
+      expect(container.querySelector('a[href="/planner?tab=daily_action"]')).not.toBeNull();
+
+      // Click again to collapse
+      act(() => {
+        plannerToggle.click();
+      });
+
+      expect(container.querySelector('a[href="/planner?tab=daily_action"]')).toBeNull();
+    });
+
+    it('retains collapsed desktop flyout behavior for Planner', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Collapse sidebar
+      act(() => {
+        container.querySelector('.nav-toggle-btn').click();
+      });
+
+      const progGroup = container.querySelector('#nav-section-progression');
+      const plannerContainer = Array.from(progGroup.querySelectorAll('.flyout-container')).find(
+        (fc) => fc.querySelector('.sidebar-nav-link')?.getAttribute('title') === 'Planner'
+      );
+      expect(plannerContainer).not.toBeNull();
+      const plannerLink = plannerContainer.querySelector('.sidebar-nav-link');
+
+      // Flyout not open initially
+      expect(container.querySelector('a[href="/planner?tab=daily_action"]')).toBeNull();
+
+      // Click to open flyout
+      act(() => {
+        plannerLink.click();
+      });
+
+      expect(container.querySelector('a[href="/planner?tab=daily_action"]')).not.toBeNull();
+    });
+
+    it('retains expandable submenu behavior for Inventory in expanded sidebar', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      expect(container.querySelector('a[href="/inventory?tab=currency_exp"]')).toBeNull();
+
+      const progGroup = container.querySelector('#nav-section-progression');
+      const inventoryToggle = Array.from(progGroup.querySelectorAll('.sidebar-nav-link')).find(
+        (el) => el.textContent.includes('Inventory')
+      );
+      expect(inventoryToggle).not.toBeNull();
+
+      // Click to expand
+      act(() => {
+        inventoryToggle.click();
+      });
+
+      expect(container.querySelector('a[href="/inventory?tab=currency_exp"]')).not.toBeNull();
+
+      // Click again to collapse
+      act(() => {
+        inventoryToggle.click();
+      });
+
+      expect(container.querySelector('a[href="/inventory?tab=currency_exp"]')).toBeNull();
+    });
+
+    it('retains collapsed desktop flyout behavior for Inventory', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Collapse sidebar
+      act(() => {
+        container.querySelector('.nav-toggle-btn').click();
+      });
+
+      const progGroup = container.querySelector('#nav-section-progression');
+      const flyoutContainers = progGroup.querySelectorAll('.flyout-container');
+      const inventoryContainer = Array.from(flyoutContainers).find(
+        (fc) => fc.querySelector('.sidebar-nav-link')?.getAttribute('title') === 'Inventory'
+      );
+      expect(inventoryContainer).not.toBeNull();
+
+      const inventoryLink = inventoryContainer.querySelector('.sidebar-nav-link');
+
+      // Click to open flyout
+      act(() => {
+        inventoryLink.click();
+      });
+
+      expect(container.querySelector('a[href="/inventory?tab=currency_exp"]')).not.toBeNull();
+    });
+
+    it('preserves route active styling across all section groups', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter initialEntries={['/achievements']}>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const achievementsLink = container.querySelector('a[href="/achievements"]');
+      expect(achievementsLink.classList.contains('active')).toBe(true);
+
+      const dashboardLink = container.querySelector('a[href="/"]');
+      expect(dashboardLink.classList.contains('active')).toBe(false);
+
+      const charactersLink = container.querySelector('a[href="/characters"]');
+      expect(charactersLink.classList.contains('active')).toBe(false);
     });
   });
 });

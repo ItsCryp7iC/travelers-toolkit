@@ -10,16 +10,34 @@ import HoyolabSyncPreviewModal from '../components/HoyolabSyncPreviewModal'
 import NotificationContainer from '../components/NotificationContainer'
 import { notify } from '../utils/notify'
 
-const navItems = [
- { to: '/', label: 'Dashboard', icon: '/Dashboard.png', id: 'nav-dashboard' },
- { to: '/characters', label: 'Characters', icon: '/Characters.png', id: 'nav-characters' },
- { to: '/weapons', label: 'Weapons', icon: '/Weapons.png', id: 'nav-weapons' },
- { to: '/planner', label: 'Planner', icon: '/Planner.png', id: 'nav-planner' },
- { to: '/inventory', label: 'Inventory', icon: '/Inventory.png', id: 'nav-inventory' },
- { to: '/achievements', label: 'Achievements', icon: 'https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/achievements/achievements.png', id: 'nav-achievements' },
- { to: '/changelog', label: 'Changelog', icon: '📝', id: 'nav-changelog' },
- { to: '/settings', label: 'Settings', icon: '⚙️', id: 'nav-settings' },
-]
+const navSections = [
+  {
+    id: 'progression',
+    label: 'Progression',
+    items: [
+      { to: '/', label: 'Dashboard', icon: '/Dashboard.png', id: 'nav-dashboard' },
+      { to: '/characters', label: 'Characters', icon: '/Characters.png', id: 'nav-characters' },
+      { to: '/weapons', label: 'Weapons', icon: '/Weapons.png', id: 'nav-weapons' },
+      { to: '/planner', label: 'Planner', icon: '/Planner.png', id: 'nav-planner' },
+      { to: '/inventory', label: 'Inventory', icon: '/Inventory.png', id: 'nav-inventory' },
+    ],
+  },
+  {
+    id: 'records',
+    label: 'Records',
+    items: [
+      { to: '/achievements', label: 'Achievements', icon: 'https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/achievements/achievements.png', id: 'nav-achievements' },
+    ],
+  },
+  {
+    id: 'system',
+    label: 'System',
+    items: [
+      { to: '/changelog', label: 'Changelog', icon: '📝', id: 'nav-changelog' },
+      { to: '/settings', label: 'Settings', icon: '⚙️', id: 'nav-settings' },
+    ],
+  },
+];
 
 const PLANNER_TABS = [
  { id: 'daily_action', label: 'Daily Action', icon: '📅' },
@@ -239,6 +257,173 @@ export default function AppLayout() {
  const plannerTab = location.pathname === '/planner' ? currentTab || 'daily_action' : null;
  const inventoryTab = location.pathname === '/inventory' ? currentTab || 'currency_exp' : null;
 
+ const renderNavItem = (item) => {
+   if (item.id === 'nav-planner') {
+     if (isDesktopCollapsed) {
+       return (
+         <div key={item.to} className="flyout-container relative flex flex-col">
+           <div
+             title={item.label}
+             className={`sidebar-nav-link cursor-pointer flex items-center justify-center ${location.pathname.startsWith('/planner') ? 'active' : ''}`}
+             onClick={() => setActiveFlyout(activeFlyout === 'planner' ? null : 'planner')}
+           >
+             <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
+             <span className="hidden">{item.label}</span>
+           </div>
+           {activeFlyout === 'planner' && (
+             <div className="absolute left-full top-0 ml-3 w-52 bg-[rgb(0,4,30)]/85 backdrop-blur-[12px] border border-[var(--border)] rounded-xl py-2 shadow-2xl z-[9999]">
+               <div className="px-4 py-2 border-b border-[var(--border)] mb-1">
+                 <p className="text-xs font-semibold text-primary uppercase tracking-wider">{item.label}</p>
+               </div>
+               {PLANNER_TABS.map(tab => (
+                 <Link
+                   key={tab.id}
+                   to={`/planner?tab=${tab.id}`}
+                   className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors"
+                   onClick={() => setActiveFlyout(null)}
+                 >
+                   <span className="w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
+                   <span>{tab.label}</span>
+                 </Link>
+               ))}
+             </div>
+           )}
+         </div>
+       );
+     }
+     return (
+       <div key={item.to} className="flex flex-col">
+         <div
+           className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/planner' ? 'active' : ''}`}
+           onClick={() => setIsPlannerOpen(!isPlannerOpen)}
+         >
+           <div className="flex items-center">
+             <span className="nav-icon text-base w-5 text-center mr-2 flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
+             <span>{item.label}</span>
+           </div>
+           <span className={`text-xs text-gray-500 transition-transform ${isPlannerOpen ? 'rotate-180' : ''}`}>▼</span>
+         </div>
+         {isPlannerOpen && (
+           <div className="flex flex-col mt-1 mb-2">
+             {PLANNER_TABS.map(tab => {
+               const isTabActive = location.pathname === '/planner' && plannerTab === tab.id;
+               return (
+                 <Link
+                   key={tab.id}
+                   to={`/planner?tab=${tab.id}`}
+                   className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
+                     isTabActive ? 'text-primary ' : 'text-[var(--muted)] hover:text-gray-200'
+                   }`}
+                   onClick={() => setSidebarOpen(false)}
+                 >
+                   <span className="opacity-70 w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
+                   <span>{tab.label}</span>
+                 </Link>
+               )
+             })}
+           </div>
+         )}
+       </div>
+     );
+   }
+
+   if (item.id === 'nav-inventory') {
+     if (isDesktopCollapsed) {
+       return (
+         <div key={item.to} className="flyout-container relative flex flex-col">
+           <div
+             title={item.label}
+             className={`sidebar-nav-link cursor-pointer flex items-center justify-center ${location.pathname.startsWith('/inventory') ? 'active' : ''}`}
+             onClick={() => setActiveFlyout(activeFlyout === 'inventory' ? null : 'inventory')}
+           >
+             <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
+             <span className="hidden">{item.label}</span>
+           </div>
+           {activeFlyout === 'inventory' && (
+             <div className="absolute left-full top-0 ml-3 w-52 bg-[rgb(0,4,30)]/85 backdrop-blur-[12px] border border-[var(--border)] rounded-xl py-2 shadow-2xl z-[9999]">
+               <div className="px-4 py-2 border-b border-[var(--border)] mb-1">
+                 <p className="text-xs font-semibold text-primary uppercase tracking-wider">{item.label}</p>
+               </div>
+               {INVENTORY_TABS.map(tab => (
+                 <Link
+                   key={tab.id}
+                   to={`/inventory?tab=${tab.id}`}
+                   className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors"
+                   onClick={() => setActiveFlyout(null)}
+                 >
+                   <span className="w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
+                   <span>{tab.label}</span>
+                 </Link>
+               ))}
+             </div>
+           )}
+         </div>
+       );
+     }
+     return (
+       <div key={item.to} className="flex flex-col">
+         <div
+           className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/inventory' ? 'active' : ''}`}
+           onClick={() => setIsInventoryOpen(!isInventoryOpen)}
+         >
+           <div className="flex items-center">
+             <span className="nav-icon text-base w-5 text-center mr-2 flex items-center justify-center">
+               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+             </span>
+             <span>{item.label}</span>
+           </div>
+           <span className={`text-xs text-gray-500 transition-transform ${isInventoryOpen ? 'rotate-180' : ''}`}>▼</span>
+         </div>
+         {isInventoryOpen && (
+           <div className="flex flex-col mt-1 mb-2">
+             {INVENTORY_TABS.map(tab => {
+               const isTabActive = location.pathname === '/inventory' && inventoryTab === tab.id;
+               return (
+                 <Link
+                   key={tab.id}
+                   to={`/inventory?tab=${tab.id}`}
+                   className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
+                     isTabActive ? 'text-primary ' : 'text-[var(--muted)] hover:text-gray-200'
+                   }`}
+                   onClick={() => setSidebarOpen(false)}
+                 >
+                   <span className="opacity-70 w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
+                   <span>{tab.label}</span>
+                 </Link>
+               )
+             })}
+           </div>
+         )}
+       </div>
+     );
+   }
+
+   return (
+     <NavLink
+       key={item.to}
+       to={item.to}
+       end={item.to === '/'}
+       id={item.id}
+       title={item.label}
+       className={({ isActive }) =>
+         `sidebar-nav-link ${isActive ? 'active' : ''}`
+       }
+       onClick={() => setSidebarOpen(false)}
+     >
+       <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
+         {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
+       </span>
+       <span>{item.label}</span>
+     </NavLink>
+   );
+ };
+
  return (
  <div className={`bg-[url('/bg.webp')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full ${isDesktopCollapsed ? 'desktop-collapsed' : ''}`}>
 
@@ -393,173 +578,35 @@ export default function AppLayout() {
       {isDesktopCollapsed ? '▶' : '◀'}
     </button>
   </div>
- {navItems.map((item) => {
-   if (item.id === 'nav-planner') {
-     if (isDesktopCollapsed) {
-       return (
-         <div key={item.to} className="flyout-container relative flex flex-col">
-           <div
-             title={item.label}
-             className={`sidebar-nav-link cursor-pointer flex items-center justify-center ${location.pathname.startsWith('/planner') ? 'active' : ''}`}
-             onClick={() => setActiveFlyout(activeFlyout === 'planner' ? null : 'planner')}
-           >
-             <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
-               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
-             </span>
-             <span className="hidden">{item.label}</span>
-           </div>
-            {activeFlyout === 'planner' && (
-              <div className="absolute left-full top-0 ml-3 w-52 bg-[rgb(0,4,30)]/85 backdrop-blur-[12px] border border-[var(--border)] rounded-xl py-2 shadow-2xl z-[9999]">
-               <div className="px-4 py-2 border-b border-[var(--border)] mb-1">
-                 <p className="text-xs font-semibold text-primary uppercase tracking-wider">{item.label}</p>
-               </div>
-               {PLANNER_TABS.map(tab => (
-                 <Link
-                   key={tab.id}
-                   to={`/planner?tab=${tab.id}`}
-                   className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors"
-                   onClick={() => setActiveFlyout(null)}
-                 >
-                   <span className="w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
-                   <span>{tab.label}</span>
-                 </Link>
-               ))}
-             </div>
-           )}
-         </div>
-       );
-     }
-     return (
-       <div key={item.to} className="flex flex-col">
-         <div
-           className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/planner' ? 'active' : ''}`}
-           onClick={() => setIsPlannerOpen(!isPlannerOpen)}
-         >
-           <div className="flex items-center">
-             <span className="nav-icon text-base w-5 text-center mr-2 flex items-center justify-center">
-               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
-             </span>
-             <span>{item.label}</span>
-           </div>
-           <span className={`text-xs text-gray-500 transition-transform ${isPlannerOpen ? 'rotate-180' : ''}`}>▼</span>
-         </div>
-         {isPlannerOpen && (
-           <div className="flex flex-col mt-1 mb-2">
-             {PLANNER_TABS.map(tab => {
-               const isTabActive = location.pathname === '/planner' && plannerTab === tab.id;
-               return (
-                 <Link
-                   key={tab.id}
-                   to={`/planner?tab=${tab.id}`}
-                   className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
-                     isTabActive ? 'text-primary ' : 'text-[var(--muted)] hover:text-gray-200'
-                   }`}
-                   onClick={() => setSidebarOpen(false)}
-                 >
-                   <span className="opacity-70 w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
-                   <span>{tab.label}</span>
-                 </Link>
-               )
-             })}
-           </div>
-         )}
-       </div>
-     );
-   }
-
-   if (item.id === 'nav-inventory') {
-     if (isDesktopCollapsed) {
-       return (
-         <div key={item.to} className="flyout-container relative flex flex-col">
-           <div
-             title={item.label}
-             className={`sidebar-nav-link cursor-pointer flex items-center justify-center ${location.pathname.startsWith('/inventory') ? 'active' : ''}`}
-             onClick={() => setActiveFlyout(activeFlyout === 'inventory' ? null : 'inventory')}
-           >
-             <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
-               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
-             </span>
-             <span className="hidden">{item.label}</span>
-           </div>
-            {activeFlyout === 'inventory' && (
-              <div className="absolute left-full top-0 ml-3 w-52 bg-[rgb(0,4,30)]/85 backdrop-blur-[12px] border border-[var(--border)] rounded-xl py-2 shadow-2xl z-[9999]">
-               <div className="px-4 py-2 border-b border-[var(--border)] mb-1">
-                 <p className="text-xs font-semibold text-primary uppercase tracking-wider">{item.label}</p>
-               </div>
-               {INVENTORY_TABS.map(tab => (
-                 <Link
-                   key={tab.id}
-                   to={`/inventory?tab=${tab.id}`}
-                   className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors"
-                   onClick={() => setActiveFlyout(null)}
-                 >
-                   <span className="w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
-                   <span>{tab.label}</span>
-                 </Link>
-               ))}
-             </div>
-           )}
-         </div>
-       );
-     }
-     return (
-       <div key={item.to} className="flex flex-col">
-         <div
-           className={`sidebar-nav-link cursor-pointer flex items-center justify-between ${location.pathname === '/inventory' ? 'active' : ''}`}
-           onClick={() => setIsInventoryOpen(!isInventoryOpen)}
-         >
-           <div className="flex items-center">
-             <span className="nav-icon text-base w-5 text-center mr-2 flex items-center justify-center">
-               {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
-             </span>
-             <span>{item.label}</span>
-           </div>
-           <span className={`text-xs text-gray-500 transition-transform ${isInventoryOpen ? 'rotate-180' : ''}`}>▼</span>
-         </div>
-         {isInventoryOpen && (
-           <div className="flex flex-col mt-1 mb-2">
-             {INVENTORY_TABS.map(tab => {
-               const isTabActive = location.pathname === '/inventory' && inventoryTab === tab.id;
-               return (
-                 <Link
-                   key={tab.id}
-                   to={`/inventory?tab=${tab.id}`}
-                   className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
-                     isTabActive ? 'text-primary ' : 'text-[var(--muted)] hover:text-gray-200'
-                   }`}
-                   onClick={() => setSidebarOpen(false)}
-                 >
-                   <span className="opacity-70 w-5 flex items-center justify-center">{tab.icon.includes('.png') ? <img src={tab.icon} alt={tab.label} className="w-5 h-5 object-contain" /> : tab.icon}</span>
-                   <span>{tab.label}</span>
-                 </Link>
-               )
-             })}
-           </div>
-         )}
-       </div>
-     );
-   }
-
-   return (
-     <NavLink
-       key={item.to}
-       to={item.to}
-       end={item.to === '/'}
-       id={item.id}
-       title={item.label}
-       className={({ isActive }) =>
-         `sidebar-nav-link ${isActive ? 'active' : ''}`
-       }
-       onClick={() => setSidebarOpen(false)}
-     >
-       <span className="nav-icon text-base w-5 text-center flex items-center justify-center">
-         {item.icon.includes('.png') ? <img src={item.icon} alt={item.label} className="w-5 h-5 object-contain" /> : item.icon}
-       </span>
-       <span>{item.label}</span>
-     </NavLink>
-   )
- })}
- </nav>
+  {navSections.map((section, idx) => (
+    <div
+      key={section.id}
+      id={`nav-section-${section.id}`}
+      data-testid={`nav-section-${section.id}`}
+      className="nav-section-group"
+      role="group"
+      aria-labelledby={`nav-group-title-${section.id}`}
+    >
+      {idx > 0 && (
+        <div
+          className="nav-group-divider my-2 border-t border-[var(--border)] opacity-60 mx-4"
+          role="separator"
+          aria-hidden="true"
+        />
+      )}
+      <h2
+        id={`nav-group-title-${section.id}`}
+        data-testid={`nav-group-title-${section.id}`}
+        className="nav-group-label px-5 mb-1.5 mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)] opacity-60 select-none"
+      >
+        {section.label}
+      </h2>
+      <div className="nav-group-items flex flex-col gap-0.5">
+        {section.items.map(renderNavItem)}
+      </div>
+    </div>
+  ))}
+  </nav>
 
   {/* Sidebar Legal Links */}
   <nav

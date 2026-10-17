@@ -167,8 +167,14 @@ body {
     border-left: none;
   }
   
-  .desktop-collapsed .nav-section-title {
+  .desktop-collapsed .nav-section-title,
+  .desktop-collapsed .nav-group-label {
     display: none;
+  }
+
+  .desktop-collapsed .nav-group-divider {
+    margin-left: 12px;
+    margin-right: 12px;
   }
 
   .desktop-collapsed .sidebar-legal-nav {
