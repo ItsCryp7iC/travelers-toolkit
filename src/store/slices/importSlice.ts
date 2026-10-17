@@ -57,7 +57,8 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
 
     // 2. Roster
     const newRoster: Roster = { ...state.roster };
-    (goodPayload.characters || []).forEach(char => {
+    const importedChars = goodPayload.characters || [];
+    importedChars.forEach(char => {
       const existing = newRoster[char.name] || {
         targetLevel: 90,
         targetAscension: 6,
@@ -86,69 +87,93 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
       recalculateCharacterCosts(char.name, newRoster[char.name]);
     });
 
+    if (importedChars.some(c => c.name.startsWith('Traveler '))) {
+      syncTravelerAscension(newRoster);
+    }
+
     // 3. Weapons
-    const newWeapons: TrackedWeapon[] = [];
-    const matchedExistingIds = new Set<string>();
+    let newWeapons: TrackedWeapon[] = state.trackedWeapons;
+    const importedWeapons = goodPayload.weapons || [];
 
-    (goodPayload.weapons || []).forEach(w => {
-       const targetLocation = w.location || null;
-       // Attempt to preserve target levels and ID for weapons by matching name and assignment, tracking claimed IDs
-       const existing = state.trackedWeapons.find(
-         ew => !matchedExistingIds.has(ew.id) && ew.weaponName === w.weaponName && ew.assignedTo === targetLocation
-       );
-       if (existing) {
-         matchedExistingIds.add(existing.id);
-       }
-       const id = existing ? existing.id : crypto.randomUUID();
+    if (importedWeapons.length > 0) {
+      newWeapons = state.trackedWeapons.map(tw => ({ ...tw }));
+      const matchedExistingIds = new Set<string>();
 
-       // If target location was already claimed by an earlier imported weapon, unassign the earlier weapon
-       if (targetLocation) {
-         const isTraveler = targetLocation.startsWith('Traveler ');
-         const priorClaim = newWeapons.find(pw =>
-           isTraveler ? pw.assignedTo?.startsWith('Traveler ') : pw.assignedTo === targetLocation
-         );
-         if (priorClaim) {
-           priorClaim.assignedTo = null;
-         }
-       }
+      importedWeapons.forEach(w => {
+        const targetLocation = w.location || null;
+        // Attempt to preserve target levels and ID for weapons by matching name and assignment, tracking claimed IDs
+        const existing = state.trackedWeapons.find(
+          ew => !matchedExistingIds.has(ew.id) && ew.weaponName === w.weaponName && ew.assignedTo === targetLocation
+        );
+        if (existing) {
+          matchedExistingIds.add(existing.id);
+        }
+        const id = existing ? existing.id : crypto.randomUUID();
 
-       const newWeapon: TrackedWeapon = {
-         id,
-         weapon_id: w.weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
-         weaponName: w.weaponName,
-         level: w.level,
-         ascension: w.ascension,
-         targetLevel: existing?.targetLevel ?? 90,
-         targetAscension: existing?.targetAscension ?? 6,
-         currentRefinement: w.refinement ?? 1,
-         targetRefinement: existing?.targetRefinement ?? (w.refinement ?? 1),
-         assignedTo: targetLocation,
-         createdAt: existing?.createdAt ?? Date.now()
-       };
+        // If target location was already claimed by an earlier or existing weapon, unassign that weapon
+        if (targetLocation) {
+          const isTraveler = targetLocation.startsWith('Traveler ');
+          newWeapons.forEach(pw => {
+            if (pw.id !== id) {
+              const matchesLocation = isTraveler
+                ? pw.assignedTo?.startsWith('Traveler ')
+                : pw.assignedTo === targetLocation;
+              if (matchesLocation) {
+                pw.assignedTo = null;
+              }
+            }
+          });
+        }
 
-       // Calculate weapon costs if possible
-       const wData = weaponsData.find((wd: { name: string }) => wd.name === newWeapon.weaponName);
-       if (wData) {
-         newWeapon.costs = calculateWeaponCost(
+        const mergedWeapon: TrackedWeapon = {
+          id,
+          weapon_id: w.weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
+          weaponName: w.weaponName,
+          level: w.level,
+          ascension: w.ascension,
+          targetLevel: existing?.targetLevel ?? 90,
+          targetAscension: existing?.targetAscension ?? 6,
+          currentRefinement: w.refinement ?? 1,
+          targetRefinement: existing?.targetRefinement ?? (w.refinement ?? 1),
+          assignedTo: targetLocation,
+          createdAt: existing?.createdAt ?? Date.now(),
+          hasEventBonus: existing?.hasEventBonus,
+        };
+
+        // Calculate weapon costs if possible
+        const wData = weaponsData.find((wd: { name: string }) => wd.name === mergedWeapon.weaponName);
+        if (wData) {
+          mergedWeapon.costs = calculateWeaponCost(
             wData,
-            newWeapon.level,
-            newWeapon.targetLevel,
-            newWeapon.ascension,
-            newWeapon.targetAscension,
-            newWeapon.hasEventBonus,
+            mergedWeapon.level,
+            mergedWeapon.targetLevel,
+            mergedWeapon.ascension,
+            mergedWeapon.targetAscension,
+            mergedWeapon.hasEventBonus,
             Object.values(newRoster)
-         ) as WeaponCalculatedCosts;
-       }
+          ) as WeaponCalculatedCosts;
+        }
 
-       newWeapons.push(newWeapon);
+        if (existing) {
+          const idx = newWeapons.findIndex(tw => tw.id === existing.id);
+          if (idx !== -1) {
+            newWeapons[idx] = mergedWeapon;
+          } else {
+            newWeapons.push(mergedWeapon);
+          }
+        } else {
+          newWeapons.push(mergedWeapon);
+        }
 
-       // For Traveler, we don't store equippedWeaponId directly on the variant to avoid desync
-       if (targetLocation && newRoster[targetLocation] && !targetLocation.startsWith('Traveler ')) {
-         newRoster[targetLocation].equippedWeaponId = id;
-       }
-    });
-
-    syncTravelerAscension(newRoster);
+        // For non-Traveler roster entries, update equippedWeaponId
+        if (targetLocation && newRoster[targetLocation] && !targetLocation.startsWith('Traveler ')) {
+          newRoster[targetLocation] = {
+            ...newRoster[targetLocation],
+            equippedWeaponId: id,
+          };
+        }
+      });
+    }
 
     return {
       inventory: newInventory,

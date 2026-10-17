@@ -6,7 +6,6 @@ import GenshinImage from './GenshinImage';
 export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
   const [activeTab, setActiveTab] = useState('characters');
   const [activeMatTab, setActiveMatTab] = useState('Currency & Exp');
-  const [activeSubTab, setActiveSubTab] = useState('');
   
   // State initialization
   const [characters, setCharacters] = useState([]);
@@ -31,7 +30,6 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     const mats = Object.entries(parsedData.materials || {}).map(([key, quantity]) => {
       const dbItem = inventoryMap[key];
       let group = 'Other';
-      let subGroup = '';
       let category = '';
       if (dbItem) {
         const cat = dbItem.category;
@@ -40,13 +38,11 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         if (cat === 'Currency' || cat === 'Experience' || cat === 'Ores') {
           group = 'Currency & Exp';
         } else if (cat === 'Boss Drops') {
-          group = 'Boss Drops';
-          if (subCat === 'Normal Boss') subGroup = 'Normal Boss Drops';
-          else if (subCat === 'Weekly Boss') subGroup = 'Weekly Boss Drops';
+          if (subCat === 'Normal Boss') group = 'Normal Boss Drops';
+          else if (subCat === 'Weekly Boss') group = 'Weekly Boss Drops';
         } else if (cat === 'Enemy Drops') {
-          group = 'Enemy Drops';
-          if (subCat === 'Common Enhancement Material') subGroup = 'Common Enemy Drops';
-          else if (subCat === 'Elite Enhancement Material') subGroup = 'Elite Enemy Drops';
+          if (subCat === 'Common Enhancement Material') group = 'Common Enemy Drops';
+          else if (subCat === 'Elite Enhancement Material') group = 'Elite Enemy Drops';
         } else if (cat === 'Talent Materials') {
           group = 'Talent Mats';
         } else if (cat === 'Weapon Ascension Material') {
@@ -64,7 +60,6 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         quantity, 
         checked: group !== 'Other', 
         group, 
-        subGroup, 
         label: dbItem?.label || key, 
         category: dbItem?.category || '',
         dbItemKey: dbItem?.matKey
@@ -75,7 +70,17 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
 
   // Derived state for material tabs
   const materialGroups = [
-    'Currency & Exp', 'Boss Drops', 'Enemy Drops', 'Talent Mats', 'Weapon Asc Mats', 'Forging Mats', 'Local Specialties', 'Character Gems', 'Other'
+    'Currency & Exp',
+    'Normal Boss Drops',
+    'Weekly Boss Drops',
+    'Common Enemy Drops',
+    'Elite Enemy Drops',
+    'Talent Mats',
+    'Weapon Asc Mats',
+    'Forging Mats',
+    'Local Specialties',
+    'Character Gems',
+    'Other'
   ];
   
   useEffect(() => {
@@ -83,13 +88,6 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
       setActiveMatTab(materialGroups[0]);
     }
   }, [materials, materialGroups, activeMatTab]);
-
-  // Handle activeMatTab changes to automatically set sub-tabs
-  useEffect(() => {
-    if (activeMatTab === 'Boss Drops') setActiveSubTab('Normal Boss Drops');
-    else if (activeMatTab === 'Enemy Drops') setActiveSubTab('Common Enemy Drops');
-    else setActiveSubTab('');
-  }, [activeMatTab]);
 
   // Handlers for inputs
   const updateChar = (index, field, value) => {
@@ -146,11 +144,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     onConfirm(finalData);
   };
 
-  const activeMaterials = materials.filter(m => {
-    if (m.group !== activeMatTab) return false;
-    if (activeSubTab && m.subGroup !== activeSubTab) return false;
-    return true;
-  });
+  const activeMaterials = materials.filter(m => m.group === activeMatTab);
 
   const renderWeaponCard = (w, index, globalIndex) => (
     <div key={globalIndex} className={`flex flex-col gap-3 p-3 rounded-xl border transition-all ${w.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
@@ -369,35 +363,6 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                   </button>
                 ))}
               </div>
-
-              {/* Nested Sub-tabs */}
-              {activeMatTab === 'Boss Drops' && (
-                <div className="flex flex-wrap gap-2 mb-2 ml-4">
-                  {['Normal Boss Drops', 'Weekly Boss Drops'].map(sub => (
-                    <button 
-                      key={sub}
-                      className={`px-3 py-1 text-xs rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
-                      onClick={() => setActiveSubTab(sub)}
-                    >
-                      {sub}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {activeMatTab === 'Enemy Drops' && (
-                <div className="flex flex-wrap gap-2 mb-2 ml-4">
-                  {['Common Enemy Drops', 'Elite Enemy Drops'].map(sub => (
-                    <button 
-                      key={sub}
-                      className={`px-3 py-1 text-xs rounded-full border transition-all shadow-sm ${activeSubTab === sub ? 'bg-[var(--gold)] text-black border-[var(--gold)] font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-[var(--gold)] hover:text-white'}`}
-                      onClick={() => setActiveSubTab(sub)}
-                    >
-                      {sub}
-                    </button>
-                  ))}
-                </div>
-              )}
 
               {/* Materials List */}
               <div className="flex items-center justify-between gap-3 mt-2">
