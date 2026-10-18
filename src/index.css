@@ -50,6 +50,7 @@ textarea {
   --text: #E8E3D5;
   --muted: #8B8BA0;
   --sidebar-w: 260px;
+  --topbar-h: 64px;
 
   /* Element colors */
   --anemo: #4EC9B0;
@@ -133,7 +134,7 @@ body {
   font-family: 'Cinzel', serif;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .desktop-collapsed .nav-header {
     justify-content: center;
     padding: 0;
@@ -144,7 +145,7 @@ body {
 /* ──────────────────────────────────────────────
    Sidebar Collapse Mode (Desktop)
 ─────────────────────────────────────────────── */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .desktop-collapsed {
     --sidebar-w: 72px;
   }
@@ -263,10 +264,11 @@ body {
 ─────────────────────────────────────────────── */
 .sidebar {
   position: fixed;
-  top: 64px;
+  top: var(--topbar-h, 64px);
   left: 0;
   width: var(--sidebar-w);
-  height: calc(100vh - 64px);
+  height: calc(100vh - var(--topbar-h, 64px));
+  height: calc(100dvh - var(--topbar-h, 64px));
   background: linear-gradient(180deg, #00041e 0%, #000000 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -315,8 +317,9 @@ body {
 ─────────────────────────────────────────────── */
 .main-content {
   margin-left: var(--sidebar-w);
-  margin-top: 64px;
-  min-height: calc(100vh - 64px);
+  margin-top: var(--topbar-h, 64px);
+  min-height: calc(100vh - var(--topbar-h, 64px));
+  min-height: calc(100dvh - var(--topbar-h, 64px));
   display: flex;
   flex-direction: column;
   transition: margin-left 0.3s ease;
@@ -326,14 +329,14 @@ body {
    Top Bar
 ─────────────────────────────────────────────── */
 .topbar {
-  height: 64px;
+  min-height: var(--topbar-h, 64px);
   background: rgb(0 4 30);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   padding: 0 28px;
-  gap: 16px;
   position: fixed;
   top: 0;
   left: 0;
@@ -643,15 +646,24 @@ body {
 /* ──────────────────────────────────────────────
    Mobile Responsive — Sidebar Collapse
 ─────────────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   :root {
     --sidebar-w: 0px;
+    --topbar-h: 92px;
+  }
+
+  .has-telemetry-shell {
+    --topbar-h: 92px;
   }
 
   .sidebar {
+    top: var(--topbar-h, 92px);
+    height: calc(100vh - var(--topbar-h, 92px));
+    height: calc(100dvh - var(--topbar-h, 92px));
     transform: translateX(-260px);
     width: 260px;
     transition: transform 0.3s ease;
+    z-index: 150;
   }
 
   .sidebar.open {
@@ -660,15 +672,34 @@ body {
 
   .main-content {
     margin-left: 0;
+    margin-top: var(--topbar-h, 92px);
+    min-height: calc(100vh - var(--topbar-h, 92px));
+    min-height: calc(100dvh - var(--topbar-h, 92px));
   }
 
   .topbar {
-    padding: 0 16px;
+    padding: 0;
   }
 
   .search-input {
     width: 100%;
   }
+}
+
+/* ──────────────────────────────────────────────
+   Mobile Telemetry Strip
+─────────────────────────────────────────────── */
+#mobile-telemetry-strip [aria-label="Resin Tracker"],
+#mobile-telemetry-strip [aria-label="Realm Currency Tracker"] {
+  padding: 3px 7px;
+  font-size: 11px;
+  border-radius: 6px;
+  gap: 4px;
+}
+#mobile-telemetry-strip [aria-label="Resin Tracker"] img,
+#mobile-telemetry-strip [aria-label="Realm Currency Tracker"] img {
+  width: 16px;
+  height: 16px;
 }
 
 /* ──────────────────────────────────────────────

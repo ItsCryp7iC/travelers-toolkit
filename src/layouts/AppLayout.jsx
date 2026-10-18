@@ -315,7 +315,7 @@ export default function AppLayout() {
                  <Link
                    key={tab.id}
                    to={`/planner?tab=${tab.id}`}
-                   className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
+                   className={`flex items-center gap-2 py-2.5 min-h-[40px] pl-12 pr-4 text-xs transition-colors ${
                      isTabActive ? 'text-primary ' : 'text-[var(--muted)] hover:text-gray-200'
                    }`}
                    onClick={() => setSidebarOpen(false)}
@@ -388,7 +388,7 @@ export default function AppLayout() {
                  <Link
                    key={tab.id}
                    to={`/inventory?tab=${tab.id}`}
-                   className={`flex items-center gap-2 py-2 pl-12 pr-4 text-xs transition-colors ${
+                   className={`flex items-center gap-2 py-2.5 min-h-[40px] pl-12 pr-4 text-xs transition-colors ${
                      isTabActive ? 'text-primary ' : 'text-[var(--muted)] hover:text-gray-200'
                    }`}
                    onClick={() => setSidebarOpen(false)}
@@ -425,7 +425,7 @@ export default function AppLayout() {
  };
 
  return (
- <div className={`bg-[url('/bg.webp')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full ${isDesktopCollapsed ? 'desktop-collapsed' : ''}`}>
+ <div className={`bg-[url('/bg.webp')] bg-[#030712]/70 bg-blend-overlay bg-cover bg-fixed bg-right bg-no-repeat min-h-screen w-full ${isDesktopCollapsed ? 'desktop-collapsed' : ''} has-telemetry-shell`}>
 
   {/* Skip to Main Content Link */}
   <a
@@ -437,127 +437,170 @@ export default function AppLayout() {
 
   {/* ── Top Bar (Full Width) ────────────────────────────────── */}
   <header className="topbar" id="app-topbar">
-    {/* Brand */}
-    <Link to="/" className="flex items-center gap-3 pl-0 md:pl-5 transition-all w-auto lg:w-[240px] shrink-0 cursor-pointer hover:opacity-80">
-      <img src="/logo.svg" alt="Site Logo" className="w-10 h-10 object-contain drop-shadow-md" />
-      <div className="brand-text">
-        <h1 className="text-lg leading-tight text-[var(--text)]">
-          Traveler's
-        </h1>
-        <p className="text-lg leading-tight text-primary">
-          Toolkit
-        </p>
-      </div>
-    </Link>
-
-    {/* Mobile burger */}
-    <button
-      id="sidebar-toggle"
-      type="button"
-      className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border-light)] transition-all flex-shrink-0 cursor-pointer"
-      onClick={() => setSidebarOpen(!sidebarOpen)}
-      aria-label="Toggle sidebar"
-      aria-expanded={sidebarOpen}
-      aria-controls="app-sidebar"
-    >
-      ☰
-    </button>
-
-    {/* Left stats: Resin & Realm Currency counters */}
-    {hasCookie && syncPayload && (
-      <div className="hidden sm:flex items-center gap-3 shrink-0">
-        <ResinTracker syncData={syncPayload.resin} variant="compact" />
-        <RealmCurrencyTracker syncData={syncPayload.realm_currency} variant="compact" />
-      </div>
-    )}
-
-    {/* Center action: HoYoLAB Sync Button */}
-    <div className="flex-1 flex items-center justify-center min-w-0 px-2">
-      {hoyolabConnected && (
+    {/* Primary Row */}
+    <div className="flex items-center justify-between w-full h-14 md:h-16 px-4 md:px-0">
+      {/* Left: Menu (mobile) + Brand + Desktop resource trackers */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Mobile burger */}
         <button
+          id="sidebar-toggle"
           type="button"
-          id="global-hoyolab-sync-btn"
-          data-testid="global-hoyolab-sync-btn"
-          onClick={() => setIsHoyolabSyncOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 hover:text-blue-300 hover:border-blue-400/50 transition-all shrink-0 cursor-pointer shadow-sm text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
-          aria-label="Sync characters with HoYoLAB"
-          title={
-            lastHoyolabCharacterSyncAt
-              ? `Sync characters with HoYoLAB • Last synced ${getTimeAgo(lastHoyolabCharacterSyncAt)}`
-              : 'Sync characters with HoYoLAB'
-          }
+          className="md:hidden w-11 h-11 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border-light)] transition-all flex-shrink-0 cursor-pointer text-base"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label="Toggle sidebar"
+          aria-expanded={sidebarOpen}
+          aria-controls="app-sidebar"
         >
-          <span aria-hidden="true" className="text-sm shrink-0">🔄</span>
-          <span className="hidden lg:inline whitespace-nowrap" data-testid="hoyolab-sync-desktop-label">Sync with HoYoLAB</span>
-          <span className="hidden md:inline lg:hidden whitespace-nowrap" data-testid="hoyolab-sync-medium-label">HoYoLAB Sync</span>
+          ☰
         </button>
-      )}
-    </div>
 
-    {/* Right controls: Armory, Roster, Profile */}
-    <div className="flex items-center gap-3 shrink-0">
-      <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="My Armory">
-        <img src="/Weapons.png" alt="My Armory" className="w-5 h-5 object-contain" />
-        <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
-          {trackedWeapons.length}
-        </span>
-      </div>
-      <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="Roster">
-        <img src="/Characters.png" alt="Roster" className="w-5 h-5 object-contain" />
-        <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
-          {rosterCount}
-        </span>
-      </div>
-
-      {/* Avatar & Dropdown */}
-      <div className="relative" ref={dropdownRef}>
-      {!googleUser ? (
-        <button
-          type="button"
-          id="user-avatar-logged-out"
-          className="w-9 h-9 rounded-full flex items-center justify-center text-sm cursor-pointer transition-all hover:scale-105 flex-shrink-0 bg-gray-600 text-white border-0"
-          title="Sign In with Google"
-          aria-label="Sign in with Google"
-          onClick={() => login()}
-        >
-          ?
-        </button>
-      ) : (
-        <button
-          type="button"
-          id="user-avatar-logged-in"
-          className="w-9 h-9 rounded-full cursor-pointer transition-all hover:scale-105 flex-shrink-0 border-2 border-[var(--border)] overflow-hidden p-0 bg-transparent"
-          aria-label={`Google account menu for ${googleUser.name}`}
-          aria-expanded={dropdownOpen}
-          aria-haspopup="true"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-        >
-          {googleUser.picture ? (
-            <img src={googleUser.picture} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <span className="font-semibold text-xs">{googleUser.name?.charAt(0) || 'U'}</span>
-          )}
-        </button>
-      )}
-
-      {dropdownOpen && googleUser && (
-        <div className="absolute right-0 mt-2 w-48 bg-[var(--elevated)] border border-[var(--border)] rounded-md shadow-lg py-1 z-50">
-          <div className="px-4 py-2 border-b border-[var(--border)]">
-            <p className="text-sm font-semibold text-[var(--text)] truncate">{googleUser.name}</p>
-            <p className="text-xs text-[var(--muted)] truncate">{googleUser.email}</p>
+        {/* Brand */}
+        <Link to="/" className="flex items-center gap-2.5 sm:gap-3 pl-0 md:pl-5 transition-all w-auto lg:w-[240px] shrink-0 cursor-pointer hover:opacity-80">
+          <img src="/logo.svg" alt="Site Logo" className="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-md" />
+          <div className="brand-text">
+            <h1 className="text-base sm:text-lg leading-tight text-[var(--text)] font-cinzel">
+              Traveler's
+            </h1>
+            <p className="text-base sm:text-lg leading-tight text-primary font-cinzel">
+              Toolkit
+            </p>
           </div>
+        </Link>
+
+        {/* Left stats: Resin & Realm Currency counters (Desktop only) */}
+        {hasCookie && syncPayload && (
+          <div className="hidden md:flex items-center gap-3 shrink-0 ml-2">
+            <ResinTracker syncData={syncPayload.resin} variant="compact" />
+            <RealmCurrencyTracker syncData={syncPayload.realm_currency} variant="compact" />
+          </div>
+        )}
+      </div>
+
+      {/* Center action: HoYoLAB Sync Button (Desktop: centered; Mobile: right-aligned before avatar) */}
+      <div className="flex items-center justify-end md:justify-center md:flex-1 min-w-0 px-1 sm:px-2">
+        {hoyolabConnected && (
           <button
             type="button"
-            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
-            onClick={() => {
-              disconnectGoogleSession();
-              setDropdownOpen(false);
-            }}
+            id="global-hoyolab-sync-btn"
+            data-testid="global-hoyolab-sync-btn"
+            onClick={() => setIsHoyolabSyncOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/30 hover:bg-blue-500/20 hover:text-blue-300 hover:border-blue-400/50 transition-all shrink-0 cursor-pointer shadow-sm text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 min-h-[40px] sm:min-h-0"
+            aria-label="Sync characters with HoYoLAB"
+            title={
+              lastHoyolabCharacterSyncAt
+                ? `Sync characters with HoYoLAB • Last synced ${getTimeAgo(lastHoyolabCharacterSyncAt)}`
+                : 'Sync characters with HoYoLAB'
+            }
           >
-            Sign Out / Disconnect
+            <span aria-hidden="true" className="text-base sm:text-sm shrink-0">🔄</span>
+            <span className="hidden lg:inline whitespace-nowrap" data-testid="hoyolab-sync-desktop-label">Sync with HoYoLAB</span>
+            <span className="hidden md:inline lg:hidden whitespace-nowrap" data-testid="hoyolab-sync-medium-label">HoYoLAB Sync</span>
           </button>
+        )}
+      </div>
+
+      {/* Right controls: Armory, Roster, Profile */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="My Armory">
+          <img src="/Weapons.png" alt="My Armory" className="w-5 h-5 object-contain" />
+          <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
+            {trackedWeapons.length}
+          </span>
+        </div>
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--elevated)] border border-[var(--border)] shrink-0" title="Roster">
+          <img src="/Characters.png" alt="Roster" className="w-5 h-5 object-contain" />
+          <span className="text-sm font-semibold whitespace-nowrap text-[var(--text)]">
+            {rosterCount}
+          </span>
+        </div>
+
+        {/* Avatar & Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+        {!googleUser ? (
+          <button
+            type="button"
+            id="user-avatar-logged-out"
+            className="w-9 h-9 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm cursor-pointer transition-all hover:scale-105 flex-shrink-0 bg-gray-600 text-white border-0"
+            title="Sign In with Google"
+            aria-label="Sign in with Google"
+            onClick={() => login()}
+          >
+            ?
+          </button>
+        ) : (
+          <button
+            type="button"
+            id="user-avatar-logged-in"
+            className="w-9 h-9 sm:w-9 sm:h-9 rounded-full cursor-pointer transition-all hover:scale-105 flex-shrink-0 border-2 border-[var(--border)] overflow-hidden p-0 bg-transparent"
+            aria-label={`Google account menu for ${googleUser.name}`}
+            aria-expanded={dropdownOpen}
+            aria-haspopup="true"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            {googleUser.picture ? (
+              <img src={googleUser.picture} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <span className="font-semibold text-xs">{googleUser.name?.charAt(0) || 'U'}</span>
+            )}
+          </button>
+        )}
+
+        {dropdownOpen && googleUser && (
+          <div className="absolute right-0 mt-2 w-48 max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-5rem)] overflow-y-auto bg-[var(--elevated)] border border-[var(--border)] rounded-md shadow-lg py-1 z-50">
+            <div className="px-4 py-2 border-b border-[var(--border)]">
+              <p className="text-sm font-semibold text-[var(--text)] truncate">{googleUser.name}</p>
+              <p className="text-xs text-[var(--muted)] truncate">{googleUser.email}</p>
+            </div>
+            <button
+              type="button"
+              className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors cursor-pointer"
+              onClick={() => {
+                disconnectGoogleSession();
+                setDropdownOpen(false);
+              }}
+            >
+              Sign Out / Disconnect
+            </button>
+          </div>
+        )}
+        </div>
+      </div>
+    </div>
+
+        {/* Secondary Telemetry Strip (< 768px, always rendered on mobile to show local Armory & Roster counters; Resin & Realm shown when live data is available) */}
+    <div
+      id="mobile-telemetry-strip"
+      data-testid="mobile-telemetry-strip"
+      className={`md:hidden flex items-center ${hasCookie && syncPayload ? 'justify-between' : 'justify-center'} w-full h-9 px-3 border-t border-[var(--border)] bg-[#00041e]/80 backdrop-blur-md gap-3`}
+      aria-label="Mobile resource telemetry"
+    >
+      {hasCookie && syncPayload && (
+        <div className="flex items-center gap-2 min-w-0" data-testid="mobile-telemetry-resources">
+          <ResinTracker syncData={syncPayload.resin} variant="compact" />
+          <RealmCurrencyTracker syncData={syncPayload.realm_currency} variant="compact" />
         </div>
       )}
+      <div className="flex items-center gap-2.5 shrink-0" data-testid="mobile-telemetry-counts">
+        <div
+          className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[var(--elevated)] border border-[var(--border)] text-xs"
+          title="My Armory"
+          data-testid="mobile-armory-tracker"
+        >
+          <img src="/Weapons.png" alt="My Armory" className="w-4 h-4 object-contain" />
+          <span className="font-semibold text-[var(--text)]">
+            {trackedWeapons.length}
+          </span>
+        </div>
+        <div
+          className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[var(--elevated)] border border-[var(--border)] text-xs"
+          title="Roster"
+          data-testid="mobile-roster-tracker"
+        >
+          <img src="/Characters.png" alt="Roster" className="w-4 h-4 object-contain" />
+          <span className="font-semibold text-[var(--text)]">
+            {rosterCount}
+          </span>
+        </div>
       </div>
     </div>
   </header>
@@ -620,7 +663,7 @@ export default function AppLayout() {
         title="Privacy Policy"
         aria-label="Privacy Policy"
         className={({ isActive }) =>
-          `sidebar-legal-link flex items-center gap-2 px-3 py-1.5 rounded text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-1 focus-visible:ring-primary ${
+          `sidebar-legal-link flex items-center gap-2 px-3 py-2 min-h-[40px] rounded text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-1 focus-visible:ring-primary ${
             isActive ? 'text-primary font-semibold' : ''
           }`
         }
@@ -635,7 +678,7 @@ export default function AppLayout() {
         title="Terms of Service"
         aria-label="Terms of Service"
         className={({ isActive }) =>
-          `sidebar-legal-link flex items-center gap-2 px-3 py-1.5 rounded text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-1 focus-visible:ring-primary ${
+          `sidebar-legal-link flex items-center gap-2 px-3 py-2 min-h-[40px] rounded text-xs text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-1 focus-visible:ring-primary ${
             isActive ? 'text-primary font-semibold' : ''
           }`
         }
@@ -686,12 +729,12 @@ export default function AppLayout() {
   <div className="main-content flex flex-col min-h-screen">
 
   {/* Page Content */}
-  <main className="flex-1 p-6 md:p-8" id="page-content" tabIndex={-1}>
+  <main className="flex-1 px-4 py-4 sm:px-6 md:px-8 md:py-8" id="page-content" tabIndex={-1}>
   <Outlet />
   </main>
 
   {/* Footer */}
-  <footer className="mt-auto px-6 md:px-8 py-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)] bg-[#030712]/40">
+  <footer className="mt-auto px-4 py-6 sm:px-6 md:px-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)] bg-[#030712]/40">
     <div className="flex items-center gap-4">
       <Link to="/privacy" className="hover:text-[var(--text)] transition-colors">Privacy Policy</Link>
       <span>•</span>

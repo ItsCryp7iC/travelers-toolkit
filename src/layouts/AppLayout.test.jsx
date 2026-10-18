@@ -831,4 +831,439 @@ describe('AppLayout Accessibility & Polish', () => {
       expect(charactersLink.classList.contains('active')).toBe(false);
     });
   });
+  describe('Responsive Foundation & Mobile Shell (Stage R1)', () => {
+    it('1. mobile navigation toggle remains available below 768 and has minimum ~44x44 touch target', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const toggle = container.querySelector('#sidebar-toggle');
+      expect(toggle).not.toBeNull();
+      expect(toggle.getAttribute('aria-controls')).toBe('app-sidebar');
+      expect(toggle.getAttribute('aria-expanded')).toBe('false');
+      expect(toggle.className).toContain('md:hidden');
+      expect(toggle.className).toContain('w-11');
+      expect(toggle.className).toContain('h-11');
+
+      // Toggling opens the sidebar drawer
+      act(() => {
+        toggle.click();
+      });
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+      expect(container.querySelector('#app-sidebar').classList.contains('open')).toBe(true);
+    });
+
+    it('2. 768px breakpoint does not logically hide all navigation controls', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Sidebar is persistent element in DOM
+      const sidebar = container.querySelector('#app-sidebar');
+      expect(sidebar).not.toBeNull();
+
+      // Desktop toggle button is available for md/tablet devices
+      const desktopToggle = container.querySelector('.nav-toggle-btn');
+      expect(desktopToggle).not.toBeNull();
+      expect(desktopToggle.className).toContain('hidden');
+      expect(desktopToggle.className).toContain('md:flex');
+
+      // Mobile toggle button has md:hidden so below 768px it is displayed
+      const mobileToggle = container.querySelector('#sidebar-toggle');
+      expect(mobileToggle).not.toBeNull();
+      expect(mobileToggle.className).toContain('md:hidden');
+    });
+
+    it('3-7. mobile telemetry strip renders with Resin, Realm Currency, Armory and Roster when connected', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: { char1: {}, char2: {} },
+          trackedWeapons: [{ id: 'w1' }, { id: 'w2' }, { id: 'w3' }],
+          hoyolabConnected: true,
+          hasCookie: true,
+          lastHoyolabCharacterSyncAt: Date.now(),
+          syncPayload: {
+            resin: { current: 160, max: 200, targetFullTime: Date.now() + 3600000 },
+            realm_currency: { current: 2400, max: 2400, targetFullTime: null },
+          },
+          resinCount: 160,
+          resinTimestamp: Date.now(),
+          displayTimeZone: 'UTC',
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const telemetryStrip = container.querySelector('#mobile-telemetry-strip');
+      expect(telemetryStrip).not.toBeNull();
+      expect(telemetryStrip.getAttribute('aria-label')).toBe('Mobile resource telemetry');
+
+      // 4. Resin visible in mobile telemetry state
+      const resinTrackers = container.querySelectorAll('[aria-label="Resin Tracker"]');
+      expect(resinTrackers.length).toBeGreaterThanOrEqual(1);
+
+      // 5. Realm Currency visible in mobile telemetry state
+      const realmTrackers = container.querySelectorAll('[aria-label="Realm Currency Tracker"]');
+      expect(realmTrackers.length).toBeGreaterThanOrEqual(1);
+
+      // 6. Armory count visible in mobile telemetry state
+      const armoryTracker = container.querySelector('[data-testid="mobile-armory-tracker"]');
+      expect(armoryTracker).not.toBeNull();
+      expect(armoryTracker.textContent).toContain('3');
+
+      // 7. Roster count visible in mobile telemetry state
+      const rosterTracker = container.querySelector('[data-testid="mobile-roster-tracker"]');
+      expect(rosterTracker).not.toBeNull();
+      expect(rosterTracker.textContent).toContain('2');
+    });
+
+    it('8. disconnected state still renders mobile telemetry strip with local Armory and Roster counters', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: { c1: {}, c2: {}, c3: {} },
+          trackedWeapons: [{ id: 'w1' }, { id: 'w2' }],
+          hoyolabConnected: false,
+          hasCookie: false,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Mobile telemetry strip STILL renders for local counters
+      expect(container.querySelector('#mobile-telemetry-strip')).not.toBeNull();
+      // Live trackers do not render
+      expect(container.querySelector('[aria-label="Resin Tracker"]')).toBeNull();
+      expect(container.querySelector('[aria-label="Realm Currency Tracker"]')).toBeNull();
+      // Local Armory and Roster render
+      const armoryTracker = container.querySelector('[data-testid="mobile-armory-tracker"]');
+      const rosterTracker = container.querySelector('[data-testid="mobile-roster-tracker"]');
+      expect(armoryTracker).not.toBeNull();
+      expect(armoryTracker.textContent).toContain('2');
+      expect(rosterTracker).not.toBeNull();
+      expect(rosterTracker.textContent).toContain('3');
+    });
+
+    it('8b. connected but syncPayload unavailable renders local counters without invalid live trackers', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: { c1: {} },
+          trackedWeapons: [{ id: 'w1' }, { id: 'w2' }, { id: 'w3' }, { id: 'w4' }],
+          hoyolabConnected: true,
+          hasCookie: true,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Mobile telemetry strip still renders
+      expect(container.querySelector('#mobile-telemetry-strip')).not.toBeNull();
+      // Live trackers do not render
+      expect(container.querySelector('[aria-label="Resin Tracker"]')).toBeNull();
+      expect(container.querySelector('[aria-label="Realm Currency Tracker"]')).toBeNull();
+      // Local counters render
+      expect(container.querySelector('[data-testid="mobile-armory-tracker"]').textContent).toContain('4');
+      expect(container.querySelector('[data-testid="mobile-roster-tracker"]').textContent).toContain('1');
+    });
+
+    it('8c. desktop behavior unchanged when disconnected: shows Armory and Roster in header row, no live trackers', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: { c1: {} },
+          trackedWeapons: [{ id: 'w1' }],
+          hoyolabConnected: false,
+          hasCookie: false,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Resin and Realm hidden on desktop
+      expect(container.querySelector('[aria-label="Resin Tracker"]')).toBeNull();
+      expect(container.querySelector('[aria-label="Realm Currency Tracker"]')).toBeNull();
+      // HoYoLAB sync button hidden
+      expect(container.querySelector('#global-hoyolab-sync-btn')).toBeNull();
+      // Desktop Armory & Roster visible
+      expect(container.querySelector('div[title="My Armory"]')).not.toBeNull();
+      expect(container.querySelector('div[title="Roster"]')).not.toBeNull();
+      // Profile control visible
+      expect(container.querySelector('#user-avatar-logged-out')).not.toBeNull();
+    });
+
+    it('9. HoYoLAB sync remains accessible in topbar', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          hoyolabConnected: true,
+          lastHoyolabCharacterSyncAt: null,
+          hasCookie: true,
+          syncPayload: null,
+          googleConnected: false,
+          googleUser: null,
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          importData: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const syncBtn = container.querySelector('#global-hoyolab-sync-btn');
+      expect(syncBtn).not.toBeNull();
+      expect(syncBtn.getAttribute('aria-label')).toBe('Sync characters with HoYoLAB');
+    });
+
+    it('10. profile/login control remains accessible and account dropdown closes with Escape', () => {
+      useStore.mockImplementation((selector) => {
+        const state = {
+          showDbBuilder: false,
+          roster: {},
+          trackedWeapons: [],
+          googleConnected: true,
+          googleUser: { name: 'Traveler', email: 'traveler@teyvat.org', picture: '' },
+          googleError: null,
+          autoBackupEnabled: false,
+          checkGoogleSession: vi.fn(),
+          disconnectGoogleSession: vi.fn(),
+          handleSyncNotes: vi.fn(),
+        };
+        return selector(state);
+      });
+
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const profileBtn = container.querySelector('#user-avatar-logged-in');
+      expect(profileBtn).not.toBeNull();
+
+      // Open dropdown
+      act(() => {
+        profileBtn.click();
+      });
+      expect(container.textContent).toContain('Sign Out / Disconnect');
+
+      // Escape closes dropdown
+      act(() => {
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      });
+      expect(container.textContent).not.toContain('Sign Out / Disconnect');
+    });
+
+    it('11. grouped sidebar remains intact with Progression, Records, and System', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      expect(container.querySelector('#nav-section-progression')).not.toBeNull();
+      expect(container.querySelector('#nav-section-records')).not.toBeNull();
+      expect(container.querySelector('#nav-section-system')).not.toBeNull();
+    });
+
+    it('12. Planner mobile submenu still works with minimum 40px touch targets', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const progGroup = container.querySelector('#nav-section-progression');
+      const plannerToggle = Array.from(progGroup.querySelectorAll('.sidebar-nav-link')).find(
+        (el) => el.textContent.includes('Planner')
+      );
+      expect(plannerToggle).not.toBeNull();
+
+      // Open Planner submenu
+      act(() => {
+        plannerToggle.click();
+      });
+
+      const plannerTab = container.querySelector('a[href="/planner?tab=daily_action"]');
+      expect(plannerTab).not.toBeNull();
+      expect(plannerTab.className).toContain('py-2.5');
+      expect(plannerTab.className).toContain('min-h-[40px]');
+
+      // Clicking child link closes mobile sidebar
+      act(() => {
+        container.querySelector('#sidebar-toggle').click();
+      });
+      expect(container.querySelector('#app-sidebar').classList.contains('open')).toBe(true);
+
+      act(() => {
+        plannerTab.click();
+      });
+      expect(container.querySelector('#app-sidebar').classList.contains('open')).toBe(false);
+    });
+
+    it('13. Inventory mobile submenu still works with minimum 40px touch targets', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const progGroup = container.querySelector('#nav-section-progression');
+      const inventoryToggle = Array.from(progGroup.querySelectorAll('.sidebar-nav-link')).find(
+        (el) => el.textContent.includes('Inventory')
+      );
+      expect(inventoryToggle).not.toBeNull();
+
+      // Open Inventory submenu
+      act(() => {
+        inventoryToggle.click();
+      });
+
+      const invTab = container.querySelector('a[href="/inventory?tab=currency_exp"]');
+      expect(invTab).not.toBeNull();
+      expect(invTab.className).toContain('py-2.5');
+      expect(invTab.className).toContain('min-h-[40px]');
+    });
+
+    it('14. desktop collapsed sidebar behavior still works', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const rootDiv = container.firstChild;
+      expect(rootDiv.classList.contains('desktop-collapsed')).toBe(false);
+
+      act(() => {
+        container.querySelector('.nav-toggle-btn').click();
+      });
+      expect(rootDiv.classList.contains('desktop-collapsed')).toBe(true);
+    });
+
+    it('15. legal links unchanged and maintain accessible ~40px touch targets', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const privacyLink = container.querySelector('#sidebar-privacy-link');
+      const termsLink = container.querySelector('#sidebar-terms-link');
+      expect(privacyLink).not.toBeNull();
+      expect(termsLink).not.toBeNull();
+      expect(privacyLink.className).toContain('min-h-[40px]');
+      expect(termsLink.className).toContain('min-h-[40px]');
+    });
+
+    it('16. notification safe-area change does not break rendering', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      // Notification container renders without errors in the tree
+      // When empty it renders null, AppLayout remains fully mounted
+      expect(container.querySelector('#app-topbar')).not.toBeNull();
+    });
+  });
 });

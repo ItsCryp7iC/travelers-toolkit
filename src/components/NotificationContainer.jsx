@@ -17,6 +17,7 @@ export default function NotificationContainer() {
       role="region"
       aria-label="Notifications"
       className="fixed bottom-4 right-4 z-[9999] flex flex-col gap-2 max-w-sm w-[calc(100vw-2rem)] pointer-events-none"
+      style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
     >
       {items.map((n) => {
         const isError = n.type === 'error';
