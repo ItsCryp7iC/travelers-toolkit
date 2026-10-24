@@ -577,6 +577,20 @@ body {
   flex-shrink: 0;
 }
 
+@media (max-width: 639px) {
+  .stat-card {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+}
+
 /* ──────────────────────────────────────────────
    Roster Badge
 ─────────────────────────────────────────────── */
