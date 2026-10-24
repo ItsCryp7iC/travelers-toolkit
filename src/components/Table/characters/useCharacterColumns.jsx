@@ -22,7 +22,7 @@ export default function useCharacterColumns({
     {
       id: 'Identity',
       header: 'Identity',
-      meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)] sticky left-0 z-30 bg-[var(--elevated)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]" },
+      meta: { thClassName: "px-2 py-2 text-center text-xs uppercase tracking-widest text-[var(--muted)] border-r border-[var(--border)]" },
       columns: [
         {
           id: 'select',
@@ -77,8 +77,8 @@ export default function useCharacterColumns({
             );
           },
           meta: {
-            thClassName: "w-16 px-2 py-2 sticky left-0 z-20 bg-[var(--surface)] border-r border-gray-700/50",
-            tdClassName: "w-16 px-4 py-2 sticky left-0 z-20 bg-inherit border-r border-gray-700/50"
+            thClassName: "w-10 md:w-16 px-1 md:px-2 py-1 md:py-2 sticky left-0 z-20 bg-[var(--surface)] border-r border-gray-700/50",
+            tdClassName: "w-10 md:w-16 px-1 md:px-4 py-1 md:py-2 sticky left-0 z-20 bg-inherit border-r border-gray-700/50"
           },
           enableSorting: false, enableColumnFilter: false
         },
@@ -87,8 +87,8 @@ export default function useCharacterColumns({
           header: 'Sl',
           accessorFn: (_, i) => i + 1,
           meta: {
-            thClassName: "text-center px-2 py-2 font-semibold sticky left-[64px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px]",
-            tdClassName: "px-4 py-2 text-center text-xs text-[var(--muted)] sticky left-[64px] z-10 bg-inherit border-r border-[var(--border)] w-[48px] min-w-[48px] max-w-[48px] cursor-pointer"
+            thClassName: "text-center px-1 md:px-2 py-1 md:py-2 font-semibold sticky left-[40px] md:left-[64px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[32px] md:w-[48px] min-w-[32px] md:min-w-[48px] max-w-[32px] md:max-w-[48px]",
+            tdClassName: "px-1 md:px-4 py-1 md:py-2 text-center text-[10px] md:text-xs text-[var(--muted)] sticky left-[40px] md:left-[64px] z-10 bg-inherit border-r border-[var(--border)] w-[32px] md:w-[48px] min-w-[32px] md:min-w-[48px] max-w-[32px] md:max-w-[48px] cursor-pointer"
           },
           enableSorting: false, enableColumnFilter: false,
           cell: info => <span className="text-[var(--muted)]">{info.getValue()}</span>
@@ -99,8 +99,8 @@ export default function useCharacterColumns({
           accessorFn: row => row.name,
           meta: {
             filterType: 'text',
-            thClassName: "text-left px-2 py-2 font-semibold sticky left-[112px] z-20 bg-[var(--surface)] w-[200px] min-w-[200px] max-w-[200px]",
-            tdClassName: "px-4 py-2 sticky left-[112px] z-10 bg-inherit border-r border-transparent w-[200px] min-w-[200px] max-w-[200px] cursor-pointer"
+            thClassName: "text-left px-1 md:px-2 py-1 md:py-2 font-semibold sticky left-[72px] md:left-[112px] z-20 bg-[var(--surface)] w-[120px] md:w-[200px] min-w-[120px] md:min-w-[200px] max-w-[120px] md:max-w-[200px] border-r border-[var(--border)] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]",
+            tdClassName: "px-2 md:px-4 py-1 md:py-2 sticky left-[72px] md:left-[112px] z-10 bg-inherit border-r border-[var(--border)] w-[120px] md:w-[200px] min-w-[120px] md:min-w-[200px] max-w-[120px] md:max-w-[200px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)] cursor-pointer"
           },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
@@ -130,8 +130,8 @@ export default function useCharacterColumns({
           accessorFn: row => row.element,
           meta: {
             filterType: 'text',
-            thClassName: "text-center px-2 py-2 font-semibold sticky left-[312px] z-20 bg-[var(--surface)] w-[82px] min-w-[82px] max-w-[82px]",
-            tdClassName: "px-4 py-2 text-center sticky left-[312px] z-10 bg-inherit w-[82px] min-w-[82px] max-w-[82px] cursor-pointer"
+            thClassName: "text-center px-2 py-2 font-semibold w-[82px] min-w-[82px] max-w-[82px]",
+            tdClassName: "px-4 py-2 text-center w-[82px] min-w-[82px] max-w-[82px] cursor-pointer"
           },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ getValue }) => {
@@ -150,8 +150,8 @@ export default function useCharacterColumns({
           accessorFn: row => row.weapon_type || row.weapon,
           meta: {
             filterType: 'text',
-            thClassName: "text-center px-2 py-2 font-semibold sticky left-[394px] z-20 bg-[var(--surface)] w-[80px] min-w-[80px] max-w-[80px]",
-            tdClassName: "px-4 py-2 text-center sticky left-[394px] z-10 bg-inherit w-[80px] min-w-[80px] max-w-[80px] cursor-pointer"
+            thClassName: "text-center px-2 py-2 font-semibold w-[80px] min-w-[80px] max-w-[80px]",
+            tdClassName: "px-4 py-2 text-center w-[80px] min-w-[80px] max-w-[80px] cursor-pointer"
           },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ getValue }) => {
@@ -166,8 +166,8 @@ export default function useCharacterColumns({
           accessorFn: row => row.eqWeapon?.tracked?.weaponName || 'None',
           meta: {
             filterType: 'text',
-            thClassName: "text-left px-2 py-2 font-semibold sticky left-[474px] z-20 bg-[var(--surface)] border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)]",
-            tdClassName: "px-4 py-2 sticky left-[474px] z-10 bg-inherit border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] shadow-[4px_0_8px_-2px_rgba(0,0,0,0.5)] cursor-pointer"
+            thClassName: "text-left px-2 py-2 font-semibold border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px]",
+            tdClassName: "px-4 py-2 border-r border-[var(--border)] w-[160px] min-w-[160px] max-w-[160px] cursor-pointer"
           },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {

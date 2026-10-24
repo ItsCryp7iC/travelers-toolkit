@@ -7,7 +7,7 @@ export default function SortDirectionButton({ direction, onToggle }) {
     <button
       type="button"
       onClick={() => onToggle(isAsc ? 'desc' : 'asc')}
-      className="bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs rounded-lg px-3 py-2 hover:border-[var(--gold)] focus:border-[var(--gold)] transition-colors flex items-center gap-1"
+      className="bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs rounded-lg px-3 py-2 hover:border-[var(--gold)] focus:border-[var(--gold)] transition-colors flex items-center justify-center gap-1 min-h-[40px] shrink-0"
       aria-label={isAsc ? 'Sort descending' : 'Sort ascending'}
       title="Sort ascending/descending"
     >

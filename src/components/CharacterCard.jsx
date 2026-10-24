@@ -303,10 +303,13 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
   return (
     <>
       <article
-        className={`bg-gradient-to-br ${getElementGradient(element)} to-[var(--surface)] border border-[var(--border)] rounded-xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors hover:border-[var(--gold)]/50 group cursor-pointer h-full`}
+        className={`bg-gradient-to-br ${getElementGradient(element)} to-[var(--surface)] border border-[var(--border)] rounded-xl p-3 sm:p-4 flex flex-col gap-3 relative overflow-hidden transition-colors hover:border-[var(--gold)]/50 group cursor-pointer h-full`}
         onClick={handleCardClick}
         role="button"
         tabIndex={0}
+        id={`char-card-${name.toLowerCase().replace(/\s+/g, '-')}`}
+        data-testid="character-card"
+        data-character-name={name}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick() }}
       >
         {/* Decorative element shimmer */}
@@ -314,8 +317,6 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
           className="absolute inset-0 opacity-5 pointer-events-none"
           style={{ background: `radial-gradient(circle at 50% 30%, ${elConfig.color}, transparent 70%)` }}
         />
-
-
 
         {/* Header */}
         <div className="flex items-center gap-3">
@@ -334,18 +335,17 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="text-[var(--text)] text-sm truncate font-bold">{displayName}</h3>
-            {inRoster && totalCosts ? (
-               <p className="text-xs text-[var(--gold)] tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
-            ) : (
-               <div className="flex flex-wrap gap-1 mt-1">
-                  <span className={`text-xs tracking-wide leading-none ${getRarityClass(rarity)}`}>{getStars(rarity)}</span>
-               </div>
-            )}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className={`text-xs tracking-wide leading-none ${getRarityClass(rarity)}`}>{getStars(rarity)}</span>
+              {inRoster && totalCosts?.mora !== undefined && (
+                <span className="text-xs text-[var(--gold)] tracking-wider">• Mora: {formatNumber(totalCosts?.mora || 0)}</span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
             {!hideRoster && inRoster && equippedWeapon && equippedWpConfig && (
               <div
-                className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center p-1.5"
+                className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center p-1.5 shrink-0"
                 title={`Equipped: ${equippedWeapon.weaponName}`}
               >
                 <GenshinImage 
@@ -358,7 +358,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
             )}
             {character?.element && (
               <div
-                className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center p-1.5"
+                className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center p-1.5 shrink-0"
                 title={character.element}
               >
                 <GenshinImage 
@@ -420,7 +420,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
                   })
                   .slice(0, 10) // Display cap if there are too many items to prevent huge cards
                   .map(([matId, qty]) => {
-                    const owned = inventory[matId] || 0;
+                    const owned = (inventory && inventory[matId]) || 0;
                     const toFarm = Math.max(0, qty - owned);
                     
                     return (

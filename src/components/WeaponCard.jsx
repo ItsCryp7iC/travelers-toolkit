@@ -8,7 +8,7 @@ import { calculateForgingCost } from '../utils/aggregator'
 import { resolveSpecificItem } from '../utils/resolver'
 import weaponForgingData from '../data/weapon_forging.json'
 
-export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
+export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = 'detailed' }) {
   const { name, rarity, type } = weapon
   const wpConfig = WEAPON_TYPES[type] || { emoji: '✨', label: 'Unknown' }
   const displayName = formatName(name)
@@ -17,13 +17,12 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
   const rarityClass = getRarityClass(rarityNum)
   const rarityColor = RARITY_COLORS[rarityNum] || '#C8A96E'
   
-  const inArmory = useStore((s) => Boolean(s.trackedWeapons.some(w => w.weaponName === name)))
-  // We'll just grab the FIRST entry of this weapon if there are multiple. 
-  // (Assuming armory cards represent the weapon type, but could show first instance's progress)
-  const armoryEntry = useStore((s) => s.trackedWeapons.find(w => w.weaponName === name))
+  const inArmoryStore = useStore((s) => Boolean(s.trackedWeapons.some(w => w.weaponName === name)))
+  const armoryEntryStore = useStore((s) => s.trackedWeapons.find(w => w.weaponName === name))
   const inventory = useStore((s) => s.inventory)
   
-  // Find who has this equipped
+  const inArmory = trackedWeapon ? true : inArmoryStore
+  const armoryEntry = trackedWeapon || armoryEntryStore
   const equippedBy = armoryEntry?.assignedTo || null
 
   const getRarityGradient = (r) => {
@@ -188,19 +187,21 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
 
   return (
     <article
-      className={`bg-gradient-to-br from-[var(--surface-light)] to-[var(--surface)] border border-[var(--border)] rounded-xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors hover:border-[var(--gold)]/50 group cursor-pointer h-full`}
-      onClick={() => onClick && onClick(weapon)}
+      className="bg-gradient-to-br from-[var(--surface-light)] to-[var(--surface)] border border-[var(--border)] rounded-xl p-3 sm:p-4 flex flex-col gap-3 relative overflow-hidden transition-colors hover:border-[var(--gold)]/50 group cursor-pointer h-full"
+      onClick={() => onClick && onClick(trackedWeapon || weapon)}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick && onClick(weapon) }}
+      id={trackedWeapon ? `weapon-card-${trackedWeapon.id}` : `weapon-card-${name.toLowerCase().replace(/\s+/g, '-')}`}
+      data-testid="weapon-card"
+      data-weapon-id={trackedWeapon?.id || undefined}
+      data-weapon-name={name}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick && onClick(trackedWeapon || weapon) }}
     >
       {/* Decorative element shimmer */}
       <div
         className="absolute inset-0 opacity-5 pointer-events-none"
         style={{ background: `radial-gradient(circle at 50% 30%, ${RARITY_COLORS[rarity]}, transparent 70%)` }}
       />
-
-
 
       {/* Header */}
       <div className="flex items-center gap-3">
@@ -219,42 +220,43 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="text-[var(--text)] text-sm truncate font-bold">{displayName}</h3>
-          {inArmory && totalCosts ? (
-             <p className="text-xs text-[var(--gold)] tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
-          ) : (
-             <div className="flex flex-wrap gap-1 mt-1">
-                <span className={`text-xs tracking-wide leading-none ${getRarityClass(rarity)}`}>{getStars(rarity)}</span>
-             </div>
-          )}
-        </div>
-          <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
-            {inArmory && equippedBy && (
-              <div
-                className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center overflow-hidden"
-                title={`Equipped by: ${formatName(equippedBy)}`}
-              >
-                <GenshinImage 
-                  src={getCharacterAvatar(equippedBy)} 
-                  alt={equippedBy}
-                  className="w-full h-full object-cover"
-                  fallback={<span className="text-xs">{formatName(equippedBy).charAt(0)}</span>}
-                />
-              </div>
-            )}
-            {weapon.type && (
-              <div
-                className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center p-1.5"
-                title={weapon.type}
-              >
-                <GenshinImage 
-                  src={getWeaponTypeIcon(weapon.type)} 
-                  alt={weapon.type} 
-                  className="w-full h-full object-contain opacity-80" 
-                  fallback={<span>{wpConfig.emoji}</span>}
-                />
-              </div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className={`text-xs tracking-wide leading-none ${getRarityClass(rarity)}`}>{getStars(rarity)}</span>
+            {inArmory && totalCosts?.mora !== undefined && (
+              <span className="text-xs text-[var(--gold)] tracking-wider">
+                • Mora: {formatNumber(totalCosts?.mora || 0)}
+              </span>
             )}
           </div>
+        </div>
+        <div className="flex items-center gap-1.5 ml-auto flex-shrink-0">
+          {inArmory && equippedBy && (
+            <div
+              className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center overflow-hidden shrink-0"
+              title={`Equipped by: ${formatName(equippedBy)}`}
+            >
+              <GenshinImage
+                src={getCharacterAvatar(equippedBy)}
+                alt={equippedBy}
+                className="w-full h-full object-cover"
+                fallback={<span className="text-xs">{formatName(equippedBy).charAt(0)}</span>}
+              />
+            </div>
+          )}
+          {weapon.type && (
+            <div
+              className="w-8 h-8 rounded-full bg-black/40 border border-white/20 flex items-center justify-center p-1.5 shrink-0"
+              title={weapon.type}
+            >
+              <GenshinImage
+                src={getWeaponTypeIcon(weapon.type)}
+                alt={weapon.type}
+                className="w-full h-full object-contain opacity-80"
+                fallback={<span>{wpConfig.emoji}</span>}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* State Block */}
@@ -301,7 +303,7 @@ export default function WeaponCard({ weapon, onClick, variant = 'detailed' }) {
                 })
                 .slice(0, 10) // Display cap if there are too many items to prevent huge cards
                 .map(([matId, qty]) => {
-                  const owned = inventory[matId] || 0;
+                  const owned = (inventory && inventory[matId]) || 0;
                   const toFarm = Math.max(0, qty - owned);
                   
                   return (

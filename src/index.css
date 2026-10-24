@@ -1049,6 +1049,73 @@ body {
   animation: swipeInPrev 0.25s ease-out forwards;
 }
 /* ──────────────────────────────────────────────
+   R2.1 — Compact Mobile Table Density (<768px)
+   Reduces padding, font sizes, and icon sizes
+   to fit more columns in 360-430px viewports.
+─────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Scoped compact table cells for Characters & Weapons tables */
+  .table-horizontal-scroll-source table th,
+  .table-horizontal-scroll-source table td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  /* Compact checkboxes — clean square box with parent tap target */
+  .table-horizontal-scroll-source table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+  }
+
+  /* Compact character/weapon avatar images */
+  .table-horizontal-scroll-source table img {
+    max-width: 24px;
+    max-height: 24px;
+  }
+
+  /* Keep mat icons small */
+  .table-horizontal-scroll-source table .mat-quantity-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Character/weapon name text */
+  .table-horizontal-scroll-source table .truncate {
+    max-width: 80px;
+  }
+
+  /* Compact element/weapon badges */
+  .table-horizontal-scroll-source table span.inline-flex {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Prevent sticky columns from stretching beyond expected widths on mobile */
+  .table-horizontal-scroll-source table th[class*="sticky"],
+  .table-horizontal-scroll-source table td[class*="sticky"] {
+    max-width: unset;
+  }
+
+  /* Totals row compact */
+  .table-horizontal-scroll-source table .text-amber-400.tracking-widest {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Grouped headers compact */
+  .table-horizontal-scroll-source table thead tr th {
+    font-size: 10px;
+    padding: 2px 3px;
+  }
+}
+
+/* ──────────────────────────────────────────────
    Table native horizontal scroll hiding
 ─────────────────────────────────────────────── */
 .table-horizontal-scroll-source {
@@ -1085,4 +1152,15 @@ body {
 
 .sidebar-main-nav::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
+}
+
+/* ──────────────────────────────────────────────
+   Utility: No Scrollbar (for swipeable chip rows)
+─────────────────────────────────────────────── */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
