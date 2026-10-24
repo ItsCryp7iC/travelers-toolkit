@@ -1,6 +1,7 @@
 import React from 'react';
 import { formatItemName } from '../../utils/calculator';
 import { getMaterialIcon } from '../../utils/assetHelper';
+import { formatPlannerQuantity } from '../../utils/plannerTabs';
 
 export const RARITY_COLORS = {
   5: 'rgba(219, 177, 98, 0.2)', // Gold
@@ -58,15 +59,19 @@ export default function PlannerItemCard({ item, accent }) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-0.5">
-          <span className="text-xs font-semibold text-[var(--text)] truncate mr-2">{formatItemName(item.name)}</span>
-          <span className="font-bold text-xs" style={{ color: item.toFarm === 0 ? '#4ADE80' : (accent || 'var(--gold)') }}>
-            {item.toFarm === 0 ? '✅' : `×${item.toFarm}`}
+          <span className="text-xs font-semibold text-[var(--text)] truncate mr-2" title={formatItemName(item.name)}>{formatItemName(item.name)}</span>
+          <span
+            className="font-bold text-xs shrink-0"
+            style={{ color: item.toFarm === 0 ? '#4ADE80' : (accent || 'var(--gold)') }}
+            title={item.toFarm === 0 ? 'All stocked' : `To Farm: ${(item.toFarm || 0).toLocaleString()}`}
+          >
+            {item.toFarm === 0 ? '✅' : `×${formatPlannerQuantity(item.toFarm)}`}
           </span>
         </div>
-        <div className="flex items-center gap-3 text-xs text-[var(--muted)] mb-1">
-          <span>Need: <b className="text-[var(--text)]">{item.required}</b></span>
-          <span>Have: <b style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{item.owned}</b></span>
-          <span>To Farm: <b style={{ color: item.toFarm > 0 ? accent || 'var(--gold)' : 'var(--muted)' }}>{item.toFarm}</b></span>
+        <div className="flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-[var(--muted)] mb-1 flex-wrap">
+          <span title={`Need: ${(item.required || 0).toLocaleString()}`}>Need: <b className="text-[var(--text)] font-semibold">{formatPlannerQuantity(item.required)}</b></span>
+          <span title={`Have: ${(item.owned || 0).toLocaleString()}`}>Have: <b className="font-semibold" style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{formatPlannerQuantity(item.owned)}</b></span>
+          <span title={`To Farm: ${(item.toFarm || 0).toLocaleString()}`}>To Farm: <b className="font-semibold" style={{ color: item.toFarm > 0 ? accent || 'var(--gold)' : 'var(--muted)' }}>{formatPlannerQuantity(item.toFarm)}</b></span>
         </div>
         <ProgressBar owned={item.owned} required={item.required} accent={accent} />
       </div>

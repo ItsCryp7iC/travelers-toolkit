@@ -2,6 +2,7 @@ import React from 'react'
 import { formatName } from '../utils/gameData'
 import { toPascalCase } from '../utils/assetHelper'
 import { formatNumber, formatItemName } from '../utils/calculator'
+import { formatPlannerQuantity } from '../utils/plannerTabs'
 import characterGemsData from '../data/character_gems.json'
 import normalBossData from '../data/normal_boss.json'
 import localSpecialtyData from '../data/local_specialty.json'
@@ -113,7 +114,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  </div>
  <div className="min-w-0 flex-1">
  <h3 className=" text-[var(--text)] text-sm truncate">{displayName}</h3>
- <p className="text-xs text-[var(--gold)] tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
+ <p className="text-xs text-[var(--gold)] tracking-wider" title={`Total Mora: ${(totalCosts?.mora || 0).toLocaleString()}`}>Mora: {formatPlannerQuantity(totalCosts?.mora || 0)}</p>
  </div>
  {weapon.type && (
  <img 
@@ -124,17 +125,17 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  )}
  </div>
 
- {/* State Block */}
- <div className="grid grid-cols-1 gap-2 text-xs">
- <div className="bg-black/20 p-2 rounded-lg border border-white/5 flex items-center justify-between">
- <p className="text-xs text-[var(--muted)] uppercase tracking-wider">Level</p>
- <p className=" text-gray-200">
- Lv. {entry.level ?? 1} 
- <span className="text-[var(--gold)] mx-2">→</span> 
- {entry.targetLevel ?? 90}
- </p>
- </div>
- </div>
+  {/* State Block */}
+  <div className="grid grid-cols-1 gap-2 text-xs">
+    <div className="bg-black/20 p-2 rounded-lg border border-white/5 flex items-center justify-between">
+      <p className="text-[10px] sm:text-xs text-[var(--muted)] uppercase tracking-wider">Level</p>
+      <p className="text-gray-200 text-xs">
+        Lv. {entry.level ?? 1}
+        <span className="text-[var(--gold)] mx-2">→</span>
+        {entry.targetLevel ?? 90}
+      </p>
+    </div>
+  </div>
 
  {/* Materials Block */}
  <div className="mt-auto border-t border-white/5 pt-3">
@@ -169,7 +170,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  alt={actualId} 
  className="w-8 h-8 object-contain mb-1"
  />
- <span className="text-xs text-gray-400 ">x{qty}</span>
+ <span className="text-xs text-gray-400" title={`Total: ${(qty || 0).toLocaleString()}`}>×{formatPlannerQuantity(qty)}</span>
  </div>
  );
  })}

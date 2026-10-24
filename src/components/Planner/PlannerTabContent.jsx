@@ -311,14 +311,30 @@ export default function PlannerTabContent({
 
       {activeTab === 'per_character' && (
         <div>
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="Search characters..."
-              value={charSearchQuery}
-              onChange={(e) => setCharSearchQuery(e.target.value)}
-              className="w-full md:w-1/3 bg-bg-base border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-primary"
-            />
+          <div className="mb-4 sm:mb-6 flex items-center gap-2">
+            <div className="relative w-full sm:max-w-xs md:max-w-sm">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--muted)] text-sm">
+                🔍
+              </span>
+              <input
+                type="search"
+                placeholder="Search characters..."
+                value={charSearchQuery}
+                onChange={(e) => setCharSearchQuery(e.target.value)}
+                className="w-full bg-bg-base border border-white/10 rounded-xl pl-9 pr-8 py-2 text-xs sm:text-sm text-gray-200 placeholder-[var(--muted)] focus:outline-none focus:border-[var(--primary)] transition-colors"
+                id="planner-search-characters"
+              />
+              {charSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setCharSearchQuery('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--muted)] hover:text-white text-xs cursor-pointer"
+                  aria-label="Clear character search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
 
           {totals.breakdown.filter(entry => entry.character && formatName(entry.name).toLowerCase().includes(charSearchQuery.toLowerCase())).length > 0
@@ -329,21 +345,37 @@ export default function PlannerTabContent({
                   .map((entry) => <CharacterPlanCard key={entry.name} entryObj={entry} inventory={inventory} categories={totals.categories} />)}
               </div>
             )
-            : <div className="text-center py-12 text-[var(--muted)]"><p>No characters match your search or have active goals yet.</p></div>
+            : <div className="text-center py-8 sm:py-12 text-[var(--muted)] text-xs sm:text-sm border border-dashed border-[var(--border)] rounded-xl"><p>No characters match your search or have active goals yet.</p></div>
           }
         </div>
       )}
 
       {activeTab === 'per_weapon' && (
         <div>
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="Search weapons..."
-              value={weaponSearchQuery}
-              onChange={(e) => setWeaponSearchQuery(e.target.value)}
-              className="w-full md:w-1/3 bg-bg-base border border-white/10 rounded-lg px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-primary"
-            />
+          <div className="mb-4 sm:mb-6 flex items-center gap-2">
+            <div className="relative w-full sm:max-w-xs md:max-w-sm">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--muted)] text-sm">
+                🔍
+              </span>
+              <input
+                type="search"
+                placeholder="Search weapons..."
+                value={weaponSearchQuery}
+                onChange={(e) => setWeaponSearchQuery(e.target.value)}
+                className="w-full bg-bg-base border border-white/10 rounded-xl pl-9 pr-8 py-2 text-xs sm:text-sm text-gray-200 placeholder-[var(--muted)] focus:outline-none focus:border-[var(--primary)] transition-colors"
+                id="planner-search-weapons"
+              />
+              {weaponSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setWeaponSearchQuery('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--muted)] hover:text-white text-xs cursor-pointer"
+                  aria-label="Clear weapon search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
 
           {totals.breakdown.filter(entry => !entry.character && formatName(entry.name).toLowerCase().includes(weaponSearchQuery.toLowerCase())).length > 0
@@ -354,7 +386,7 @@ export default function PlannerTabContent({
                   .map((entry) => <WeaponPlanCard key={entry.entry.id} entryObj={entry} inventory={inventory} categories={totals.categories} />)}
               </div>
             )
-            : <div className="text-center py-12 text-[var(--muted)]"><p>No stand-alone weapons match your search or have active goals yet.</p></div>
+            : <div className="text-center py-8 sm:py-12 text-[var(--muted)] text-xs sm:text-sm border border-dashed border-[var(--border)] rounded-xl"><p>No stand-alone weapons match your search or have active goals yet.</p></div>
           }
         </div>
       )}

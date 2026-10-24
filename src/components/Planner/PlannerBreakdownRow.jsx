@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { formatName } from '../../utils/gameData';
 import { formatNumber } from '../../utils/calculator';
+import { formatPlannerQuantity } from '../../utils/plannerTabs';
 
 export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, talentState, weaponState } }) {
   const [open, setOpen] = useState(false)
@@ -12,7 +13,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
     <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden mb-2">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--elevated)] transition-colors text-left"
+        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--elevated)] transition-colors text-left cursor-pointer"
       >
         <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs flex-shrink-0"
           style={{ background: 'rgba(200,169,110,0.15)', color: 'var(--gold)' }}>
@@ -35,7 +36,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
           </p>
         </div>
         <div className="text-right flex-shrink-0">
-          <p className="text-xs font-bold text-[var(--gold)]">{formatNumber(totalMora)}</p>
+          <p className="text-xs font-bold text-[var(--gold)]" title={`Total Mora: ${(totalMora || 0).toLocaleString()}`}>{formatPlannerQuantity(totalMora)}</p>
           <p className="text-xs text-[var(--muted)]">Total Mora</p>
         </div>
         <span className="text-[var(--muted)] text-xs ml-1">{open ? '▲' : '▼'}</span>
@@ -47,25 +48,25 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {totalCosts?.heros_wit > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">📚 Hero's Wit</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts.heros_wit}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`Hero's Wit: ${(totalCosts.heros_wit || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts.heros_wit)}</p>
               </div>
             )}
             {totalCosts?.mystic_ore > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">💠 Mystic Ore</p>
-                <p className="text-sm font-bold text-[#F472B6]">×{totalCosts.mystic_ore}</p>
+                <p className="text-sm font-bold text-[#F472B6]" title={`Mystic Ore: ${(totalCosts.mystic_ore || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts.mystic_ore)}</p>
               </div>
             )}
             {totalCosts?.crown > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">👑 Crowns</p>
-                <p className="text-sm font-bold text-[#FBBF24]">×{totalCosts.crown}</p>
+                <p className="text-sm font-bold text-[#FBBF24]" title={`Crowns: ${(totalCosts.crown || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts.crown)}</p>
               </div>
             )}
             {totalCosts?.masterless_stella_fortuna > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">⭐ Stella Fortuna</p>
-                <p className="text-sm font-bold text-[#FBBF24]">×{totalCosts.masterless_stella_fortuna}</p>
+                <p className="text-sm font-bold text-[#FBBF24]" title={`Stella Fortuna: ${(totalCosts.masterless_stella_fortuna || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts.masterless_stella_fortuna)}</p>
               </div>
             )}
 
@@ -73,7 +74,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {['gem_sliver', 'gem_fragment', 'gem_chunk', 'gem_gemstone'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">💎 {formatName(key.replace('gem_', ''))}</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`${formatName(key.replace('gem_', ''))}: ${(totalCosts[key] || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts[key])}</p>
               </div>
             ))}
 
@@ -81,13 +82,13 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {totalCosts?.boss_material > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">🐉 Boss Material</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts.boss_material}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`Boss Material: ${(totalCosts.boss_material || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts.boss_material)}</p>
               </div>
             )}
             {totalCosts?.local_specialty > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">🌸 Local Specialty</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts.local_specialty}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`Local Specialty: ${(totalCosts.local_specialty || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts.local_specialty)}</p>
               </div>
             )}
 
@@ -95,7 +96,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {['2_star_talent_material', '3_star_talent_material', '4_star_talent_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">📖 {key.split('_')[0]}-Star Book</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`${key.split('_')[0]}-Star Book: ${(totalCosts[key] || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts[key])}</p>
               </div>
             ))}
 
@@ -103,7 +104,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {totalCosts?.weekly_boss_material > 0 && (
               <div className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">🐺 Weekly Boss</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts.weekly_boss_material}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`Weekly Boss: ${(totalCosts.weekly_boss_material || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts.weekly_boss_material)}</p>
               </div>
             )}
 
@@ -111,7 +112,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {['2_star_ascension_material', '3_star_ascension_material', '4_star_ascension_material', '5_star_ascension_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">🔗 {key.split('_')[0]}-Star Asc. Mat</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`${key.split('_')[0]}-Star Asc. Mat: ${(totalCosts[key] || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts[key])}</p>
               </div>
             ))}
 
@@ -119,7 +120,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {['2_star_enhancement_material', '3_star_enhancement_material', '4_star_enhancement_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">🛡️ {key.split('_')[0]}-Star Elite Mat</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`${key.split('_')[0]}-Star Elite Mat: ${(totalCosts[key] || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts[key])}</p>
               </div>
             ))}
 
@@ -127,7 +128,7 @@ export default function PlannerBreakdownRow({ entry: { name, entry, totalCosts, 
             {['1_star_enemy_material', '2_star_enemy_material', '3_star_enemy_material'].map(key => totalCosts?.[key] > 0 && (
               <div key={key} className="rounded-lg bg-[var(--elevated)] border border-[var(--border)] px-3 py-2">
                 <p className="text-xs text-[var(--muted)] mb-0.5">⚔️ {key.split('_')[0]}-Star Mob Drop</p>
-                <p className="text-sm font-bold text-[var(--text)]">×{totalCosts[key]}</p>
+                <p className="text-sm font-bold text-[var(--text)]" title={`${key.split('_')[0]}-Star Mob Drop: ${(totalCosts[key] || 0).toLocaleString()}`}>×{formatPlannerQuantity(totalCosts[key])}</p>
               </div>
             ))}
           </div>

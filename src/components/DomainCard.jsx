@@ -1,6 +1,7 @@
 import React from 'react'
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon, toPascalCase } from '../utils/assetHelper'
 import { formatItemName } from '../utils/calculator'
+import { formatPlannerQuantity } from '../utils/plannerTabs'
 
 const RARITY_COLORS = {
   5: '#D87A34',
@@ -48,24 +49,24 @@ export default function DomainCard({ domainName, familyObj, accent, globalCosts,
 
           return (
             <div key={tier.id} className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: rarityColor }} />
                   <img
                     src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${itemFolder}/${toPascalCase(tier.name)}.png`}
                     alt={tier.name}
-                    className="w-8 h-8 object-contain drop-shadow-md"
+                    className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-md shrink-0"
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                   />
-                  <span className="hidden text-xl">📦</span>
-                  <span className="text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
+                  <span className="hidden text-xl shrink-0">📦</span>
+                  <span className="text-xs sm:text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }} title={formatItemName(tier.name)}>
                     {formatItemName(tier.name)}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-xs flex-shrink-0">
-                  <span className="text-[var(--muted)]">Need: <span className="font-bold text-[var(--text)]">{required}</span></span>
-                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-bold">{owned}</span></span>
-                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: toFarm > 0 ? accent : 'var(--muted)' }}>{toFarm}</span></span>
+                <div className="flex items-center gap-2.5 sm:gap-3 text-[11px] sm:text-xs shrink-0 self-end sm:self-auto pl-7 sm:pl-0 flex-wrap">
+                  <span className="text-[var(--muted)]" title={`Need: ${(required || 0).toLocaleString()}`}>Need: <span className="font-bold text-[var(--text)]">{formatPlannerQuantity(required)}</span></span>
+                  <span className="text-[var(--muted)]" title={`Have: ${(owned || 0).toLocaleString()}`}>Have: <span className="text-[var(--text)] font-bold">{formatPlannerQuantity(owned)}</span></span>
+                  <span className="text-[var(--muted)]" title={`To Farm: ${(toFarm || 0).toLocaleString()}`}>To Farm: <span className="font-bold" style={{ color: toFarm > 0 ? accent : 'var(--muted)' }}>{formatPlannerQuantity(toFarm)}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">

@@ -2,6 +2,7 @@ import React from 'react'
 import { formatName } from '../utils/gameData'
 import { toPascalCase } from '../utils/assetHelper'
 import { formatNumber, formatItemName } from '../utils/calculator'
+import { formatPlannerQuantity } from '../utils/plannerTabs'
 import characterGemsData from '../data/character_gems.json'
 import normalBossData from '../data/normal_boss.json'
 import localSpecialtyData from '../data/local_specialty.json'
@@ -137,7 +138,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  </div>
  <div className="min-w-0 flex-1">
  <h3 className=" text-[var(--text)] text-sm truncate">{displayName}</h3>
- <p className="text-xs text-[var(--gold)] tracking-wider">Mora: {formatNumber(totalCosts?.mora || 0)}</p>
+ <p className="text-xs text-[var(--gold)] tracking-wider" title={`Total Mora: ${(totalCosts?.mora || 0).toLocaleString()}`}>Mora: {formatPlannerQuantity(totalCosts?.mora || 0)}</p>
  </div>
  {character?.element && (
  <img 
@@ -148,29 +149,29 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  )}
  </div>
 
- {/* State Block */}
- <div className="grid grid-cols-2 gap-2 text-xs">
- <div className="bg-black/20 p-2 rounded-lg border border-white/5">
- <p className="text-xs text-[var(--muted)] mb-0.5 uppercase tracking-wider">Level</p>
- <p className=" text-gray-200">
- Lv. {entry.level ?? 1} 
- <span className="text-[var(--gold)] mx-1">→</span> 
- {entry.targetLevel ?? 90}
- </p>
- </div>
- <div className="bg-black/20 p-2 rounded-lg border border-white/5">
- <p className="text-xs text-[var(--muted)] mb-0.5 uppercase tracking-wider">Talents</p>
- {talentState ? (
- <p className=" text-gray-200 text-xs">
- {talentState.normalFrom}/{talentState.skillFrom}/{talentState.burstFrom}
- <span className="text-[var(--gold)] mx-1">→</span>
- {talentState.normalTo}/{talentState.skillTo}/{talentState.burstTo}
- </p>
- ) : (
- <p className="text-gray-500 text-xs">Maxed</p>
- )}
- </div>
- </div>
+  {/* State Block */}
+  <div className="grid grid-cols-2 gap-2 text-xs">
+    <div className="bg-black/20 p-2 rounded-lg border border-white/5">
+      <p className="text-[10px] sm:text-xs text-[var(--muted)] mb-0.5 uppercase tracking-wider">Level</p>
+      <p className="text-gray-200 text-xs truncate">
+        Lv. {entry.level ?? 1}
+        <span className="text-[var(--gold)] mx-1">→</span>
+        {entry.targetLevel ?? 90}
+      </p>
+    </div>
+    <div className="bg-black/20 p-2 rounded-lg border border-white/5">
+      <p className="text-[10px] sm:text-xs text-[var(--muted)] mb-0.5 uppercase tracking-wider">Talents</p>
+      {talentState ? (
+        <p className="text-gray-200 text-[11px] sm:text-xs truncate" title={`${talentState.normalFrom}/${talentState.skillFrom}/${talentState.burstFrom} → ${talentState.normalTo}/${talentState.skillTo}/${talentState.burstTo}`}>
+          {talentState.normalFrom}/{talentState.skillFrom}/{talentState.burstFrom}
+          <span className="text-[var(--gold)] mx-1">→</span>
+          {talentState.normalTo}/{talentState.skillTo}/{talentState.burstTo}
+        </p>
+      ) : (
+        <p className="text-gray-500 text-xs">Maxed</p>
+      )}
+    </div>
+  </div>
 
  {/* Materials Block */}
  <div className="mt-auto border-t border-white/5 pt-3">
@@ -197,13 +198,13 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  src={`https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/main/${getFolder(categories[matId])}/${toPascalCase(getItemName(matId))}.png`} 
  alt={formatItemName(matId)} 
  className="w-8 h-8 object-contain mb-1 drop-shadow-md"
- title={`${formatItemName(matId)}\nNeeded: ${toFarm} (Total: ${qty})`}
+ title={`${formatItemName(matId)}\nNeeded: ${(toFarm || 0).toLocaleString()} (Total: ${(qty || 0).toLocaleString()})`}
  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
  />
  <span className="hidden text-xl mb-1" title={formatItemName(matId)}>📦</span>
  
  <span className={`text-xs ${toFarm === 0 ? 'text-green-400' : 'text-gray-300'}`}>
- {toFarm === 0 ? '✅' : `×${formatNumber(toFarm)}`}
+ {toFarm === 0 ? '✅' : `×${formatPlannerQuantity(toFarm)}`}
  </span>
  </div>
  );

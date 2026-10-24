@@ -1,10 +1,11 @@
 /**
  * FarmableToday.jsx — "What can I farm today?" domain schedule widget.
  */
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useStore from '../store/useStore'
 import { aggregateRosterCosts, computeToFarm } from '../utils/aggregator'
 import { getDayLabel, formatItemName } from '../utils/calculator'
+import { formatPlannerQuantity } from '../utils/plannerTabs'
 import weaponsData from '../data/weapons.json'
 import { resolveSpecificItem, getJsonData } from '../utils/resolver'
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
@@ -74,24 +75,24 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
 
           return (
             <div key={tier.id} className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
-                  <img 
-                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : 'Weapon Ascension Material')} 
-                    alt={tier.name} 
-                    className="w-8 h-8 object-contain drop-shadow-md" 
-                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: rarityColor }} />
+                  <img
+                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : 'Weapon Ascension Material')}
+                    alt={tier.name}
+                    className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-md shrink-0"
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                   />
-                  <span className="hidden text-xl">📦</span>
-                  <span className="text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
+                  <span className="hidden text-xl shrink-0">📦</span>
+                  <span className="text-xs sm:text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }} title={formatItemName(tier.name)}>
                     {formatItemName(tier.name)}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-xs flex-shrink-0">
-                  <span className="text-[var(--muted)]">Need: <span className="font-bold text-[var(--text)]">{required}</span></span>
-                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-bold">{owned}</span></span>
-                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
+                <div className="flex items-center gap-2.5 sm:gap-3 text-[11px] sm:text-xs shrink-0 self-end sm:self-auto pl-7 sm:pl-0 flex-wrap">
+                  <span className="text-[var(--muted)]" title={`Need: ${(required || 0).toLocaleString()}`}>Need: <span className="font-bold text-[var(--text)]">{formatPlannerQuantity(required)}</span></span>
+                  <span className="text-[var(--muted)]" title={`Have: ${(owned || 0).toLocaleString()}`}>Have: <span className="text-[var(--text)] font-bold">{formatPlannerQuantity(owned)}</span></span>
+                  <span className="text-[var(--muted)]" title={`To Farm: ${(Math.max(0, required - owned) || 0).toLocaleString()}`}>To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{formatPlannerQuantity(Math.max(0, required - owned))}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
@@ -151,24 +152,24 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
 
           return (
             <div key={data.id} className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: rarityColor }} />
-                  <img 
-                    src={getMaterialIcon(data.name, 'Weekly Boss Material')} 
-                    alt={data.name} 
-                    className="w-8 h-8 object-contain drop-shadow-md" 
-                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} 
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: rarityColor }} />
+                  <img
+                    src={getMaterialIcon(data.name, 'Weekly Boss Material')}
+                    alt={data.name}
+                    className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-md shrink-0"
+                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
                   />
-                  <span className="hidden text-xl">📦</span>
-                  <span className="text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }}>
+                  <span className="hidden text-xl shrink-0">📦</span>
+                  <span className="text-xs sm:text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }} title={formatItemName(data.name)}>
                     {formatItemName(data.name)}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-xs flex-shrink-0">
-                  <span className="text-[var(--muted)]">Need: <span className="font-bold text-[var(--text)]">{required}</span></span>
-                  <span className="text-[var(--muted)]">Have: <span className="text-[var(--text)] font-bold">{owned}</span></span>
-                  <span className="text-[var(--muted)]">To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{Math.max(0, required - owned)}</span></span>
+                <div className="flex items-center gap-2.5 sm:gap-3 text-[11px] sm:text-xs shrink-0 self-end sm:self-auto pl-7 sm:pl-0 flex-wrap">
+                  <span className="text-[var(--muted)]" title={`Need: ${(required || 0).toLocaleString()}`}>Need: <span className="font-bold text-[var(--text)]">{formatPlannerQuantity(required)}</span></span>
+                  <span className="text-[var(--muted)]" title={`Have: ${(owned || 0).toLocaleString()}`}>Have: <span className="text-[var(--text)] font-bold">{formatPlannerQuantity(owned)}</span></span>
+                  <span className="text-[var(--muted)]" title={`To Farm: ${(Math.max(0, required - owned) || 0).toLocaleString()}`}>To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{formatPlannerQuantity(Math.max(0, required - owned))}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
@@ -209,9 +210,101 @@ export default function FarmableToday() {
   const inventory = useStore((s) => s.inventory)
 
   const [selectedDay, setSelectedDay] = useState(new Date().getDay())
+  const daySelectorRef = useRef(null)
+  const isUserInitiatedRef = useRef(false)
 
   const dayLabel = DAY_SCHEDULE_LABEL[selectedDay]
   const dayColor = WEEKDAY_COLORS[selectedDay] || '#C8A96E'
+
+  const scrollSelectedIntoView = useCallback((userTriggered = false) => {
+    const container = daySelectorRef.current;
+    if (!container) return;
+
+    const activeBtn = container.querySelector(`[data-day="${selectedDay}"]`);
+    if (!activeBtn) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const activeRect = activeBtn.getBoundingClientRect();
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+
+    const behavior = userTriggered && !prefersReducedMotion ? 'smooth' : 'auto';
+
+    if (containerRect.width > 0 && activeRect.width > 0) {
+      const PADDING = 12;
+      const leftEdge = activeRect.left - containerRect.left;
+      const rightEdge = activeRect.right - containerRect.left;
+
+      const isClippedLeft = leftEdge < PADDING;
+      const isClippedRight = rightEdge > containerRect.width - PADDING;
+
+      if (isClippedLeft) {
+        const targetScrollLeft = container.scrollLeft + leftEdge - PADDING;
+        if (typeof container.scrollTo === 'function') {
+          container.scrollTo({ left: Math.max(0, targetScrollLeft), behavior });
+        } else {
+          container.scrollLeft = Math.max(0, targetScrollLeft);
+        }
+      } else if (isClippedRight) {
+        const targetScrollLeft = container.scrollLeft + rightEdge - containerRect.width + PADDING;
+        const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+        const finalLeft = Math.min(maxScroll, Math.max(0, targetScrollLeft));
+        if (typeof container.scrollTo === 'function') {
+          container.scrollTo({ left: finalLeft, behavior });
+        } else {
+          container.scrollLeft = finalLeft;
+        }
+      }
+    } else if (typeof activeBtn.scrollIntoView === 'function') {
+      activeBtn.scrollIntoView({
+        behavior,
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    }
+  }, [selectedDay]);
+
+  // Synchronous layout-aware alignment after DOM mutations/render
+  useLayoutEffect(() => {
+    const isUser = isUserInitiatedRef.current;
+    isUserInitiatedRef.current = false;
+    scrollSelectedIntoView(isUser);
+  }, [scrollSelectedIntoView]);
+
+  // ResizeObserver and fonts ready observer for layout stabilization
+  useEffect(() => {
+    const container = daySelectorRef.current;
+    if (!container) return;
+
+    let ro = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        scrollSelectedIntoView(false);
+      });
+      ro.observe(container);
+    }
+
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        scrollSelectedIntoView(false);
+      });
+    }
+
+    return () => {
+      if (ro) ro.disconnect();
+    };
+  }, [scrollSelectedIntoView]);
+
+  const handleDaySelect = (day) => {
+    isUserInitiatedRef.current = true;
+    if (day === selectedDay) {
+      scrollSelectedIntoView(true);
+    } else {
+      setSelectedDay(day);
+    }
+  };
 
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
@@ -512,45 +605,57 @@ export default function FarmableToday() {
   if (Object.keys(roster).length === 0) return null
   return (
     <div
-      className="rounded-2xl border overflow-hidden bg-[var(--surface)]"
+      className="rounded-xl sm:rounded-2xl border overflow-hidden bg-[var(--surface)]"
       style={{ borderColor: `${dayColor}30` }}
       id="farmable-today-widget"
     >
       {/* Header */}
-      <div className="px-5 py-4 flex items-center justify-between border-b" style={{ borderColor: `${dayColor}20`, background: `${dayColor}06` }}>
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+      <div className="px-3 sm:px-5 py-3 sm:py-4 flex items-center justify-between border-b" style={{ borderColor: `${dayColor}20`, background: `${dayColor}06` }}>
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-base sm:text-lg shrink-0"
             style={{ background: `${dayColor}18` }}>
             📅
           </div>
           <div>
-            <h3 className="font-bold text-sm text-[var(--text)]">
+            <h3 className="font-bold text-xs sm:text-sm text-[var(--text)]">
               Daily Action Plan
             </h3>
-            <p className="text-xs tracking-widest font-semibold mt-0.5" style={{ color: dayColor }}>
+            <p className="text-[10px] sm:text-xs tracking-widest font-semibold mt-0.5" style={{ color: dayColor }}>
               {dayLabel.toUpperCase()}
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="font-bold text-lg leading-none" style={{ color: farmableCount > 0 ? dayColor : '#4ADE80' }}>
+          <p className="font-bold text-base sm:text-lg leading-none" style={{ color: farmableCount > 0 ? dayColor : '#4ADE80' }}>
             {farmableCount}
           </p>
-          <p className="text-xs text-[var(--muted)] uppercase tracking-wider">tasks</p>
+          <p className="text-[10px] sm:text-xs text-[var(--muted)] uppercase tracking-wider">tasks</p>
         </div>
       </div>
 
       {/* Day Selector */}
-      <div className="flex flex-wrap gap-2 px-5 py-3 border-b border-[var(--border)]" style={{ background: 'rgba(0,0,0,0.1)' }}>
+      <div
+        ref={daySelectorRef}
+        role="tablist"
+        aria-label="Select Day of Week"
+        className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 border-b border-[var(--border)] overflow-x-auto no-scrollbar sm:flex-wrap"
+        style={{ background: 'rgba(0,0,0,0.1)' }}
+      >
         {[1, 2, 3, 4, 5, 6, 0].map(day => (
           <button
             key={day}
-            onClick={() => setSelectedDay(day)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedDay === day ? 'opacity-100 shadow-md' : 'opacity-40 hover:opacity-70 border-transparent'}`}
+            type="button"
+            role="tab"
+            id={`day-selector-btn-${day}`}
+            data-day={day}
+            aria-selected={selectedDay === day}
+            aria-label={DAY_SCHEDULE_LABEL[day]}
+            onClick={() => handleDaySelect(day)}
+            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer min-w-[38px] text-center ${selectedDay === day ? 'opacity-100 shadow-md ring-1 ring-amber-400/30' : 'opacity-40 hover:opacity-70 border-transparent'}`}
             style={{ 
-              background: selectedDay === day ? `${WEEKDAY_COLORS[day] || '#C8A96E'}15` : 'transparent',
+              background: selectedDay === day ? `${WEEKDAY_COLORS[day] || '#C8A96E'}20` : 'transparent',
               color: selectedDay === day ? (WEEKDAY_COLORS[day] || '#C8A96E') : 'var(--muted)',
-              border: `1px solid ${selectedDay === day ? (WEEKDAY_COLORS[day] || '#C8A96E') + '40' : 'transparent'}`
+              border: `1px solid ${selectedDay === day ? (WEEKDAY_COLORS[day] || '#C8A96E') + '50' : 'transparent'}`
             }}
           >
             {DAY_SCHEDULE_LABEL[day].substring(0, 3).toUpperCase()}
@@ -558,29 +663,31 @@ export default function FarmableToday() {
         ))}
       </div>
 
-      <div className="px-5 py-5">
+      <div className="p-3 sm:p-5">
         <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('talent-main')}>
           <p className="text-xs font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
             <span className={`text-xs inline-block transition-transform duration-200 ${collapsed['talent-main'] ? '' : 'rotate-90'}`}>›</span>
             <span>📚</span> Talent Materials
           </p>
-          <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', false, groupedBooksData)}>Expand All Regions</button>
-            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('talent', true, groupedBooksData)}>Collapse All Regions</button>
+          <div className="flex items-center gap-2 sm:gap-3 opacity-75 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="text-[10px] sm:text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors cursor-pointer" onClick={() => setAllRegions('talent', false, groupedBooksData)}>Expand All</button>
+            <span className="text-[var(--border)] hidden sm:inline">•</span>
+            <button type="button" className="text-[10px] sm:text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors cursor-pointer" onClick={() => setAllRegions('talent', true, groupedBooksData)}>Collapse All</button>
           </div>
         </div>
         {!collapsed['talent-main'] && renderRegionGroups(groupedBooksData, dayColor, 'talent')}
 
-        <div className="genshin-divider my-6" />
+        <div className="genshin-divider my-4 sm:my-6" />
 
         <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('weapon-main')}>
           <p className="text-xs font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
             <span className={`text-xs inline-block transition-transform duration-200 ${collapsed['weapon-main'] ? '' : 'rotate-90'}`}>›</span>
             <span>🗡️</span> Weapon Ascension Materials
           </p>
-          <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', false, groupedWeaponData)}>Expand All Regions</button>
-            <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weapon', true, groupedWeaponData)}>Collapse All Regions</button>
+          <div className="flex items-center gap-2 sm:gap-3 opacity-75 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="text-[10px] sm:text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors cursor-pointer" onClick={() => setAllRegions('weapon', false, groupedWeaponData)}>Expand All</button>
+            <span className="text-[var(--border)] hidden sm:inline">•</span>
+            <button type="button" className="text-[10px] sm:text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors cursor-pointer" onClick={() => setAllRegions('weapon', true, groupedWeaponData)}>Collapse All</button>
           </div>
         </div>
         {!collapsed['weapon-main'] && renderRegionGroups(groupedWeaponData, 'var(--gold)', 'weapon')}
@@ -588,15 +695,16 @@ export default function FarmableToday() {
         {/* Weekly Boss reminder */}
         {weeklyNeeded.length > 0 && (
           <>
-            <div className="genshin-divider my-6" />
+            <div className="genshin-divider my-4 sm:my-6" />
             <div className="flex items-center justify-between mb-3 group cursor-pointer" onClick={() => toggleSection('weekly-boss-main')}>
               <p className="text-xs font-bold tracking-widest text-[var(--muted)] group-hover:text-[var(--text)] transition-colors uppercase flex items-center gap-2">
                 <span className={`text-xs inline-block transition-transform duration-200 ${collapsed['weekly-boss-main'] ? '' : 'rotate-90'}`}>›</span>
                 <span>👑</span> Weekly Boss Reminders
               </p>
-              <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', false, groupedWeeklyBosses)}>Expand All Regions</button>
-                <button className="text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors" onClick={() => setAllRegions('weekly-boss', true, groupedWeeklyBosses)}>Collapse All Regions</button>
+              <div className="flex items-center gap-2 sm:gap-3 opacity-75 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                <button type="button" className="text-[10px] sm:text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors cursor-pointer" onClick={() => setAllRegions('weekly-boss', false, groupedWeeklyBosses)}>Expand All</button>
+                <span className="text-[var(--border)] hidden sm:inline">•</span>
+                <button type="button" className="text-[10px] sm:text-xs text-[var(--muted)] hover:text-[var(--text)] uppercase tracking-wider transition-colors cursor-pointer" onClick={() => setAllRegions('weekly-boss', true, groupedWeeklyBosses)}>Collapse All</button>
               </div>
             </div>
             {!collapsed['weekly-boss-main'] && renderBossRegionGroups(groupedWeeklyBosses, '#FBBF24', 'weekly-boss')}
