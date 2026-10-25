@@ -664,5 +664,192 @@ describe('Achievements Page UI', () => {
       expect(container.textContent).not.toContain('Test Achievement 1');
     });
   });
+
+  describe('Phase R5B - Mobile Responsive Experience', () => {
+    it('renders mobile category selector trigger and opens searchable dropdown', () => {
+      act(() => { root.render(<Achievements />); });
+
+      const mobileTrigger = container.querySelector('#mobile-category-selector-btn');
+      expect(mobileTrigger).not.toBeNull();
+      expect(mobileTrigger.textContent).toContain('Wonders of the World');
+      expect(mobileTrigger.textContent).toContain('Switch');
+
+      // Dropdown panel starts closed
+      expect(container.querySelector('#mobile-category-panel')).toBeNull();
+
+      // Click to open
+      act(() => {
+        mobileTrigger.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      const panel = container.querySelector('#mobile-category-panel');
+      expect(panel).not.toBeNull();
+
+      // Category search input is available
+      const searchInput = container.querySelector('#mobile-category-search-input');
+      expect(searchInput).not.toBeNull();
+    });
+
+    it('searches and selects category within mobile category dropdown', () => {
+      act(() => { root.render(<Achievements />); });
+
+      // Open dropdown
+      const mobileTrigger = container.querySelector('#mobile-category-selector-btn');
+      act(() => {
+        mobileTrigger.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      // Filter by "Mortal"
+      const searchInput = container.querySelector('#mobile-category-search-input');
+      act(() => {
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        setter.call(searchInput, 'Mortal');
+        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      // Find Mortal Travails button in panel
+      const panel = container.querySelector('#mobile-category-panel');
+      const catButtons = Array.from(panel.querySelectorAll('button'));
+      const mortalBtn = catButtons.find(b => b.textContent.includes('Mortal Travails: Series I'));
+      expect(mortalBtn).toBeDefined();
+
+      // Click to select
+      act(() => {
+        mortalBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      // Panel closes and category switches
+      expect(container.querySelector('#mobile-category-panel')).toBeNull();
+      expect(container.textContent).toContain('Zoo Tycoon');
+      expect(container.textContent).not.toContain('Test Achievement 1');
+    });
+
+    it('preserves desktop category rail alongside mobile picker', () => {
+      act(() => { root.render(<Achievements />); });
+
+      // Desktop rail container exists with class hidden lg:flex
+      const desktopRail = container.querySelector('.hidden.lg\\:flex');
+      expect(desktopRail).not.toBeNull();
+      expect(desktopRail.textContent).toContain('Wonders of the World');
+      expect(desktopRail.textContent).toContain('Mortal Travails: Series I');
+    });
+
+    it('toggles mobile search panel and filters achievements', () => {
+      act(() => { root.render(<Achievements />); });
+
+      const searchToggle = container.querySelector('#ach-mobile-search-toggle');
+      expect(searchToggle).not.toBeNull();
+      expect(container.querySelector('#ach-mobile-search-panel')).toBeNull();
+
+      // Open search panel
+      act(() => {
+        searchToggle.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(container.querySelector('#ach-mobile-search-panel')).not.toBeNull();
+
+      const searchInput = container.querySelector('#ach-search-mobile');
+      expect(searchInput).not.toBeNull();
+
+      // Type search query
+      act(() => {
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        setter.call(searchInput, 'Test Achievement 2');
+        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      expect(container.textContent).toContain('Test Achievement 2');
+      expect(container.textContent).not.toContain('Test Achievement 1');
+
+      // Clear search button in mobile search panel
+      const clearBtn = container.querySelector('#ach-mobile-search-panel button[aria-label="Clear mobile search"]');
+      expect(clearBtn).not.toBeNull();
+      act(() => {
+        clearBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(container.textContent).toContain('Test Achievement 1');
+    });
+
+    it('toggles mobile filters panel, updates status, and displays active filter badge', () => {
+      act(() => { root.render(<Achievements />); });
+
+      const filtersToggle = container.querySelector('#ach-mobile-filters-toggle');
+      expect(filtersToggle).not.toBeNull();
+      expect(container.querySelector('#ach-mobile-filters-panel')).toBeNull();
+
+      // Open filters panel
+      act(() => {
+        filtersToggle.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      const panel = container.querySelector('#ach-mobile-filters-panel');
+      expect(panel).not.toBeNull();
+
+      // Check version select and status buttons exist
+      const versionSelect = container.querySelector('#ach-version-filter-mobile');
+      expect(versionSelect).not.toBeNull();
+      const statusContainer = container.querySelector('#ach-status-filter-mobile');
+      expect(statusContainer).not.toBeNull();
+
+      // Set Completed filter
+      const completedBtn = Array.from(statusContainer.querySelectorAll('button')).find(b => b.textContent === 'Completed');
+      act(() => {
+        completedBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      // Filter badge appears on toggle button
+      expect(filtersToggle.textContent).toContain('1');
+
+      // Reset filters button appears and resets
+      const resetBtn = Array.from(panel.querySelectorAll('button')).find(b => b.textContent.includes('Reset filters'));
+      expect(resetBtn).toBeDefined();
+      act(() => {
+        resetBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(filtersToggle.textContent).not.toContain('1');
+    });
+
+    it('maintains achievement group multi-stage integrity and completion callback', () => {
+      act(() => { root.render(<Achievements />); });
+
+      // Switch to category 1 (Zoo Tycoon group)
+      const buttons = Array.from(container.querySelectorAll('button'));
+      const cat1Btn = buttons.find(b => b.textContent.includes('Mortal Travails: Series I'));
+      act(() => {
+        cat1Btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      expect(container.textContent).toContain('Zoo Tycoon');
+      expect(container.textContent).toContain('0 / 3 Complete');
+      expect(container.textContent).toContain('Stage 1/3');
+      expect(container.textContent).toContain('Stage 2/3');
+      expect(container.textContent).toContain('Stage 3/3');
+
+      // Checkboxes exist for each stage
+      const checkboxes = container.querySelectorAll('input[type="checkbox"][aria-label^="Mark Stage"]');
+      expect(checkboxes.length).toBe(3);
+
+      // Toggle stage 1
+      act(() => {
+        checkboxes[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(mockSetAchievementProgress).toHaveBeenCalled();
+    });
+
+    it('displays empty state when mobile search yields no results', () => {
+      act(() => { root.render(<Achievements />); });
+
+      const searchToggle = container.querySelector('#ach-mobile-search-toggle');
+      act(() => {
+        searchToggle.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+
+      const searchInput = container.querySelector('#ach-search-mobile');
+      act(() => {
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        setter.call(searchInput, 'NonexistentAchievementNameXYZ');
+        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      expect(container.textContent).toContain('No achievements found for "NonexistentAchievementNameXYZ"');
+    });
+  });
 });
 

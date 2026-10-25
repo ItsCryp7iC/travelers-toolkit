@@ -12,20 +12,20 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
 
       {/* Group Header */}
       {item.commonName && (
-        <div className={`px-4 md:px-5 py-2.5 md:py-3 border-b flex justify-between items-center transition-colors duration-200 ${
+        <div className={`px-3 sm:px-4 md:px-5 py-2.5 md:py-3 border-b flex justify-between items-center transition-colors duration-200 gap-2 ${
           isAllComplete ? 'bg-cyan-950/30 border-cyan-500/20' : 'bg-black/40 border-white/5'
         }`}>
-          <span className={`font-bold tracking-wide text-base md:text-lg ${isAllComplete ? 'text-white/80' : 'text-white drop-shadow-sm'}`}>
+          <span className={`font-bold tracking-wide text-sm sm:text-base md:text-lg break-words min-w-0 flex-1 ${isAllComplete ? 'text-white/80' : 'text-white drop-shadow-sm'}`}>
             {item.commonName}
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {/* Dots representation */}
             <div className="hidden sm:flex gap-1.5 mr-2">
               {item.stages.map((_, i) => (
                 <div key={i} className={`w-1.5 h-1.5 rounded-full ${i < completedCount ? 'bg-cyan-400 shadow-[0_0_4px_rgba(34,211,238,0.8)]' : 'bg-white/20'}`} />
               ))}
             </div>
-            <span className={`text-[11px] md:text-xs font-bold px-2 py-1 rounded shadow-inner ${
+            <span className={`text-[11px] md:text-xs font-bold px-2 py-1 rounded shadow-inner whitespace-nowrap ${
               isAllComplete ? 'bg-cyan-900/30 text-cyan-400' : 'bg-white/10 text-white/60'
             }`}>
               {completedCount} / {item.stages.length} Complete
@@ -79,7 +79,7 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
 
                     {/* Only show title if it doesn't match the group commonName */}
                     {!item.commonName && (
-                      <div className={`font-bold text-sm md:text-base leading-tight md:leading-normal transition-colors duration-200 ${
+                      <div className={`font-bold text-sm md:text-base leading-tight md:leading-normal transition-colors duration-200 break-words min-w-0 flex-1 ${
                         isCompleted ? 'text-white/70 line-through decoration-white/30' : 'text-white drop-shadow-sm'
                       }`}>
                         {ach.name}
@@ -89,7 +89,7 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
                     <div className={`flex items-center gap-1.5 md:gap-2 shrink-0 flex-wrap sm:flex-nowrap ${!item.commonName ? 'justify-end sm:justify-start' : 'justify-end w-full'}`}>
                       {ach.hidden && (
                         <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-1.5 md:px-2 py-0.5 rounded-sm bg-purple-900/30 text-purple-300 border border-purple-500/20 whitespace-nowrap shadow-inner">
-                          Secret
+                          Hidden
                         </span>
                       )}
                       <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-1.5 md:px-2 py-0.5 rounded-sm bg-blue-900/30 text-blue-300 border border-blue-500/20 whitespace-nowrap shadow-inner">
@@ -102,7 +102,7 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
                     </div>
                   </div>
 
-                  <div className={`text-[13px] md:text-sm leading-snug md:leading-relaxed mb-2.5 md:mb-3 transition-colors duration-200 ${
+                  <div className={`text-[13px] md:text-sm leading-snug md:leading-relaxed mb-2.5 md:mb-3 transition-colors duration-200 break-words ${
                     isCompleted ? 'text-white/60' : 'text-white/70'
                   }`}>
                     {ach.description}
@@ -119,11 +119,11 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
                             href={comm.wikiUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center px-2 py-1 bg-black/40 border border-white/10 rounded-full text-[11px] md:text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+                            className="inline-flex items-center px-2 py-1 bg-black/40 border border-white/10 rounded-full text-[11px] md:text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm min-h-[30px]"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            {comm.name}
-                            <svg className="w-3 h-3 ml-1 md:ml-1.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span className="break-words">{comm.name}</span>
+                            <svg className="w-3 h-3 ml-1 md:ml-1.5 opacity-50 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
                           </a>
@@ -132,7 +132,7 @@ export default function AchievementGroup({ item, achievementProgress, handleTogg
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between mt-auto pt-2.5 md:pt-3 border-t border-white/5 border-opacity-50">
+                  <div className="flex items-center justify-between mt-auto pt-2.5 md:pt-3 border-t border-white/5 border-opacity-50 flex-wrap gap-2">
                     <span className="text-[10px] text-white/30 font-mono tracking-wider">ID: {ach.id}</span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-white/40">v{ach.version}</span>
                   </div>

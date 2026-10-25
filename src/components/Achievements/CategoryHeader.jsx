@@ -37,8 +37,8 @@ export default function CategoryHeader({
 
               {categoryRecon && (
                 <>
-                  <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:block"></span>
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-white/80">
+                  <span className="w-1 h-1 rounded-full bg-white/20"></span>
+                  <span className="inline-flex items-center gap-1.5 text-white/80 flex-wrap">
                     <span>HoYoLAB: <span className="font-bold text-white">{categoryRecon.hoyolabCompleted}</span> completed</span>
                     {categoryRecon.difference === 0 ? (
                       <span className="text-teal-400 font-bold uppercase tracking-wider text-[10px] bg-teal-900/20 px-1.5 py-0.5 rounded">Synced</span>

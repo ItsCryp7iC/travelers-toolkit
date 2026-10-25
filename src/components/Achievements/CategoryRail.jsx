@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { getAchievementCategoryIconUrl } from '../../utils/achievementCategoryIcon';
 
 export default function CategoryRail({
@@ -12,6 +12,29 @@ export default function CategoryRail({
   hideCompleted,
   setHideCompleted
 }) {
+  const [isMobilePickerOpen, setIsMobilePickerOpen] = useState(false);
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('');
+  const dropdownRef = useRef(null);
+
+  // Close dropdown on click outside or escape key
+  useEffect(() => {
+    if (!isMobilePickerOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsMobilePickerOpen(false);
+    };
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsMobilePickerOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobilePickerOpen]);
+
   const visibleCategories = useMemo(() => {
     return categories.filter(cat => {
       // Rule: Keep currently selected category visible until user navigates away
@@ -24,10 +47,24 @@ export default function CategoryRail({
     });
   }, [categories, hideCompleted, selectedCategory, achievementProgress, getCategoryStats]);
 
+  const filteredMobileCategories = useMemo(() => {
+    if (!mobileSearchQuery.trim()) return visibleCategories;
+    const q = mobileSearchQuery.toLowerCase();
+    return visibleCategories.filter(cat => cat.name.toLowerCase().includes(q));
+  }, [visibleCategories, mobileSearchQuery]);
+
+  const activeCategoryObj = useMemo(() => {
+    return categories.find(cat => cat.id === selectedCategory) || categories[0];
+  }, [categories, selectedCategory]);
+
+  const activeStats = useMemo(() => {
+    return activeCategoryObj ? getCategoryStats(activeCategoryObj.id, achievementProgress) : { completedCount: 0, totalCount: 0, percentage: 0 };
+  }, [activeCategoryObj, getCategoryStats, achievementProgress]);
+
   return (
     <div className="w-full lg:w-[320px] shrink-0 flex flex-col gap-4">
       {/* Desktop Rail */}
-      <div className="hidden lg:flex flex-col gap-2 bg-[#0d1421]/90 backdrop-blur-md border border-primary/20 rounded-2xl p-3 h-[calc(100vh-220px)] sticky top-6 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+      <div className="hidden lg:flex flex-col gap-2 bg-[#0d1421]/90 backdrop-blur-md border border-primary/20 rounded-2xl p-3 h-[calc(100vh-220px)] sticky top-[var(--topbar-h,64px)] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
         <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-2">
           {visibleCategories.map(category => {
             const stats = getCategoryStats(category.id, achievementProgress);
@@ -97,38 +134,172 @@ export default function CategoryRail({
         </div>
       </div>
 
-      {/* Mobile Rail (Dropdown/Horizontal scroll) */}
-      <div className="lg:hidden relative">
+      {/* Mobile Category Navigation (< 1024px) */}
+      <div ref={dropdownRef} className="lg:hidden relative z-30">
+        <button
+          id="mobile-category-selector-btn"
+          type="button"
+          onClick={() => setIsMobilePickerOpen(prev => !prev)}
+          aria-expanded={isMobilePickerOpen}
+          aria-controls="mobile-category-panel"
+          aria-label="Select achievement category"
+          className="w-full flex items-center justify-between p-3 bg-[#0d1421]/95 backdrop-blur-md border border-primary/40 rounded-xl shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary min-h-[52px]"
+        >
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <div className="w-8 h-8 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center p-0.5 shrink-0 shadow-inner">
+              <img
+                src={getAchievementCategoryIconUrl(activeCategoryObj?.id)}
+                alt=""
+                className="w-full h-full object-contain drop-shadow"
+                onError={(e) => e.target.style.display = 'none'}
+              />
+            </div>
+            <div className="flex flex-col text-left min-w-0 flex-1">
+              <span className="font-bold text-sm text-white truncate">
+                {activeCategoryObj?.name}
+              </span>
+              <span className="text-[11px] text-white/60 font-medium">
+                {activeStats.completedCount} / {activeStats.totalCount} ({activeStats.percentage.toFixed(0)}%)
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0 pl-2 text-white/50">
+            <span className="text-[10px] text-primary font-bold uppercase tracking-wider bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded">
+              Switch
+            </span>
+            <svg
+              className={`w-4 h-4 transition-transform duration-200 ${isMobilePickerOpen ? 'rotate-180 text-primary' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
+
+        {/* Mobile Dropdown Panel */}
+        {isMobilePickerOpen && (
+          <div
+            id="mobile-category-panel"
+            className="absolute left-0 right-0 top-full mt-2 bg-[#0d1421]/95 backdrop-blur-xl border border-primary/30 rounded-xl p-3 shadow-2xl flex flex-col gap-2 z-50 animate-fade-in max-w-full"
+          >
+            {/* Search input inside dropdown */}
+            <div className="relative">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                id="mobile-category-search-input"
+                type="text"
+                placeholder="Search 73 categories..."
+                value={mobileSearchQuery}
+                onChange={(e) => setMobileSearchQuery(e.target.value)}
+                className="search-input w-full bg-black/60 border border-white/10 rounded-lg pl-9 pr-8 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-primary min-h-[38px]"
+                aria-label="Filter categories"
+                autoFocus
+              />
+              {mobileSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setMobileSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                  aria-label="Clear category search"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+              )}
+            </div>
+
+            {/* Hide completed categories toggle */}
+            <div className="flex items-center justify-between px-1 py-1 border-b border-white/5">
+              <span className="text-[11px] text-white/50">{filteredMobileCategories.length} categories</span>
+              <label className="flex items-center gap-1.5 cursor-pointer text-[11px] text-white/60 hover:text-white/80 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={hideCompleted}
+                  onChange={(e) => setHideCompleted(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-white/20 bg-black/40 text-primary focus:ring-primary focus:ring-offset-0 focus:ring-offset-[#0d1421] cursor-pointer"
+                />
+                Hide completed
+              </label>
+            </div>
+
+            {/* Category list */}
+            <div className="max-h-[300px] overflow-y-auto custom-scrollbar flex flex-col gap-1.5 py-1">
+              {filteredMobileCategories.length === 0 ? (
+                <div className="py-6 text-center text-xs text-white/40">
+                  No categories found matching "{mobileSearchQuery}"
+                </div>
+              ) : (
+                filteredMobileCategories.map(category => {
+                  const stats = getCategoryStats(category.id, achievementProgress);
+                  const isSelected = selectedCategory === category.id;
+                  const catRecon = getCategoryReconciliation(category.id, achievementProgress, hoyolabData);
+                  const isDone = stats.completedCount === stats.totalCount && stats.totalCount > 0;
+
+                  return (
+                    <button
+                      key={category.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory(category.id);
+                        setIsMobilePickerOpen(false);
+                        setMobileSearchQuery('');
+                      }}
+                      className={`flex flex-col text-left p-2.5 rounded-lg transition-all min-h-[44px] ${
+                        isSelected
+                          ? 'bg-primary/20 border border-primary/40 text-white'
+                          : 'bg-black/20 hover:bg-white/5 text-white/80 border border-transparent'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <img
+                            src={getAchievementCategoryIconUrl(category.id)}
+                            alt=""
+                            className="w-5 h-5 object-contain shrink-0"
+                            onError={(e) => e.target.style.display = 'none'}
+                          />
+                          <span className={`text-xs font-bold truncate ${isSelected ? 'text-white' : 'text-white/90'}`}>
+                            {category.name}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-white/50 shrink-0 font-medium">
+                          {stats.completedCount} / {stats.totalCount}
+                        </span>
+                      </div>
+                      <div className="w-full h-1 bg-black/60 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all duration-300 ${isSelected ? 'bg-primary' : isDone ? 'bg-cyan-500' : 'bg-white/30'}`}
+                          style={{ width: `${stats.percentage}%` }}
+                        />
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Accessible fallback select */}
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="w-full appearance-none bg-[#0d1421]/90 backdrop-blur-md border border-primary/30 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-primary shadow-lg"
+          className="sr-only"
           aria-label="Select category"
+          tabIndex={-1}
         >
-          {visibleCategories.map(category => (
-            <option key={category.id} value={category.id}>
-              {category.name} ({getCategoryStats(category.id, achievementProgress).completedCount}/{getCategoryStats(category.id, achievementProgress).totalCount})
-            </option>
-          ))}
+          {visibleCategories.map(category => {
+            const stats = getCategoryStats(category.id, achievementProgress);
+            return (
+              <option key={category.id} value={category.id}>
+                {category.name} ({stats.completedCount}/{stats.totalCount})
+              </option>
+            );
+          })}
         </select>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/50">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </div>
-      
-      {/* Mobile Toggle */}
-      <div className="lg:hidden flex justify-end">
-        <label className="flex items-center gap-2 cursor-pointer text-xs text-white/50 hover:text-white/80 transition-colors w-max">
-          <input
-            type="checkbox"
-            checked={hideCompleted}
-            onChange={(e) => setHideCompleted(e.target.checked)}
-            className="w-4 h-4 rounded border-white/20 bg-black/40 text-primary focus:ring-primary focus:ring-offset-0 focus:ring-offset-[#0d1421] cursor-pointer"
-          />
-          Hide completed
-        </label>
       </div>
     </div>
   );

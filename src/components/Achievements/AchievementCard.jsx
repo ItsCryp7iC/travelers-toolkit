@@ -43,7 +43,7 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
 
         {/* Title Row */}
         <div className="flex items-start justify-between gap-2 md:gap-4 mb-1 md:mb-2">
-          <div className={`font-bold text-sm md:text-base leading-tight md:leading-normal transition-colors duration-200 ${
+          <div className={`font-bold text-sm md:text-base leading-tight md:leading-normal transition-colors duration-200 break-words min-w-0 flex-1 ${
             isCompleted ? 'text-white/70 line-through decoration-white/30' : 'text-white drop-shadow-sm'
           }`}>
             {ach.name}
@@ -58,7 +58,7 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
         </div>
 
         {/* Description */}
-        <div className={`text-[13px] md:text-sm leading-snug md:leading-relaxed mb-2.5 md:mb-4 transition-colors duration-200 ${
+        <div className={`text-[13px] md:text-sm leading-snug md:leading-relaxed mb-2.5 md:mb-4 transition-colors duration-200 break-words ${
           isCompleted ? 'text-white/60' : 'text-white/70'
         }`}>
           {ach.description}
@@ -75,11 +75,11 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
                   href={comm.wikiUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-2 py-1 bg-black/40 border border-white/10 rounded-full text-[11px] md:text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+                  className="inline-flex items-center px-2 py-1 bg-black/40 border border-white/10 rounded-full text-[11px] md:text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm min-h-[30px]"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {comm.name}
-                  <svg className="w-3 h-3 ml-1 md:ml-1.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <span className="break-words">{comm.name}</span>
+                  <svg className="w-3 h-3 ml-1 md:ml-1.5 opacity-50 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
@@ -89,7 +89,7 @@ export default function AchievementCard({ ach, isCompleted, handleToggle }) {
         )}
 
         {/* Footer Meta */}
-        <div className="flex items-center justify-between mt-auto pt-2.5 md:pt-3 border-t border-white/5">
+        <div className="flex items-center justify-between mt-auto pt-2.5 md:pt-3 border-t border-white/5 flex-wrap gap-2">
           <span className="text-[10px] text-white/30 font-mono tracking-wider">ID: {ach.id}</span>
           <div className="flex items-center gap-2">
             {ach.hidden && (
