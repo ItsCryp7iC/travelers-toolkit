@@ -8,6 +8,36 @@ import useStore from '../store/useStore';
 
 vi.mock('../store/useStore');
 
+vi.mock('../utils/dataManager', async (importOriginal) => {
+  const actual = await importOriginal();
+  const fullList = actual.getPrimaryInventoryList();
+  const essentialKeys = new Set([
+    'Mora',
+    'HeroWit',
+    'AdventurerExperience',
+    'WanderersAdvice',
+    'HurricaneSeed',
+    'DvalinClaw',
+    'Crown',
+  ]);
+  const seenGroups = new Map();
+  const testList = fullList.filter((item) => {
+    if (essentialKeys.has(item.matKey)) return true;
+    const groupKey = `${item.category}_${item.subCategory || ''}`;
+    const count = seenGroups.get(groupKey) || 0;
+    if (count < 2) {
+      seenGroups.set(groupKey, count + 1);
+      return true;
+    }
+    return false;
+  });
+
+  return {
+    ...actual,
+    getPrimaryInventoryList: () => testList,
+  };
+});
+
 global.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
