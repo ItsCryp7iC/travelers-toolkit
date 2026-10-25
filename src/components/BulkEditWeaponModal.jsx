@@ -147,7 +147,7 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 animate-fade-in"
       style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
       onClick={onClose}
       role="presentation"
@@ -156,13 +156,13 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
         role="dialog"
         aria-modal="true"
         aria-labelledby="bulk-edit-weapon-title"
-        className="w-full max-w-3xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up relative overflow-hidden"
+        className="w-full max-w-3xl bg-[var(--elevated)] rounded-none sm:rounded-2xl shadow-2xl flex flex-col h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[90vh] border-0 sm:border border-[var(--border)] animate-slide-up relative overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border)] shrink-0 bg-[var(--surface)]">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-5 border-b border-[var(--border)] shrink-0 bg-[var(--surface)]">
           <div className="flex items-center gap-3">
-            <h2 id="bulk-edit-weapon-title" className="font-bold text-xl text-[var(--text)]">
+            <h2 id="bulk-edit-weapon-title" className="font-bold text-lg sm:text-xl text-[var(--text)]">
               Bulk Edit Weapons
             </h2>
           </div>
@@ -176,20 +176,20 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
           </button>
         </div>
 
-        <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-6 py-2 text-xs font-semibold text-center border-b border-[var(--gold)]/20">
+        <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 sm:px-6 py-2 text-xs font-semibold text-center border-b border-[var(--gold)]/20">
           Updating {selectedIds.length} weapons
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-3.5 sm:p-6 space-y-6 sm:space-y-8 min-h-0">
           
           {/* Progression Section */}
           <section>
-            <h3 className="modal-section-title text-sm mb-4">📈 Weapon Progression Overrides</h3>
-            <div className="grid grid-cols-2 gap-8">
+            <h3 className="modal-section-title text-sm mb-3 sm:mb-4">📈 Weapon Progression Overrides</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
               {/* CURRENT */}
               <div className="space-y-4 relative">
-                <div className="absolute -right-4 top-0 bottom-0 w-px bg-[var(--border)] hidden md:block"></div>
+                <div className="absolute -right-4 top-0 bottom-0 w-px bg-[var(--border)] hidden sm:block"></div>
                 <label className="flex items-center gap-2 cursor-pointer w-max mb-2">
                   <input type="checkbox" checked={overrideCurrentLevel} onChange={e => setOverrideCurrentLevel(e.target.checked)} className="accent-[var(--gold)] w-3.5 h-3.5" />
                   <span className={`text-xs font-bold uppercase tracking-wider ${overrideCurrentLevel ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Current</span>
@@ -216,14 +216,14 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
 
           {/* Character Assignments Section */}
           <section>
-            <h3 className="modal-section-title text-sm mb-4">📋 Character Assignments</h3>
-            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm max-h-60 overflow-y-auto custom-scrollbar">
-              <table className="w-full text-left border-collapse">
+            <h3 className="modal-section-title text-sm mb-3 sm:mb-4">📋 Character Assignments</h3>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl overflow-x-auto shadow-sm max-h-60 overflow-y-auto custom-scrollbar">
+              <table className="w-full text-left border-collapse min-w-[460px]">
                 <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)] sticky top-0 z-10">
                   <tr>
-                    <th className="px-4 py-3 font-semibold w-16 text-center">Icon</th>
-                    <th className="px-4 py-3 font-semibold">Weapon Name</th>
-                    <th className="px-4 py-3 font-semibold w-1/2">Assign to Character</th>
+                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold w-14 sm:w-16 text-center">Icon</th>
+                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold">Weapon Name</th>
+                    <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold w-1/2 min-w-[200px]">Assign to Character</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
@@ -247,8 +247,8 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
                     
                     return (
                       <tr key={wp.id} className="hover:bg-[var(--elevated)] transition-colors">
-                        <td className="px-4 py-3 text-center">
-                          <div className={`w-10 h-10 mx-auto rounded-lg shadow flex items-center justify-center relative overflow-hidden ${getRarityBg(wp.data.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
+                        <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
+                          <div className={`w-9 h-9 sm:w-10 sm:h-10 mx-auto rounded-lg shadow flex items-center justify-center relative overflow-hidden ${getRarityBg(wp.data.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
                             <GenshinImage 
                               src={getWeaponIcon(wp.weaponName)} 
                               alt={wp.weaponName} 
@@ -256,14 +256,14 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
                             />
                           </div>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                           <p className="font-semibold text-[var(--text)] text-sm">{formatName(wp.weaponName)}</p>
-                          <div className="flex gap-2 items-center mt-1 text-xs">
+                          <div className="flex gap-2 items-center mt-0.5 sm:mt-1 text-xs">
                             <span className={getRarityClass(wp.data.rarity)}>{getStars(wp.data.rarity)}</span>
                             <span className="text-[var(--muted)]">{wp.data.type}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                           {compatibleChars.length === 0 ? (
                             <p className="text-xs text-[var(--muted)] italic">No compatible rostered characters.</p>
                           ) : (
@@ -301,11 +301,11 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3 shrink-0 bg-[var(--surface)]">
-          <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
+        <div className="px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 shrink-0 bg-[var(--surface)]">
+          <button onClick={onClose} className="genshin-btn-ghost text-sm min-h-[42px] sm:min-h-0 w-full sm:w-auto">Cancel</button>
           <button
             onClick={handleApply}
-            className="px-6 py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-lg shadow-[var(--gold)]/20"
+            className="px-6 py-2.5 sm:py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-lg shadow-[var(--gold)]/20 min-h-[42px] sm:min-h-0 w-full sm:w-auto"
           >
             Apply Overrides
           </button>

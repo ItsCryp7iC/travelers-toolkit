@@ -220,46 +220,49 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
 
   return createPortal(
     <div
-      className="modal-overlay"
+      className="modal-overlay p-0 sm:p-4 md:p-6 flex items-center justify-center"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
         ref={modalRef}
-        className="w-full max-w-4xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="batch-add-weapon-title"
+        className="w-full max-w-4xl bg-[var(--elevated)] rounded-none sm:rounded-2xl shadow-2xl flex flex-col h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[90vh] border-0 sm:border border-[var(--border)] animate-slide-up overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)] rounded-t-2xl">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)] rounded-t-none sm:rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <h2 className="font-bold text-lg text-[var(--text)]">
+            <h2 id="batch-add-weapon-title" className="font-bold text-base sm:text-lg text-[var(--text)]">
               {step === 1 ? 'Select Weapons' : `${totalSelectedCount} Weapons Selected`}
             </h2>
           </div>
           <div className="flex items-center gap-2">
             {step === 2 && (
-              <button onClick={() => setStep(1)} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">←</button>
+              <button onClick={() => setStep(1)} aria-label="Back to weapon selection" className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">←</button>
             )}
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">✕</button>
+            <button onClick={onClose} aria-label="Close modal" className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">✕</button>
           </div>
         </div>
 
         {/* ── STEP 1: Select Weapons ── */}
         {step === 1 && (
           <>
-            <div className="px-6 py-3 border-b border-[var(--border)] shrink-0 space-y-3 bg-[var(--surface)]">
+            <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-b border-[var(--border)] shrink-0 space-y-2.5 sm:space-y-3 bg-[var(--surface)]">
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm">🔍</span>
-                <input autoFocus type="search" placeholder="Search weapons…" className="search-input w-full" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input autoFocus type="search" placeholder="Search weapons…" className="search-input w-full min-h-[40px]" value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex flex-col gap-2 flex-1">
-                  <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-4">
+                <div className="flex flex-col gap-1.5 sm:gap-2 flex-1">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {ALL_TYPES.map((t) => (
                       <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill text-xs py-1 ${typeFilter === t ? 'active' : ''}`}>
                         {WEAPON_TYPES[t]?.emoji || '🌐'} {t}
                       </button>
                     ))}
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {ALL_RARITIES.map((r) => (
                       <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill text-xs py-1 ${rarityFilter === r ? 'active' : ''}`}>
                         {r}
@@ -270,25 +273,33 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
                 
                 <button
                   onClick={toggleSelectAll}
-                  className="genshin-btn-ghost text-xs px-4 py-2 border border-[var(--border)]"
+                  className="genshin-btn-ghost text-xs px-3 py-1.5 sm:px-4 sm:py-2 border border-[var(--border)]"
                 >
                   {filteredWeapons.every(fw => selectedQuantities[fw.name] > 0) ? 'Deselect All' : 'Select All Filtered'}
                 </button>
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 bg-[var(--bg)]">
-              <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-[var(--bg)] min-h-0">
+              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3">
                 {filteredWeapons.map((wp) => {
                   const wpCfg = WEAPON_TYPES[wp.type] || { emoji: '✨' }
                   const rColor = RARITY_COLORS[wp.rarity] || '#C8A96E'
                   const isSelected = selectedQuantities[wp.name] > 0
                   
                   return (
-                    <button
+                    <div
                       key={wp.name}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => !isSelected && handleQuantityChange(wp.name, 1)}
-                      className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left group relative overflow-hidden ${
+                      onKeyDown={(e) => {
+                        if ((e.key === 'Enter' || e.key === ' ') && !isSelected) {
+                          e.preventDefault();
+                          handleQuantityChange(wp.name, 1);
+                        }
+                      }}
+                      className={`flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl border transition-all text-left group relative overflow-hidden cursor-pointer ${
                         isSelected 
                           ? 'border-[var(--gold)] bg-[rgba(200,169,110,0.1)] shadow-[0_0_10px_rgba(200,169,110,0.15)]' 
                           : 'border-[var(--border)] bg-[var(--surface)] hover:border-white/20 hover:bg-[var(--elevated)]'
@@ -296,10 +307,10 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
                     >
                       {/* Checkbox / Quantity Overlay */}
                       {isSelected ? (
-                        <div className="absolute bottom-2 right-2 flex items-center bg-black/80 rounded-md border border-[var(--gold)] z-20" onClick={(e) => e.stopPropagation()}>
-                          <button onClick={() => handleQuantityChange(wp.name, -1)} className="px-2 py-0.5 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-l-md">-</button>
-                          <span className="px-1.5 text-xs text-[var(--gold)] font-bold">{selectedQuantities[wp.name]}</span>
-                          <button onClick={() => handleQuantityChange(wp.name, 1)} className="px-2 py-0.5 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-r-md">+</button>
+                        <div className="absolute bottom-2 right-2 flex items-center bg-black/85 rounded-md border border-[var(--gold)] z-20 shadow-md" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                          <button onClick={() => handleQuantityChange(wp.name, -1)} aria-label={`Decrease ${wp.name} quantity`} className="w-6 h-6 sm:w-7 sm:h-7 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-l-md flex items-center justify-center font-bold text-sm">-</button>
+                          <span className="px-1.5 text-xs text-[var(--gold)] font-bold min-w-[16px] text-center">{selectedQuantities[wp.name]}</span>
+                          <button onClick={() => handleQuantityChange(wp.name, 1)} aria-label={`Increase ${wp.name} quantity`} className="w-6 h-6 sm:w-7 sm:h-7 text-[var(--gold)] hover:text-white hover:bg-white/10 rounded-r-md flex items-center justify-center font-bold text-sm">+</button>
                         </div>
                       ) : (
                         <div className="absolute bottom-2 right-2 w-4 h-4 rounded-full border border-[var(--muted)] bg-black/40 flex items-center justify-center transition-colors z-20" />
@@ -313,28 +324,28 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
                           fallback={<span className="relative z-10 ">{wpCfg.emoji}</span>} 
                         />
                       </div>
-                      <div className="min-w-0 pr-4">
+                      <div className="min-w-0 pr-12">
                         <p className={`text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(wp.name)}</p>
                         <p className={`text-xs ${getRarityClass(wp.rarity)}`}>{getStars(wp.rarity)}</p>
                         <p className="text-xs text-[var(--muted)]">{wp.type}</p>
                       </div>
-                    </button>
+                    </div>
                   )
                 })}
               </div>
             </div>
 
             {/* Step 1 Footer */}
-            <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface)] flex justify-between items-center shrink-0 rounded-b-2xl">
-              <span className="text-sm font-semibold text-[var(--muted)]">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] bg-[var(--surface)] flex flex-col sm:flex-row justify-between items-center gap-2.5 sm:gap-3 shrink-0 rounded-b-none sm:rounded-b-2xl">
+              <span className="text-sm font-semibold text-[var(--muted)] order-2 sm:order-1">
                 {totalSelectedCount} selected
               </span>
-              <div className="flex gap-3">
-                <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
+              <div className="flex gap-2.5 sm:gap-3 w-full sm:w-auto order-1 sm:order-2">
+                <button onClick={onClose} className="genshin-btn-ghost text-sm min-h-[42px] sm:min-h-0 flex-1 sm:flex-initial">Cancel</button>
                 <button
                   onClick={() => setStep(2)}
                   disabled={totalSelectedCount === 0}
-                  className={`px-5 py-2 rounded-xl text-sm font-bold transition-opacity shadow-md ${
+                  className={`px-5 py-2.5 sm:py-2 rounded-xl text-sm font-bold transition-opacity shadow-md min-h-[42px] sm:min-h-0 flex-1 sm:flex-initial ${
                     totalSelectedCount > 0 
                       ? 'bg-[var(--gold)] text-[var(--bg)] hover:opacity-90' 
                       : 'bg-[var(--elevated)] text-[var(--muted)] cursor-not-allowed border border-[var(--border)]'
@@ -350,17 +361,17 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
         {/* ── STEP 2: Configure ── */}
         {step === 2 && (
           <>
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-[var(--bg)]">
+            <div className="flex-1 overflow-y-auto p-3.5 sm:p-6 space-y-5 sm:space-y-8 bg-[var(--bg)] min-h-0">
               {/* Global Level Sliders */}
-              <div className="bg-[var(--surface)] p-5 rounded-2xl border border-[var(--border)]">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xl">⚙️</span>
-                  <h3 className="font-bold text-[var(--text)] text-lg">Global Baseline Configuration</h3>
+              <div className="bg-[var(--surface)] p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[var(--border)]">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <span className="text-lg sm:text-xl">⚙️</span>
+                  <h3 className="font-bold text-[var(--text)] text-base sm:text-lg">Global Baseline Configuration</h3>
                 </div>
-                <p className="text-[var(--muted)] text-xs mb-6 max-w-2xl">
+                <p className="text-[var(--muted)] text-xs mb-4 sm:mb-6 max-w-2xl">
                   These settings will be applied as the default starting and target levels for all {totalSelectedCount} weapons in this batch.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
                     <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">📍 Current Level</p>
                     <AscensionSelector 
@@ -391,23 +402,23 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
                     <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">🎯 Target Level</p>
                     <AscensionSelector 
-                      value={targetAscension} 
-                      onChange={(a) => { 
-                        setTargetAscension(a); 
-                        setTargetLevel(clampLevel(targetLevel, a)) 
-                      }} 
-                      label="Ascension" 
+                      value={targetAscension}
+                      onChange={(a) => {
+                        setTargetAscension(a);
+                        setTargetLevel(clampLevel(targetLevel, a))
+                      }}
+                      label="Ascension"
                       elementColor="#C8A96E"
-                      minValid={ascension} 
+                      minValid={ascension}
                     />
                     <div className="mt-4">
-                      <LevelSlider 
-                        value={targetLevel} 
-                        onChange={setTargetLevel} 
-                        ascension={targetAscension} 
-                        label="Level" 
+                      <LevelSlider
+                        value={targetLevel}
+                        onChange={setTargetLevel}
+                        ascension={targetAscension}
+                        label="Level"
                         elementColor="#C8A96E"
-                        minOverride={targetAscension === ascension ? level : undefined} 
+                        minOverride={targetAscension === ascension ? level : undefined}
                       />
                     </div>
                   </div>
@@ -416,18 +427,18 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
 
               {/* Itemized Table */}
               <div>
-                <h3 className="font-bold text-[var(--text)] text-lg mb-4 flex items-center gap-2">
-                  <span className="text-xl">📋</span>
+                <h3 className="font-bold text-[var(--text)] text-base sm:text-lg mb-3 sm:mb-4 flex items-center gap-2">
+                  <span className="text-lg sm:text-xl">📋</span>
                   Character Assignments
                 </h3>
                 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
-                  <table className="w-full text-left border-collapse">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[460px]">
                     <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)]">
                       <tr>
-                        <th className="px-4 py-3 font-semibold w-16 text-center">Icon</th>
-                        <th className="px-4 py-3 font-semibold">Weapon Name</th>
-                        <th className="px-4 py-3 font-semibold w-1/2">Assign to Character (Optional)</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold w-14 sm:w-16 text-center">Icon</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold">Weapon Name</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold w-1/2 min-w-[200px]">Assign to Character (Optional)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border)]">
@@ -446,8 +457,8 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
                         
                         return (
                           <tr key={wp.uniqueId} className="hover:bg-[var(--elevated)] transition-colors">
-                            <td className="px-4 py-3 text-center">
-                              <div className={`w-10 h-10 mx-auto rounded-lg shadow flex items-center justify-center relative overflow-hidden ${getRarityBg(wp.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
+                            <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
+                              <div className={`w-9 h-9 sm:w-10 sm:h-10 mx-auto rounded-lg shadow flex items-center justify-center relative overflow-hidden ${getRarityBg(wp.rarity)}`} style={{ border: `1px solid ${rColor}40` }}>
                                 <GenshinImage 
                                   src={getWeaponIcon(wp.name)} 
                                   alt={wp.name} 
@@ -455,14 +466,14 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
                                 />
                               </div>
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                               <p className="font-semibold text-[var(--text)] text-sm">{formatName(wp.name)}</p>
-                              <div className="flex gap-2 items-center mt-1 text-xs">
+                              <div className="flex gap-2 items-center mt-0.5 sm:mt-1 text-xs">
                                 <span className={getRarityClass(wp.rarity)}>{getStars(wp.rarity)}</span>
                                 <span className="text-[var(--muted)]">{wp.type}</span>
                               </div>
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                               {compatibleChars.length === 0 ? (
                                 <p className="text-xs text-[var(--muted)] italic">No compatible rostered characters.</p>
                               ) : (
@@ -500,11 +511,11 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface)] flex justify-end gap-3 shrink-0 rounded-b-2xl">
-              <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
+            <div className="px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] bg-[var(--surface)] flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 shrink-0 rounded-b-none sm:rounded-b-2xl">
+              <button onClick={onClose} className="genshin-btn-ghost text-sm min-h-[42px] sm:min-h-0 w-full sm:w-auto">Cancel</button>
               <button
                 onClick={handleConfirm}
-                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md flex items-center justify-center gap-2 min-h-[42px] sm:min-h-0 w-full sm:w-auto"
               >
                 <span>➕</span> Add to Armory
               </button>

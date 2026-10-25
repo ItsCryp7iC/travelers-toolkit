@@ -179,7 +179,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 animate-fade-in"
       style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
       onClick={onClose}
       role="presentation"
@@ -188,13 +188,13 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
         role="dialog"
         aria-modal="true"
         aria-labelledby="bulk-edit-char-title"
-        className="w-full max-w-3xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up relative overflow-hidden"
+        className="w-full max-w-3xl bg-[var(--elevated)] rounded-none sm:rounded-2xl shadow-2xl flex flex-col h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[90vh] border-0 sm:border border-[var(--border)] animate-slide-up relative overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--border)] shrink-0 bg-[var(--surface)]">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-5 border-b border-[var(--border)] shrink-0 bg-[var(--surface)]">
           <div className="flex items-center gap-3">
-            <h2 id="bulk-edit-char-title" className="font-bold text-xl text-[var(--text)]">
+            <h2 id="bulk-edit-char-title" className="font-bold text-lg sm:text-xl text-[var(--text)]">
               Bulk Edit Configuration
             </h2>
           </div>
@@ -208,20 +208,20 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
           </button>
         </div>
 
-        <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-6 py-2 text-xs font-semibold text-center border-b border-[var(--gold)]/20">
+        <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 sm:px-6 py-2 text-xs font-semibold text-center border-b border-[var(--gold)]/20">
           Updating {selectedIds.length} characters
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-3.5 sm:p-6 space-y-6 sm:space-y-8 min-h-0">
           
           {/* Progression Section */}
           <section>
-            <h3 className="modal-section-title text-sm mb-4">📈 Character Progression Overrides</h3>
-            <div className="grid grid-cols-2 gap-8">
+            <h3 className="modal-section-title text-sm mb-3 sm:mb-4">📈 Character Progression Overrides</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
               {/* CURRENT */}
               <div className="space-y-4 relative">
-                <div className="absolute -right-4 top-0 bottom-0 w-px bg-[var(--border)] hidden md:block"></div>
+                <div className="absolute -right-4 top-0 bottom-0 w-px bg-[var(--border)] hidden sm:block"></div>
                 <label className="flex items-center gap-2 cursor-pointer w-max mb-2">
                   <input type="checkbox" checked={overrideCurrentLevel} onChange={e => setOverrideCurrentLevel(e.target.checked)} className="accent-[var(--gold)] w-3.5 h-3.5" />
                   <span className={`text-xs font-bold uppercase tracking-wider ${overrideCurrentLevel ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Current</span>
@@ -248,21 +248,21 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
 
           {/* Talents Section */}
           <section>
-            <h3 className="modal-section-title text-sm mb-4">⚔️ Talent Progression Overrides</h3>
-            <div className="grid grid-cols-2 gap-4 mb-2 px-2">
-              <label className="flex items-center gap-2 cursor-pointer w-max justify-end ml-auto pr-6">
+            <h3 className="modal-section-title text-sm mb-3 sm:mb-4">⚔️ Talent Progression Overrides</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2 px-1 sm:px-2">
+              <label className="flex items-center gap-2 cursor-pointer w-max">
                 <input type="checkbox" checked={overrideCurrentTalents} onChange={e => setOverrideCurrentTalents(e.target.checked)} className="accent-[var(--gold)] w-3.5 h-3.5" />
                 <span className={`text-xs font-bold uppercase tracking-wider ${overrideCurrentTalents ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Override Current</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer w-max pl-2">
+              <label className="flex items-center gap-2 cursor-pointer w-max">
                 <input type="checkbox" checked={overrideTargetTalents} onChange={e => setOverrideTargetTalents(e.target.checked)} className="accent-[var(--gold)] w-3.5 h-3.5" />
                 <span className={`text-xs font-bold uppercase tracking-wider ${overrideTargetTalents ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`}>Override Target</span>
               </label>
             </div>
-            <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] px-4 py-2">
-              <div className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0 relative">
+            <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] px-3 sm:px-4 py-2">
+              <div className="flex items-center gap-3 py-2 border-b border-[var(--border)] last:border-0 relative">
                 {(!overrideCurrentTalents || !overrideTargetTalents) && (
-                  <div className="absolute inset-y-0 right-0 w-[140px] flex pointer-events-none z-10">
+                  <div className="hidden sm:flex absolute inset-y-0 right-0 w-[140px] pointer-events-none z-10">
                     <div className={`w-1/2 h-full ${overrideCurrentTalents ? '' : 'bg-[var(--surface)]/50 backdrop-blur-[1px]'}`}></div>
                     <div className={`w-1/2 h-full ${overrideTargetTalents ? '' : 'bg-[var(--surface)]/50 backdrop-blur-[1px]'}`}></div>
                   </div>
@@ -308,7 +308,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
 
           {/* Weapon Assignments Section */}
           <section>
-            <h3 className="modal-section-title text-sm mb-4">🗡️ Weapon Assignments</h3>
+            <h3 className="modal-section-title text-sm mb-3 sm:mb-4">🗡️ Weapon Assignments</h3>
             <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] overflow-hidden">
               <div className="max-h-60 overflow-y-auto custom-scrollbar p-2">
                 <div className="space-y-2">
@@ -330,22 +330,22 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
                     const rColor = RARITY_COLORS[c.data.rarity] || '#C8A96E';
                     
                     return (
-                      <div key={c.id} className="flex items-center gap-3 p-2 bg-[var(--bg)]/50 rounded-lg border border-[var(--border)]">
-                        <div className="relative shrink-0 flex items-center justify-center">
-                          <img 
-                            src={getCharacterAvatar(c.data.name)}
-                            alt={c.data.name} 
-                            className="w-10 h-10 object-contain rounded-md"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-sm text-[var(--text)] truncate">
+                      <div key={c.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 p-2.5 sm:p-2 bg-[var(--bg)]/50 rounded-lg border border-[var(--border)]">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="relative shrink-0 flex items-center justify-center">
+                            <img
+                              src={getCharacterAvatar(c.data.name)}
+                              alt={c.data.name}
+                              className="w-9 h-9 sm:w-10 sm:h-10 object-contain rounded-md"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <span className="font-bold text-sm text-[var(--text)] truncate block">
                               {formatName(c.data.name)}
                             </span>
                           </div>
                         </div>
-                        <div className="w-56 shrink-0">
+                        <div className="w-full sm:w-56 shrink-0">
                           <CustomSelect
                             placeholder="— Unassigned —"
                             value={assignedValue}
@@ -383,11 +383,11 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3 shrink-0 bg-[var(--surface)]">
-          <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
+        <div className="px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 shrink-0 bg-[var(--surface)]">
+          <button onClick={onClose} className="genshin-btn-ghost text-sm min-h-[42px] sm:min-h-0 w-full sm:w-auto">Cancel</button>
           <button
             onClick={handleApply}
-            className="px-6 py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-lg shadow-[var(--gold)]/20"
+            className="px-6 py-2.5 sm:py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-lg shadow-[var(--gold)]/20 min-h-[42px] sm:min-h-0 w-full sm:w-auto"
           >
             Apply Overrides
           </button>

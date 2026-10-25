@@ -49,13 +49,17 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
         maxHeight = Math.min(320, spaceBelow - 8);
       }
 
+      const viewportWidth = window.innerWidth;
+      const targetWidth = Math.min(Math.max(rect.width, 240), viewportWidth - 16);
+      const left = Math.max(8, Math.min(rect.left, viewportWidth - targetWidth - 8));
+
       setDropdownStyles({
         position: 'fixed',
         top,
         bottom,
-        left: rect.left,
-        width: rect.width,
-        maxHeight: `${maxHeight}px`,
+        left,
+        width: `${targetWidth}px`,
+        maxHeight: `${Math.max(160, maxHeight)}px`,
         zIndex: 99999,
       });
     }
@@ -70,8 +74,11 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
       window.addEventListener('resize', updatePosition);
       window.addEventListener('scroll', updatePosition, true);
       // Auto-focus input when opened
-      if (inputRef.current) setTimeout(() => inputRef.current.focus(), 50);
+      const focusTimer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
       return () => {
+        clearTimeout(focusTimer);
         window.removeEventListener('resize', updatePosition);
         window.removeEventListener('scroll', updatePosition, true);
       };
@@ -97,39 +104,50 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
   return (
     <div className="relative w-full" ref={containerRef}>
       {/* Selected Value Display */}
-      <div 
-        className="w-full px-3 py-2.5 bg-[#161B22] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] flex items-center justify-between cursor-pointer focus:outline-none hover:border-gray-500 transition-colors"
+      <button
+        type="button"
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        className="w-full px-3 py-2 sm:py-2.5 min-h-[42px] bg-[#161B22] border border-[var(--border)] rounded-lg text-sm text-[var(--text)] flex items-center justify-between cursor-pointer focus:outline-none hover:border-gray-500 transition-colors text-left"
         onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          }
+        }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 pr-2">
           {selectedOption ? (
             <>
               {selectedOption.icon && (
-                <img src={selectedOption.icon} alt={selectedOption.name} className="w-6 h-6 object-contain rounded" />
+                <img src={selectedOption.icon} alt={selectedOption.name} className="w-6 h-6 object-contain rounded shrink-0" />
               )}
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-200">{selectedOption.name}</span>
-                {selectedOption.subtitle && <span className="text-xs text-gray-500">{selectedOption.subtitle}</span>}
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm text-gray-200 truncate">{selectedOption.name}</span>
+                {selectedOption.subtitle && <span className="text-xs text-gray-500 truncate">{selectedOption.subtitle}</span>}
               </div>
             </>
           ) : (
-            <span className="text-gray-500 text-sm">{placeholder || 'Select an option...'}</span>
+            <span className="text-gray-500 text-sm truncate">{placeholder || 'Select an option...'}</span>
           )}
         </div>
-        <span className="text-gray-400 text-xs">&#9662;</span>
-      </div>
+        <span className="text-gray-400 text-xs shrink-0">&#9662;</span>
+      </button>
 
       {/* Dropdown Menu via Portal */}
       {isOpen && createPortal(
         <div 
           ref={dropdownRef}
+          role="listbox"
           style={dropdownStyles}
           className="max-h-80 flex flex-col bg-gray-900 border border-gray-700 rounded-md shadow-2xl overflow-hidden"
         >
           <div className="sticky top-0 z-10 p-2 bg-gray-900 border-b border-gray-800">
             <input
               ref={inputRef}
-              type="text"
+              type="search"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -146,17 +164,27 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
                 return (
                   <div 
                     key={option.id} 
+                    role="option"
+                    aria-selected={value === option.id}
+                    tabIndex={0}
                     className={`flex items-center justify-between p-2 hover:bg-white/10 cursor-pointer transition-colors border-b border-gray-800 last:border-0 ${value === option.id ? 'bg-white/5' : ''}`}
                     onClick={() => {
                       onChange(option.id);
                       setIsOpen(false);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onChange(option.id);
+                        setIsOpen(false);
+                      }
+                    }}
                   >
                     {/* Left Side */}
-                    <div className="flex items-center gap-3 flex-1">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
                       {/* Icon & Rarity Column */}
                       {option.icon ? (
-                        <div className="flex flex-col items-center w-10">
+                        <div className="flex flex-col items-center w-10 shrink-0">
                           <img src={option.icon} alt={option.name} className="w-8 h-8 object-contain rounded" />
                           {/* Render stars */}
                           {stars > 0 && (
@@ -166,22 +194,22 @@ export default function CustomSelect({ options, value, onChange, placeholder }) 
                           )}
                         </div>
                       ) : (
-                        <div className="w-10 flex justify-center items-center">
+                        <div className="w-10 flex justify-center items-center shrink-0">
                           <div className="w-8 h-8 bg-black/20 rounded border border-gray-700"></div>
                         </div>
                       )}
                       
                       {/* Name & Extra Info */}
-                      <div className="flex flex-col justify-center">
-                        <span className="text-sm text-gray-200">{option.name}</span>
-                        {option.subtitle && <span className="text-xs text-gray-500">{option.subtitle}</span>}
+                      <div className="flex flex-col justify-center min-w-0">
+                        <span className="text-sm text-gray-200 truncate">{option.name}</span>
+                        {option.subtitle && <span className="text-xs text-gray-500 truncate">{option.subtitle}</span>}
                       </div>
                     </div>
 
                     {/* Right Side: Secondary Icon */}
                     {option.secondaryIcon && (
-                      <div className="flex-shrink-0 ml-3">
-                        <img src={option.secondaryIcon} alt="Secondary" className="w-8 h-8 object-contain rounded opacity-80" />
+                      <div className="flex-shrink-0 ml-2 sm:ml-3">
+                        <img src={option.secondaryIcon} alt="Secondary" className="w-7 h-7 sm:w-8 sm:h-8 object-contain rounded opacity-80" />
                       </div>
                     )}
                   </div>

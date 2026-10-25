@@ -208,38 +208,41 @@ export default function AddCharacterModal({ onClose }) {
 
   return createPortal(
     <div
-      className="modal-overlay"
+      className="modal-overlay p-0 sm:p-4 md:p-6 flex items-center justify-center"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
         ref={modalRef}
-        className="w-full max-w-4xl bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-character-modal-title"
+        className="w-full max-w-4xl bg-[var(--elevated)] rounded-none sm:rounded-2xl shadow-2xl flex flex-col h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[90vh] border-0 sm:border border-[var(--border)] animate-slide-up overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)] rounded-t-2xl">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)] rounded-t-none sm:rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <h2 className="font-bold text-lg text-[var(--text)]">
+            <h2 id="add-character-modal-title" className="font-bold text-base sm:text-lg text-[var(--text)]">
               {step === 1 ? 'Add Character to Roster' : `${selectedCharacters.length} Characters Selected`}
             </h2>
           </div>
           <div className="flex items-center gap-2">
             {step === 2 && (
-              <button onClick={() => setStep(1)} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">←</button>
+              <button onClick={() => setStep(1)} aria-label="Back to character selection" className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">←</button>
             )}
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">✕</button>
+            <button onClick={onClose} aria-label="Close modal" className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors border border-[var(--border)]">✕</button>
           </div>
         </div>
 
         {/* ── STEP 1: Select Characters ── */}
         {step === 1 && (
           <>
-            <div className="px-6 py-3 border-b border-[var(--border)] shrink-0 space-y-3 bg-[var(--surface)]">
+            <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-b border-[var(--border)] shrink-0 space-y-2.5 sm:space-y-3 bg-[var(--surface)]">
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm">🔍</span>
-                <input autoFocus type="search" placeholder="Search characters…" className="search-input w-full" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input autoFocus type="search" placeholder="Search characters…" className="search-input w-full min-h-[40px]" value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex flex-wrap gap-2 flex-1">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-4">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 flex-1">
                   {allElements.map((el) => {
                     const cfg = ELEMENTS[el]
                     return (
@@ -252,21 +255,21 @@ export default function AddCharacterModal({ onClose }) {
                 
                 <button
                   onClick={toggleSelectAll}
-                  className="genshin-btn-ghost text-xs px-4 py-2 border border-[var(--border)]"
+                  className="genshin-btn-ghost text-xs px-3 py-1.5 sm:px-4 sm:py-2 border border-[var(--border)]"
                 >
                   {filteredCharacters.length > 0 && filteredCharacters.every(fc => selectedCharacters.some(sc => sc.name === fc.name)) ? 'Deselect All' : 'Select All Filtered'}
                 </button>
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 bg-[var(--bg)]">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-[var(--bg)] min-h-0">
               {filteredCharacters.length === 0 && !search && elementFilter === 'All' ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                   <span className="text-4xl mb-3">🎉</span>
                   <p className="font-semibold text-[var(--text)]">All characters are in your roster!</p>
                 </div>
               ) : (
-                <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))' }}>
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 sm:gap-3">
                   {filteredCharacters.map((char) => {
                     const elCfg = ELEMENTS[char.element] || ELEMENTS.Unknown
                     const wpCfg = WEAPON_TYPES[char.weapon_type]
@@ -276,7 +279,7 @@ export default function AddCharacterModal({ onClose }) {
                       <button
                         key={char.name}
                         onClick={() => toggleCharacter(char)}
-                        className={`group flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-center cursor-pointer relative overflow-hidden ${
+                        className={`group flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl border transition-all text-center cursor-pointer relative overflow-hidden ${
                           isSelected 
                             ? 'border-[var(--gold)] bg-[rgba(200,169,110,0.1)] shadow-[0_0_10px_rgba(200,169,110,0.15)]' 
                             : 'border-[var(--border)] bg-[var(--surface)] hover:border-white/20 hover:bg-[var(--elevated)]'
@@ -289,7 +292,7 @@ export default function AddCharacterModal({ onClose }) {
                           {isSelected && <span className="text-xs leading-none">✓</span>}
                         </div>
 
-                        <div className="w-14 h-14 rounded-xl flex items-center justify-center relative shadow-md overflow-hidden" style={{ background: elCfg.avatarGradient }}>
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center relative shadow-md overflow-hidden" style={{ background: elCfg.avatarGradient }}>
                           <GenshinImage 
                             src={getCharacterAvatar(char.name)}
                             alt={char.name}
@@ -304,7 +307,7 @@ export default function AddCharacterModal({ onClose }) {
                         <div className="min-w-0 w-full">
                           <p className={`text-xs font-semibold truncate ${isSelected ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>{formatName(char.name)}</p>
                           <p className={`text-xs ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
-                          <div className="flex justify-center gap-1 mt-1">
+                          <div className="flex justify-center gap-1 mt-0.5 sm:mt-1">
                             <span className="text-xs">{elCfg.emoji}</span>
                             {wpCfg && <span className="text-xs">{wpCfg.emoji}</span>}
                           </div>
@@ -317,16 +320,16 @@ export default function AddCharacterModal({ onClose }) {
             </div>
 
             {/* Step 1 Footer */}
-            <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface)] flex justify-between items-center shrink-0 rounded-b-2xl">
-              <span className="text-sm font-semibold text-[var(--muted)]">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] bg-[var(--surface)] flex flex-col sm:flex-row justify-between items-center gap-2.5 sm:gap-3 shrink-0 rounded-b-none sm:rounded-b-2xl">
+              <span className="text-sm font-semibold text-[var(--muted)] order-2 sm:order-1">
                 {selectedCharacters.length} selected
               </span>
-              <div className="flex gap-3">
-                <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
+              <div className="flex gap-2.5 sm:gap-3 w-full sm:w-auto order-1 sm:order-2">
+                <button onClick={onClose} className="genshin-btn-ghost text-sm min-h-[42px] sm:min-h-0 flex-1 sm:flex-initial">Cancel</button>
                 <button
                   onClick={() => setStep(2)}
                   disabled={selectedCharacters.length === 0}
-                  className={`px-5 py-2 rounded-xl text-sm font-bold transition-opacity shadow-md ${
+                  className={`px-5 py-2.5 sm:py-2 rounded-xl text-sm font-bold transition-opacity shadow-md min-h-[42px] sm:min-h-0 flex-1 sm:flex-initial ${
                     selectedCharacters.length > 0 
                       ? 'bg-[var(--gold)] text-[var(--bg)] hover:opacity-90' 
                       : 'bg-[var(--elevated)] text-[var(--muted)] cursor-not-allowed border border-[var(--border)]'
@@ -342,17 +345,17 @@ export default function AddCharacterModal({ onClose }) {
         {/* ── STEP 2: Configure ── */}
         {step === 2 && (
           <>
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-[var(--bg)]">
+            <div className="flex-1 overflow-y-auto p-3.5 sm:p-6 space-y-5 sm:space-y-8 bg-[var(--bg)] min-h-0">
               {/* Global Config */}
-              <div className="bg-[var(--surface)] p-5 rounded-2xl border border-[var(--border)]">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xl">⚙️</span>
-                  <h3 className="font-bold text-[var(--text)] text-lg">Global Baseline Configuration</h3>
+              <div className="bg-[var(--surface)] p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[var(--border)]">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <span className="text-lg sm:text-xl">⚙️</span>
+                  <h3 className="font-bold text-[var(--text)] text-base sm:text-lg">Global Baseline Configuration</h3>
                 </div>
-                <p className="text-[var(--muted)] text-xs mb-6 max-w-2xl">
+                <p className="text-[var(--muted)] text-xs mb-4 sm:mb-6 max-w-2xl">
                   These settings will be applied as the default starting and target states for all {selectedCharacters.length} characters in this batch.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Current State */}
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
                     <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">📍 Current State</p>
@@ -383,7 +386,7 @@ export default function AddCharacterModal({ onClose }) {
                     
                     <div className="mt-6 border-t border-[var(--border)] pt-4">
                       <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-3">Talent Levels</p>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3">
                         <TalentSlider label="Normal" value={talents.normal} elementColor="#C8A96E" onChange={(v) => {
                           setTalents(prev => ({...prev, normal: v}));
                           if(v > targetTalents.normal) setTargetTalents(prev => ({...prev, normal: v}));
@@ -404,29 +407,29 @@ export default function AddCharacterModal({ onClose }) {
                   <div className="modal-state-panel bg-[var(--bg)] border-none">
                     <p className="text-xs font-bold tracking-widest uppercase mb-4 text-[#C8A96E]">🎯 Target State</p>
                     <AscensionSelector 
-                      value={targetAscension} 
-                      onChange={(a) => { 
-                        setTargetAscension(a); 
-                        setTargetLevel(clampLevel(targetLevel, a)) 
-                      }} 
-                      label="Ascension" 
+                      value={targetAscension}
+                      onChange={(a) => {
+                        setTargetAscension(a);
+                        setTargetLevel(clampLevel(targetLevel, a))
+                      }}
+                      label="Ascension"
                       elementColor="#C8A96E"
-                      minValid={ascension} 
+                      minValid={ascension}
                     />
                     <div className="mt-4">
-                      <LevelSlider 
-                        value={targetLevel} 
-                        onChange={setTargetLevel} 
-                        ascension={targetAscension} 
-                        label="Level" 
+                      <LevelSlider
+                        value={targetLevel}
+                        onChange={setTargetLevel}
+                        ascension={targetAscension}
+                        label="Level"
                         elementColor="#C8A96E"
-                        minOverride={targetAscension === ascension ? level : undefined} 
+                        minOverride={targetAscension === ascension ? level : undefined}
                       />
                     </div>
 
                     <div className="mt-6 border-t border-[var(--border)] pt-4">
                       <p className="text-xs font-semibold text-[var(--muted)] tracking-widest uppercase mb-3">Target Talents</p>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3">
                         <TalentSlider label="Normal" value={targetTalents.normal} elementColor="#C8A96E" minOverride={talents.normal} onChange={(v) => setTargetTalents(prev => ({...prev, normal: v}))} />
                         <TalentSlider label="Skill" value={targetTalents.skill} elementColor="#C8A96E" minOverride={talents.skill} onChange={(v) => setTargetTalents(prev => ({...prev, skill: v}))} />
                         <TalentSlider label="Burst" value={targetTalents.burst} elementColor="#C8A96E" minOverride={talents.burst} onChange={(v) => setTargetTalents(prev => ({...prev, burst: v}))} />
@@ -438,18 +441,18 @@ export default function AddCharacterModal({ onClose }) {
 
               {/* Itemized Table */}
               <div>
-                <h3 className="font-bold text-[var(--text)] text-lg mb-4 flex items-center gap-2">
-                  <span className="text-xl">📋</span>
+                <h3 className="font-bold text-[var(--text)] text-base sm:text-lg mb-3 sm:mb-4 flex items-center gap-2">
+                  <span className="text-lg sm:text-xl">📋</span>
                   Characters to Add
                 </h3>
                 
-                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden">
-                  <table className="w-full text-left border-collapse">
+                <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[460px]">
                     <thead className="bg-[var(--elevated)] border-b border-[var(--border)] text-xs uppercase tracking-wider text-[var(--muted)]">
                       <tr>
-                        <th className="px-4 py-3 font-semibold w-16 text-center">Icon</th>
-                        <th className="px-4 py-3 font-semibold">Character Name</th>
-                        <th className="px-4 py-3 font-semibold w-1/2">Assign Weapon (Optional)</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold w-14 sm:w-16 text-center">Icon</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold">Character Name</th>
+                        <th className="px-3 sm:px-4 py-2.5 sm:py-3 font-semibold w-1/2 min-w-[200px]">Assign Weapon (Optional)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border)]">
@@ -462,19 +465,19 @@ export default function AddCharacterModal({ onClose }) {
                         
                         return (
                           <tr key={char.name} className="hover:bg-[var(--elevated)] transition-colors">
-                            <td className="px-4 py-3 text-center">
-                              <div className="w-10 h-10 mx-auto rounded-xl flex items-center justify-center relative shadow-sm overflow-hidden" style={{ background: elCfg.avatarGradient }}>
+                            <td className="px-3 sm:px-4 py-2.5 sm:py-3 text-center">
+                              <div className="w-9 h-9 sm:w-10 sm:h-10 mx-auto rounded-xl flex items-center justify-center relative shadow-sm overflow-hidden" style={{ background: elCfg.avatarGradient }}>
                                 <GenshinImage src={getCharacterAvatar(char.name)} alt={char.name} className="w-full h-full object-cover absolute inset-0 z-10" />
                               </div>
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                               <p className="font-semibold text-[var(--text)] text-sm">{formatName(char.name)}</p>
-                              <div className="flex gap-2 items-center mt-1 text-xs">
+                              <div className="flex gap-2 items-center mt-0.5 sm:mt-1 text-xs">
                                 <span className={getRarityClass(char.rarity)}>{getStars(char.rarity)}</span>
                                 <span className="text-[var(--muted)] flex items-center gap-1">{wpCfg?.emoji} {char.weapon_type}</span>
                               </div>
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2.5 sm:py-3">
                               <CustomSelect
                                 placeholder="— Unassigned —"
                                 value={assignedValue}
@@ -500,11 +503,11 @@ export default function AddCharacterModal({ onClose }) {
             </div>
 
             {/* Step 2 Footer */}
-            <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface)] flex justify-end gap-3 shrink-0 rounded-b-2xl">
-              <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
+            <div className="px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] bg-[var(--surface)] flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 shrink-0 rounded-b-none sm:rounded-b-2xl">
+              <button onClick={onClose} className="genshin-btn-ghost text-sm min-h-[42px] sm:min-h-0 w-full sm:w-auto">Cancel</button>
               <button
                 onClick={handleConfirm}
-                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md flex items-center justify-center gap-2 min-h-[42px] sm:min-h-0 w-full sm:w-auto"
               >
                 <span>➕</span> Confirm & Add
               </button>

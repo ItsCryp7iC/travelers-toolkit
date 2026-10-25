@@ -120,27 +120,27 @@ export function TalentStepper({ value, onChange, min = 1, max = 10, elementColor
 export function TalentRow({ icon, label, fromVal, toVal, onFromChange, onToChange, elementColor, charName, skill }) {
   const safeToVal = Math.max(toVal, fromVal)
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-[var(--border)] last:border-0">
-      <span className="text-lg w-6 text-center flex-shrink-0">{icon}</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-[var(--text)] truncate">{label}</p>
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 sm:py-2.5 sm:px-3 border-b border-[var(--border)] last:border-0">
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="text-base sm:text-lg w-5 sm:w-6 text-center flex-shrink-0">{icon}</span>
+        <p className="text-xs font-semibold sm:font-medium text-[var(--text)] truncate">{label}</p>
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex items-center justify-end gap-1.5 sm:gap-2 flex-shrink-0 self-end sm:self-center">
         <div className="text-center">
-          <p className="text-xs text-[var(--muted)] mb-1 tracking-wider">CURRENT</p>
+          <p className="text-[10px] sm:text-xs text-[var(--muted)] mb-0.5 sm:mb-1 tracking-wider">CURRENT</p>
           <TalentStepper
             value={fromVal} onChange={onFromChange}
             elementColor="#9CA3AF"
             id={`talent-${charName}-${skill}-from`}
           />
         </div>
-        <div className="flex flex-col items-center gap-0.5 px-1">
-          <div className="h-px w-6" style={{ background: `${elementColor}40` }} />
-          <span className="text-xs text-[var(--muted)]">→</span>
-          <div className="h-px w-6" style={{ background: `${elementColor}40` }} />
+        <div className="flex flex-col items-center gap-0.5 px-0.5 sm:px-1">
+          <div className="h-px w-4 sm:w-6" style={{ background: `${elementColor}40` }} />
+          <span className="text-[10px] sm:text-xs text-[var(--muted)]">→</span>
+          <div className="h-px w-4 sm:w-6" style={{ background: `${elementColor}40` }} />
         </div>
         <div className="text-center">
-          <p className="text-xs text-[var(--muted)] mb-1 tracking-wider">TARGET</p>
+          <p className="text-[10px] sm:text-xs text-[var(--muted)] mb-0.5 sm:mb-1 tracking-wider">TARGET</p>
           <TalentStepper
             value={safeToVal} onChange={(v) => onToChange(Math.max(v, fromVal))}
             elementColor={elementColor}
@@ -362,15 +362,16 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
   return createPortal(
     <div
       id="char-modal-overlay"
-      className="modal-overlay relative"
+      className="modal-overlay relative flex items-center justify-center p-0 sm:p-4 md:p-6"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
       role="dialog" aria-modal="true"
       aria-label={`${displayName} character details`}
     >
       {hasPrev && onPrev && (
         <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); onPrev(); }}
-          className="fixed left-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-r hover:from-white/10 hover:to-transparent group border-none outline-none"
+          className="hidden md:flex fixed left-0 top-0 bottom-0 w-16 md:w-32 z-[60] items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-r hover:from-white/10 hover:to-transparent group border-none outline-none"
           aria-label="Previous character"
         >
           <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:-translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -378,60 +379,86 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
       )}
       {hasNext && onNext && (
         <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); onNext(); }}
-          className="fixed right-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-l hover:from-white/10 hover:to-transparent group border-none outline-none"
+          className="hidden md:flex fixed right-0 top-0 bottom-0 w-16 md:w-32 z-[60] items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-l hover:from-white/10 hover:to-transparent group border-none outline-none"
           aria-label="Next character"
         >
           <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       )}
 
-      <div className="modal-panel w-full max-w-[1000px] flex flex-col max-h-[90vh] overflow-hidden" id="char-modal-panel">
+      <div className="w-full max-w-[1000px] flex flex-col h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[90vh] rounded-none sm:rounded-2xl overflow-hidden shadow-2xl bg-[var(--elevated)] border-0 sm:border border-[var(--border)] animate-slide-up" id="char-modal-panel">
         <div key={name} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col flex-1 h-full min-h-0`}>
         {/* ── Header ─────────────────────────────────────── */}
-        <div className="modal-header" style={{ background: elConfig.avatarGradient }}>
+        <div className="modal-header relative shrink-0" style={{ background: elConfig.avatarGradient }}>
           <div className="absolute inset-0 opacity-30" style={{ background: `radial-gradient(ellipse at 20% 50%, ${elColor}, transparent 60%)` }} />
-          <div className="relative flex items-center gap-5 p-6 pb-5">
-            <div className="w-20 h-20 rounded-2xl flex items-center justify-center font-bold text-3xl flex-shrink-0 border-2 relative overflow-hidden"
-              style={{ background: `${elColor}22`, borderColor: `${elColor}60`, color: elColor, textShadow: `0 0 20px ${elColor}` }}>
-              <GenshinImage
-                src={getCharacterAvatar(name)}
-                alt={name}
-                className="w-full h-full object-cover absolute inset-0 z-10"
-                fallback={<span className="relative z-10">{initials}</span>}
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className={`text-sm ${rarityClass}`}>{stars}</span>
-              <h2 className="font-bold text-2xl text-[var(--text)] leading-tight mt-0.5 truncate">{displayName}</h2>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border"
-                  style={{ background: elConfig.colorDim, borderColor: `${elColor}60`, color: elColor }}>
-                  <GenshinImage src={getElementIcon(element)} alt={element} className="w-6 h-6 object-contain" fallback={<span>{elConfig.emoji}</span>} />
-                  <span>{element}</span>
-                </span>
-                {wpConfig && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border border-[var(--border)] text-[var(--muted)] bg-black/20">
-                    <GenshinImage src={getWeaponTypeIcon(weapon_type)} alt={weapon_type} className="w-6 h-6 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
-                    <span>{weapon_type}</span>
+          <div className="relative flex items-start sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:pt-6 pb-3.5 sm:pb-5">
+            <div className="flex items-center gap-3.5 sm:gap-5 min-w-0 flex-1">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center font-bold text-2xl sm:text-3xl flex-shrink-0 border-2 relative overflow-hidden"
+                style={{ background: `${elColor}22`, borderColor: `${elColor}60`, color: elColor, textShadow: `0 0 20px ${elColor}` }}>
+                <GenshinImage
+                  src={getCharacterAvatar(name)}
+                  alt={name}
+                  className="w-full h-full object-cover absolute inset-0 z-10"
+                  fallback={<span className="relative z-10">{initials}</span>}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className={`text-xs sm:text-sm ${rarityClass}`}>{stars}</span>
+                <h2 className="font-bold text-lg sm:text-2xl text-[var(--text)] leading-tight mt-0.5 line-clamp-2 sm:line-clamp-none break-words" title={displayName}>{displayName}</h2>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
+                  <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium border"
+                    style={{ background: elConfig.colorDim, borderColor: `${elColor}60`, color: elColor }}>
+                    <GenshinImage src={getElementIcon(element)} alt={element} className="w-4 h-4 sm:w-6 sm:h-6 object-contain" fallback={<span>{elConfig.emoji}</span>} />
+                    <span>{element}</span>
                   </span>
-                )}
-                {inRoster && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border"
-                    style={{ background: 'rgba(200,169,110,0.2)', borderColor: 'rgba(200,169,110,0.5)', color: 'var(--gold)' }}>
-                    ✓ In Roster
-                  </span>
-                )}
+                  {wpConfig && (
+                    <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium border border-[var(--border)] text-[var(--muted)] bg-black/20">
+                      <GenshinImage src={getWeaponTypeIcon(weapon_type)} alt={weapon_type} className="w-4 h-4 sm:w-6 sm:h-6 object-contain" fallback={<span>{wpConfig.emoji}</span>} />
+                      <span>{weapon_type}</span>
+                    </span>
+                  )}
+                  {inRoster && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold border"
+                      style={{ background: 'rgba(200,169,110,0.2)', borderColor: 'rgba(200,169,110,0.5)', color: 'var(--gold)' }}>
+                      ✓ In Roster
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-            <button id="modal-close-btn" onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--text)] transition-colors"
-              style={{ background: 'rgba(0,0,0,0.3)' }} aria-label="Close modal">✕</button>
+
+            {/* Mobile Navigation + Close Controls */}
+            <div className="flex items-center gap-1.5 shrink-0 z-20 self-start sm:self-center">
+              {hasPrev && onPrev && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onPrev(); }}
+                  className="w-8 h-8 rounded-lg flex md:hidden items-center justify-center text-white hover:text-white transition-colors bg-black/40 hover:bg-black/60 font-bold"
+                  aria-label="Previous character"
+                >‹</button>
+              )}
+              {hasNext && onNext && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onNext(); }}
+                  className="w-8 h-8 rounded-lg flex md:hidden items-center justify-center text-white hover:text-white transition-colors bg-black/40 hover:bg-black/60 font-bold"
+                  aria-label="Next character"
+                >›</button>
+              )}
+              <button
+                id="modal-close-btn"
+                onClick={onClose}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--text)] transition-colors bg-black/40 hover:bg-black/60"
+                aria-label="Close modal"
+              >✕</button>
+            </div>
           </div>
         </div>
 
         {/* ── Body ───────────────────────────────────────── */}
-        <div className="modal-body flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent">
+        <div className="modal-body flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-3.5 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent">
 
           {/* ── Character Progression Range ──────────────────────── */}
           <section className="mb-6">
@@ -453,29 +480,29 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
               </div>
             </div>
             {/* Range bar */}
-            <div className="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl"
+            <div className="mt-4 flex items-center gap-2 sm:gap-3 p-2.5 sm:px-4 sm:py-3 rounded-xl"
               style={{ background: `${elColor}10`, border: `1px solid ${elColor}30` }}>
               {/* Character Avatar */}
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 shadow-lg relative overflow-hidden" style={{ background: elConfig.avatarGradient }}>
+              <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 shadow-md relative overflow-hidden" style={{ background: elConfig.avatarGradient }}>
                 <GenshinImage
                   src={getCharacterAvatar(name)}
                   alt={name}
                   className="w-full h-full object-cover absolute inset-0 z-10"
-                  fallback={<span className="text-xl relative z-10" style={{ color: elConfig.color }}>{name.substring(0, 1).toUpperCase()}</span>}
+                  fallback={<span className="text-sm sm:text-xl relative z-10" style={{ color: elConfig.color }}>{name.substring(0, 1).toUpperCase()}</span>}
                 />
               </div>
-              <span className="font-bold text-sm" style={{ color: elColor }}>A{fromAsc} Lv{fromLevel}</span>
-              <div className="flex-1 flex items-center gap-1">
+              <span className="font-bold text-xs sm:text-sm whitespace-nowrap" style={{ color: elColor }}>A{fromAsc} Lv{fromLevel}</span>
+              <div className="flex-1 flex items-center gap-1 min-w-[20px]">
                 <div className="flex-1 h-px" style={{ background: `${elColor}40` }} />
-                <span className="text-xs text-[var(--muted)] px-1">to</span>
+                <span className="text-[10px] sm:text-xs text-[var(--muted)] px-1">to</span>
                 <div className="flex-1 h-px" style={{ background: `${elColor}40` }} />
               </div>
-              <span className="font-bold text-sm" style={{ color: elColor }}>A{safeToAsc} Lv{safeToLevel}</span>
+              <span className="font-bold text-xs sm:text-sm whitespace-nowrap" style={{ color: elColor }}>A{safeToAsc} Lv{safeToLevel}</span>
             </div>
           </section>
 
           {/* ── Talents ────────────────────────────────── */}
-          <section className="mb-6">
+          <section className="mb-4 sm:mb-6">
             <h3 className="modal-section-title">📖 Talent Levels</h3>
             <div className="rounded-xl border border-[var(--border)] overflow-hidden bg-[var(--elevated)]">
               <TalentRow
@@ -500,7 +527,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
           </section>
 
           {/* ── Equipped Weapon ─────────────────────────── */}
-          <section className="mb-6">
+          <section className="mb-4 sm:mb-6">
             <h3 className="modal-section-title">🗡️ Equipped Weapon</h3>
             <div className="mb-4">
               <CustomSelect
@@ -534,7 +561,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
             </div>
 
             {draftWeaponId && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5 mt-4">
                 <div className="modal-state-panel">
                   <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-4">📍 Weapon Current</p>
                   <AscensionSelector value={weaponFromAsc} onChange={handleWeaponFromAscChange} label="Ascension" elementColor="#9CA3AF" isCharacter={false} />
@@ -554,10 +581,10 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
           </section>
 
           {/* ── Actions ────────────────────────────────── */}
-          <div className="flex gap-3 pt-2 pb-1">
+          <div className="pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-2 border-t border-[var(--border)] flex flex-col sm:flex-row gap-2.5 sm:gap-3 shrink-0">
             <button
               id="modal-save-btn" onClick={handleSave}
-              className="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-200"
+              className="flex-1 py-3 min-h-[44px] rounded-xl font-bold text-sm transition-all duration-200 cursor-pointer"
               style={{ background: `linear-gradient(135deg, ${elColor}, ${elColor}99)`, color: '#0D0F1A', boxShadow: `0 4px 20px ${elColor}40` }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 6px 28px ${elColor}60`; e.currentTarget.style.transform = 'translateY(-1px)' }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `0 4px 20px ${elColor}40`; e.currentTarget.style.transform = '' }}
@@ -567,7 +594,9 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
             {inRoster && (
               <button id="modal-remove-btn"
                 onClick={() => { removeCharacter(name); onClose() }}
-                className="px-4 py-3 rounded-xl font-medium text-sm transition-all border border-[rgba(239,68,68,0.3)] text-[#EF4444] hover:bg-[rgba(239,68,68,0.1)]">
+                aria-label={`Remove ${displayName} from roster`}
+                title={`Remove ${displayName} from roster`}
+                className="px-4 py-3 min-h-[44px] rounded-xl font-medium text-sm transition-all border border-[rgba(239,68,68,0.3)] text-[#EF4444] hover:bg-[rgba(239,68,68,0.1)] flex items-center justify-center cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50">
                 🗑️
               </button>
             )}

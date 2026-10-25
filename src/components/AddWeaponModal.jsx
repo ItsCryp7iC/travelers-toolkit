@@ -97,7 +97,9 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
   // Step 1 state
   const [step, setStep]                   = useState((existingWeapon || initialWeapon) ? 2 : 1) // 1=Select, 2=Configure
-  const [selectedWeapon, setSelectedWeapon] = useState(existingWeapon ? existingWeapon.data : (initialWeapon || null))
+  const [selectedWeapon, setSelectedWeapon] = useState(
+    existingWeapon ? existingWeapon.data : (initialWeapon || null)
+  )
   const [search, setSearch]               = useState('')
   const [typeFilter, setTypeFilter]       = useState('All')
   const [rarityFilter, setRarityFilter]   = useState('All')
@@ -222,13 +224,17 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
   return createPortal(
     <div
-      className="modal-overlay relative"
+      className="modal-overlay relative flex items-center justify-center p-0 sm:p-4 md:p-6"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
+      role="dialog"
+      aria-modal="true"
+      aria-label={step === 1 ? 'Select a Weapon' : `${formatName(selectedWeapon?.name || 'Weapon')} details`}
     >
       {hasPrev && onPrev && step === 2 && (
         <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); onPrev(); }}
-          className="fixed left-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-r hover:from-white/10 hover:to-transparent group border-none outline-none"
+          className="hidden md:flex fixed left-0 top-0 bottom-0 w-16 md:w-32 z-[60] items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-r hover:from-white/10 hover:to-transparent group border-none outline-none"
           aria-label="Previous weapon"
         >
           <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:-translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -236,8 +242,9 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
       )}
       {hasNext && onNext && step === 2 && (
         <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); onNext(); }}
-          className="fixed right-0 top-0 bottom-0 w-16 md:w-32 z-[60] flex items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-l hover:from-white/10 hover:to-transparent group border-none outline-none"
+          className="hidden md:flex fixed right-0 top-0 bottom-0 w-16 md:w-32 z-[60] items-center justify-center cursor-pointer transition-all hover:bg-gradient-to-l hover:from-white/10 hover:to-transparent group border-none outline-none"
           aria-label="Next weapon"
         >
           <svg className="w-12 h-12 md:w-20 md:h-20 text-white/20 group-hover:text-white transition-all group-hover:translate-x-2 duration-300 drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -246,48 +253,69 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
       <div
         ref={modalRef}
-        className="w-full max-w-[1000px] bg-[var(--elevated)] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-[var(--border)] animate-slide-up overflow-hidden"
+        className="w-full max-w-[1000px] bg-[var(--elevated)] rounded-none sm:rounded-2xl shadow-2xl flex flex-col h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[90vh] border-0 sm:border border-[var(--border)] animate-slide-up overflow-hidden"
       >
         <div key={currentIndex !== undefined ? currentIndex : (selectedWeapon?.name || 'select')} className={`${slideDirection === 'next' ? 'animate-swipe-next' : 'animate-swipe-prev'} flex flex-col flex-1 h-full min-h-0`}>
         {/* Header */}
         {step === 1 ? (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 pt-[calc(0.875rem+env(safe-area-inset-top,0px))] sm:pt-4 border-b border-[var(--border)] shrink-0 bg-[var(--surface)]">
             <div className="flex items-center gap-3">
               <h2 className="font-bold text-lg text-[var(--text)]">Select a Weapon</h2>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors">✕</button>
+            <button onClick={onClose} aria-label="Close modal" className="w-8 h-8 rounded-full bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--muted)] flex items-center justify-center transition-colors">✕</button>
           </div>
         ) : (
           (() => {
             const theme = getWeaponTheme(selectedWeapon.rarity);
             return (
-              <div className={`relative p-6 rounded-t-2xl border-b border-gray-700/50 ${theme.header} shrink-0`}>
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <button onClick={() => setStep(1)} className="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white/70 flex items-center justify-center transition-colors">←</button>
-                  <button onClick={onClose} className="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white/70 flex items-center justify-center transition-colors">✕</button>
-                </div>
-                <div className="flex gap-4 items-center">
-                  <div className={`w-20 h-20 rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden ${getRarityBg(selectedWeapon.rarity)}`}>
-                    <GenshinImage src={getWeaponIcon(selectedWeapon.name)} alt={selectedWeapon.name} className="w-16 h-16 object-contain absolute inset-0 z-10 m-auto" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-white mb-2 ">{formatName(selectedWeapon.name)}</h2>
-                    <div className="flex gap-2 text-sm flex-wrap">
-                      <span className="px-3 py-1 bg-black/30 rounded-full text-gray-200 text-sm flex items-center gap-1.5 shadow-inner backdrop-blur-sm">
-                        <img 
-                          src={getWeaponTypeIcon(selectedWeapon.type)} 
-                          alt={selectedWeapon.type} 
-                          className="w-4 h-4 object-contain opacity-75" 
-                        />
-                        {selectedWeapon.type}
-                      </span>
-                      <span className="px-3 py-1 bg-black/30 rounded-full text-yellow-400 text-sm tracking-widest shadow-inner flex items-center justify-center">
-                        {getStars(selectedWeapon.rarity) || '★'}
-                      </span>
-                      {existingWeapon && (
-                        <span className="px-3 py-1 bg-green-900/50 rounded-full text-green-300 backdrop-blur-sm shadow-sm font-bold">✓ In Armory</span>
-                      )}
+              <div className={`p-4 sm:p-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:pt-6 rounded-t-none sm:rounded-t-2xl border-b border-gray-700/50 ${theme.header} shrink-0`}>
+                <div className="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
+                  <div className="flex gap-3.5 sm:gap-4 items-center min-w-0 flex-1">
+                    <div className={`w-14 h-14 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden shrink-0 ${getRarityBg(selectedWeapon.rarity)}`}>
+                      <GenshinImage src={getWeaponIcon(selectedWeapon.name)} alt={selectedWeapon.name} className="w-12 h-12 sm:w-16 sm:h-16 object-contain absolute inset-0 z-10 m-auto" />
                     </div>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="text-lg sm:text-2xl font-bold text-white mb-1 sm:mb-2 line-clamp-2 sm:line-clamp-none break-words leading-tight" title={formatName(selectedWeapon.name)}>
+                        {formatName(selectedWeapon.name)}
+                      </h2>
+                      <div className="flex gap-1.5 sm:gap-2 text-xs sm:text-sm flex-wrap">
+                        <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-black/30 rounded-full text-gray-200 text-xs sm:text-sm flex items-center gap-1.5 shadow-inner backdrop-blur-sm">
+                          <img
+                            src={getWeaponTypeIcon(selectedWeapon.type)}
+                            alt={selectedWeapon.type}
+                            className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain opacity-75"
+                          />
+                          {selectedWeapon.type}
+                        </span>
+                        <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-black/30 rounded-full text-yellow-400 text-xs sm:text-sm tracking-widest shadow-inner flex items-center justify-center">
+                          {getStars(selectedWeapon.rarity) || '★'}
+                        </span>
+                        {existingWeapon && (
+                          <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-green-900/50 rounded-full text-green-300 backdrop-blur-sm shadow-sm font-bold text-xs sm:text-sm">✓ In Armory</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0 z-20 self-start sm:self-center">
+                    {hasPrev && onPrev && (
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); onPrev(); }}
+                        className="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex md:hidden items-center justify-center transition-colors font-bold"
+                        aria-label="Previous weapon"
+                      >‹</button>
+                    )}
+                    {hasNext && onNext && (
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); onNext(); }}
+                        className="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex md:hidden items-center justify-center transition-colors font-bold"
+                        aria-label="Next weapon"
+                      >›</button>
+                    )}
+                    <button onClick={() => setStep(1)} aria-label="Back to weapon selection" className="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center transition-colors">←</button>
+                    <button onClick={onClose} aria-label="Close modal" className="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center transition-colors">✕</button>
                   </div>
                 </div>
               </div>
@@ -298,19 +326,19 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         {/* ── STEP 1: Select Weapon ── */}
         {step === 1 && (
           <>
-            <div className="px-6 py-3 border-b border-[var(--border)] shrink-0 space-y-3">
+            <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-b border-[var(--border)] shrink-0 space-y-2.5 sm:space-y-3 bg-[var(--surface)]">
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm">🔍</span>
-                <input autoFocus type="search" placeholder="Search weapons…" className="search-input w-full" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input autoFocus type="search" placeholder="Search weapons…" className="search-input w-full min-h-[40px]" value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {ALL_TYPES.map((t) => (
                   <button key={t} onClick={() => setTypeFilter(t)} className={`filter-pill text-xs py-1 ${typeFilter === t ? 'active' : ''}`}>
                     {WEAPON_TYPES[t]?.emoji || '🌐'} {t}
                   </button>
                 ))}
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {ALL_RARITIES.map((r) => (
                   <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill text-xs py-1 ${rarityFilter === r ? 'active' : ''}`}>
                     {r}
@@ -318,8 +346,8 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                 ))}
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-3.5 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent">
+              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4">
                 {filteredWeapons.map((wp) => {
                   const wpCfg = WEAPON_TYPES[wp.type] || { emoji: '✨' }
                   const rColor = RARITY_COLORS[wp.rarity] || '#C8A96E'
@@ -353,7 +381,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         {/* ── STEP 2: Configure Weapon ── */}
         {step === 2 && selectedWeapon && (
           <>
-            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent flex flex-col gap-6">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 p-3.5 sm:p-6 scrollbar-thin scrollbar-thumb-[var(--border-strong)] scrollbar-track-transparent flex flex-col gap-4 sm:gap-6">
               {/* Level sliders */}
               <div className="space-y-4">
                 {(() => {
@@ -362,7 +390,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                   return (
                     <div className="flex flex-col gap-4">
                       {isForgeable && (
-                        <div className="flex items-center gap-3 p-4 rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5">
+                        <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5">
                           <input
                             type="checkbox"
                             id="planningToForgeToggle"
@@ -384,7 +412,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                         </div>
                       )}
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5 mt-2">
                         <div className={`modal-state-panel ${planningToForge ? 'opacity-40 pointer-events-none' : ''}`}>
                           <p className={`text-xs font-bold tracking-widest uppercase mb-4 ${theme.text}`}>📍 Weapon Current</p>
                           <AscensionSelector 
@@ -523,11 +551,11 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
             </div>
             
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3 shrink-0">
-              <button onClick={onClose} className="genshin-btn-ghost text-sm">Cancel</button>
+            <div className="px-4 sm:px-6 py-3 sm:py-4 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 shrink-0">
+              <button onClick={onClose} className="genshin-btn-ghost text-sm min-h-[42px] sm:min-h-0 w-full sm:w-auto">Cancel</button>
               <button
                 onClick={handleConfirm}
-                className="px-5 py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md"
+                className="px-5 py-2.5 sm:py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md min-h-[42px] sm:min-h-0 w-full sm:w-auto"
               >
                 Add to Armory
               </button>
