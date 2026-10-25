@@ -105,22 +105,22 @@ export default function AchievementData() {
   };
 
   return (
-    <div className="genshin-card p-6 flex flex-col gap-4">
+    <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4">
       <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
         <span>Achievement Data</span>
         <span className="text-sm">🏆</span>
       </h2>
-      <p className="text-sm text-[var(--color-text-muted)]">
+      <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
         Export your completed achievement IDs to a file, or import an existing completion array.
         Note: Achievement-only exports do not retain completion timestamps. Use full Traveler's Toolkit backups to retain precise dates.
       </p>
 
-      <div className="flex flex-col gap-3 mt-2">
-        <div className="flex gap-3">
-          <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={() => handleExportClick('native')}>
+      <div className="flex flex-col gap-2.5 sm:gap-3 mt-1 sm:mt-2">
+        <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+          <button className="genshin-btn flex-1 flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm" onClick={() => handleExportClick('native')}>
             <span>📥</span> Export Native (.json)
           </button>
-          <button className="genshin-btn-ghost w-full flex justify-center items-center gap-2" onClick={() => handleExportClick('good')}>
+          <button className="genshin-btn-ghost flex-1 flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm" onClick={() => handleExportClick('good')}>
             <span>📥</span> Export GOOD (.json)
           </button>
         </div>
@@ -132,31 +132,31 @@ export default function AchievementData() {
             onChange={handleImportFile}
             style={{ display: 'none' }}
           />
-          <button className="genshin-btn-ghost w-full flex justify-center items-center gap-2" onClick={handleImportClick}>
+          <button className="genshin-btn-ghost w-full flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm" onClick={handleImportClick}>
             <span>📤</span> Import Achievements
           </button>
         </div>
       </div>
 
       {importStatus && (
-        <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-xl p-4 flex flex-col gap-3 shadow-lg mt-2">
+        <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-xl p-3.5 sm:p-4 flex flex-col gap-3 shadow-lg mt-2">
           {importStatus.type === 'error' && (
-            <div className="text-red-400 text-sm flex items-center justify-between">
-              <span>{importStatus.message}</span>
-              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)]">✕</button>
+            <div className="text-red-400 text-xs sm:text-sm flex items-center justify-between gap-2">
+              <span className="break-words min-w-0 flex-1">{importStatus.message}</span>
+              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)] shrink-0 p-1" aria-label="Dismiss error">✕</button>
             </div>
           )}
 
           {importStatus.type === 'success' && (
-            <div className="text-green-400 text-sm flex items-center justify-between">
-              <span>{importStatus.message}</span>
-              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)]">✕</button>
+            <div className="text-green-400 text-xs sm:text-sm flex items-center justify-between gap-2">
+              <span className="break-words min-w-0 flex-1">{importStatus.message}</span>
+              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)] shrink-0 p-1" aria-label="Dismiss notification">✕</button>
             </div>
           )}
 
           {importStatus.type === 'preview' && (
             <div className="flex flex-col gap-3">
-              <div className="text-[var(--text)] text-sm">
+              <div className="text-[var(--text)] text-xs sm:text-sm leading-relaxed">
                 {importStatus.result.format === 'NATIVE' ? (
                   <span className="text-primary font-medium">This is a native export file. You can merge it or replace your current state.</span>
                 ) : importStatus.result.validIds.length === 0 ? (
@@ -165,7 +165,7 @@ export default function AchievementData() {
                   <span className="text-primary font-medium">This import will replace your current local achievement completion state.</span>
                 )}
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm bg-black/20 p-3 rounded border border-[var(--border)]">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 text-xs sm:text-sm bg-black/20 p-2.5 sm:p-3 rounded-lg border border-[var(--border)]">
                 <div>
                   <div className="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-0.5">Current Completed</div>
                   <div className="font-medium text-[var(--text)]">{completedCount.toLocaleString()}</div>
@@ -187,16 +187,16 @@ export default function AchievementData() {
                   </div>
                 )}
               </div>
-              <div className="flex items-center gap-3 mt-1">
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
                 {importStatus.result.format === 'NATIVE' && (
-                  <button onClick={() => confirmImport('merge')} className="bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-1.5 rounded transition-colors text-sm">
+                  <button onClick={() => confirmImport('merge')} className="bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-2 rounded transition-colors text-xs sm:text-sm min-h-[38px] flex items-center justify-center flex-1 sm:flex-none">
                     Merge Progress
                   </button>
                 )}
-                <button onClick={() => confirmImport('replace')} className={`bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-1.5 rounded transition-colors text-sm ${importStatus.result.format === 'NATIVE' ? 'bg-red-500 hover:bg-red-600' : ''}`}>
+                <button onClick={() => confirmImport('replace')} className={`px-4 py-2 rounded transition-colors text-xs sm:text-sm font-semibold min-h-[38px] flex items-center justify-center flex-1 sm:flex-none ${importStatus.result.format === 'NATIVE' ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-primary hover:bg-primary/80 text-black'}`}>
                   {importStatus.result.format === 'NATIVE' ? 'Replace Progress' : 'Confirm Replacement'}
                 </button>
-                <button onClick={cancelImport} className="bg-white/5 hover:bg-white/10 text-[var(--text)] px-4 py-1.5 rounded border border-[var(--border)] transition-colors text-sm">
+                <button onClick={cancelImport} className="bg-white/5 hover:bg-white/10 text-[var(--text)] px-4 py-2 rounded border border-[var(--border)] transition-colors text-xs sm:text-sm min-h-[38px] flex items-center justify-center flex-1 sm:flex-none">
                   Cancel
                 </button>
               </div>

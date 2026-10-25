@@ -259,40 +259,41 @@ export default function Settings() {
   };
 
   return (
-    <div className="animate-fade-in max-w-5xl mx-auto pb-12">
+    <div className="animate-fade-in max-w-5xl mx-auto pb-12 px-3.5 sm:px-6 md:px-8">
       {/* Page Header */}
-      <div className="mb-8 flex items-center gap-3">
-        <span className="text-3xl">⚙️</span>
+      <div className="mb-6 sm:mb-8 flex items-center gap-2.5 sm:gap-3">
+        <span className="text-2xl sm:text-3xl">⚙️</span>
         <h1 className="font-bold text-2xl md:text-3xl text-[var(--color-text-main)]">
           Settings
         </h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 
         {/* Cloud Backup Card */}
-        <div className="genshin-card p-6 flex flex-col gap-4">
+        <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4">
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
             <span>Cloud Backup</span>
             <span className="text-sm">☁️</span>
           </h2>
-          <p className="text-sm text-[var(--color-text-muted)]">
+          <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
             Seamlessly sync your progression data to your Google Drive's hidden AppData folder. Maintain up to 5 rolling backups.
           </p>
 
-          <div className="flex items-center justify-between mt-2">
-            <div>
+          <div className="flex items-center justify-between gap-3 mt-1 sm:mt-2">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-[var(--color-text-main)]">Auto-Backup</p>
-              <p className="text-xs text-[var(--color-text-muted)]">
+              <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
                 Automatically backs up changes when Google Drive is connected.
               </p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex items-center cursor-pointer shrink-0">
               <input
                 type="checkbox"
                 className="sr-only peer"
                 checked={autoBackupEnabled}
                 onChange={(e) => setAutoBackupEnabled(e.target.checked)}
+                aria-label="Toggle auto-backup"
               />
               <div className="w-11 h-6 bg-[var(--elevated)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary border border-[var(--border)]"></div>
             </label>
@@ -315,9 +316,9 @@ export default function Settings() {
             </p>
           )}
 
-          <div className="flex flex-col gap-3 mt-2">
+          <div className="flex flex-col gap-2.5 sm:gap-3 mt-1 sm:mt-2">
             <button
-              className="genshin-btn w-full flex justify-center items-center gap-2"
+              className="genshin-btn w-full flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm"
               onClick={async () => {
                 if (useStore.getState().googleConnected) {
                   await handleCloudBackup();
@@ -336,7 +337,7 @@ export default function Settings() {
               {isSyncing ? 'Syncing...' : 'Sync to Google Drive'}
             </button>
             <button
-              className="genshin-btn-ghost w-full flex justify-center items-center gap-2"
+              className="genshin-btn-ghost w-full flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm"
               onClick={async () => {
                 if (useStore.getState().googleConnected) {
                   await fetchBackups();
@@ -355,24 +356,29 @@ export default function Settings() {
           </div>
 
           {cloudBackups.length > 0 && (
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="mt-2 sm:mt-4 flex flex-col gap-2">
               <h3 className="text-sm font-semibold text-[var(--color-text-main)] border-b border-[var(--border)] pb-1">
                 Manual Backups
               </h3>
               {cloudBackups.map((backup) => (
-                <div key={backup.id} className="flex justify-between items-center bg-[var(--elevated)] p-2 rounded border border-[var(--border)]">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-medium text-[var(--color-text-main)]">
+                <div key={backup.id} className="flex items-center justify-between gap-2.5 sm:gap-3 bg-[var(--elevated)] p-2.5 sm:p-3 rounded-lg border border-[var(--border)]">
+                  <div className="flex flex-col min-w-0 flex-1 mr-2">
+                    <span className="text-xs font-semibold text-[var(--color-text-main)]">
                       {new Date(backup.createdTime).toLocaleString()}
                     </span>
-                    <span className="text-xs text-[var(--color-text-muted)]">
+                    <span
+                      className="text-xs text-[var(--color-text-muted)] truncate block mt-0.5"
+                      title={backup.name}
+                      aria-label={`Backup file: ${backup.name}`}
+                    >
                       {backup.name}
                     </span>
                   </div>
                   <button
-                    className="text-xs bg-primary text-[#0d0f1a] px-3 py-1 rounded hover:opacity-90 font-bold transition-opacity"
+                    className="text-xs bg-primary text-[#0d0f1a] px-3.5 py-1.5 rounded-md hover:opacity-90 font-bold transition-opacity shrink-0 min-h-[36px] flex items-center justify-center"
                     onClick={() => handleCloudRestore(backup.id)}
                     disabled={isRestoring}
+                    aria-label={`Restore backup from ${new Date(backup.createdTime).toLocaleString()}`}
                   >
                     Restore
                   </button>
@@ -383,56 +389,72 @@ export default function Settings() {
         </div>
 
         {/* Local Data Management Card */}
-        <div className="genshin-card p-6 flex flex-col gap-4">
+        <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4">
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
             Local Data Management
           </h2>
-          <p className="text-sm text-[var(--color-text-muted)]">
+          <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
             Export your roster and inventory to a file, or import an existing backup.
           </p>
-          <div className="flex flex-col gap-3 mt-2">
-            <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={handleExport}>
+          <div className="flex flex-col gap-2.5 sm:gap-3 mt-1 sm:mt-2">
+            <button className="genshin-btn w-full flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm" onClick={handleExport}>
               <span>📥</span> Export Backup (.json)
             </button>
-            <div className="flex gap-3">
-              <input
-                type="file"
-                accept=".json"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
-              <button className="genshin-btn-ghost flex-1 flex justify-center items-center gap-2" onClick={handleImportClick}>
-                <span>📤</span> Import Backup
-              </button>
-              <button className="genshin-btn-ghost flex-1 flex justify-center items-center gap-2 text-red-400 hover:text-red-300 hover:border-red-400" onClick={handleReset}>
-                <span>⚠️</span> Factory Reset
-              </button>
+            <input
+              type="file"
+              accept=".json"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+              aria-label="Upload backup JSON file"
+            />
+            <button className="genshin-btn-ghost w-full flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm" onClick={handleImportClick}>
+              <span>📤</span> Import Backup
+            </button>
+          </div>
+
+          {/* Separated Danger Zone for Factory Reset */}
+          <div className="mt-2 pt-3 border-t border-[var(--border)] flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>⚠️</span> Danger Zone
+              </span>
+              <span className="text-[10px] text-[var(--color-text-muted)] font-medium">Irreversible</span>
             </div>
+            <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
+              Permanently resets all stored data and returns Traveler's Toolkit to its initial state.
+            </p>
+            <button
+              id="factory-reset-btn"
+              className="genshin-btn-ghost w-full flex justify-center items-center gap-2 text-red-400 hover:text-red-300 border-red-500/30 hover:border-red-400 bg-red-950/10 hover:bg-red-950/20 transition-all min-h-[40px] font-semibold text-xs sm:text-sm mt-0.5"
+              onClick={handleReset}
+            >
+              <span>⚠️</span> Factory Reset
+            </button>
           </div>
         </div>
 
         {/* Inventory Kamera Sync Card */}
-        <div className="genshin-card p-6 flex flex-col gap-4">
+        <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4">
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
             <span>Inventory Kamera Sync</span>
             <span className="text-sm">📷</span>
           </h2>
-          <p className="text-sm text-[var(--color-text-muted)]">
+          <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
             Sync your characters, weapons, and materials using a GOOD format JSON file exported from Inventory Kamera.
           </p>
 
-          <div className="bg-[var(--elevated)] p-4 rounded-lg border border-[var(--border)] mt-2">
+          <div className="bg-[var(--elevated)] p-3.5 sm:p-4 rounded-lg border border-[var(--border)] mt-1 sm:mt-2">
             <h3 className="text-sm font-bold text-[var(--color-text-main)] mb-1">Need a GOOD file?</h3>
-            <p className="text-xs text-[var(--color-text-muted)] mb-4 leading-relaxed">
+            <p className="text-xs text-[var(--color-text-muted)] mb-3 sm:mb-4 leading-relaxed">
               Use the Traveler’s Toolkit-compatible Inventory Kamera fork to scan your Genshin characters, weapons, and materials and export them as a GOOD JSON file.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
               <a
                 href="https://github.com/ItsCryp7iC/Inventory_Kamera/releases/latest"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="genshin-btn flex-1 flex justify-center items-center gap-2 text-center"
+                className="genshin-btn flex-1 flex justify-center items-center gap-2 text-center min-h-[40px] text-xs sm:text-sm"
               >
                 <span>⬇️</span> Get Inventory Kamera
               </a>
@@ -440,25 +462,26 @@ export default function Settings() {
                 href="https://github.com/ItsCryp7iC/Inventory_Kamera"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="genshin-btn-ghost flex-1 flex justify-center items-center gap-2 text-center"
+                className="genshin-btn-ghost flex-1 flex justify-center items-center gap-2 text-center min-h-[40px] text-xs sm:text-sm"
               >
                 <span>🔗</span> View on GitHub
               </a>
             </div>
-            <p className="text-[10px] text-[var(--color-text-muted)] mt-4 opacity-80 text-center">
+            <p className="text-[10px] text-[var(--color-text-muted)] mt-3 sm:mt-4 opacity-80 text-center leading-relaxed">
               Based on the open-source <a href="https://github.com/Andrewthe13th/Inventory_Kamera" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary transition-colors">Inventory Kamera project</a> and maintained for Traveler’s Toolkit compatibility.
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 mt-1">
+          <div className="flex flex-col gap-2.5 sm:gap-3 mt-1">
             <input
               type="file"
               accept=".json"
               ref={goodFileInputRef}
               onChange={handleGoodFileChange}
               style={{ display: 'none' }}
+              aria-label="Upload GOOD format JSON file"
             />
-            <button className="genshin-btn w-full flex justify-center items-center gap-2" onClick={handleGoodImportClick}>
+            <button className="genshin-btn w-full flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm" onClick={handleGoodImportClick}>
               <span>🔄</span> Import GOOD Format JSON
             </button>
             <p className="text-xs text-[var(--color-text-muted)] italic text-center">
@@ -470,20 +493,24 @@ export default function Settings() {
         <AchievementData />
 
         {/* Regional Preferences Card */}
-        <div className="genshin-card p-6 flex flex-col gap-4">
+        <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4">
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
             Regional Preferences
           </h2>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-[var(--color-text-main)]">Server Region</label>
+          <div className="flex flex-col gap-1.5 sm:gap-2">
+            <label htmlFor="server-region-select" className="text-sm font-semibold text-[var(--color-text-main)]">
+              Server Region
+            </label>
             <p className="text-xs text-[var(--color-text-muted)] mb-1">
               Determines daily domain material rotations.
             </p>
             <select
-              className="bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+              id="server-region-select"
+              className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-xs sm:text-sm text-[var(--color-text-main)] outline-none focus:border-primary min-h-[40px] cursor-pointer"
               value={serverRegion}
               onChange={(e) => setServerRegion(e.target.value)}
+              aria-label="Select server region"
             >
               <option value="Asia">Asia</option>
               <option value="NA">North America</option>
@@ -492,15 +519,19 @@ export default function Settings() {
             </select>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-[var(--color-text-main)]">Display Time Zone</label>
+          <div className="flex flex-col gap-1.5 sm:gap-2">
+            <label htmlFor="display-timezone-select" className="text-sm font-semibold text-[var(--color-text-main)]">
+              Display Time Zone
+            </label>
             <p className="text-xs text-[var(--color-text-muted)] mb-1">
               Controls the exact fill times shown for Resin and Realm Currency.
             </p>
             <select
-              className="bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+              id="display-timezone-select"
+              className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-xs sm:text-sm text-[var(--color-text-main)] outline-none focus:border-primary min-h-[40px] cursor-pointer"
               value={displayTimeZone}
               onChange={(e) => setDisplayTimeZone(e.target.value)}
+              aria-label="Select display time zone"
             >
               <option value="auto">Auto — Device time zone</option>
               {timeZoneOptions.map((opt) => (
@@ -518,23 +549,24 @@ export default function Settings() {
         </div>
 
         {/* Developer Tools Card */}
-        <div className="genshin-card p-6 flex flex-col gap-4">
+        <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4">
           <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2">
             Developer Tools
           </h2>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-[var(--color-text-main)]">Show DB Builder</p>
-              <p className="text-xs text-[var(--color-text-muted)]">
+              <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
                 Enable the database generation tool in the sidebar.
               </p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex items-center cursor-pointer shrink-0">
               <input
                 type="checkbox"
                 className="sr-only peer"
                 checked={showDbBuilder}
                 onChange={(e) => setShowDbBuilder(e.target.checked)}
+                aria-label="Toggle database builder in sidebar"
               />
               <div className="w-11 h-6 bg-[var(--elevated)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary border border-[var(--border)]"></div>
             </label>
@@ -543,35 +575,35 @@ export default function Settings() {
       </div>
 
       {/* HoYoLAB Connection Card */}
-      <div className="genshin-card p-6 flex flex-col gap-4 mt-6">
+      <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4 mt-4 sm:mt-6">
         <h2 className="text-lg font-bold text-primary border-b border-[var(--border)] pb-2 flex justify-between items-center">
           <span>Connect HoYoLAB</span>
           <span className="text-sm">🌟</span>
         </h2>
         {hoyolabConnected ? (
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block shrink-0" />
               <p className="text-sm font-semibold text-green-500">Connected</p>
               {hoyolabAccount && (
-                <span className="text-xs text-[var(--color-text-muted)] font-mono">
+                <span className="text-xs text-[var(--color-text-muted)] font-mono break-all sm:break-normal">
                   ({hoyolabAccount.nickname || 'Traveler'} • UID: {hoyolabAccount.uid})
                 </span>
               )}
             </div>
-            <p className="text-sm text-[var(--color-text-muted)] mb-4">
+            <p className="text-sm text-[var(--color-text-muted)] mb-4 leading-relaxed">
               Live Resin &amp; Realm Currency sync enabled
             </p>
             <button
-              className="genshin-btn w-full"
+              className="genshin-btn w-full min-h-[40px] text-xs sm:text-sm"
               onClick={handleDisconnectHoyolab}
             >
               Disconnect
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-[var(--color-text-muted)]">
+          <div className="flex flex-col gap-3.5 sm:gap-4">
+            <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
               Connect your HoYoLAB account to enable live sync for Resin, Realm Currency, and character progress.
             </p>
 
@@ -579,7 +611,7 @@ export default function Settings() {
             <div className="flex flex-col gap-2">
               <button
                 type="button"
-                className="genshin-btn w-full flex justify-center items-center gap-2 py-2.5"
+                className="genshin-btn w-full flex flex-wrap justify-center items-center gap-2 py-2.5 min-h-[42px] text-xs sm:text-sm"
                 onClick={() => setIsHoyoLoginOpen(true)}
               >
                 <span>🌟</span>
@@ -592,7 +624,7 @@ export default function Settings() {
 
             {/* Advanced / fallback: Manual Cookie Entry */}
             <div className="border-t border-[var(--border)] pt-3 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-1">
                 <span className="text-xs font-semibold text-[var(--color-text-muted)]">
                   Enter cookies manually
                 </span>
@@ -610,7 +642,7 @@ export default function Settings() {
                     id="hoyolab-ltuid"
                     type="password"
                     autoComplete="off"
-                    className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+                    className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-xs sm:text-sm text-[var(--color-text-main)] outline-none focus:border-primary min-h-[40px]"
                     value={hoyolabLtuid}
                     onChange={(e) => setHoyolabLtuid(e.target.value)}
                     placeholder="Enter ltuid"
@@ -625,7 +657,7 @@ export default function Settings() {
                     id="hoyolab-ltoken"
                     type="password"
                     autoComplete="off"
-                    className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary"
+                    className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-xs sm:text-sm text-[var(--color-text-main)] outline-none focus:border-primary min-h-[40px]"
                     value={hoyolabLtoken}
                     onChange={(e) => setHoyolabLtoken(e.target.value)}
                     placeholder="Enter ltoken"
@@ -634,7 +666,7 @@ export default function Settings() {
                 </div>
                 <button
                   type="button"
-                  className="genshin-btn w-full mt-2"
+                  className="genshin-btn w-full mt-2 min-h-[40px] text-xs sm:text-sm"
                   onClick={handleConnectHoyolab}
                   disabled={isConnecting}
                 >

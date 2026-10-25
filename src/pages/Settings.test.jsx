@@ -145,4 +145,149 @@ describe('Settings Actions & Alert Replacement', () => {
     expect(storeState.resetStore).toHaveBeenCalled();
     expect(notifySpy).toHaveBeenCalledWith('Data reset successfully.');
   });
+
+  describe('Settings Responsive Architecture & Controls (R5C)', () => {
+    it('renders all Settings cards with responsive grid classes', async () => {
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      // Section titles
+      expect(container.textContent).toContain('Cloud Backup');
+      expect(container.textContent).toContain('Local Data Management');
+      expect(container.textContent).toContain('Inventory Kamera Sync');
+      expect(container.textContent).toContain('Achievement Data');
+      expect(container.textContent).toContain('Regional Preferences');
+      expect(container.textContent).toContain('Developer Tools');
+      expect(container.textContent).toContain('Connect HoYoLAB');
+
+      // Grid container has responsive grid-cols-1 md:grid-cols-2
+      const grid = container.querySelector('.grid.grid-cols-1.md\\:grid-cols-2');
+      expect(grid).not.toBeNull();
+    });
+
+    it('isolates Factory Reset in a distinct danger zone separated from safe import/export', async () => {
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      // Safe buttons
+      const exportBtn = Array.from(container.querySelectorAll('button')).find(
+        (b) => b.textContent.includes('Export Backup')
+      );
+      const importBtn = Array.from(container.querySelectorAll('button')).find(
+        (b) => b.textContent.includes('Import Backup')
+      );
+      expect(exportBtn).not.toBeNull();
+      expect(importBtn).not.toBeNull();
+
+      // Factory Reset is inside a Danger Zone section
+      const dangerZoneHeading = Array.from(container.querySelectorAll('span')).find(
+        (s) => s.textContent.includes('Danger Zone')
+      );
+      expect(dangerZoneHeading).not.toBeNull();
+
+      const factoryResetBtn = container.querySelector('#factory-reset-btn');
+      expect(factoryResetBtn).not.toBeNull();
+      expect(factoryResetBtn.textContent).toContain('Factory Reset');
+    });
+
+    it('handles long backup filenames gracefully with truncation and tooltip', async () => {
+      const longName = '2026-10-25_travelers-toolkit-extended-backup-autosave-with-extra-long-name-exceeding-normal-widths.json';
+      driveSync.listBackupsFromDrive.mockResolvedValueOnce([
+        {
+          id: 'b-long-1',
+          name: longName,
+          createdTime: '2026-10-25T12:00:00.000Z',
+        },
+      ]);
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const backupFilename = container.querySelector(`span[title="${longName}"]`);
+      expect(backupFilename).not.toBeNull();
+      expect(backupFilename.classList.contains('truncate')).toBe(true);
+
+      const restoreBtn = Array.from(container.querySelectorAll('button')).find(
+        (b) => b.textContent === 'Restore'
+      );
+      expect(restoreBtn).not.toBeNull();
+      expect(restoreBtn.getAttribute('aria-label')).toContain('Restore backup from');
+    });
+
+    it('renders accessible regional preferences and timezone dropdowns', async () => {
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const regionSelect = container.querySelector('#server-region-select');
+      expect(regionSelect).not.toBeNull();
+      expect(regionSelect.getAttribute('aria-label')).toBe('Select server region');
+
+      act(() => {
+        regionSelect.value = 'NA';
+        regionSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      expect(storeState.setServerRegion).toHaveBeenCalledWith('NA');
+
+      const timezoneSelect = container.querySelector('#display-timezone-select');
+      expect(timezoneSelect).not.toBeNull();
+      expect(timezoneSelect.getAttribute('aria-label')).toBe('Select display time zone');
+
+      const targetOptionValue = timezoneSelect.options[1].value;
+      act(() => {
+        timezoneSelect.value = targetOptionValue;
+        timezoneSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      expect(storeState.setDisplayTimeZone).toHaveBeenCalledWith(targetOptionValue);
+    });
+
+    it('renders developer tools toggle with accessible label and responds to changes', async () => {
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const dbToggle = container.querySelector('input[aria-label="Toggle database builder in sidebar"]');
+      expect(dbToggle).not.toBeNull();
+
+      act(() => {
+        dbToggle.click();
+      });
+      expect(storeState.setShowDbBuilder).toHaveBeenCalledWith(true);
+    });
+
+    it('renders connected HoYoLAB account with wrapped uid info', async () => {
+      storeState.hoyolabConnected = true;
+      storeState.hoyolabAccount = { nickname: 'AetherLover', uid: '700123456' };
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      expect(container.textContent).toContain('Connected');
+      expect(container.textContent).toContain('AetherLover');
+      expect(container.textContent).toContain('700123456');
+
+      const disconnectBtn = Array.from(container.querySelectorAll('button')).find(
+        (b) => b.textContent === 'Disconnect'
+      );
+      expect(disconnectBtn).not.toBeNull();
+    });
+
+    it('renders Inventory Kamera links and GOOD import button', async () => {
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const getKameraLink = container.querySelector('a[href*="Inventory_Kamera/releases"]');
+      expect(getKameraLink).not.toBeNull();
+
+      const goodImportBtn = Array.from(container.querySelectorAll('button')).find(
+        (b) => b.textContent.includes('Import GOOD Format JSON')
+      );
+      expect(goodImportBtn).not.toBeNull();
+    });
+  });
 });
