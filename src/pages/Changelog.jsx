@@ -73,51 +73,51 @@ export default function Changelog() {
 
   return (
     <div className="max-w-4xl mx-auto pb-12">
-      <header className="mb-10">
-        <h1 className="text-3xl font-bold text-[var(--text)] tracking-tight mb-2">Changelog</h1>
-        <p className="text-[var(--muted)] text-lg mb-1">
+      <header className="mb-6 sm:mb-10">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text)] tracking-tight mb-2">Changelog</h1>
+        <p className="text-[var(--muted)] text-base sm:text-lg mb-1">
           Complete development history of Traveler's Toolkit.
         </p>
-        <p className="text-sm text-[var(--muted)]/70">
+        <p className="text-xs sm:text-sm text-[var(--muted)]/70">
           {mergedEntries.length} commits
         </p>
       </header>
 
-      <div className="space-y-12">
+      <div className="space-y-8 sm:space-y-12">
         {groupedEntries.map((group, groupIdx) => (
           <div key={groupIdx} className="relative">
-            <h2 className="text-xl font-bold text-[var(--text)] mb-6 sticky top-0 bg-[#030712]/90 backdrop-blur py-2 z-10 border-b border-[var(--border)]">
+            <h2 className="text-lg sm:text-xl font-bold text-[var(--text)] mb-4 sm:mb-6 sticky top-[var(--topbar-h,64px)] bg-[#030712]/95 backdrop-blur-md py-2.5 z-20 border-b border-[var(--border)]">
               {group.dateKey}
             </h2>
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {group.entries.map((entry, idx) => {
                 const timeStr = timeFormatter.format(new Date(entry.timestamp));
                 return (
-                  <div key={idx} className="flex flex-col md:flex-row gap-4 relative">
+                  <div key={idx} className="flex flex-col md:flex-row gap-2.5 sm:gap-4 relative">
                     {/* Left sidebar / Metadata */}
-                    <div className="md:w-32 shrink-0 flex flex-col items-start gap-1 pt-1">
-                      <time dateTime={entry.timestamp} className="text-sm font-semibold text-[var(--muted)]">
+                    <div className="md:w-32 shrink-0 flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-2 md:gap-1 pt-1">
+                      <time dateTime={entry.timestamp} className="text-xs sm:text-sm font-semibold text-[var(--muted)]">
                         {timeStr}
                       </time>
-                      <span className={`px-2 py-0.5 mt-1 rounded text-xs font-bold uppercase tracking-wider border ${typeStyles[entry.type] || typeStyles.changed}`}>
+                      <span className={`px-2 py-0.5 rounded text-[11px] sm:text-xs font-bold uppercase tracking-wider border ${typeStyles[entry.type] || typeStyles.changed}`}>
                         {entry.type}
                       </span>
                     </div>
                     {/* Main Content */}
-                    <div className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--elevated)]/60 backdrop-blur-md p-4 shadow-sm flex flex-col gap-2">
-                      <div className="flex items-start justify-between gap-4">
-                        <h3 className="text-base font-bold text-[var(--text)] leading-snug">{entry.title}</h3>
-                        <a href={entry.url} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-primary hover:underline whitespace-nowrap shrink-0" title="View commit on GitHub">
+                    <div className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--elevated)]/60 backdrop-blur-md p-3 sm:p-4 shadow-sm flex flex-col gap-2 min-w-0">
+                      <div className="flex items-start justify-between gap-3 sm:gap-4">
+                        <h3 className="text-sm sm:text-base font-bold text-[var(--text)] leading-snug break-words min-w-0">{entry.title}</h3>
+                        <a href={entry.url} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-primary hover:underline whitespace-nowrap shrink-0 min-h-[32px] inline-flex items-center" title="View commit on GitHub">
                           {entry.shortSha} ↗
                         </a>
                       </div>
                       {entry.body && (
                         <details className="text-sm text-gray-300 mt-1 cursor-pointer group">
-                          <summary className="text-[var(--muted)] select-none hover:text-[var(--text)] transition-colors inline-flex items-center gap-1">
+                          <summary className="text-[var(--muted)] select-none hover:text-[var(--text)] transition-colors inline-flex items-center gap-1 min-h-[32px]">
                             <span className="text-[10px] opacity-70 group-open:rotate-90 transition-transform">▶</span>
                             Show details
                           </summary>
-                          <div className="mt-3 pl-3 border-l-2 border-[var(--border)] whitespace-pre-wrap font-mono text-xs leading-relaxed">
+                          <div className="mt-2 pl-3 border-l-2 border-[var(--border)] whitespace-pre-wrap font-mono text-xs leading-relaxed break-words overflow-x-auto max-w-full">
                             {entry.body}
                           </div>
                         </details>

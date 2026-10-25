@@ -109,4 +109,29 @@ describe('Changelog Component', () => {
     expect(screen.getByText(/commits/i)).toBeInTheDocument();
     warnSpy.mockRestore();
   });
+
+  it('renders sticky date headers with topbar offset and responsive classes', async () => {
+    const { container } = render(<Changelog />);
+
+    const dateHeader = container.querySelector('h2');
+    expect(dateHeader).not.toBeNull();
+    expect(dateHeader.className).toContain('sticky');
+    expect(dateHeader.className).toContain('top-[var(--topbar-h,64px)]');
+    expect(dateHeader.className).toContain('z-20');
+  });
+
+  it('renders commit metadata and details with break-words to avoid overflow', async () => {
+    const { container } = render(<Changelog />);
+
+    const commitTitle = container.querySelector('h3');
+    expect(commitTitle).not.toBeNull();
+    expect(commitTitle.className).toContain('break-words');
+
+    const details = container.querySelector('details');
+    if (details) {
+      const detailsBody = details.querySelector('div');
+      expect(detailsBody.className).toContain('break-words');
+      expect(detailsBody.className).toContain('overflow-x-auto');
+    }
+  });
 });
