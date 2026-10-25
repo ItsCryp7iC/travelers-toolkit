@@ -19,6 +19,12 @@ vi.mock('../components/BatchAddWeaponModal', () => ({
 vi.mock('../components/CookiePromptModal', () => ({
   default: ({ onClose }) => <div data-testid="cookie-prompt-modal">Cookie Prompt Modal <button onClick={onClose}>Close</button></div>
 }));
+vi.mock('../components/CharacterCard', () => ({
+  default: ({ character }) => <div data-testid="character-card">{character.name}</div>
+}));
+vi.mock('../components/WeaponCard', () => ({
+  default: ({ weapon, onClick }) => <div data-testid="weapon-card" onClick={onClick}>{weapon.name}</div>
+}));
 
 describe('Dashboard Responsive Architecture & Controls', () => {
   let container = null;
