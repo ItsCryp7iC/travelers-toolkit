@@ -80,7 +80,7 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
 
     let ascCosts = null
     if (!ascNoop) {
-      ascCosts = calculateProgressionCost(character, fromLevel, toLevel)
+      ascCosts = calculateProgressionCost(character, fromLevel, toLevel, fromAsc, toAsc)
     }
 
     let normalCosts = null, skillCosts = null, burstCosts = null
@@ -159,6 +159,12 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     rarities: grandTotalRarities,
     breakdown,
     trackedCount: breakdown.length,
+    characterCount: breakdown.filter(b => !b.isWeapon).length,
+    weaponCount: breakdown.filter(b => b.isWeapon).length,
+    activeCharacterPlans: breakdown.filter(b => !b.isWeapon).length,
+    activeWeaponPlans: breakdown.filter(b => b.isWeapon).length,
+    totalRosterCharacters: Object.keys(roster).length,
+    totalTrackedWeapons: trackedWeapons.length,
   }
 }
 

@@ -9,9 +9,9 @@ import { PLANNER_TABS, getPlannerTabId, formatPlannerQuantity } from '../utils/p
 vi.mock('../store/useStore');
 
 global.ResizeObserver = class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 };
 
 function LocationObserver({ onChange }) {
@@ -108,7 +108,7 @@ describe('Planner Responsive Architecture & In-Page Navigation (R4)', () => {
 
     // Page header title & description
     expect(container.querySelector('h1').textContent).toContain('Resource Planner');
-    expect(container.textContent).toContain('Grand total across 2 tracked characters');
+    expect(container.textContent).toContain('Resources across 1 character plan and 1 weapon plan — inventory subtracted');
 
     // Sticky header has topbar offset
     const stickyHeader = container.querySelector('.sticky');
@@ -116,7 +116,8 @@ describe('Planner Responsive Architecture & In-Page Navigation (R4)', () => {
     expect(stickyHeader.className).toContain('top-[var(--topbar-h,64px)]');
 
     // Stats cards render values
-    expect(container.textContent).toContain('Tracked Characters');
+    expect(container.textContent).toContain('Active Character Plans');
+    expect(container.textContent).not.toContain('Tracked Characters');
     expect(container.textContent).toContain('Total Mora');
     expect(container.textContent).toContain('Crowns Needed');
     expect(container.textContent).toContain('Still to Farm');
@@ -554,6 +555,152 @@ describe('Planner Responsive Architecture & In-Page Navigation (R4)', () => {
   it('18. preserves exact underlying integer values in state without calculation divergence', () => {
     expect(mockState.inventory.Mora).toBe(100000);
     expect(typeof mockState.inventory.Mora).toBe('number');
+  });
+
+  // ── Section 6: Plan Count Labeling Disambiguation & Active Plan Demarcation (DEF-04 / C1D.1) ──
+
+  it('21. correctly distinguishes character and weapon plan counts, renders "Active Character Plans", and differentiates owned records from active plans', async () => {
+    // 21a. Mixed population (1 character plan, 1 weapon plan with multiple owned records)
+    mockState.roster = {
+      Amber: {
+        name: 'Amber',
+        level: 20,
+        targetLevel: 80,
+        ascension: 1,
+        targetAscension: 5,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 6, skill: 6, burst: 6 },
+        element: 'Pyro',
+      },
+      Jean: {
+        name: 'Jean',
+        level: 90,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 10, skill: 10, burst: 10 },
+        targetTalents: { normal: 10, skill: 10, burst: 10 },
+        element: 'Anemo',
+      },
+    };
+    mockState.trackedWeapons = [
+      {
+        id: 'w1',
+        weaponName: 'Favonius Warbow',
+        level: 1,
+        targetLevel: 80,
+        ascension: 0,
+        targetAscension: 5,
+      },
+      {
+        id: 'w2',
+        weaponName: 'Aquila Favonia',
+        level: 90,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+      },
+    ];
+
+    await renderComponent();
+    // 2 characters owned, 2 weapons owned; but only 1 active character plan and 1 active weapon plan
+    expect(container.textContent).toContain('Resources across 1 character plan and 1 weapon plan — inventory subtracted');
+    expect(container.textContent).toContain('Active Character Plans');
+    expect(container.textContent).not.toContain('Tracked Characters');
+    expect(container.textContent).toContain('+ 1 weapon plan');
+
+    // 21b. Character-only active plans (2 active character plans, 0 weapon plans)
+    mockState.roster = {
+      Amber: {
+        name: 'Amber',
+        level: 20,
+        targetLevel: 80,
+        ascension: 1,
+        targetAscension: 5,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 6, skill: 6, burst: 6 },
+        element: 'Pyro',
+      },
+      Kaeya: {
+        name: 'Kaeya',
+        level: 1,
+        targetLevel: 70,
+        ascension: 0,
+        targetAscension: 4,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 1, skill: 1, burst: 1 },
+        element: 'Cryo',
+      },
+    };
+    mockState.trackedWeapons = [];
+    await renderComponent();
+    expect(container.textContent).toContain('Resources across 2 character plans — inventory subtracted');
+    expect(container.textContent).not.toContain('weapon plan');
+    expect(container.textContent).toContain('Active Character Plans');
+
+    // 21c. Weapon-only active plans (1 completed character in roster, 2 active weapon plans)
+    mockState.roster = {
+      Jean: {
+        name: 'Jean',
+        level: 90,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 10, skill: 10, burst: 10 },
+        targetTalents: { normal: 10, skill: 10, burst: 10 },
+        element: 'Anemo',
+      },
+    };
+    mockState.trackedWeapons = [
+      {
+        id: 'w1',
+        weaponName: 'Favonius Warbow',
+        level: 1,
+        targetLevel: 80,
+        ascension: 0,
+        targetAscension: 5,
+      },
+      {
+        id: 'w2',
+        weaponName: 'Favonius Sword',
+        level: 80,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+      },
+    ];
+    await renderComponent();
+    expect(container.textContent).toContain('Resources across 2 weapon plans — inventory subtracted');
+    expect(container.textContent).toContain('+ 2 weapon plans');
+    expect(container.textContent).toContain('Active Character Plans');
+
+    // 21d. No outstanding plans (all owned characters and weapons completed)
+    mockState.roster = {
+      Jean: {
+        name: 'Jean',
+        level: 90,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 10, skill: 10, burst: 10 },
+        targetTalents: { normal: 10, skill: 10, burst: 10 },
+        element: 'Anemo',
+      },
+    };
+    mockState.trackedWeapons = [
+      {
+        id: 'w2',
+        weaponName: 'Aquila Favonia',
+        level: 90,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+      },
+    ];
+    await renderComponent();
+    expect(container.textContent).toContain('No outstanding upgrade plans');
+    expect(container.textContent).not.toContain('Resources across');
+    expect(container.textContent).toContain('Active Character Plans');
   });
 });
 

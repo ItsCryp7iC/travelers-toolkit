@@ -112,7 +112,20 @@ export default function Planner() {
             <div className="min-w-0">
               <h1 className="font-bold text-xl sm:text-2xl md:text-3xl text-[var(--text)] truncate leading-tight">Resource Planner</h1>
               <p className="text-[var(--muted)] text-xs sm:text-sm truncate">
-                Grand total across {totals.trackedCount} tracked character{totals.trackedCount !== 1 ? 's' : ''} — inventory subtracted
+                {(() => {
+                  const charPlanCount = totals.activeCharacterPlans ?? totals.characterCount ?? 0;
+                  const weapPlanCount = totals.activeWeaponPlans ?? totals.weaponCount ?? 0;
+                  if (charPlanCount > 0 && weapPlanCount > 0) {
+                    return `Resources across ${charPlanCount} character plan${charPlanCount !== 1 ? 's' : ''} and ${weapPlanCount} weapon plan${weapPlanCount !== 1 ? 's' : ''} — inventory subtracted`;
+                  }
+                  if (weapPlanCount > 0) {
+                    return `Resources across ${weapPlanCount} weapon plan${weapPlanCount !== 1 ? 's' : ''} — inventory subtracted`;
+                  }
+                  if (charPlanCount > 0) {
+                    return `Resources across ${charPlanCount} character plan${charPlanCount !== 1 ? 's' : ''} — inventory subtracted`;
+                  }
+                  return 'No outstanding upgrade plans';
+                })()}
               </p>
             </div>
           </div>
@@ -155,7 +168,17 @@ export default function Planner() {
 
       {/* ── Grand Total Stats ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-6">
-        <PlannerStats icon={<img src="/Characters.png" alt="Tracked Characters" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Tracked Characters" value={totals.trackedCount} accent="#4EC9B0" />
+        <PlannerStats
+          icon={<img src="/Characters.png" alt="Active Character Plans" className="w-5 h-5 object-contain drop-shadow-sm" />}
+          label="Active Character Plans"
+          value={totals.activeCharacterPlans ?? totals.characterCount ?? 0}
+          sub={
+            (totals.activeWeaponPlans ?? totals.weaponCount ?? 0) > 0
+              ? `+ ${totals.activeWeaponPlans ?? totals.weaponCount} weapon plan${(totals.activeWeaponPlans ?? totals.weaponCount) !== 1 ? 's' : ''}`
+              : undefined
+          }
+          accent="#4EC9B0"
+        />
         <PlannerStats icon={<img src="/CurrencyExp.png" alt="Total Mora" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Total Mora" value={formatNumber(remainingTotals.mora)} accent="#FAB632" />
         <PlannerStats icon={<img src="/CrownOfInsight.png" alt="Crowns Needed" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Crowns Needed" value={remainingTotals.crowns} accent="#FBBF24"
           sub={remainingTotals.crowns > 0 ? 'Crown of Insight' : 'None needed'} />

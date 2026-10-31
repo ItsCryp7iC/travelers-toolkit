@@ -111,7 +111,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
     if (ascNoop && talentNoop) return { totalCosts: {}, categories: {}, talentState: tState }
 
     let ascCosts = null
-    if (!ascNoop) ascCosts = calculateProgressionCost(character, fromLevel, toLevel)
+    if (!ascNoop) ascCosts = calculateProgressionCost(character, fromLevel, toLevel, fromAsc, toAsc)
 
     let normalCosts = null, skillCosts = null, burstCosts = null
     if (!talentNoop) {
@@ -337,8 +337,8 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
             <h3 className="text-[var(--text)] text-sm truncate font-bold">{displayName}</h3>
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className={`text-xs tracking-wide leading-none ${getRarityClass(rarity)}`}>{getStars(rarity)}</span>
-              {inRoster && totalCosts?.mora !== undefined && (
-                <span className="text-xs text-[var(--gold)] tracking-wider">• Mora: {formatNumber(totalCosts?.mora || 0)}</span>
+              {inRoster && (totalCosts?.Mora !== undefined || totalCosts?.mora !== undefined) && (
+                <span className="text-xs text-[var(--gold)] tracking-wider">• Mora: {formatNumber(totalCosts?.Mora ?? totalCosts?.mora ?? 0)}</span>
               )}
             </div>
           </div>
@@ -411,7 +411,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
             ) : (
               <div className="grid grid-cols-4 gap-2">
                 {Object.entries(totalCosts)
-                  .filter(([matId, qty]) => qty > 0 && matId !== 'mora')
+                  .filter(([matId, qty]) => qty > 0 && matId !== 'mora' && matId !== 'Mora')
                   .sort(([idA], [idB]) => {
                     const weightA = getSortWeight(idA, categories[idA]);
                     const weightB = getSortWeight(idB, categories[idB]);

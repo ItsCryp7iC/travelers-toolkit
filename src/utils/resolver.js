@@ -44,7 +44,7 @@ const getRarity = (key) => {
 export function resolveSpecificItem(genericKey, character = null, weapon = null, isAscension = false) {
   const rarity = getRarity(genericKey);
   
-  if (genericKey === 'mora') return { id: 'Mora', category: 'mora', name: 'Mora', rarity: 3 }
+  if (genericKey === 'mora' || genericKey === 'total_mora' || genericKey === 'totalMora') return { id: 'Mora', category: 'mora', name: 'Mora', rarity: 3 }
   if (genericKey === 'heros_wit') return { id: 'HerosWit', category: 'heroWits', name: "Hero's Wit", rarity: 4 }
   if (genericKey === 'crown') return { id: 'CrownOfInsight', category: 'crown', name: 'Crown of Insight', rarity: 5 }
   if (genericKey === 'mystic_ore') return { id: 'MysticEnhancementOre', category: 'mysticOre', name: 'Mystic Enhancement Ore', rarity: 3 }

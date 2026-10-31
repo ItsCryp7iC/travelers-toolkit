@@ -66,7 +66,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
     if (ascNoop && refNoop) return { totalCosts: {}, categories: {} }
 
     let ascCosts = null
-    if (!ascNoop) ascCosts = calculateWeaponCost(weapon, fromLevel, toLevel)
+    if (!ascNoop) ascCosts = calculateWeaponCost(weapon, fromLevel, toLevel, fromAsc, toAsc)
 
     let refCosts = null
     if (!refNoop) {
@@ -84,7 +84,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
         if (key === 'totalExp' || key === 'normalOre' || key === 'fineOre' || key === 'wastedExp' || key === 'expToNextLevel') return;
         if (typeof val === 'number' && val > 0) {
           let resolvedKey = key;
-          if (key === 'totalMora') resolvedKey = 'mora';
+          if (key === 'totalMora' || key === 'total_mora') resolvedKey = 'mora';
           if (key === 'mysticOre') resolvedKey = 'mystic_enhancement_ore';
 
           const resolved = resolveSpecificItem(resolvedKey, null, weapon);
@@ -222,9 +222,9 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
           <h3 className="text-[var(--text)] text-sm truncate font-bold">{displayName}</h3>
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className={`text-xs tracking-wide leading-none ${getRarityClass(rarity)}`}>{getStars(rarity)}</span>
-            {inArmory && totalCosts?.mora !== undefined && (
+            {inArmory && (totalCosts?.Mora !== undefined || totalCosts?.mora !== undefined) && (
               <span className="text-xs text-[var(--gold)] tracking-wider">
-                • Mora: {formatNumber(totalCosts?.mora || 0)}
+                • Mora: {formatNumber(totalCosts?.Mora ?? totalCosts?.mora ?? 0)}
               </span>
             )}
           </div>
@@ -294,7 +294,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
           ) : (
             <div className="grid grid-cols-4 gap-2">
               {Object.entries(totalCosts)
-                .filter(([matId, qty]) => qty > 0 && matId !== 'mora')
+                .filter(([matId, qty]) => qty > 0 && matId !== 'mora' && matId !== 'Mora')
                 .sort(([idA], [idB]) => {
                   const weightA = getSortWeight(idA, categories[idA]);
                   const weightB = getSortWeight(idB, categories[idB]);

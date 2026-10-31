@@ -61,4 +61,111 @@ describe('aggregator — aggregateRosterCosts', () => {
     expect(result.breakdown.some((b) => b.name === 'Mistsplitter Reforged')).toBe(true);
     expect(result.totalCosts.Mora).toBeGreaterThan(0);
   });
+
+  it('charges 0 boss materials, 0 gemstones, and 0 local specialties for Level 80 A6 characters targeting Level 90 A6', () => {
+    const roster = {
+      'Jean': {
+        level: 80,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 1, skill: 1, burst: 1 },
+      },
+    };
+
+    const result = aggregateRosterCosts(roster, []);
+    // Jean at 80/90 A6 needs only leveling XP and Mora, 0 boss materials
+    expect(result.totalCosts.HurricaneSeed).toBeUndefined();
+    expect(result.totalCosts.DandelionSeed).toBeUndefined();
+    expect(result.totalCosts.VayudaTurquoiseGemstone).toBeUndefined();
+    expect(result.totalCosts.DamagedMask).toBeUndefined();
+
+    // Exact Level 80->90 leveling costs
+    expect(result.totalCosts.HerosWit).toBe(162);
+    expect(result.totalCosts.Mora).toBe(647990);
+  });
+
+  it('correctly replicates 0 boss materials for user reported characters (Jean, Aloy, Keqing) at 80/90 A6', () => {
+    const roster = {
+      'Jean': {
+        level: 80,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 1, skill: 1, burst: 1 },
+      },
+      'Aloy': {
+        level: 80,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 1, skill: 1, burst: 1 },
+      },
+      'Keqing': {
+        level: 80,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 1, skill: 1, burst: 1 },
+      },
+    };
+
+    const result = aggregateRosterCosts(roster, []);
+    // None of these max-ascended characters should require boss materials
+    expect(result.totalCosts.HurricaneSeed).toBeUndefined();
+    expect(result.totalCosts.CrystallineBloom).toBeUndefined();
+    expect(result.totalCosts.LightningPrism).toBeUndefined();
+  });
+
+  it('charges 0 boss materials for milestone Level 70 A5 characters targeting Level 80 A5', () => {
+    const roster = {
+      'Jean': {
+        level: 70,
+        targetLevel: 80,
+        ascension: 5,
+        targetAscension: 5,
+        talents: { normal: 1, skill: 1, burst: 1 },
+        targetTalents: { normal: 1, skill: 1, burst: 1 },
+      },
+    };
+
+    const result = aggregateRosterCosts(roster, []);
+    // Phase 5 already completed -> 0 boss mats, 0 gem chunks
+    expect(result.totalCosts.HurricaneSeed).toBeUndefined();
+    expect(result.totalCosts.VayudaTurquoiseChunk).toBeUndefined();
+    expect(result.totalCosts.HerosWit).toBe(73);
+    expect(result.totalCosts.Mora).toBe(294740);
+  });
+
+  it('provides disambiguated characterCount and weaponCount', () => {
+    const roster = {
+      'Bennett': {
+        level: 70,
+        targetLevel: 80,
+        ascension: 4,
+        targetAscension: 5,
+        talents: { normal: 1, skill: 6, burst: 8 },
+        targetTalents: { normal: 1, skill: 8, burst: 10 },
+      },
+    };
+
+    const trackedWeapons = [
+      {
+        weaponName: 'Mistsplitter Reforged',
+        level: 1,
+        targetLevel: 90,
+        ascension: 0,
+        targetAscension: 6,
+      },
+    ];
+
+    const result = aggregateRosterCosts(roster, trackedWeapons);
+    expect(result.trackedCount).toBe(2);
+    expect(result.characterCount).toBe(1);
+    expect(result.weaponCount).toBe(1);
+  });
 });
