@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import notify from '../../utils/notify';
+import { acquireBodyScrollLock } from '../../utils/scrollLock';
 
 export function StagingModal({ isOpen, onClose, stagedUpdates, setStagedUpdates }) {
   const [editingItemInfo, setEditingItemInfo] = useState(null); // { filename, index }
@@ -15,6 +16,12 @@ export function StagingModal({ isOpen, onClose, stagedUpdates, setStagedUpdates 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  // Lock body scroll while modal is open, restoring previous overflow state
+  useEffect(() => {
+    if (!isOpen) return;
+    return acquireBodyScrollLock();
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import useStore from '../store/useStore';
 import { reconcileCharacters, getSafeWeaponCycles } from '../utils/hoyolabCharacterReconciliation';
 import { buildHoyolabApplyPlan } from '../utils/hoyolabSyncApply';
@@ -6,6 +6,7 @@ import { getElementIcon } from '../utils/assetHelper';
 import HoyolabCharacterCard from './hoyolabSync/HoyolabCharacterCard';
 import HoyolabSyncSummary from './hoyolabSync/HoyolabSyncSummary';
 import notify from '../utils/notify';
+import { acquireBodyScrollLock } from '../utils/scrollLock';
 
 export const isCharacterActionable = (char) => {
   if (!char) return false;
@@ -36,6 +37,8 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [applyResult, setApplyResult] = useState(null);
   const [planSummary, setPlanSummary] = useState(null);
+  const [isApplying, setIsApplying] = useState(false);
+  const isApplyingRef = useRef(false);
 
   const roster = useStore(s => s.roster) || {};
   const trackedWeapons = useStore(s => s.trackedWeapons) || [];
@@ -55,6 +58,8 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       setSelectedDerivedTravelers({});
       setShowConfirmation(false);
       setApplyResult(null);
+      setIsApplying(false);
+      isApplyingRef.current = false;
     }
   }, [isOpen]);
 
@@ -73,6 +78,17 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, showConfirmation, loading, applyResult, onClose]);
+
+  // Lock body scroll while modal or confirmation is open, restoring previous overflow state
+  useEffect(() => {
+    if (!isOpen) return;
+    return acquireBodyScrollLock();
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!showConfirmation) return;
+    return acquireBodyScrollLock();
+  }, [showConfirmation]);
 
   const fetchSyncPreview = async () => {
     setLoading(true);
@@ -243,13 +259,19 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   };
 
   const confirmApply = () => {
+    if (isApplyingRef.current) return;
+    isApplyingRef.current = true;
+    setIsApplying(true);
     try {
       const result = applyHoyolabSync(planSummary.plan);
       setApplyResult(result);
+      setShowConfirmation(false);
     } catch (e) {
       notify.error("Failed to apply sync: " + e.message);
+      setIsApplying(false);
+      isApplyingRef.current = false;
+      setShowConfirmation(false);
     }
-    setShowConfirmation(false);
   };
 
   const { activeTraveler, activeTravelerElement, travelerVariants } = useMemo(() => {
@@ -479,41 +501,64 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[var(--bg)] border border-[var(--border)] rounded-2xl w-full max-w-5xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 md:p-6 bg-black/60 backdrop-blur-sm animate-fade-in"
+      role="presentation"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !loading && !applyResult) {
+          if (showConfirmation) setShowConfirmation(false);
+          else onClose();
+        }
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="hoyolab-sync-modal-title"
+        className="bg-[var(--bg)] border-0 sm:border border-[var(--border)] rounded-none sm:rounded-2xl w-full max-w-5xl h-[100dvh] sm:h-auto max-h-[100dvh] sm:max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up"
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--surface)]">
-          <h2 className="text-xl font-bold text-[var(--text)] flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-[var(--border)] bg-[var(--surface)] shrink-0">
+          <h2 id="hoyolab-sync-modal-title" className="text-base sm:text-xl font-bold text-[var(--text)] flex items-center gap-2 truncate">
             Sync Characters from HoYoLAB
           </h2>
-          <button onClick={onClose} className="text-[var(--muted)] hover:text-[var(--text)] transition-colors p-1">
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--surface-light)] transition-colors shrink-0"
+            aria-label="Close modal"
+          >
             ✕
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto bg-[var(--bg)]">
+        <div className="flex-1 overflow-y-auto bg-[var(--bg)] custom-scrollbar">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-8 h-8 border-2 border-[var(--gold)] border-t-transparent rounded-full animate-spin mb-4"></div>
               <p className="text-[var(--muted)]">Fetching and mapping characters...</p>
             </div>
           ) : error ? (
-            <div className="p-6">
-              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 text-center">
+            <div className="p-4 sm:p-6">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 sm:p-6 text-center">
                 <span className="text-4xl block mb-2">⚠️</span>
                 <h3 className="text-red-400 font-bold mb-2">Sync Failed</h3>
-                <p className="text-red-300/80 text-sm">{error}</p>
-                <button onClick={fetchSyncPreview} className="mt-4 px-4 py-2 bg-[var(--surface-light)] rounded-lg text-sm hover:bg-[var(--border)] transition-colors">
+                <p className="text-red-300/80 text-sm break-words">{error}</p>
+                <button
+                  type="button"
+                  onClick={fetchSyncPreview}
+                  className="mt-4 px-4 py-2 bg-[var(--surface-light)] rounded-lg text-sm hover:bg-[var(--border)] transition-colors min-h-[40px]"
+                >
                   Retry
                 </button>
               </div>
             </div>
           ) : applyResult ? (
-            <div className="p-10 flex flex-col items-center justify-center">
+            <div className="p-6 sm:p-10 flex flex-col items-center justify-center text-center">
               <span className="text-5xl mb-4">✅</span>
               <h2 className="text-2xl font-bold text-green-400 mb-6">Sync Complete</h2>
-              <div className="bg-[var(--surface)] p-6 rounded-xl border border-[var(--border)] w-full max-w-sm">
+              <div className="bg-[var(--surface)] p-4 sm:p-6 rounded-xl border border-[var(--border)] w-full max-w-sm">
                 <div className="flex justify-between py-2 border-b border-[var(--border)]">
                   <span className="text-[var(--muted)]">Characters Added</span>
                   <span className="font-bold text-[var(--text)]">{applyResult.charactersAdded}</span>
@@ -531,13 +576,17 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                   <span className="font-bold text-[var(--text)]">{applyResult.weaponsUpdatedOrReassigned}</span>
                 </div>
                 {applyResult.travelerVariantsAdded > 0 && (
-                  <div className="flex justify-between py-2">
+                  <div className="flex justify-between py-2 border-t border-[var(--border)]">
                     <span className="text-[var(--muted)]">Traveler Variants Added</span>
                     <span className="font-bold text-[var(--text)]">{applyResult.travelerVariantsAdded}</span>
                   </div>
                 )}
               </div>
-              <button onClick={onClose} className="mt-8 px-6 py-2 bg-[var(--gold)] text-[var(--bg)] font-bold rounded-xl shadow-lg hover:scale-105 transition-transform">
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-6 sm:mt-8 px-6 py-2.5 bg-[var(--gold)] text-[var(--bg)] font-bold rounded-xl shadow-lg hover:scale-105 transition-transform min-h-[44px] w-full sm:w-auto"
+              >
                 Review Updated State
               </button>
             </div>
@@ -548,7 +597,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
               {/* Traveler Section */}
               {activeTraveler && isTravelerVisible && (
-                <div className="mx-6 mt-4 p-4 bg-[var(--surface-light)] border border-[var(--border)] rounded-xl relative overflow-hidden">
+                <div className="mx-3 sm:mx-6 mt-3 sm:mt-4 p-3 sm:p-4 bg-[var(--surface-light)] border border-[var(--border)] rounded-xl relative overflow-hidden">
                   <div className="flex flex-col gap-4">
                     <div className="flex justify-between items-start">
                       <h3 className="font-bold text-[var(--text)] text-lg flex items-center gap-2">
@@ -638,7 +687,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
               {/* Bulk Controls */}
               {Object.keys(roster).length === 0 && reconciliationResult.summary.syncRelevant > 0 && (
-                <div className="mx-6 mt-4 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-between">
+                <div className="mx-3 sm:mx-6 mt-3 sm:mt-4 p-3 sm:p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-between">
                   <div className="flex flex-col">
                     <h3 className="font-bold text-cyan-400">Welcome to Traveler's Toolkit</h3>
                     <p className="text-sm text-[var(--muted)]">Import your current HoYoLAB roster into Traveler's Toolkit. Planner targets will remain editable after import.</p>
@@ -647,10 +696,10 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
               )}
 
               {/* Sticky Search & Filter Toolbar */}
-              <div className="px-6 py-3 border-b border-[var(--border)] bg-[var(--bg)] sticky top-0 z-10 mt-2 flex flex-col gap-2.5">
+              <div className="px-3 sm:px-6 py-2.5 sm:py-3 border-b border-[var(--border)] bg-[var(--bg)] sticky top-0 z-10 flex flex-col gap-2.5 shrink-0">
                 {/* ROW 1: Search + Actions */}
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
-                  <div className="relative flex-1 min-w-[280px]">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full">
+                  <div className="relative flex-1 min-w-0">
                     <svg
                       className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)] pointer-events-none"
                       fill="none"
@@ -671,10 +720,11 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search characters or weapons..."
                       aria-label="Search characters or weapons"
-                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-xl pl-9 pr-8 py-2 text-sm text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
+                      className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-xl pl-9 pr-8 py-2 text-sm text-[var(--text)] placeholder-[var(--muted)] focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors min-h-[40px]"
                     />
                     {searchQuery && (
                       <button
+                        type="button"
                         onClick={() => setSearchQuery('')}
                         aria-label="Clear search"
                         className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)] text-xs p-1 rounded-md"
@@ -685,14 +735,16 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button
+                      type="button"
                       onClick={handleSelectAllSafe}
-                      className="whitespace-nowrap px-4 py-2 text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded-xl text-cyan-400 transition-colors"
+                      className="flex-1 sm:flex-none whitespace-nowrap px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded-xl text-cyan-400 transition-colors min-h-[40px] text-center"
                     >
                       Select All Safe
                     </button>
                     <button
+                      type="button"
                       onClick={handleClearAll}
-                      className="whitespace-nowrap px-4 py-2 text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded-xl text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+                      className="flex-1 sm:flex-none whitespace-nowrap px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold bg-[var(--surface)] hover:bg-[var(--border)] rounded-xl text-[var(--muted)] hover:text-[var(--text)] transition-colors min-h-[40px] text-center"
                     >
                       Clear All
                     </button>
@@ -700,12 +752,13 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
                 </div>
 
                 {/* ROW 2: Filter Chips */}
-                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                <div className="flex items-center gap-1.5 sm:gap-2 pt-0.5 overflow-x-auto no-scrollbar pb-0.5">
                   {['All', 'New', 'Updates', 'Unchanged', 'Needs Attention'].map(f => (
                     <button
                       key={f}
+                      type="button"
                       onClick={() => setFilter(f)}
-                      className={`px-4 py-1.5 text-sm font-semibold rounded-full whitespace-nowrap transition-colors ${filter === f ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
+                      className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-full whitespace-nowrap shrink-0 transition-colors ${filter === f ? 'bg-[var(--gold)] text-[var(--bg)]' : 'bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'}`}
                     >
                       {f}
                     </button>
@@ -714,7 +767,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
               </div>
 
               {/* Rows */}
-              <div className="p-4 md:p-6 space-y-3">
+              <div className="p-3 sm:p-4 md:p-6 space-y-3">
                 {filteredChars.map((char) => (
                   <HoyolabCharacterCard
                     key={char.hoyolabId}
@@ -742,21 +795,26 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
         {/* Footer */}
         {!applyResult && (
-          <div className="p-4 border-t border-[var(--border)] bg-[var(--surface)] flex justify-between items-center z-10">
-            <button onClick={onClose} className="px-5 py-2 text-[var(--muted)] hover:text-[var(--text)] transition-colors font-bold text-sm">
+          <div className="p-3 sm:p-4 border-t border-[var(--border)] bg-[var(--surface)] flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2.5 sm:gap-3 z-10 shrink-0">
+            <button
+              type="button"
+              onClick={onClose}
+              className="order-2 sm:order-1 px-4 py-2.5 text-[var(--muted)] hover:text-[var(--text)] transition-colors font-bold text-sm min-h-[44px] sm:min-h-0 text-center rounded-xl hover:bg-[var(--surface-light)] sm:hover:bg-transparent"
+            >
               Cancel
             </button>
-            <div className="flex items-center gap-3">
+            <div className="order-1 sm:order-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
               {!canApply && applyBlockReason && (
-                <span className="text-xs text-amber-400 font-medium max-w-md text-right">
+                <span className="text-xs text-amber-400 font-medium text-center sm:text-right max-w-md break-words">
                   {applyBlockReason}
                 </span>
               )}
               <button
+                type="button"
                 onClick={prepareApply}
                 disabled={!canApply}
                 title={applyBlockReason}
-                className={`px-5 py-2 rounded-xl font-bold text-sm shadow-lg transition-all ${canApply ? 'bg-[var(--gold)] text-[var(--bg)] hover:scale-105' : 'bg-[var(--surface-light)] text-[var(--muted)] opacity-50 cursor-not-allowed'}`}
+                className={`px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all min-h-[44px] flex items-center justify-center text-center ${canApply ? 'bg-[var(--gold)] text-[var(--bg)] hover:scale-105' : 'bg-[var(--surface-light)] text-[var(--muted)] opacity-50 cursor-not-allowed'}`}
               >
                 Apply Selected ({totalSelectedCount})
               </button>
@@ -767,9 +825,24 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
       {/* Confirmation Modal */}
       {showConfirmation && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="bg-[var(--bg)] border border-[var(--border)] rounded-2xl w-full max-w-sm flex flex-col shadow-2xl p-6">
-            <h3 className="text-xl font-bold mb-4">Apply HoYoLAB Sync?</h3>
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in"
+          role="presentation"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowConfirmation(false);
+            }
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sync-confirm-title"
+            className="bg-[var(--bg)] border border-[var(--border)] rounded-2xl w-full max-w-sm flex flex-col shadow-2xl p-4 sm:p-6 max-h-[calc(100dvh-2rem)] overflow-y-auto"
+          >
+            <h3 id="sync-confirm-title" className="text-lg sm:text-xl font-bold mb-4 text-[var(--text)] break-words">
+              Apply HoYoLAB Sync?
+            </h3>
             <div className="space-y-2 text-sm mb-6">
               <div className="flex justify-between"><span className="text-[var(--muted)]">Characters to Add</span><span className="font-bold text-green-400">{planSummary.newCount}</span></div>
               <div className="flex justify-between"><span className="text-[var(--muted)]">Characters to Update</span><span className="font-bold text-blue-400">{planSummary.updateCount}</span></div>
@@ -778,16 +851,25 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
               )}
               <div className="flex justify-between"><span className="text-[var(--muted)]">Weapons to Create</span><span className="font-bold text-cyan-400">{planSummary.weaponCreatedCount}</span></div>
               <div className="flex justify-between"><span className="text-[var(--muted)]">Existing Weapons to Reassign/Update</span><span className="font-bold text-[var(--text)]">{planSummary.weaponUpdatedCount}</span></div>
-              <div className="mt-4 p-3 bg-blue-500/10 rounded-lg text-blue-300 text-xs border border-blue-500/20">
+              <div className="mt-4 p-3 bg-blue-500/10 rounded-lg text-blue-300 text-xs border border-blue-500/20 break-words">
                 Planner targets will be safely preserved.
               </div>
             </div>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setShowConfirmation(false)} className="px-4 py-2 text-[var(--muted)] hover:text-[var(--text)] text-sm font-bold">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3">
+              <button
+                type="button"
+                onClick={() => setShowConfirmation(false)}
+                className="px-4 py-2.5 text-[var(--muted)] hover:text-[var(--text)] text-sm font-bold min-h-[44px] sm:min-h-0 text-center rounded-xl hover:bg-[var(--surface)] transition-colors"
+              >
                 Cancel
               </button>
-              <button onClick={confirmApply} className="px-4 py-2 bg-green-500 text-black font-bold rounded-xl text-sm hover:bg-green-400 shadow-[0_0_15px_rgba(34,197,94,0.4)]">
-                Apply Sync
+              <button
+                type="button"
+                onClick={confirmApply}
+                disabled={isApplying}
+                className="px-5 py-2.5 bg-green-500 text-black font-bold rounded-xl text-sm hover:bg-green-400 shadow-[0_0_15px_rgba(34,197,94,0.4)] min-h-[44px] flex items-center justify-center text-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isApplying ? 'Applying...' : 'Apply Sync'}
               </button>
             </div>
           </div>

@@ -20,8 +20,8 @@ export default function HoyoEmailLoginStep({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-lg p-3 text-xs text-[var(--color-text-muted)] flex items-start gap-2.5">
-        <span className="text-base leading-none select-none" aria-hidden="true">
+      <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-lg p-3 text-xs text-[var(--color-text-muted)] flex items-start gap-2.5 break-words">
+        <span className="text-base leading-none select-none shrink-0" aria-hidden="true">
           🛡️
         </span>
         <p className="leading-relaxed">
@@ -33,9 +33,9 @@ export default function HoyoEmailLoginStep({
       {error && (
         <div
           role="alert"
-          className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-3 text-xs flex items-center gap-2"
+          className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-3 text-xs flex items-start gap-2 break-words"
         >
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true" className="shrink-0">⚠️</span>
           <span>{error}</span>
         </div>
       )}
@@ -51,7 +51,7 @@ export default function HoyoEmailLoginStep({
           id="hoyolab-login-account"
           type="text"
           autoComplete="username"
-          className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary transition-colors disabled:opacity-50"
+          className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary transition-colors disabled:opacity-50 min-h-[42px] sm:min-h-[44px]"
           value={account}
           onChange={(e) => onChangeAccount(e.target.value)}
           placeholder="Enter email or username"
@@ -71,7 +71,7 @@ export default function HoyoEmailLoginStep({
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="text-[11px] text-[var(--color-text-muted)] hover:text-primary transition-colors select-none"
+            className="text-[11px] text-[var(--color-text-muted)] hover:text-primary transition-colors select-none p-1 min-h-[32px] flex items-center"
             tabIndex={-1}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
@@ -82,7 +82,7 @@ export default function HoyoEmailLoginStep({
           id="hoyolab-login-password"
           type={showPassword ? 'text' : 'password'}
           autoComplete="current-password"
-          className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary transition-colors disabled:opacity-50"
+          className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-sm text-[var(--color-text-main)] outline-none focus:border-primary transition-colors disabled:opacity-50 min-h-[42px] sm:min-h-[44px]"
           value={password}
           onChange={(e) => onChangePassword(e.target.value)}
           placeholder="Enter password"
@@ -90,19 +90,19 @@ export default function HoyoEmailLoginStep({
         />
       </div>
 
-      <div className="flex justify-end gap-3 mt-2">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 mt-2">
         <button
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="px-4 py-2 rounded-lg text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--elevated)] transition-colors disabled:opacity-50"
+          className="px-4 py-2.5 rounded-lg text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--elevated)] transition-colors disabled:opacity-50 w-full sm:w-auto min-h-[44px] flex items-center justify-center text-center"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isSubmitting || !account.trim() || !password}
-          className="genshin-btn px-6 py-2 min-w-[120px] flex justify-center items-center gap-2"
+          className="genshin-btn px-6 py-2.5 min-w-[120px] w-full sm:w-auto min-h-[44px] flex justify-center items-center gap-2 text-center"
         >
           {isSubmitting ? (
             <>

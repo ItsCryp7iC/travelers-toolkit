@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import useStore from '../../store/useStore';
 import notify from '../../utils/notify';
+import { acquireBodyScrollLock } from '../../utils/scrollLock';
 import HoyoEmailLoginStep from './HoyoEmailLoginStep';
 import HoyoGeetestStep from './HoyoGeetestStep';
 import HoyoEmailVerifyStep from './HoyoEmailVerifyStep';
@@ -91,6 +92,12 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
       }
     };
   }, [clearSensitiveData, cancelBackendFlow]);
+
+  // Lock body scroll while modal is open, restoring previous overflow state
+  useEffect(() => {
+    if (!isOpen) return;
+    return acquireBodyScrollLock();
+  }, [isOpen]);
 
   // Process nextStep directives from backend
   const handleNextStep = async (data) => {
@@ -284,29 +291,34 @@ export default function HoyoLoginModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto"
       role="presentation"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          handleClose();
+        }
+      }}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="hoyolab-login-modal-title"
-        className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 w-full max-w-md shadow-2xl relative animate-slide-up"
+        className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 w-full max-w-md shadow-2xl relative animate-slide-up max-h-[calc(100dvh-1.5rem)] sm:max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col my-auto"
       >
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-4 right-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 rounded-full flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--elevated)] transition-colors"
           aria-label="Close modal"
         >
           ✕
         </button>
 
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-2xl" aria-hidden="true">
+        <div className="flex items-center gap-2.5 sm:gap-3 mb-4 pr-8 shrink-0">
+          <span className="text-2xl shrink-0" aria-hidden="true">
             🌟
           </span>
-          <h2 id="hoyolab-login-modal-title" className="text-xl font-bold text-primary">
+          <h2 id="hoyolab-login-modal-title" className="text-lg sm:text-xl font-bold text-primary break-words">
             Sign in with HoYoLAB
           </h2>
         </div>

@@ -260,13 +260,13 @@ export default function HoyoGeetestStep({
   return (
     <div className="flex flex-col gap-4 text-center py-2">
       <div className="flex flex-col items-center gap-2">
-        <span className="text-3xl" aria-hidden="true">
+        <span className="text-3xl shrink-0" aria-hidden="true">
           🧩
         </span>
-        <h3 className="text-base font-bold text-[var(--color-text-main)]">
+        <h3 className="text-base font-bold text-[var(--color-text-main)] break-words">
           Security Verification Required
         </h3>
-        <p className="text-xs text-[var(--color-text-muted)] max-w-sm leading-relaxed">
+        <p className="text-xs text-[var(--color-text-muted)] max-w-sm leading-relaxed break-words">
           HoYoverse requires a puzzle verification challenge to complete authentication.
         </p>
       </div>
@@ -274,9 +274,9 @@ export default function HoyoGeetestStep({
       {displayedError && (
         <div
           role="alert"
-          className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-3 text-xs flex items-center justify-center gap-2"
+          className="bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg p-3 text-xs flex items-start sm:items-center justify-center gap-2 break-words text-left sm:text-center"
         >
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true" className="shrink-0">⚠️</span>
           <span>{displayedError}</span>
         </div>
       )}
@@ -289,7 +289,7 @@ export default function HoyoGeetestStep({
       )}
 
       {hasClosed && !isSubmitting && !displayedError && (
-        <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-lg p-3 text-xs text-[var(--color-text-muted)]">
+        <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-lg p-3 text-xs text-[var(--color-text-muted)] break-words">
           Verification was dismissed. Click below to reopen the challenge.
         </div>
       )}
@@ -301,12 +301,12 @@ export default function HoyoGeetestStep({
         </div>
       )}
 
-      <div className="flex justify-end gap-3 mt-4">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 mt-4">
         <button
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="px-4 py-2 rounded-lg text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--elevated)] transition-colors disabled:opacity-50"
+          className="px-4 py-2.5 rounded-lg text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--elevated)] transition-colors disabled:opacity-50 w-full sm:w-auto min-h-[44px] flex items-center justify-center text-center"
         >
           Cancel
         </button>
@@ -315,7 +315,7 @@ export default function HoyoGeetestStep({
             type="button"
             onClick={handleActionClick}
             disabled={isSubmitting}
-            className="genshin-btn px-6 py-2"
+            className="genshin-btn px-6 py-2.5 w-full sm:w-auto min-h-[44px] flex items-center justify-center text-center"
           >
             {isChallengeConsumed || (displayedError && !hasClosed)
               ? 'Start Sign-In Again'

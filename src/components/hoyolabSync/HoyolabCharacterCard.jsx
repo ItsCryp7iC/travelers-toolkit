@@ -15,28 +15,28 @@ export default function HoyolabCharacterCard({
   trackedWeaponsMap
 }) {
   return (
-    <div className={`bg-[var(--surface)] border ${isSelected ? 'border-cyan-500/50' : 'border-[var(--border)]'} rounded-xl p-4 flex flex-col md:flex-row gap-4 items-start md:items-center transition-colors`}>
+    <div className={`bg-[var(--surface)] border ${isSelected ? 'border-cyan-500/50' : 'border-[var(--border)]'} rounded-xl p-3 sm:p-4 flex flex-col md:flex-row gap-3 sm:gap-4 items-start md:items-center transition-colors`}>
       {/* Checkbox */}
       {char.status !== 'unmapped' && char.status !== 'ignored' && (!isTravelerCard || isActionable) && (
-        <label className="flex items-center gap-3 shrink-0 cursor-pointer">
+        <label className="flex items-center gap-2.5 shrink-0 cursor-pointer min-h-[40px]">
           <input
             type="checkbox"
             checked={!!isSelected}
             onChange={() => onToggleSelect(char.hoyolabId)}
-            className="w-5 h-5 rounded border-[var(--border)] bg-[var(--bg)] checked:bg-cyan-500"
+            className="w-5 h-5 rounded border-[var(--border)] bg-[var(--bg)] checked:bg-cyan-500 cursor-pointer"
           />
         </label>
       )}
 
       {/* Char Info */}
-      <div className="flex-1 min-w-[200px]">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-bold text-lg text-[var(--text)]">{char.rosterKey || char.hoyolab?.name}</span>
+      <div className="flex-1 min-w-0 md:min-w-[180px]">
+        <div className="flex flex-wrap items-center gap-2 mb-1">
+          <span className="font-bold text-base sm:text-lg text-[var(--text)] truncate">{char.rosterKey || char.hoyolab?.name}</span>
           <HoyolabSyncBadge status={char.status} />
         </div>
 
         {char.status === 'unmapped' ? (
-          <div className="text-orange-400 text-xs">Not yet supported by Toolkit data (ID: {char.hoyolabId})</div>
+          <div className="text-orange-400 text-xs break-words">Not yet supported by Toolkit data (ID: {char.hoyolabId})</div>
         ) : char.status === 'ignored' ? (
           <div className="text-[var(--muted)] text-xs">Excluded from planning sync</div>
         ) : !isTravelerCard ? (
@@ -48,12 +48,12 @@ export default function HoyolabCharacterCard({
 
       {/* Diff Area */}
       {char.status !== 'unmapped' && char.status !== 'ignored' && (
-        <div className="flex-[2] grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm w-full md:w-auto">
+        <div className="flex-[2] grid grid-cols-[auto_1fr] gap-x-3 sm:gap-x-4 gap-y-2.5 sm:gap-y-3 text-sm w-full md:w-auto">
 
           {/* Level & Asc */}
-          <div className="text-[var(--muted)] pt-1">Level</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 font-mono">
+          <div className="text-[var(--muted)] pt-1 text-xs sm:text-sm font-medium">Level</div>
+          <div className="flex flex-col gap-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm">
               {char.status === 'new' ? (
                 <span className="text-cyan-400">Lv {char.hoyolab?.level} A{char.hoyolab?.ascension || 0}</span>
               ) : (
@@ -71,11 +71,12 @@ export default function HoyolabCharacterCard({
               )}
             </div>
             {((char.changes?.level?.direction === 'local-ahead' || char.changes?.ascension?.direction === 'local-ahead')) && (
-              <div className="flex items-center gap-2 mt-1 bg-yellow-500/10 p-2 rounded text-xs border border-yellow-500/20">
+              <div className="flex flex-wrap items-center justify-between gap-1.5 mt-1 bg-yellow-500/10 p-2 rounded-lg text-xs border border-yellow-500/20">
                 <span className="text-yellow-400">Toolkit is ahead.</span>
                 <button
+                  type="button"
                   onClick={() => onToggleLocalAheadOverride(char.hoyolabId, 'level')}
-                  className="px-2 py-1 bg-[var(--surface)] hover:bg-[var(--border)] rounded text-[var(--text)] ml-auto"
+                  className="px-2.5 py-1 min-h-[32px] bg-[var(--surface)] hover:bg-[var(--border)] rounded text-[var(--text)] ml-auto text-xs"
                 >
                   {localAheadOverrides?.[char.hoyolabId]?.level ? 'Using HoYoLAB' : 'Keep Toolkit'}
                 </button>
@@ -84,9 +85,9 @@ export default function HoyolabCharacterCard({
           </div>
 
           {/* Talents */}
-          <div className="text-[var(--muted)] pt-1">Talents</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 font-mono">
+          <div className="text-[var(--muted)] pt-1 text-xs sm:text-sm font-medium">Talents</div>
+          <div className="flex flex-col gap-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-xs sm:text-sm">
               {char.status === 'new' ? (
                 <span className="text-cyan-400">
                   {char.hoyolab?.talents?.normal || 1} / {char.hoyolab?.talents?.skill || 1} / {char.hoyolab?.talents?.burst || 1}
@@ -106,11 +107,12 @@ export default function HoyolabCharacterCard({
               )}
             </div>
             {(char.changes?.talents && Object.values(char.changes.talents).some(t => t?.direction === 'local-ahead')) && (
-              <div className="flex items-center gap-2 mt-1 bg-yellow-500/10 p-2 rounded text-xs border border-yellow-500/20">
+              <div className="flex flex-wrap items-center justify-between gap-1.5 mt-1 bg-yellow-500/10 p-2 rounded-lg text-xs border border-yellow-500/20">
                 <span className="text-yellow-400">Toolkit talents ahead.</span>
                 <button
+                  type="button"
                   onClick={() => onToggleLocalAheadOverride(char.hoyolabId, 'skill')}
-                  className="px-2 py-1 bg-[var(--surface)] hover:bg-[var(--border)] rounded text-[var(--text)] ml-auto"
+                  className="px-2.5 py-1 min-h-[32px] bg-[var(--surface)] hover:bg-[var(--border)] rounded text-[var(--text)] ml-auto text-xs"
                 >
                   {localAheadOverrides?.[char.hoyolabId]?.skill ? 'Using HoYoLAB' : 'Keep Toolkit'}
                 </button>
@@ -119,9 +121,9 @@ export default function HoyolabCharacterCard({
           </div>
 
           {/* Weapon */}
-          <div className="text-[var(--muted)] pt-1">Weapon</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
+          <div className="text-[var(--muted)] pt-1 text-xs sm:text-sm font-medium">Weapon</div>
+          <div className="flex flex-col gap-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
               {char.weaponReconciliation?.status === 'unmapped' ? (
                 <span className="text-orange-400">Unmapped ({char.weaponReconciliation?.hoyolab?.id})</span>
               ) : char.weaponReconciliation?.status === 'would-create' || char.status === 'new' ? (

@@ -14,7 +14,7 @@ export default function HoyolabWeaponResolver({
       <div className="flex flex-col gap-2 mt-2 bg-[var(--surface-light)] p-3 rounded-xl border border-[var(--border)]">
         <span className="text-xs font-bold text-[var(--text)]">Weapon Update Action:</span>
         <div className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[36px]">
             <input
               type="radio"
               name={`w_${hoyolabId}`}
@@ -22,9 +22,9 @@ export default function HoyolabWeaponResolver({
               checked={currentChoice === 'update-existing'}
               onChange={() => onChoiceChange(hoyolabId, 'update-existing')}
             />
-            <span className="text-cyan-400 font-medium">Update Existing Weapon</span>
+            <span className="text-cyan-400 font-medium break-words">Update Existing Weapon</span>
           </label>
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[36px]">
             <input
               type="radio"
               name={`w_${hoyolabId}`}
@@ -32,7 +32,7 @@ export default function HoyolabWeaponResolver({
               checked={currentChoice === 'ignore'}
               onChange={() => onChoiceChange(hoyolabId, 'ignore')}
             />
-            <span className="text-[var(--muted)]">Leave Weapon Unchanged</span>
+            <span className="text-[var(--muted)] break-words">Leave Weapon Unchanged</span>
           </label>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function HoyolabWeaponResolver({
           </p>
         )}
         <div className="flex flex-col gap-2.5">
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[36px]">
             <input
               type="radio"
               name={`w_${hoyolabId}`}
@@ -73,11 +73,11 @@ export default function HoyolabWeaponResolver({
               checked={currentChoice === 'ignore'}
               onChange={() => onChoiceChange(hoyolabId, 'ignore')}
             />
-            <span className="text-[var(--muted)]">Leave Weapon Unchanged</span>
+            <span className="text-[var(--muted)] break-words">Leave Weapon Unchanged</span>
           </label>
 
           {candidate && (
-            <label className="flex items-start gap-2 text-sm cursor-pointer">
+            <label className="flex items-start gap-2 text-sm cursor-pointer min-h-[36px]">
               <input
                 type="radio"
                 className="mt-1"
@@ -86,11 +86,11 @@ export default function HoyolabWeaponResolver({
                 checked={currentChoice === `assign|${candidate.id}`}
                 onChange={() => onChoiceChange(hoyolabId, `assign|${candidate.id}`)}
               />
-              <div className="flex flex-col gap-0.5">
-                <span className="text-cyan-400 font-medium">
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <span className="text-cyan-400 font-medium break-words">
                   Use Existing Tracked Weapon
                 </span>
-                <span className="text-xs text-[var(--text)]">
+                <span className="text-xs text-[var(--text)] break-words">
                   {candidate.weaponName || char.weaponReconciliation?.weaponName} — Lv {candidate.level} R{candidate.currentRefinement}
                   {showsUpgrade && (
                     <span className="text-cyan-400 font-mono ml-1.5">
@@ -98,7 +98,7 @@ export default function HoyolabWeaponResolver({
                     </span>
                   )}
                 </span>
-                <span className="text-xs text-[var(--muted)]">
+                <span className="text-xs text-[var(--muted)] break-words">
                   {candidate.assignedTo ? (
                     <span className="text-amber-400/90 font-medium">Currently assigned to: {candidate.assignedTo}</span>
                   ) : (
@@ -106,13 +106,13 @@ export default function HoyolabWeaponResolver({
                   )}
                 </span>
                 {showsUpgrade && currentChoice === `assign|${candidate.id}` && (
-                  <span className="text-xs text-cyan-300/70 mt-0.5">Stats will be updated to match HoYoLAB</span>
+                  <span className="text-xs text-cyan-300/70 mt-0.5 break-words">Stats will be updated to match HoYoLAB</span>
                 )}
               </div>
             </label>
           )}
 
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[36px]">
             <input
               type="radio"
               name={`w_${hoyolabId}`}
@@ -120,7 +120,7 @@ export default function HoyolabWeaponResolver({
               checked={currentChoice === 'create'}
               onChange={() => onChoiceChange(hoyolabId, 'create')}
             />
-            <span className="text-[var(--muted)] hover:text-cyan-400 transition-colors">Create New Tracked Instance</span>
+            <span className="text-[var(--muted)] hover:text-cyan-400 transition-colors break-words">Create New Tracked Instance</span>
           </label>
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function HoyolabWeaponResolver({
         </p>
       )}
       <div className="flex flex-col gap-2">
-        <label className="flex items-center gap-2 text-sm cursor-pointer">
+        <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[36px]">
           <input
             type="radio"
             name={`w_${hoyolabId}`}
@@ -154,9 +154,9 @@ export default function HoyolabWeaponResolver({
             checked={currentChoice === 'ignore'}
             onChange={() => onChoiceChange(hoyolabId, 'ignore')}
           />
-          <span className="text-[var(--muted)]">Leave Weapon Unchanged</span>
+          <span className="text-[var(--muted)] break-words">Leave Weapon Unchanged</span>
         </label>
-        <label className="flex items-center gap-2 text-sm cursor-pointer">
+        <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[36px]">
           <input
             type="radio"
             name={`w_${hoyolabId}`}
@@ -164,14 +164,14 @@ export default function HoyolabWeaponResolver({
             checked={currentChoice === 'create'}
             onChange={() => onChoiceChange(hoyolabId, 'create')}
           />
-          <span className="text-cyan-400">Create New Tracked Instance</span>
+          <span className="text-cyan-400 break-words">Create New Tracked Instance</span>
         </label>
         {char.weaponReconciliation?.candidates?.map(cand => {
           const rLvl = char.hoyolab.weapon?.level ?? 1;
           const rRef = char.hoyolab.weapon?.refinement ?? 1;
           const showsUpgrade = (cand.level < rLvl || cand.currentRefinement < rRef);
           return (
-            <label key={cand.id} className="flex items-start gap-2 text-sm cursor-pointer">
+            <label key={cand.id} className="flex items-start gap-2 text-sm cursor-pointer min-h-[36px]">
               <input
                 type="radio"
                 className="mt-1"
@@ -180,8 +180,8 @@ export default function HoyolabWeaponResolver({
                 checked={currentChoice === `assign|${cand.id}`}
                 onChange={() => onChoiceChange(hoyolabId, `assign|${cand.id}`)}
               />
-              <div className="flex flex-col">
-                <span className="text-cyan-400 font-medium">
+              <div className="flex flex-col min-w-0">
+                <span className="text-cyan-400 font-medium break-words">
                   Use existing: Lv {cand.level} R{cand.currentRefinement} ({cand.weaponName || char.weaponReconciliation?.weaponName}) — {cand.assignedTo ? `assigned to ${cand.assignedTo}` : 'unassigned'}
                   {showsUpgrade && (
                     <span className="text-cyan-400 font-mono ml-1.5">
@@ -190,7 +190,7 @@ export default function HoyolabWeaponResolver({
                   )}
                 </span>
                 {showsUpgrade && currentChoice === `assign|${cand.id}` && (
-                  <span className="text-xs text-cyan-300/70 mt-0.5">Stats will be updated to match HoYoLAB</span>
+                  <span className="text-xs text-cyan-300/70 mt-0.5 break-words">Stats will be updated to match HoYoLAB</span>
                 )}
               </div>
             </label>
