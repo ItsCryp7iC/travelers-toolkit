@@ -131,6 +131,7 @@ export default function AchievementData() {
             ref={fileInputRef}
             onChange={handleImportFile}
             style={{ display: 'none' }}
+            aria-label="Upload achievement JSON file"
           />
           <button className="genshin-btn-ghost w-full flex justify-center items-center gap-2 min-h-[40px] text-xs sm:text-sm" onClick={handleImportClick}>
             <span>📤</span> Import Achievements
@@ -139,18 +140,18 @@ export default function AchievementData() {
       </div>
 
       {importStatus && (
-        <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-xl p-3.5 sm:p-4 flex flex-col gap-3 shadow-lg mt-2">
+        <div className="bg-[var(--elevated)] border border-[var(--border)] rounded-xl p-3.5 sm:p-4 flex flex-col gap-3 shadow-lg mt-2" role="region" aria-label="Achievement Import Status">
           {importStatus.type === 'error' && (
-            <div className="text-red-400 text-xs sm:text-sm flex items-center justify-between gap-2">
+            <div className="text-red-400 text-xs sm:text-sm flex items-center justify-between gap-2" role="alert">
               <span className="break-words min-w-0 flex-1">{importStatus.message}</span>
-              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)] shrink-0 p-1" aria-label="Dismiss error">✕</button>
+              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)] shrink-0 p-1 min-w-[28px] min-h-[28px] flex items-center justify-center" aria-label="Dismiss error">✕</button>
             </div>
           )}
 
           {importStatus.type === 'success' && (
-            <div className="text-green-400 text-xs sm:text-sm flex items-center justify-between gap-2">
+            <div className="text-green-400 text-xs sm:text-sm flex items-center justify-between gap-2" role="status">
               <span className="break-words min-w-0 flex-1">{importStatus.message}</span>
-              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)] shrink-0 p-1" aria-label="Dismiss notification">✕</button>
+              <button onClick={cancelImport} className="text-[var(--muted)] hover:text-[var(--text)] shrink-0 p-1 min-w-[28px] min-h-[28px] flex items-center justify-center" aria-label="Dismiss notification">✕</button>
             </div>
           )}
 
@@ -189,14 +190,14 @@ export default function AchievementData() {
               </div>
               <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
                 {importStatus.result.format === 'NATIVE' && (
-                  <button onClick={() => confirmImport('merge')} className="bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-2 rounded transition-colors text-xs sm:text-sm min-h-[38px] flex items-center justify-center flex-1 sm:flex-none">
+                  <button onClick={() => confirmImport('merge')} className="bg-primary hover:bg-primary/80 text-black font-semibold px-4 py-2 rounded transition-colors text-xs sm:text-sm min-h-[40px] flex items-center justify-center flex-1 sm:flex-none">
                     Merge Progress
                   </button>
                 )}
-                <button onClick={() => confirmImport('replace')} className={`px-4 py-2 rounded transition-colors text-xs sm:text-sm font-semibold min-h-[38px] flex items-center justify-center flex-1 sm:flex-none ${importStatus.result.format === 'NATIVE' ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-primary hover:bg-primary/80 text-black'}`}>
+                <button onClick={() => confirmImport('replace')} className={`px-4 py-2 rounded transition-colors text-xs sm:text-sm font-semibold min-h-[40px] flex items-center justify-center flex-1 sm:flex-none ${importStatus.result.format === 'NATIVE' ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-primary hover:bg-primary/80 text-black'}`}>
                   {importStatus.result.format === 'NATIVE' ? 'Replace Progress' : 'Confirm Replacement'}
                 </button>
-                <button onClick={cancelImport} className="bg-white/5 hover:bg-white/10 text-[var(--text)] px-4 py-2 rounded border border-[var(--border)] transition-colors text-xs sm:text-sm min-h-[38px] flex items-center justify-center flex-1 sm:flex-none">
+                <button onClick={cancelImport} className="bg-white/5 hover:bg-white/10 text-[var(--text)] px-4 py-2 rounded border border-[var(--border)] transition-colors text-xs sm:text-sm min-h-[40px] flex items-center justify-center flex-1 sm:flex-none">
                   Cancel
                 </button>
               </div>

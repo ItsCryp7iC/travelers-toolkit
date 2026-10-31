@@ -289,5 +289,65 @@ describe('Settings Actions & Alert Replacement', () => {
       );
       expect(goodImportBtn).not.toBeNull();
     });
+
+    it('handles invalid backup file gracefully without altering store', async () => {
+      const notifySpy = vi.spyOn(notify, 'error');
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const fileInput = container.querySelector('input[aria-label="Upload backup JSON file"]');
+      expect(fileInput).not.toBeNull();
+
+      const invalidFile = new File(['invalid json content'], 'backup.json', { type: 'application/json' });
+      Object.defineProperty(fileInput, 'files', { value: [invalidFile] });
+
+      await act(async () => {
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        // FileReader is async
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      });
+
+      expect(notifySpy).toHaveBeenCalled();
+      expect(storeState.importData).not.toHaveBeenCalled();
+    });
+
+    it('renders cloud backup list items with accessible labels and triggers restore', async () => {
+      const notifySpy = vi.spyOn(notify, 'success');
+      driveSync.listBackupsFromDrive.mockResolvedValueOnce([
+        { id: 'cloud-backup-1', name: 'travelers-toolkit-backup-2026.json', createdTime: '2026-10-25T12:00:00.000Z' }
+      ]);
+      driveSync.downloadBackupFromDrive.mockResolvedValueOnce({
+        app: 'travelers-toolkit',
+        schemaVersion: 1,
+        createdAt: '2026-10-25T12:00:00.000Z',
+        data: {
+          roster: {},
+          trackedWeapons: [],
+          inventory: {},
+        },
+      });
+
+      await act(async () => {
+        root.render(<Settings />);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      });
+
+      const backupItem = container.querySelector('span[aria-label="Backup file: travelers-toolkit-backup-2026.json"]');
+      expect(backupItem).not.toBeNull();
+
+      const restoreBtn = container.querySelector('button[aria-label^="Restore backup from"]');
+      expect(restoreBtn).not.toBeNull();
+
+      await act(async () => {
+        restoreBtn.click();
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      });
+
+      expect(driveSync.downloadBackupFromDrive).toHaveBeenCalledWith('cloud-backup-1');
+      expect(storeState.importData).toHaveBeenCalled();
+      expect(notifySpy).toHaveBeenCalledWith('Cloud restore successful!');
+    });
   });
 });

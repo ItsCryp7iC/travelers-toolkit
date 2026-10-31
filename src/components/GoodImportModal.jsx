@@ -13,6 +13,21 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
   const [materials, setMaterials] = useState([]);
 
   useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onCancel();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onCancel]);
+
+  useEffect(() => {
     // 1. Characters
     setCharacters((parsedData.characters || []).map(c => ({ ...c, checked: true })));
     
@@ -147,9 +162,15 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
   const activeMaterials = materials.filter(m => m.group === activeMatTab);
 
   const renderWeaponCard = (w, index, globalIndex) => (
-    <div key={globalIndex} className={`flex flex-col gap-3 p-3 rounded-xl border transition-all ${w.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
+    <div key={globalIndex} className={`flex flex-col gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${w.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
       <div className="flex items-center gap-3">
-        <input type="checkbox" checked={w.checked} onChange={e => updateWeapon(globalIndex, 'checked', e.target.checked)} className="accent-primary w-4 h-4 cursor-pointer shrink-0" />
+        <input
+          type="checkbox"
+          checked={w.checked}
+          onChange={e => updateWeapon(globalIndex, 'checked', e.target.checked)}
+          className="accent-primary w-4 h-4 cursor-pointer shrink-0"
+          aria-label={`Select ${w.weaponName}`}
+        />
         <div className="w-12 h-12 rounded-lg bg-[var(--surface)] border border-[var(--border)] overflow-hidden shrink-0 flex items-center justify-center p-1">
           <GenshinImage src={getWeaponIcon(w.weaponName)} alt={w.weaponName} className="max-w-full max-h-full object-contain" />
         </div>
@@ -160,43 +181,81 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2 mt-1 pt-2 border-t border-[var(--border)]">
-        <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-          <span className="text-xs text-[var(--color-text-muted)] uppercase">Lvl</span>
-          <input type="number" min="1" max="90" value={w.level} onChange={e => updateWeapon(globalIndex, 'level', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
+        <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded min-h-[42px] justify-center">
+          <span className="text-[10px] text-[var(--color-text-muted)] uppercase">Lvl</span>
+          <input
+            type="number"
+            min="1"
+            max="90"
+            value={w.level}
+            onChange={e => updateWeapon(globalIndex, 'level', e.target.value)}
+            className="w-12 bg-transparent text-center text-xs text-white outline-none"
+            aria-label={`${w.weaponName} level`}
+          />
         </div>
-        <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-          <span className="text-xs text-[var(--color-text-muted)] uppercase">Asc</span>
-          <input type="number" min="0" max="6" value={w.ascension} onChange={e => updateWeapon(globalIndex, 'ascension', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
+        <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded min-h-[42px] justify-center">
+          <span className="text-[10px] text-[var(--color-text-muted)] uppercase">Asc</span>
+          <input
+            type="number"
+            min="0"
+            max="6"
+            value={w.ascension}
+            onChange={e => updateWeapon(globalIndex, 'ascension', e.target.value)}
+            className="w-12 bg-transparent text-center text-xs text-white outline-none"
+            aria-label={`${w.weaponName} ascension`}
+          />
         </div>
-        <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-          <span className="text-xs text-[var(--color-text-muted)] uppercase">Ref</span>
-          <input type="number" min="1" max="5" value={w.refinement} onChange={e => updateWeapon(globalIndex, 'refinement', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
+        <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded min-h-[42px] justify-center">
+          <span className="text-[10px] text-[var(--color-text-muted)] uppercase">Ref</span>
+          <input
+            type="number"
+            min="1"
+            max="5"
+            value={w.refinement}
+            onChange={e => updateWeapon(globalIndex, 'refinement', e.target.value)}
+            className="w-12 bg-transparent text-center text-xs text-white outline-none"
+            aria-label={`${w.weaponName} refinement`}
+          />
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className="modal-overlay animate-fade-in z-50 flex items-center justify-center p-4">
-      <div className="modal-panel flex flex-col h-[85vh] animate-slide-up" style={{ maxWidth: '1200px', width: '95%' }}>
-        
+    <div
+      className="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 md:p-6"
+      onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="good-import-title"
+    >
+      <div
+        id="good-import-panel"
+        className="w-full max-w-[1200px] flex flex-col h-[100dvh] sm:h-[85vh] max-h-[100dvh] sm:max-h-[90vh] rounded-none sm:rounded-2xl overflow-hidden shadow-2xl bg-[var(--elevated)] border-0 sm:border border-[var(--border)] animate-slide-up"
+      >
         {/* Header */}
-        <div className="modal-header shrink-0 flex justify-between items-center p-5 border-b border-[var(--border)]">
-          <div>
-            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+        <div className="modal-header shrink-0 flex justify-between items-center px-4 sm:px-6 py-3.5 sm:py-5 pt-[calc(0.875rem+env(safe-area-inset-top,0px))] sm:pt-5 border-b border-[var(--border)] bg-[var(--surface)]">
+          <div className="min-w-0 flex-1 mr-3">
+            <h2 id="good-import-title" className="text-lg sm:text-xl font-bold text-primary flex items-center gap-2 truncate">
               <span>📷</span> Review GOOD Import
             </h2>
-            <p className="text-xs text-[var(--color-text-muted)] mt-1">Select the items you want to import and modify any incorrect values.</p>
+            <p className="text-xs text-[var(--color-text-muted)] mt-0.5 sm:mt-1 truncate sm:whitespace-normal">Select the items you want to import and modify any incorrect values.</p>
           </div>
-          <button onClick={onCancel} className="text-[var(--color-text-muted)] hover:text-white text-xl px-2">✕</button>
+          <button
+            onClick={onCancel}
+            aria-label="Close modal"
+            className="w-8 h-8 rounded-full sm:rounded-lg bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--color-text-muted)] hover:text-white flex items-center justify-center transition-colors shrink-0 text-lg cursor-pointer"
+          >✕</button>
         </div>
 
         {/* Main Tabs */}
-        <div className="flex border-b border-[var(--border)] shrink-0 bg-[var(--elevated)]">
+        <div className="flex border-b border-[var(--border)] shrink-0 bg-[var(--elevated)]" role="tablist" aria-label="GOOD Import Categories">
           {['characters', 'weapons', 'materials'].map(tab => (
             <button
               key={tab}
-              className={`flex-1 py-3 text-sm font-bold uppercase transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary bg-[var(--surface)]' : 'text-[var(--color-text-muted)] hover:text-white'}`}
+              role="tab"
+              aria-selected={activeTab === tab}
+              className={`flex-1 py-3 text-xs sm:text-sm font-bold uppercase transition-colors min-h-[44px] flex items-center justify-center ${activeTab === tab ? 'text-primary border-b-2 border-primary bg-[var(--surface)]' : 'text-[var(--color-text-muted)] hover:text-white'}`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -205,13 +264,13 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto bg-[var(--surface)]">
+        <div className="flex-1 overflow-y-auto bg-[var(--surface)] scrollbar-thin">
           
           {/* Characters Tab */}
           {activeTab === 'characters' && (
             <div className="flex flex-col">
-              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)] flex items-center justify-between gap-3">
-                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] px-3.5 sm:px-5 py-2.5 sm:py-3 shadow-[0_4px_10px_rgba(0,0,0,0.1)] flex items-center justify-between gap-2.5 sm:gap-3 border-b border-[var(--border)]">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1 truncate">
                   {characters.filter(c => c.checked).length} selected / {characters.length} total characters
                 </div>
                 {characters.length > 0 && (
@@ -220,19 +279,25 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                       const allSelected = characters.every(c => c.checked);
                       setCharacters(characters.map(c => ({ ...c, checked: !allSelected })));
                     }}
-                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0"
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0 min-h-[36px] flex items-center justify-center cursor-pointer"
                   >
                     {characters.every(c => c.checked) ? 'Deselect All' : 'Select All'}
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-5 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3 sm:gap-4 p-3.5 sm:p-5 pt-3 sm:pt-4">
               {characters.map((char, index) => (
-                <div key={index} className={`flex flex-col gap-3 p-3 rounded-xl border transition-all ${char.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
+                <div key={index} className={`flex flex-col gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${char.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
                   
                   {/* Top Row */}
                   <div className="flex items-center gap-3">
-                    <input type="checkbox" checked={char.checked} onChange={e => updateChar(index, 'checked', e.target.checked)} className="accent-primary w-4 h-4 cursor-pointer shrink-0" />
+                    <input
+                      type="checkbox"
+                      checked={char.checked}
+                      onChange={e => updateChar(index, 'checked', e.target.checked)}
+                      className="accent-primary w-4 h-4 cursor-pointer shrink-0"
+                      aria-label={`Select ${char.name}`}
+                    />
                     <div className="w-12 h-12 rounded-lg bg-[var(--surface)] border border-[var(--border)] overflow-hidden shrink-0 relative">
                       <GenshinImage src={getCharacterAvatar(char.name)} alt={char.name} className="w-full h-full object-cover absolute inset-0" />
                     </div>
@@ -243,28 +308,68 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                   
                   {/* Bottom Stats Inputs */}
                   <div className="grid grid-cols-2 gap-2 mt-1 pt-2 border-t border-[var(--border)]">
-                    <div className="flex items-center justify-between bg-[var(--surface)] px-2 py-1 rounded">
+                    <div className="flex items-center justify-between bg-[var(--surface)] px-2.5 py-1.5 rounded min-h-[36px]">
                       <span className="text-xs text-[var(--color-text-muted)]">Lvl</span>
-                      <input type="number" min="1" max="90" value={char.level} onChange={(e) => updateChar(index, 'level', e.target.value)} className="w-12 bg-transparent text-right text-xs text-white outline-none" />
+                      <input
+                        type="number"
+                        min="1"
+                        max="90"
+                        value={char.level}
+                        onChange={(e) => updateChar(index, 'level', e.target.value)}
+                        className="w-12 bg-transparent text-right text-xs text-white outline-none"
+                        aria-label={`${char.name} level`}
+                      />
                     </div>
-                    <div className="flex items-center justify-between bg-[var(--surface)] px-2 py-1 rounded">
+                    <div className="flex items-center justify-between bg-[var(--surface)] px-2.5 py-1.5 rounded min-h-[36px]">
                       <span className="text-xs text-[var(--color-text-muted)]">Asc</span>
-                      <input type="number" min="0" max="6" value={char.ascension} onChange={(e) => updateChar(index, 'ascension', e.target.value)} className="w-12 bg-transparent text-right text-xs text-white outline-none" />
+                      <input
+                        type="number"
+                        min="0"
+                        max="6"
+                        value={char.ascension}
+                        onChange={(e) => updateChar(index, 'ascension', e.target.value)}
+                        className="w-12 bg-transparent text-right text-xs text-white outline-none"
+                        aria-label={`${char.name} ascension`}
+                      />
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-3 gap-2 mt-1">
-                    <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-                      <span className="text-xs text-[var(--color-text-muted)] uppercase">NA</span>
-                      <input type="number" min="1" max="10" value={char.talents?.normal || 1} onChange={(e) => updateCharTalent(index, 'normal', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
+                    <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded min-h-[42px] justify-center">
+                      <span className="text-[10px] text-[var(--color-text-muted)] uppercase">NA</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={char.talents?.normal || 1}
+                        onChange={(e) => updateCharTalent(index, 'normal', e.target.value)}
+                        className="w-12 bg-transparent text-center text-xs text-white outline-none"
+                        aria-label={`${char.name} normal attack level`}
+                      />
                     </div>
-                    <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-                      <span className="text-xs text-[var(--color-text-muted)] uppercase">Skill</span>
-                      <input type="number" min="1" max="10" value={char.talents?.skill || 1} onChange={(e) => updateCharTalent(index, 'skill', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
+                    <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded min-h-[42px] justify-center">
+                      <span className="text-[10px] text-[var(--color-text-muted)] uppercase">Skill</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={char.talents?.skill || 1}
+                        onChange={(e) => updateCharTalent(index, 'skill', e.target.value)}
+                        className="w-12 bg-transparent text-center text-xs text-white outline-none"
+                        aria-label={`${char.name} skill level`}
+                      />
                     </div>
-                    <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded">
-                      <span className="text-xs text-[var(--color-text-muted)] uppercase">Burst</span>
-                      <input type="number" min="1" max="10" value={char.talents?.burst || 1} onChange={(e) => updateCharTalent(index, 'burst', e.target.value)} className="w-12 bg-transparent text-center text-xs text-white outline-none" />
+                    <div className="flex flex-col items-center bg-[var(--surface)] px-1 py-1 rounded min-h-[42px] justify-center">
+                      <span className="text-[10px] text-[var(--color-text-muted)] uppercase">Burst</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={char.talents?.burst || 1}
+                        onChange={(e) => updateCharTalent(index, 'burst', e.target.value)}
+                        className="w-12 bg-transparent text-center text-xs text-white outline-none"
+                        aria-label={`${char.name} burst level`}
+                      />
                     </div>
                   </div>
                 </div>
@@ -277,8 +382,8 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           {/* Weapons Tab */}
           {activeTab === 'weapons' && (
             <div className="flex flex-col">
-              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)] flex items-center justify-between gap-3">
-                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] px-3.5 sm:px-5 py-2.5 sm:py-3 shadow-[0_4px_10px_rgba(0,0,0,0.1)] flex items-center justify-between gap-2.5 sm:gap-3 border-b border-[var(--border)]">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1 truncate">
                   {weapons.filter(w => w.checked).length} selected / {weapons.length} total weapons
                 </div>
                 {weapons.length > 0 && (
@@ -287,16 +392,16 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                       const allSelected = weapons.every(w => w.checked);
                       setWeapons(weapons.map(w => ({ ...w, checked: !allSelected })));
                     }}
-                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0"
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0 min-h-[36px] flex items-center justify-center cursor-pointer"
                   >
                     {weapons.every(w => w.checked) ? 'Deselect All' : 'Select All'}
                   </button>
                 )}
               </div>
-              <div className="flex flex-col gap-6 p-5 pt-4">
+              <div className="flex flex-col gap-5 sm:gap-6 p-3.5 sm:p-5 pt-3 sm:pt-4">
               {/* Equipped Weapons */}
               <div>
-                <div className="flex justify-between items-center mb-3 border-b border-[var(--border)] pb-1">
+                <div className="flex justify-between items-center mb-3 border-b border-[var(--border)] pb-1.5">
                   <h3 className="text-sm font-bold text-[var(--gold)] flex items-center gap-2">
                     Equipped Weapons
                   </h3>
@@ -307,21 +412,21 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                         const allSelected = equipped.every(w => w.checked);
                         setWeapons(weapons.map(w => w.location ? { ...w, checked: !allSelected } : w));
                       }}
-                      className="text-xs font-bold text-[var(--color-text-muted)] hover:text-white transition-colors px-2 py-0.5 rounded border border-transparent hover:border-[var(--border)] bg-[var(--surface)]"
+                      className="text-xs font-bold text-[var(--color-text-muted)] hover:text-white transition-colors px-2.5 py-1 rounded border border-transparent hover:border-[var(--border)] bg-[var(--surface)] min-h-[28px]"
                     >
                       {weapons.filter(w => w.location).every(w => w.checked) ? 'Deselect All' : 'Select All'}
                     </button>
                   )}
                 </div>
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3 sm:gap-4">
                   {weapons.filter(w => w.location).map((w, index) => renderWeaponCard(w, index, weapons.indexOf(w)))}
-                  {weapons.filter(w => w.location).length === 0 && <p className="text-xs text-[var(--color-text-muted)] italic px-4">None found.</p>}
+                  {weapons.filter(w => w.location).length === 0 && <p className="text-xs text-[var(--color-text-muted)] italic px-4 py-2">None found.</p>}
                 </div>
               </div>
 
               {/* Unequipped Weapons */}
               <div>
-                <div className="flex justify-between items-center mb-3 border-b border-[var(--border)] pb-1">
+                <div className="flex justify-between items-center mb-3 border-b border-[var(--border)] pb-1.5">
                   <h3 className="text-sm font-bold text-[var(--color-text-muted)] flex items-center gap-2">
                     Unequipped Weapons
                   </h3>
@@ -332,15 +437,15 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                         const allSelected = unequipped.every(w => w.checked);
                         setWeapons(weapons.map(w => !w.location ? { ...w, checked: !allSelected } : w));
                       }}
-                      className="text-xs font-bold text-[var(--color-text-muted)] hover:text-white transition-colors px-2 py-0.5 rounded border border-transparent hover:border-[var(--border)] bg-[var(--surface)]"
+                      className="text-xs font-bold text-[var(--color-text-muted)] hover:text-white transition-colors px-2.5 py-1 rounded border border-transparent hover:border-[var(--border)] bg-[var(--surface)] min-h-[28px]"
                     >
                       {weapons.filter(w => !w.location).every(w => w.checked) ? 'Deselect All' : 'Select All'}
                     </button>
                   )}
                 </div>
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3 sm:gap-4">
                   {weapons.filter(w => !w.location).map((w, index) => renderWeaponCard(w, index, weapons.indexOf(w)))}
-                  {weapons.filter(w => !w.location).length === 0 && <p className="text-xs text-[var(--color-text-muted)] italic px-4">None found.</p>}
+                  {weapons.filter(w => !w.location).length === 0 && <p className="text-xs text-[var(--color-text-muted)] italic px-4 py-2">None found.</p>}
                 </div>
               </div>
               </div>
@@ -350,13 +455,20 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
           {/* Materials Tab */}
           {activeTab === 'materials' && (
             <div className="flex flex-col">
-              <div className="sticky top-0 z-10 bg-[var(--surface)] p-5 pb-2 shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
+              <div className="sticky top-0 z-10 bg-[var(--surface)] px-3.5 sm:px-5 py-2.5 sm:py-3 shadow-[0_4px_10px_rgba(0,0,0,0.1)] border-b border-[var(--border)]">
               {/* Primary Material Categories */}
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div
+                id="material-category-tabs"
+                role="tablist"
+                aria-label="Material Categories"
+                className="flex flex-nowrap sm:flex-wrap gap-2 mb-2 overflow-x-auto no-scrollbar scrollbar-none pb-1"
+              >
                 {materialGroups.map(group => (
                   <button 
                     key={group}
-                    className={`px-3 py-1.5 text-xs rounded-full border transition-all shadow-sm ${activeMatTab === group ? 'bg-primary text-black border-primary font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-primary hover:text-white'}`}
+                    role="tab"
+                    aria-selected={activeMatTab === group}
+                    className={`px-3 py-1.5 text-xs rounded-full border transition-all shadow-sm shrink-0 min-h-[32px] ${activeMatTab === group ? 'bg-primary text-black border-primary font-bold' : 'bg-[var(--surface)] text-[var(--color-text-muted)] border-[var(--border)] hover:border-primary hover:text-white'}`}
                     onClick={() => setActiveMatTab(group)}
                   >
                     {group}
@@ -365,8 +477,8 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
               </div>
 
               {/* Materials List */}
-              <div className="flex items-center justify-between gap-3 mt-2">
-                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-4 py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1">
+              <div className="flex items-center justify-between gap-2.5 sm:gap-3 mt-1.5">
+                <div className="bg-[var(--gold)]/10 text-[var(--gold)] px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-semibold text-center rounded-lg border border-[var(--gold)]/20 flex-1 truncate">
                   {activeMaterials.filter(m => m.checked).length} selected / {activeMaterials.length} total materials
                 </div>
                 {activeMaterials.length > 0 && (
@@ -375,25 +487,31 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                       const allSelected = activeMaterials.every(m => m.checked);
                       setMaterials(materials.map(m => activeMaterials.includes(m) ? { ...m, checked: !allSelected } : m));
                     }}
-                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0"
+                    className="px-3 py-1.5 text-xs font-bold rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--color-text-muted)] hover:text-white hover:border-[var(--gold)] transition-colors shrink-0 min-h-[36px] flex items-center justify-center cursor-pointer"
                   >
                     {activeMaterials.every(m => m.checked) ? 'Deselect All' : 'Select All'}
                   </button>
                 )}
               </div>
               </div>
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-5 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3 sm:gap-4 p-3.5 sm:p-5 pt-3 sm:pt-4">
                 {activeMaterials.map((mat) => {
                   const globalIndex = materials.indexOf(mat);
                   return (
-                    <div key={globalIndex} className={`flex flex-col gap-3 p-3 rounded-xl border transition-all ${mat.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
+                    <div key={globalIndex} className={`flex flex-col gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${mat.checked ? 'border-primary bg-[var(--elevated)] shadow-md' : 'border-[var(--border)] opacity-60'}`}>
                       {/* Top Side */}
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <input type="checkbox" checked={mat.checked} onChange={e => {
-                          const newMats = [...materials];
-                          newMats[globalIndex].checked = e.target.checked;
-                          setMaterials(newMats);
-                        }} className="accent-primary w-4 h-4 cursor-pointer shrink-0" />
+                        <input
+                          type="checkbox"
+                          checked={mat.checked}
+                          onChange={e => {
+                            const newMats = [...materials];
+                            newMats[globalIndex].checked = e.target.checked;
+                            setMaterials(newMats);
+                          }}
+                          className="accent-primary w-4 h-4 cursor-pointer shrink-0"
+                          aria-label={`Select ${mat.label}`}
+                        />
                         
                         <div className="w-12 h-12 rounded-lg bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center p-1 shrink-0 relative overflow-hidden">
                           <GenshinImage src={getMaterialIcon(mat.label, mat.category)} alt={mat.label} className="w-full h-full object-contain relative z-10 drop-shadow-md" />
@@ -405,7 +523,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                       </div>
                       
                       {/* Bottom Side: Quantity Input */}
-                      <div className="flex items-center gap-2 bg-[var(--surface)] px-2 py-1.5 rounded border border-[var(--border)] mt-1 justify-between">
+                      <div className="flex items-center gap-2 bg-[var(--surface)] px-2.5 py-1.5 rounded border border-[var(--border)] mt-1 justify-between min-h-[38px]">
                         <span className="text-xs text-[var(--color-text-muted)] font-bold uppercase tracking-wider shrink-0">Qty</span>
                         <input 
                           type="number" 
@@ -413,6 +531,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
                           className="flex-1 min-w-0 bg-transparent text-right text-sm text-white outline-none font-bold"
                           value={mat.quantity}
                           onChange={e => updateMaterial(globalIndex, e.target.value)}
+                          aria-label={`${mat.label} quantity`}
                         />
                       </div>
                     </div>
@@ -426,11 +545,11 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 p-4 border-t border-[var(--border)] bg-[var(--elevated)] flex justify-end gap-3 rounded-b-xl">
-          <button onClick={onCancel} className="px-4 py-2 text-sm font-semibold text-[var(--color-text-muted)] hover:text-white transition-colors">
+        <div className="shrink-0 p-3.5 sm:p-4 pb-[calc(0.875rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-[var(--border)] bg-[var(--elevated)] flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 rounded-none sm:rounded-b-2xl">
+          <button onClick={onCancel} className="genshin-btn-ghost w-full sm:w-auto px-5 py-2.5 text-xs sm:text-sm font-semibold min-h-[44px] flex items-center justify-center transition-colors cursor-pointer">
             Cancel
           </button>
-          <button onClick={handleConfirm} className="genshin-btn px-6 py-2 text-sm shadow-lg">
+          <button onClick={handleConfirm} className="genshin-btn w-full sm:w-auto px-6 py-2.5 text-xs sm:text-sm font-bold shadow-lg min-h-[44px] flex items-center justify-center cursor-pointer">
             Confirm Import
           </button>
         </div>

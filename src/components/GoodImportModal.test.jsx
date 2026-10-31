@@ -104,7 +104,7 @@ describe('GoodImportModal Flattened Material Categories & Patch Semantics (C5)',
     ];
 
     const categoryButtons = Array.from(
-      container.querySelectorAll('.flex.flex-wrap.gap-2.mb-2 button')
+      container.querySelectorAll('#material-category-tabs button')
     ).map(b => b.textContent.trim());
 
     expect(categoryButtons).toEqual(expectedTabs);
@@ -415,5 +415,262 @@ describe('GoodImportModal Flattened Material Categories & Patch Semantics (C5)',
     const finalData = onConfirmMock.mock.calls[0][0];
     expect(finalData.materials['Mora']).toBeUndefined();
     expect(finalData.materials['HurricaneSeed']).toBe(20);
+  });
+
+  describe('GoodImportModal Responsive & Accessibility (R6B)', () => {
+    it('renders dialog with accessible attributes, role="dialog" and aria-modal', async () => {
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={vi.fn()}
+          />
+        );
+      });
+
+      const dialog = container.querySelector('[role="dialog"]');
+      expect(dialog).toBeTruthy();
+      expect(dialog.getAttribute('aria-modal')).toBe('true');
+      expect(dialog.getAttribute('aria-labelledby')).toBe('good-import-title');
+
+      const title = container.querySelector('#good-import-title');
+      expect(title).toBeTruthy();
+      expect(title.textContent).toContain('Review GOOD Import');
+
+      const closeBtn = container.querySelector('button[aria-label="Close modal"]');
+      expect(closeBtn).toBeTruthy();
+
+      const tablist = container.querySelector('[role="tablist"]');
+      expect(tablist).toBeTruthy();
+
+      const tabs = container.querySelectorAll('[role="tab"]');
+      expect(tabs.length).toBe(3);
+      expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+    });
+
+    it('dismisses modal on Escape key press', async () => {
+      const onCancelMock = vi.fn();
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={onCancelMock}
+          />
+        );
+      });
+
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(onCancelMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('dismisses when clicking backdrop overlay, but not dialog panel', async () => {
+      const onCancelMock = vi.fn();
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={onCancelMock}
+          />
+        );
+      });
+
+      const overlay = container.querySelector('.modal-overlay');
+      const panel = container.querySelector('#good-import-panel');
+
+      // Click inside panel
+      act(() => {
+        panel.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(onCancelMock).not.toHaveBeenCalled();
+
+      // Click overlay backdrop
+      act(() => {
+        overlay.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(onCancelMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('supports mobile full-height viewport styling without modal-panel class override', async () => {
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={vi.fn()}
+          />
+        );
+      });
+
+      const panel = container.querySelector('#good-import-panel');
+      expect(panel).toBeTruthy();
+      expect(panel.className).toContain('h-[100dvh]');
+      expect(panel.className).toContain('max-h-[100dvh]');
+      expect(panel.className).not.toContain('modal-panel');
+    });
+
+    it('provides horizontal scrolling container for flat material tabs with flex-nowrap on mobile', async () => {
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={vi.fn()}
+          />
+        );
+      });
+
+      await switchMainTab('materials');
+
+      const matTabsContainer = container.querySelector('#material-category-tabs');
+      expect(matTabsContainer).toBeTruthy();
+      expect(matTabsContainer.className).toContain('overflow-x-auto');
+      expect(matTabsContainer.className).toContain('flex-nowrap');
+      expect(matTabsContainer.className).toContain('sm:flex-wrap');
+    });
+
+    it('preserves selections across tab switches', async () => {
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={vi.fn()}
+          />
+        );
+      });
+
+      // Deselect character
+      const charCheckbox = container.querySelector('input[type="checkbox"]');
+      expect(charCheckbox.checked).toBe(true);
+      await act(async () => {
+        charCheckbox.click();
+      });
+      expect(charCheckbox.checked).toBe(false);
+
+      // Switch to materials tab
+      await switchMainTab('materials');
+      expect(container.textContent).toContain('Currency & Exp');
+
+      // Switch back to characters tab
+      await switchMainTab('characters');
+      const restoredCharCheckbox = container.querySelector('input[type="checkbox"]');
+      expect(restoredCharCheckbox.checked).toBe(false);
+    });
+
+    it('triggers onCancel when Cancel button is clicked', async () => {
+      const onCancelMock = vi.fn();
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={onCancelMock}
+          />
+        );
+      });
+
+      const cancelBtn = Array.from(container.querySelectorAll('button')).find(
+        b => b.textContent.trim() === 'Cancel'
+      );
+      expect(cancelBtn).toBeTruthy();
+
+      await act(async () => {
+        cancelBtn.click();
+      });
+
+      expect(onCancelMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('manages body scroll lock safely, restoring previous overflow style on unmount', async () => {
+      document.body.style.overflow = 'scroll';
+
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={vi.fn()}
+          />
+        );
+      });
+
+      expect(document.body.style.overflow).toBe('hidden');
+
+      await act(async () => {
+        root.unmount();
+      });
+
+      expect(document.body.style.overflow).toBe('scroll');
+      document.body.style.overflow = '';
+    });
+
+    it('cleans up keydown event listener on unmount so Escape does not trigger after unmount', async () => {
+      const onCancelMock = vi.fn();
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={vi.fn()}
+            onCancel={onCancelMock}
+          />
+        );
+      });
+
+      await act(async () => {
+        root.unmount();
+      });
+
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(onCancelMock).not.toHaveBeenCalled();
+    });
+
+    it('ensures dismissal via Close button, Escape, backdrop, or Cancel never invokes onConfirm', async () => {
+      const onConfirmMock = vi.fn();
+      const onCancelMock = vi.fn();
+
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={sampleParsedData}
+            onConfirm={onConfirmMock}
+            onCancel={onCancelMock}
+          />
+        );
+      });
+
+      // 1. Close button
+      const closeBtn = container.querySelector('button[aria-label="Close modal"]');
+      await act(async () => {
+        closeBtn.click();
+      });
+      expect(onCancelMock).toHaveBeenCalledTimes(1);
+      expect(onConfirmMock).not.toHaveBeenCalled();
+
+      // 2. Escape key
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(onCancelMock).toHaveBeenCalledTimes(2);
+      expect(onConfirmMock).not.toHaveBeenCalled();
+
+      // 3. Backdrop click
+      const overlay = container.querySelector('.modal-overlay');
+      act(() => {
+        overlay.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      });
+      expect(onCancelMock).toHaveBeenCalledTimes(3);
+      expect(onConfirmMock).not.toHaveBeenCalled();
+
+      // 4. Cancel button in footer
+      const cancelBtn = Array.from(container.querySelectorAll('button')).find(
+        b => b.textContent.trim() === 'Cancel'
+      );
+      await act(async () => {
+        cancelBtn.click();
+      });
+      expect(onCancelMock).toHaveBeenCalledTimes(4);
+      expect(onConfirmMock).not.toHaveBeenCalled();
+    });
   });
 });
