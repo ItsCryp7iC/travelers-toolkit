@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getPrimaryInventoryList } from '../utils/dataManager';
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper';
 import GenshinImage from './GenshinImage';
+import { acquireBodyScrollLock } from '../utils/scrollLock';
 
 export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
   const [activeTab, setActiveTab] = useState('characters');
@@ -13,8 +14,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
   const [materials, setMaterials] = useState([]);
 
   useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    const releaseScrollLock = acquireBodyScrollLock();
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onCancel();
@@ -22,7 +22,7 @@ export default function GoodImportModal({ parsedData, onConfirm, onCancel }) {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      releaseScrollLock();
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onCancel]);

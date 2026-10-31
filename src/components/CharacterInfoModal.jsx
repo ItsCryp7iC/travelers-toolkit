@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { ELEMENTS, WEAPON_TYPES, formatName, getInitials, getStars, getRarityClass } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
+import { acquireBodyScrollLock } from '../utils/scrollLock'
 import { getCharacterAvatar, getElementIcon, getWeaponTypeIcon } from '../utils/assetHelper'
 import { formatMaterialName } from '../utils/calculator'
 
@@ -24,8 +25,7 @@ export default function CharacterInfoModal({ character, onClose }) {
 
   // Lock body scroll
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    return acquireBodyScrollLock()
   }, [])
 
   const renderMaterial = (label, value, icon) => {

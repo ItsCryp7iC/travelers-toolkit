@@ -1,3 +1,4 @@
+import { acquireBodyScrollLock } from '../utils/scrollLock';
 import React, { useState, useEffect, useMemo } from 'react'
 import useStore from '../store/useStore'
 import { ASCENSION_CAPS } from '../utils/calculator'
@@ -83,14 +84,12 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
       const initAssignments = {}
       selectedIds.forEach(id => {
         initAssignments[id] = getTravelerAwareWeaponId(id, roster[id], trackedWeapons) || ''
       })
       setAssignments(initAssignments)
     } else {
-      document.body.style.overflow = ''
       // Reset state to baseline on close
       setOverrideCurrentLevel(false)
       setOverrideTargetLevel(false)
@@ -107,8 +106,12 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
       setSkillTo(10)
       setBurstTo(10)
     }
-    return () => { document.body.style.overflow = '' }
-  }, [isOpen])
+    }, [isOpen])
+
+  useEffect(() => {
+    if (!isOpen) return;
+    return acquireBodyScrollLock();
+  }, [isOpen]);
 
   if (!isOpen) return null
 

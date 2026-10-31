@@ -6,6 +6,7 @@ import charactersData from '../utils/characters'
 import useStore from '../store/useStore'
 import { WEAPON_TYPES, RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg, getWeaponTheme } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
+import { acquireBodyScrollLock } from '../utils/scrollLock'
 import CustomSelect from './CustomSelect'
 import { getWeaponIcon, getCharacterAvatar, getWeaponTypeIcon } from '../utils/assetHelper'
 import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
@@ -109,8 +110,7 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
   const [assignments, setAssignments] = useState({})
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    return acquireBodyScrollLock()
   }, [])
 
   useEffect(() => {

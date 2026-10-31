@@ -8,6 +8,7 @@ import ResinTracker from '../components/ResinTracker'
 import RealmCurrencyTracker from '../components/RealmCurrencyTracker'
 import HoyolabSyncPreviewModal from '../components/HoyolabSyncPreviewModal'
 import NotificationContainer from '../components/NotificationContainer'
+import { acquireBodyScrollLock } from '../utils/scrollLock'
 import { notify } from '../utils/notify'
 
 const navSections = [
@@ -88,6 +89,12 @@ function getTimeAgo(ts) {
 export default function AppLayout() {
  const location = useLocation();
  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Lock body scrolling when mobile drawer is open
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    return acquireBodyScrollLock();
+  }, [sidebarOpen]);
  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(() => {
    const saved = localStorage.getItem('tt-desktop-sidebar-collapsed');
    return saved === 'true';

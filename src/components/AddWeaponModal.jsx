@@ -1,3 +1,4 @@
+import { acquireBodyScrollLock } from '../utils/scrollLock';
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import weaponsData from '../data/weapons.json'
@@ -130,8 +131,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
   }, [existingWeapon, currentIndex])
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    return acquireBodyScrollLock()
   }, [])
 
   useEffect(() => {

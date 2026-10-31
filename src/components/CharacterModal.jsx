@@ -1,3 +1,4 @@
+import { acquireBodyScrollLock } from '../utils/scrollLock';
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import useStore from '../store/useStore'
@@ -351,8 +352,7 @@ export default function CharacterModal({ character, onClose, onNext, onPrev, has
     return () => window.removeEventListener('keydown', handler)
   }, [onClose, onNext, onPrev, hasNext, hasPrev])
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    return acquireBodyScrollLock()
   }, [])
 
   const elColor = elConfig.color

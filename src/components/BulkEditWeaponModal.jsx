@@ -6,6 +6,7 @@ import weaponsData from '../data/weapons.json'
 import charactersData from '../utils/characters'
 import { RARITY_COLORS, formatName, getStars, getRarityClass, getRarityBg } from '../utils/gameData'
 import GenshinImage from './GenshinImage'
+import { acquireBodyScrollLock } from '../utils/scrollLock'
 import CustomSelect from './CustomSelect'
 import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 import { getWeaponIcon, getCharacterAvatar } from '../utils/assetHelper'
@@ -78,14 +79,12 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
       const initialAssignments = {}
       selectedWeaponsList.forEach(w => {
         initialAssignments[w.id] = w.assignedTo || ''
       })
       setAssignments(initialAssignments)
     } else {
-      document.body.style.overflow = ''
       // Reset state to baseline on close
       setOverrideCurrentLevel(false)
       setOverrideTargetLevel(false)
@@ -95,8 +94,12 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
       setToAsc(6)
       setAssignments({})
     }
-    return () => { document.body.style.overflow = '' }
   }, [isOpen, selectedWeaponsList])
+
+  useEffect(() => {
+    if (!isOpen) return;
+    return acquireBodyScrollLock();
+  }, [isOpen]);
 
   if (!isOpen) return null
 

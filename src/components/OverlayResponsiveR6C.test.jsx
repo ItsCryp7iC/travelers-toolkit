@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import HoyoLoginModal from './hoyolab/HoyoLoginModal';
 import HoyolabSyncPreviewModal from './HoyolabSyncPreviewModal';
 import CookiePromptModal from './CookiePromptModal';
+import GoodImportModal from './GoodImportModal';
 import { StagingModal } from './DevBuilder/StagingModal';
 import { resetBodyScrollLockForTesting } from '../utils/scrollLock';
 import useStore from '../store/useStore';
@@ -771,6 +772,43 @@ describe('Stage R6C Overlay Responsive & Accessibility Suite', () => {
       // Now body restores original overflow
       expect(document.body.style.overflow).toBe('auto');
     });
+
+    it('16b. maintains body scroll lock when GoodImportModal and HoyoLoginModal open concurrently and close out of order', async () => {
+      document.body.style.overflow = 'visible';
+
+      // Open GoodImportModal
+      await act(async () => {
+        root.render(
+          <GoodImportModal
+            parsedData={{ characters: [], weapons: [], materials: {} }}
+            onConfirm={vi.fn()}
+            onCancel={vi.fn()}
+          />
+        );
+      });
+      expect(document.body.style.overflow).toBe('hidden');
+
+      // Open HoyoLoginModal in second container
+      await act(async () => {
+        secondRoot.render(<HoyoLoginModal isOpen={true} onClose={vi.fn()} />);
+      });
+      expect(document.body.style.overflow).toBe('hidden');
+
+      // Close GoodImportModal first
+      await act(async () => {
+        root.unmount();
+      });
+      // HoyoLoginModal is still open -> body MUST stay locked
+      expect(document.body.style.overflow).toBe('hidden');
+
+      // Close HoyoLoginModal
+      await act(async () => {
+        secondRoot.render(<HoyoLoginModal isOpen={false} onClose={vi.fn()} />);
+      });
+      // All modals closed -> restored to visible
+      expect(document.body.style.overflow).toBe('visible');
+    });
+
   });
 
   // ---------------------------------------------------------------------------

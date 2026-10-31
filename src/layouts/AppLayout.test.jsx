@@ -849,12 +849,21 @@ describe('AppLayout Accessibility & Polish', () => {
       expect(toggle.className).toContain('w-11');
       expect(toggle.className).toContain('h-11');
 
-      // Toggling opens the sidebar drawer
+      // Toggling opens the sidebar drawer and locks body scroll
       act(() => {
         toggle.click();
       });
       expect(toggle.getAttribute('aria-expanded')).toBe('true');
       expect(container.querySelector('#app-sidebar').classList.contains('open')).toBe(true);
+      expect(document.body.style.overflow).toBe('hidden');
+
+      // Toggling again closes the sidebar drawer and restores body scroll
+      act(() => {
+        toggle.click();
+      });
+      expect(toggle.getAttribute('aria-expanded')).toBe('false');
+      expect(container.querySelector('#app-sidebar').classList.contains('open')).toBe(false);
+      expect(document.body.style.overflow).toBe('');
     });
 
     it('2. 768px breakpoint does not logically hide all navigation controls', () => {

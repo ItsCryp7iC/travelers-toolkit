@@ -76,5 +76,26 @@ describe('scrollLock utility', () => {
     release2(); // repeated call after 0
     expect(document.body.style.overflow).toBe('visible');
   });
-});
 
+  it('simulates route unmount where all active dialog locks are cleared', () => {
+    document.body.style.overflow = 'auto';
+    const releaseA = acquireBodyScrollLock();
+    const releaseB = acquireBodyScrollLock();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    // Route change triggers simultaneous unmount of page & dialogs
+    releaseA();
+    releaseB();
+    expect(document.body.style.overflow).toBe('auto');
+  });
+
+  it('safely handles rapid acquisition and immediate release', () => {
+    document.body.style.overflow = '';
+    for (let i = 0; i < 10; i++) {
+      const release = acquireBodyScrollLock();
+      expect(document.body.style.overflow).toBe('hidden');
+      release();
+      expect(document.body.style.overflow).toBe('');
+    }
+  });
+});

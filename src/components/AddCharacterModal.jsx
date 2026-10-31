@@ -1,3 +1,4 @@
+import { acquireBodyScrollLock } from '../utils/scrollLock';
 import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import charactersData from '../utils/characters'
@@ -146,8 +147,7 @@ export default function AddCharacterModal({ onClose }) {
   }, [roster, search, elementFilter])
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    return acquireBodyScrollLock()
   }, [])
 
   useEffect(() => {

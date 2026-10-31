@@ -46,4 +46,3 @@ export function resetBodyScrollLockForTesting() {
   lockCount = 0;
   originalOverflow = '';
 }
-
