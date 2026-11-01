@@ -11,6 +11,7 @@
  */
 
 import costsData from '../data/costs.json';
+import { validateLevelAscension } from './progressionContracts';
 
 function extractLevel(lv) {
     if (lv === null || lv === undefined) return 1;
@@ -60,23 +61,30 @@ export function buildGemName(gemBase, tier) {
 // Index 0 = phase A0→A1, index 5 = phase A5→A6
 // gemTier: 0=Sliver, 1=Fragment, 2=Chunk, 3=Full
 // mob: [tier1, tier2, tier3] quantities
-const ASCENSION_PHASES_5STAR = [
+// ─── Ascension Phase Costs ─────────────────────────────────────────────────
+// Index 0 = phase A0→A1, index 5 = phase A5→A6
+// In Genshin Impact, character ascension costs (Mora and materials) are uniform
+// across both 4★ and 5★ characters.
+export const ASCENSION_PHASE_COSTS = [
+  { mora: 20000,  boss_material: 0,  local_specialty: 3,  gem_sliver: 1,   '1_star_enemy_material': 3 },
+  { mora: 40000,  boss_material: 2,  local_specialty: 10, gem_fragment: 3, '1_star_enemy_material': 15 },
+  { mora: 60000,  boss_material: 4,  local_specialty: 20, gem_fragment: 6, '2_star_enemy_material': 12 },
+  { mora: 80000,  boss_material: 8,  local_specialty: 30, gem_chunk: 3,    '2_star_enemy_material': 18 },
+  { mora: 100000, boss_material: 12, local_specialty: 45, gem_chunk: 6,    '3_star_enemy_material': 12 },
+  { mora: 120000, boss_material: 20, local_specialty: 60, gem_gemstone: 6, '3_star_enemy_material': 24 },
+];
+
+export const ASCENSION_PHASES_5STAR = [
   { mora: 20000,  gemTier: 0, gemQty: 1, boss: 0,  local: 3,  mob: [3,  0,  0]  },
-  { mora: 40000,  gemTier: 1, gemQty: 3, boss: 2,  local: 10, mob: [0,  15, 0]  },
+  { mora: 40000,  gemTier: 1, gemQty: 3, boss: 2,  local: 10, mob: [15, 0,  0]  },
   { mora: 60000,  gemTier: 1, gemQty: 6, boss: 4,  local: 20, mob: [0,  12, 0]  },
-  { mora: 80000,  gemTier: 2, gemQty: 3, boss: 8,  local: 30, mob: [0,  0,  18] },
+  { mora: 80000,  gemTier: 2, gemQty: 3, boss: 8,  local: 30, mob: [0,  18, 0]  },
   { mora: 100000, gemTier: 2, gemQty: 6, boss: 12, local: 45, mob: [0,  0,  12] },
   { mora: 120000, gemTier: 3, gemQty: 6, boss: 20, local: 60, mob: [0,  0,  24] },
-]
+];
 
-const ASCENSION_PHASES_4STAR = [
-  { mora: 12500,  gemTier: 0, gemQty: 1, boss: 0,  local: 3,  mob: [3,  0,  0]  },
-  { mora: 17500,  gemTier: 1, gemQty: 3, boss: 2,  local: 10, mob: [0,  15, 0]  },
-  { mora: 25000,  gemTier: 1, gemQty: 6, boss: 4,  local: 20, mob: [0,  12, 0]  },
-  { mora: 30000,  gemTier: 2, gemQty: 3, boss: 8,  local: 30, mob: [0,  0,  18] },
-  { mora: 37500,  gemTier: 2, gemQty: 6, boss: 12, local: 45, mob: [0,  0,  12] },
-  { mora: 45000,  gemTier: 3, gemQty: 6, boss: 20, local: 60, mob: [0,  0,  24] },
-]
+// 4★ and 5★ character ascension costs are identical in Genshin Impact (DEF-C2-01)
+export const ASCENSION_PHASES_4STAR = ASCENSION_PHASES_5STAR;
 
 // ─── Mob tier label builder ────────────────────────────────────────────────
 const MOB_TIER_LABELS = ['Common', 'Uncommon', 'Rare']
@@ -130,36 +138,19 @@ function calculateDifference(startObj, targetObj, isDescending = true) {
   return result;
 }
 
-/**
- * Milestone levels where an ascension gating exists.
- * At these levels, being "ascended" means lookup should use level+1
- * (the ascension materials are encoded in the gap between these rows).
- *
- * EFFECTIVE LEVEL RULE (applied independently to both sides):
- *   effectiveLookupLevel = rawLevel + (1 if ascended past this milestone)
- *
- * costs.json is a DESCENDING cumulative-remaining table:
- *   row[80] = total cost remaining from L80 pre-ascension to L90
- *   row[81] = total cost remaining from L80 post-ascension to L90
- *   row[80] - row[81] = exactly the phase-6 ascension cost
- */
-const MILESTONE_TO_DEFAULT_ASC = { 20: 1, 40: 2, 50: 3, 60: 4, 70: 5, 80: 6 };
+const MILESTONE_ASC_MORA = { 20: 20000, 40: 40000, 50: 60000, 60: 80000, 70: 100000, 80: 120000 };
 
-/**
- * Compute the effective lookup level for costs.json.
- * If rawLevel is a milestone AND the character has already ascended past it,
- * we use rawLevel+1 (the "post-ascension" row), otherwise rawLevel.
- * @param {number} rawLevel  - raw level number
- * @param {number} ascension - current ascension phase (0-6)
- */
-function effectiveLookupLevel(rawLevel, ascension) {
-  const lv = Math.min(rawLevel, 90);
-  const ascAtMilestone = MILESTONE_TO_DEFAULT_ASC[lv];
-  // If this level IS a milestone and ascension >= what's needed to have passed it → use lv+1
-  if (ascAtMilestone !== undefined && ascension >= ascAtMilestone) {
-    return Math.min(lv + 1, 90);
+function getRemainingAscensionMora(level) {
+  let sum = 0;
+  for (const [m, cost] of Object.entries(MILESTONE_ASC_MORA)) {
+    if (level <= Number(m)) sum += cost;
   }
-  return lv;
+  return sum;
+}
+
+function getPureLevelingMora(row) {
+  if (!row) return 0;
+  return Math.max(0, (row.mora || 0) - getRemainingAscensionMora(row.level));
 }
 
 export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc) {
@@ -171,55 +162,80 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
   const rawFromAsc = character?.currentAscension ?? character?.ascension ?? character?.current?.ascension ?? fromAsc ?? 0;
   const rawToAsc   = character?.targetAscension  ?? character?.target?.ascension             ?? toAsc  ?? 6;
 
-  // Compute effective lookup levels — this is the key to ascension-phase awareness
-  const eLvFrom = effectiveLookupLevel(rawFromLv, rawFromAsc);
-  const eLvTo   = effectiveLookupLevel(rawToLv,   rawToAsc);
+  // Explicit validation safeguards: detect invalid inputs without silent clamping
+  const fromValidation = validateLevelAscension(rawFromLv, rawFromAsc, 'character');
+  const toValidation = validateLevelAscension(rawToLv, rawToAsc, 'character');
 
-  // No-op guard: if effective positions are identical, nothing to do
-  if (eLvFrom >= eLvTo) {
-    let stellaFortuna = 0;
-    if (rawFromLv < 95 && rawToLv >= 95) stellaFortuna += 1;
-    if (rawFromLv < 100 && rawToLv === 100) stellaFortuna += 2;
-    if (stellaFortuna > 0) return { masterless_stella_fortuna: stellaFortuna };
+  if (!fromValidation.isValid || !toValidation.isValid) {
+    const reasons = [
+      !fromValidation.isValid && `Current state invalid: ${fromValidation.reason}`,
+      !toValidation.isValid && `Target state invalid: ${toValidation.reason}`,
+    ].filter(Boolean).join('; ');
+
+    return {
+      isInvalid: true,
+      invalidReason: reasons,
+      mora: 0,
+      total_mora: 0,
+    };
+  }
+
+  // Completed or reverse target: standard no-op
+  if (rawFromLv > rawToLv || (rawFromLv === rawToLv && rawFromAsc >= rawToAsc)) {
     return {};
   }
 
-  const fromObj = costsData.character_levels.find(x => x.level === eLvFrom) || costsData.character_levels[0];
-  const toObj   = costsData.character_levels.find(x => x.level === eLvTo)   || costsData.character_levels[costsData.character_levels.length - 1];
+  const result = {};
 
-  const result = calculateDifference(fromObj, toObj, true);
+  // 1. Leveling costs (EXP and Leveling Mora)
+  // Clamp lookup levels within costs.json range [1, 90]
+  const clampedFromLv = Math.min(Math.max(rawFromLv, 1), 90);
+  const clampedToLv   = Math.min(Math.max(rawToLv, 1), 90);
 
-  // ── Same-level ascension correction ────────────────────────────────────────
-  // The effective-level trick (eLvFrom=80, eLvTo=81) makes costs.json return
-  // the correct ascension MATERIALS, but the cumulative mora and heros_wit
-  // deltas between those two rows also include one level-step's worth of XP
-  // cost (80→81) which does NOT apply when the raw level hasn't changed.
-  //
-  // Fix: if the player's raw level is unchanged, strip heros_wit entirely and
-  // replace mora with pure ascension mora read directly from ASCENSION_PHASES
-  // (which is always correct regardless of cumulative table encoding).
-  if (rawFromLv === rawToLv) {
-    delete result.heros_wit;
+  let levelingMora = 0;
+  let levelingWits = 0;
 
-    let rarityNum = 5;
-    if (character?.rarity) {
-      rarityNum = typeof character.rarity === 'string'
-        ? (character.rarity.match(/★/g) || []).length || parseInt(character.rarity) || 5
-        : character.rarity;
+  if (clampedFromLv < clampedToLv) {
+    const fromRow = costsData.character_levels.find(x => x.level === clampedFromLv);
+    const toRow   = costsData.character_levels.find(x => x.level === clampedToLv);
+
+    if (fromRow && toRow) {
+      levelingMora = Math.max(0, getPureLevelingMora(fromRow) - getPureLevelingMora(toRow));
+      levelingWits = Math.max(0, (fromRow.heros_wit || 0) - (toRow.heros_wit || 0));
     }
-    const ascArray = rarityNum === 4 ? ASCENSION_PHASES_4STAR : ASCENSION_PHASES_5STAR;
+  }
 
-    // Sum mora for only the ascension phases being crossed, ignoring XP mora
-    let pureAscMora = 0;
-    for (let i = rawFromAsc; i < rawToAsc; i++) {
-      pureAscMora += ascArray[i]?.mora ?? 0;
-    }
+  // 2. Ascension costs (Ascension Mora & Materials)
+  let totalAscMora = 0;
+  const ascMats = {};
 
-    if (pureAscMora > 0) {
-      result.mora = pureAscMora;
-    } else {
-      delete result.mora;
+  if (rawFromAsc < rawToAsc) {
+    const startPhase = Math.max(0, Math.min(rawFromAsc, 6));
+    const endPhase   = Math.max(0, Math.min(rawToAsc, 6));
+
+    for (let p = startPhase; p < endPhase; p++) {
+      const phaseData = ASCENSION_PHASE_COSTS[p];
+      if (phaseData) {
+        totalAscMora += phaseData.mora || 0;
+        for (const [k, v] of Object.entries(phaseData)) {
+          if (k !== 'mora' && v > 0) {
+            ascMats[k] = (ascMats[k] || 0) + v;
+          }
+        }
+      }
     }
+  }
+
+  // Combine Mora
+  const combinedMora = levelingMora + totalAscMora;
+  if (combinedMora > 0) result.mora = combinedMora;
+
+  // Leveling EXP
+  if (levelingWits > 0) result.heros_wit = levelingWits;
+
+  // Ascension materials
+  for (const [k, v] of Object.entries(ascMats)) {
+    if (v > 0) result[k] = v;
   }
 
   // Stella Fortuna for constellation unlocks at 95 and 100
@@ -685,6 +701,23 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
   const tLv = extractLevel(toLv);
   const sAsc = fromAsc ?? 0;
   const tAsc = toAsc ?? 6;
+
+  // Explicit validation safeguards: detect invalid inputs without silent clamping
+  const fromValidation = validateLevelAscension(sLv, sAsc, 'weapon', rarityNum);
+  const toValidation = validateLevelAscension(tLv, tAsc, 'weapon', rarityNum);
+
+  if (!fromValidation.isValid || !toValidation.isValid) {
+    const reasons = [
+      !fromValidation.isValid && `Current weapon state invalid: ${fromValidation.reason}`,
+      !toValidation.isValid && `Target weapon state invalid: ${toValidation.reason}`,
+    ].filter(Boolean).join('; ');
+
+    return {
+      isInvalid: true,
+      invalidReason: reasons,
+      total_mora: 0,
+    };
+  }
 
   if (sLv > tLv || (sLv === tLv && sAsc >= tAsc)) {
     return {};

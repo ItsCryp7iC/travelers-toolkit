@@ -3,7 +3,32 @@ import { formatNumber } from '../utils/calculator'
 import GenshinImage from './GenshinImage'
 import { getMaterialIcon } from '../utils/assetHelper'
 
-export default function MatQuantity({ val, color = 'text-[var(--text)]', align = 'center', format = true, nameKey, category, icon, isStacked = false }) {
+export default function MatQuantity({
+  val,
+  color = 'text-[var(--text)]',
+  align = 'center',
+  format = true,
+  nameKey,
+  category,
+  icon,
+  isStacked = false,
+  isInvalid = false,
+  invalidReason = null,
+}) {
+  if (isInvalid) {
+    const justifyClass = align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center';
+    return (
+      <div
+        className={`flex items-center gap-1 ${justifyClass}`}
+        title={invalidReason || 'Invalid progression'}
+        aria-label={`Unavailable: ${invalidReason || 'Invalid progression'}`}
+      >
+        <span className="text-amber-400 text-xs select-none" aria-hidden="true">⚠️</span>
+        <span className="text-amber-400/60 text-xs font-semibold">—</span>
+      </div>
+    );
+  }
+
   if (!val) {
     return (
       <div className={`flex items-center gap-1.5 ${align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center'}`}>

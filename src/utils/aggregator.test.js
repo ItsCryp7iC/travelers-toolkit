@@ -81,9 +81,9 @@ describe('aggregator — aggregateRosterCosts', () => {
     expect(result.totalCosts.VayudaTurquoiseGemstone).toBeUndefined();
     expect(result.totalCosts.DamagedMask).toBeUndefined();
 
-    // Exact Level 80->90 leveling costs
-    expect(result.totalCosts.HerosWit).toBe(162);
-    expect(result.totalCosts.Mora).toBe(647990);
+    // Exact Level 80->90 leveling costs (authoritative Genshin requirements)
+    expect(result.totalCosts.HerosWit).toBe(172);
+    expect(result.totalCosts.Mora).toBe(684625);
   });
 
   it('correctly replicates 0 boss materials for user reported characters (Jean, Aloy, Keqing) at 80/90 A6', () => {
@@ -137,8 +137,8 @@ describe('aggregator — aggregateRosterCosts', () => {
     // Phase 5 already completed -> 0 boss mats, 0 gem chunks
     expect(result.totalCosts.HurricaneSeed).toBeUndefined();
     expect(result.totalCosts.VayudaTurquoiseChunk).toBeUndefined();
-    expect(result.totalCosts.HerosWit).toBe(73);
-    expect(result.totalCosts.Mora).toBe(294740);
+    expect(result.totalCosts.HerosWit).toBe(80);
+    expect(result.totalCosts.Mora).toBe(322375);
   });
 
   it('provides disambiguated characterCount and weaponCount', () => {

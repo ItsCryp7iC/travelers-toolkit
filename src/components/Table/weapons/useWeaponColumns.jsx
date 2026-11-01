@@ -10,6 +10,7 @@ import weaponsData from '../../../data/weapons.json';
 import { universalFilterFn } from '../UnifiedHeaderMenu';
 import { getRarityColorClass } from '../shared/tableDisplayUtils';
 import AscensionLevelCell from '../shared/AscensionLevelCell';
+import { resolveCoherentProgression, getWeaponMaxLevel } from '../../../utils/progressionContracts';
 import InlineNumberInput from '../../InlineNumberInput';
 
 const weaponByName = new Map(weaponsData.map(w => [w.name, w]));
@@ -119,7 +120,19 @@ export default function useWeaponColumns({
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className={`font-bold text-sm truncate ${getRarityColorClass(wp.data?.rarity)}`}>{formatName(wp.weaponName)}</span>
+                  <div className="flex items-center gap-1 min-w-0">
+                    <span className={`font-bold text-sm truncate ${getRarityColorClass(wp.data?.rarity)}`}>{formatName(wp.weaponName)}</span>
+                    {wp.costs?.isInvalid && (
+                      <span
+                        title={wp.costs.invalidReason}
+                        className="text-amber-400 text-xs cursor-help select-none shrink-0"
+                        role="img"
+                        aria-label={`Invalid progression: ${wp.costs.invalidReason}`}
+                      >
+                        ⚠️
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity)}</span>
                   </div>
@@ -182,15 +195,26 @@ export default function useWeaponColumns({
           id: 'current_lv', header: 'Lv', accessorFn: row => row.level ?? 1,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row, getValue }) => (
-            <AscensionLevelCell
-              level={getValue()}
-              ascension={row.original.ascension ?? 0}
-              onLevelChange={(val) => updateWeapon(row.original.id, { level: val })}
-              onAscensionChange={(val) => updateWeapon(row.original.id, { ascension: val })}
-              inputClassName="text-xs text-[var(--text)]"
-            />
-          )
+          cell: ({ row, getValue }) => {
+            const originalWeapon = row.original.data || weaponByName.get(row.original.weaponName);
+            const rarity = originalWeapon?.rarity;
+            const maxL = getWeaponMaxLevel(rarity);
+            return (
+              <AscensionLevelCell
+                level={getValue()}
+                ascension={row.original.ascension ?? 0}
+                max={maxL}
+                isInvalid={row.original.costs?.isInvalid}
+                invalidReason={row.original.costs?.invalidReason}
+                onLevelChange={(val) => {
+                  const coherent = resolveCoherentProgression(val, row.original.ascension ?? 0, 'weapon', rarity, 'current');
+                  updateWeapon(row.original.id, coherent);
+                }}
+                onAscensionChange={(val) => updateWeapon(row.original.id, { ascension: val })}
+                inputClassName="text-xs text-[var(--text)]"
+              />
+            );
+          }
         },
         {
           id: 'current_refine', header: 'R', accessorFn: row => row.currentRefinement ?? 1,
@@ -206,15 +230,30 @@ export default function useWeaponColumns({
           id: 'target_lv', header: '→ Lv', accessorFn: row => row.targetLevel ?? 90,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-[var(--gold)] border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" },
           enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row, getValue }) => (
-            <AscensionLevelCell
-              level={getValue()}
-              ascension={row.original.targetAscension ?? 6}
-              onLevelChange={(val) => updateWeapon(row.original.id, { targetLevel: val })}
-              onAscensionChange={(val) => updateWeapon(row.original.id, { targetAscension: val })}
-              inputClassName="text-xs text-[var(--gold)]"
-            />
-          )
+          cell: ({ row, getValue }) => {
+            const originalWeapon = row.original.data || weaponByName.get(row.original.weaponName);
+            const rarity = originalWeapon?.rarity;
+            const maxL = getWeaponMaxLevel(rarity);
+            return (
+              <AscensionLevelCell
+                level={getValue()}
+                ascension={row.original.targetAscension ?? 6}
+                min={row.original.level ?? 1}
+                max={maxL}
+                isInvalid={row.original.costs?.isInvalid}
+                invalidReason={row.original.costs?.invalidReason}
+                onLevelChange={(val) => {
+                  const coherent = resolveCoherentProgression(val, row.original.targetAscension ?? 6, 'weapon', rarity, 'target');
+                  updateWeapon(row.original.id, {
+                    targetLevel: coherent.level,
+                    targetAscension: coherent.ascension,
+                  });
+                }}
+                onAscensionChange={(val) => updateWeapon(row.original.id, { targetAscension: val })}
+                inputClassName="text-xs text-[var(--gold)]"
+              />
+            );
+          }
         },
         {
           id: 'target_refine', header: '→ R', accessorFn: row => row.targetRefinement ?? 1,
@@ -359,17 +398,17 @@ export default function useWeaponColumns({
         {
           id: 'mystic_ore', header: 'Mystic Ore', accessorFn: row => row.costs?.mystic_ore || 0,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.mystic_ore || 0} icon="🔮" color="text-blue-400" nameKey="Mystic Enhancement Ore" category="Experience" />
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.mystic_ore || 0} icon="🔮" color="text-blue-400" nameKey="Mystic Enhancement Ore" category="Experience" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />
         },
         {
           id: 'fine_ore', header: 'Fine Ore', accessorFn: row => row.costs?.fine_ore || 0,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.fine_ore || 0} icon="🔮" color="text-green-400" nameKey="Fine Enhancement Ore" category="Experience" />
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.fine_ore || 0} icon="🔮" color="text-green-400" nameKey="Fine Enhancement Ore" category="Experience" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />
         },
         {
           id: 'normal_ore', header: 'Normal Ore', accessorFn: row => row.costs?.normal_ore || 0,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-gray-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.normal_ore || 0} icon="🔮" color="text-gray-400" nameKey="Enhancement Ore" category="Experience" />
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.normal_ore || 0} icon="🔮" color="text-gray-400" nameKey="Enhancement Ore" category="Experience" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />
         },
         {
           id: 'wasted_exp', header: 'Wasted EXP', accessorFn: row => row.costs?.wasted_exp || 0,
@@ -379,7 +418,7 @@ export default function useWeaponColumns({
         {
           id: 'total_mora', header: 'Mora', accessorFn: row => row.costs?.total_mora || 0,
           meta: { filterType: 'number', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-right border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.costs?.total_mora || 0} icon="🪙" color="text-blue-400" align="right" nameKey="Mora" category="Currency" />
+          cell: ({ row }) => <MatQuantity val={row.original.costs?.total_mora || 0} icon="🪙" color="text-blue-400" align="right" nameKey="Mora" category="Currency" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />
         }
       ]
     },
@@ -396,7 +435,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'text', thClassName: "text-amber-400 px-2 py-2 font-semibold text-amber-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['5_star_ascension_material'] || 0} icon="🛡️" color="text-amber-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['5_star_ascension_material'] || 0} icon="🛡️" color="text-amber-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['5_star']?.name} category="Weapon Ascension Material" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />;
           }
         },
         {
@@ -406,7 +445,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'text', thClassName: "text-purple-400 px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['4_star_ascension_material'] || 0} icon="🛡️" color="text-purple-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['4_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['4_star_ascension_material'] || 0} icon="🛡️" color="text-purple-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['4_star']?.name} category="Weapon Ascension Material" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />;
           }
         },
         {
@@ -416,7 +455,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'text', thClassName: "text-blue-400 px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['3_star_ascension_material'] || 0} icon="🛡️" color="text-blue-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['3_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['3_star_ascension_material'] || 0} icon="🛡️" color="text-blue-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['3_star']?.name} category="Weapon Ascension Material" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />;
           }
         },
         {
@@ -426,7 +465,7 @@ export default function useWeaponColumns({
           meta: { filterType: 'text', thClassName: "text-green-400 px-2 py-2 font-semibold text-green-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-center border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveWeaponMaterials(row.original.data);
-            return <MatQuantity val={row.original.costs?.['2_star_ascension_material'] || 0} icon="🛡️" color="text-green-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['2_star']?.name} category="Weapon Ascension Material" />;
+            return <MatQuantity val={row.original.costs?.['2_star_ascension_material'] || 0} icon="🛡️" color="text-green-400" nameKey={resolvedMats?.ascensionFamily?.tiers?.['2_star']?.name} category="Weapon Ascension Material" isInvalid={row.original.costs?.isInvalid} invalidReason={row.original.costs?.invalidReason} />;
           }
         }
       ]

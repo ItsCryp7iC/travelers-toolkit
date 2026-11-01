@@ -120,10 +120,11 @@ describe('Calculator Progression Regressions', () => {
     expect(costA1.mora).toBeGreaterThan(costA2.mora);
   });
 
-  it('same-level ascension mora differs between 4-star and 5-star', () => {
+  it('same-level ascension mora is identical between 4-star and 5-star (canonical Genshin cost)', () => {
     const cost5 = calculateProgressionCost(dummy5StarChar, 80, 80, 5, 6);
     const cost4 = calculateProgressionCost(dummy4StarChar, 80, 80, 5, 6);
-    expect(cost5.mora).toBeGreaterThan(cost4.mora);
+    expect(cost5.mora).toBe(120000);
+    expect(cost4.mora).toBe(120000);
   });
 
   it('omits world boss material for Traveler', () => {
@@ -367,5 +368,146 @@ describe('Table-Driven Progression Boundaries', () => {
         assertValidQuantities(cost);
       }
     });
+  });
+});
+
+describe('DEF-C2-01 & DEF-C2-02 Authoritative Character Progression Boundaries', () => {
+  const dummy5StarChar = {
+    rarity: 5,
+    materials: {
+      world_boss_material_id: 'BossMat',
+      gem_family_id: 'VayudaTurquoise',
+      local_specialty_id: 'DandelionSeed',
+      enemy_material_family_id: 'HilichurlMask',
+    },
+  };
+  const dummy4StarChar = {
+    rarity: 4,
+    materials: {
+      world_boss_material_id: 'BossMat',
+      gem_family_id: 'PyroGem',
+      local_specialty_id: 'SmallLampGrass',
+      enemy_material_family_id: 'HilichurlArrowhead',
+    },
+  };
+
+  it('1. Level 80 A6 -> Level 90 A6: exact leveling costs, zero ascension items', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 80, 90, 6, 6);
+    expect(cost.mora).toBe(684625);
+    expect(cost.heros_wit).toBe(172);
+    expect(cost.boss_material).toBeUndefined();
+    expect(cost.gem_gemstone).toBeUndefined();
+    expect(cost.local_specialty).toBeUndefined();
+    expect(cost['3_star_enemy_material']).toBeUndefined();
+  });
+
+  it('2. Level 80 A5 -> Level 90 A6: combined leveling + Phase 6 ascension materials', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 80, 90, 5, 6);
+    expect(cost.mora).toBe(804625); // 684,625 + 120,000
+    expect(cost.heros_wit).toBe(172);
+    expect(cost.boss_material).toBe(20);
+    expect(cost.gem_gemstone).toBe(6);
+    expect(cost.local_specialty).toBe(60);
+    expect(cost['3_star_enemy_material']).toBe(24);
+  });
+
+  it('3. Level 80 A5 -> Level 80 A6: Phase 6 ascension only (zero leveling EXP/Mora)', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 80, 80, 5, 6);
+    expect(cost.mora).toBe(120000);
+    expect(cost.heros_wit).toBeUndefined();
+    expect(cost.boss_material).toBe(20);
+    expect(cost.gem_gemstone).toBe(6);
+    expect(cost.local_specialty).toBe(60);
+    expect(cost['3_star_enemy_material']).toBe(24);
+  });
+
+  it('4. Level 80 A6 -> Level 80 A6: exact no-op returns {}', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 80, 80, 6, 6);
+    expect(cost).toEqual({});
+  });
+
+  it('5. Level 70 A5 -> Level 80 A5: leveling only across milestone (zero ascension items)', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 70, 80, 5, 5);
+    expect(cost.mora).toBe(322375);
+    expect(cost.heros_wit).toBe(80);
+    expect(cost.boss_material).toBeUndefined();
+    expect(cost.gem_chunk).toBeUndefined();
+    expect(cost.gem_gemstone).toBeUndefined();
+    expect(cost.local_specialty).toBeUndefined();
+    expect(cost['3_star_enemy_material']).toBeUndefined();
+  });
+
+  it('6. Level 70 A4 -> Level 80 A5: leveling + Phase 5 ascension materials', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 70, 80, 4, 5);
+    expect(cost.mora).toBe(422375); // 322,375 + 100,000
+    expect(cost.heros_wit).toBe(80);
+    expect(cost.boss_material).toBe(12);
+    expect(cost.gem_chunk).toBe(6);
+    expect(cost.local_specialty).toBe(45);
+    expect(cost['3_star_enemy_material']).toBe(12);
+  });
+
+  it('7. Level 70 A5 -> Level 80 A6: leveling + Phase 6 ascension materials', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 70, 80, 5, 6);
+    expect(cost.mora).toBe(442375); // 322,375 + 120,000
+    expect(cost.heros_wit).toBe(80);
+    expect(cost.boss_material).toBe(20);
+    expect(cost.gem_gemstone).toBe(6);
+    expect(cost.local_specialty).toBe(60);
+    expect(cost['3_star_enemy_material']).toBe(24);
+  });
+
+  it('8. Level 20 A0 -> Level 20 A1: Phase 1 ascension only', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 20, 20, 0, 1);
+    expect(cost.mora).toBe(20000);
+    expect(cost.heros_wit).toBeUndefined();
+    expect(cost.gem_sliver).toBe(1);
+    expect(cost.local_specialty).toBe(3);
+    expect(cost['1_star_enemy_material']).toBe(3);
+    expect(cost.boss_material).toBeUndefined();
+  });
+
+  it('9. Level 20 A1 -> Level 40 A1: exact Level 20 -> 40 leveling, 0 ascension items', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 20, 40, 1, 1);
+    expect(cost.mora).toBe(115665);
+    expect(cost.heros_wit).toBe(29);
+    expect(cost.boss_material).toBeUndefined();
+    expect(cost.gem_sliver).toBeUndefined();
+    expect(cost.gem_fragment).toBeUndefined();
+    expect(cost.local_specialty).toBeUndefined();
+  });
+
+  it('10. Level 20 A1 -> Level 40 A2: leveling + Phase 2 ascension', () => {
+    const cost = calculateProgressionCost(dummy5StarChar, 20, 40, 1, 2);
+    expect(cost.mora).toBe(155665); // 115,665 + 40,000
+    expect(cost.heros_wit).toBe(29);
+    expect(cost.boss_material).toBe(2);
+    expect(cost.gem_fragment).toBe(3);
+    expect(cost.local_specialty).toBe(10);
+    expect(cost['1_star_enemy_material']).toBe(15);
+  });
+
+  it('11. 4★ character parity: 4★ and 5★ yield identical Mora and material quantities', () => {
+    const cost5 = calculateProgressionCost(dummy5StarChar, 80, 80, 5, 6);
+    const cost4 = calculateProgressionCost(dummy4StarChar, 80, 80, 5, 6);
+    expect(cost4.mora).toBe(cost5.mora);
+    expect(cost4.mora).toBe(120000);
+    expect(cost4.boss_material).toBe(cost5.boss_material);
+    expect(cost4.local_specialty).toBe(cost5.local_specialty);
+
+    const full5 = calculateProgressionCost(dummy5StarChar, 1, 90, 0, 6);
+    const full4 = calculateProgressionCost(dummy4StarChar, 1, 90, 0, 6);
+    expect(full4.mora).toBe(full5.mora);
+    expect(full4.mora).toBe(2092530);
+    expect(full4.heros_wit).toBe(full5.heros_wit);
+    expect(full4.heros_wit).toBe(419);
+  });
+
+  it('12. Constellation milestones: awards 1 stella fortuna at 95 and 3 at 100', () => {
+    const cost95 = calculateProgressionCost(dummy5StarChar, 90, 95, 6, 6);
+    expect(cost95.masterless_stella_fortuna).toBe(1);
+
+    const cost100 = calculateProgressionCost(dummy5StarChar, 90, 100, 6, 6);
+    expect(cost100.masterless_stella_fortuna).toBe(3);
   });
 });

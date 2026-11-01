@@ -1,3 +1,4 @@
+import { normalizeCharacterPatch, normalizeWeaponPatch } from '../../utils/progressionContracts';
 import { syncTravelerAscension, recalculateCharacterCosts } from '../helpers/rosterHelpers';
 import { getTravelerAwareWeaponId } from '../../utils/travelerHelper';
 
@@ -112,12 +113,17 @@ export const createRosterSlice = (set, get) => ({
         }
       }
 
+      const rawProgression = {
+        ...(level !== undefined ? { level } : {}),
+        ...(ascension !== undefined ? { ascension } : {}),
+        ...(targetLevel !== undefined ? { targetLevel } : {}),
+        ...(targetAscension !== undefined ? { targetAscension } : {}),
+      };
+      const normalizedProgression = normalizeCharacterPatch(charEntry, rawProgression);
+
       charEntry = {
         ...charEntry,
-        level: level ?? charEntry.level,
-        ascension: ascension ?? charEntry.ascension,
-        targetLevel: targetLevel ?? charEntry.targetLevel,
-        targetAscension: targetAscension ?? charEntry.targetAscension,
+        ...normalizedProgression,
         talents: talents ?? charEntry.talents,
         targetTalents: targetTalents ?? charEntry.targetTalents,
       };
@@ -183,17 +189,21 @@ export const createRosterSlice = (set, get) => ({
 
   updateCharacter: (name, patch) =>
     set((state) => {
-      let charEntry = { ...state.roster[name], ...patch }
-      charEntry = recalculateCharacterCosts(name, charEntry)
+      const existing = state.roster[name];
+      if (!existing) return state;
+
+      const normalizedPatch = normalizeCharacterPatch(existing, patch);
+      let charEntry = { ...existing, ...normalizedPatch };
+      charEntry = recalculateCharacterCosts(name, charEntry);
 
       const newRoster = {
         ...state.roster,
         [name]: charEntry,
-      }
+      };
       if (name.startsWith('Traveler ')) {
         syncTravelerAscension(newRoster, name);
       }
-      return { roster: newRoster }
+      return { roster: newRoster };
     }),
 
   bulkUpdateCharacters: (identifiersOrPayloads, patch) =>
@@ -217,7 +227,8 @@ export const createRosterSlice = (set, get) => ({
       targetNames.forEach((name) => {
         if (newRoster[name]) {
           const currentPatch = isPayloads ? payloadsMap[name] : patch;
-          const updatedEntry = { ...newRoster[name], ...currentPatch }
+          const normalizedPatch = normalizeCharacterPatch(newRoster[name], currentPatch);
+          const updatedEntry = { ...newRoster[name], ...normalizedPatch }
 
           const isTraveler = name.startsWith('Traveler ');
           if (isTraveler) {

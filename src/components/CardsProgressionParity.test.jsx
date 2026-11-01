@@ -91,4 +91,53 @@ describe('Cards Progression Parity (C1B)', () => {
     // Weapon title renders
     expect(getByText(/Aquila Favonia/i)).not.toBeNull();
   });
+it('CharacterCard displays invalid progression badge instead of "Maxed out! 🎉" for invalid state', () => {
+    useStore.setState({
+      roster: {
+        Jean: {
+          level: 20,
+          targetLevel: 20,
+          ascension: 6,
+          targetAscension: 6,
+          talents: { normal: 1, skill: 1, burst: 1 },
+          targetTalents: { normal: 1, skill: 1, burst: 1 },
+        },
+      },
+    });
+
+    const { queryByText, getByText } = render(
+      <CharacterCard character={dummyJean} />
+    );
+
+    expect(queryByText(/Maxed out!/i)).toBeNull();
+    expect(getByText(/Invalid Progression/i)).not.toBeNull();
+  });
+
+  it('WeaponCard displays invalid progression badge instead of "Maxed out! 🎉" for invalid state', () => {
+    const invalidEntry = {
+      id: 'aquila-invalid',
+      weaponName: 'Aquila Favonia',
+      level: 20,
+      targetLevel: 20,
+      ascension: 6,
+      targetAscension: 6,
+      refinement: 1,
+      targetRefinement: 1,
+    };
+    useStore.setState({
+      trackedWeapons: [invalidEntry],
+    });
+
+    const { queryByText, getByText } = render(
+      <WeaponCard
+        weapon={dummyAquila}
+        inArmory={true}
+        armoryEntry={invalidEntry}
+        inventory={{}}
+      />
+    );
+
+    expect(queryByText(/Maxed out!/i)).toBeNull();
+    expect(getByText(/Invalid Progression/i)).not.toBeNull();
+  });
 });

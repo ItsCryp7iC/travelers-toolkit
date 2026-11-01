@@ -6,6 +6,7 @@ import { getBackupPayload, normalizeBackupForImport } from '../utils/backupUtils
 import { triggerGoogleAuth } from '../utils/googleAuthHelper';
 import GoodImportModal from '../components/GoodImportModal';
 import AchievementData from '../components/Settings/AchievementData';
+import ProgressionDataHealth from '../components/Settings/ProgressionDataHealth';
 import HoyoLoginModal from '../components/hoyolab/HoyoLoginModal';
 import { buildTimeZoneOptions, getTimeZoneDisplayLabel } from '../utils/timeZoneUtils';
 import notify from '../utils/notify';
@@ -547,6 +548,9 @@ export default function Settings() {
             </p>
           </div>
         </div>
+
+        {/* Progression Data Health */}
+        <ProgressionDataHealth />
 
         {/* Developer Tools Card */}
         <div className="genshin-card p-4 sm:p-6 flex flex-col gap-3.5 sm:gap-4">

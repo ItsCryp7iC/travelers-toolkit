@@ -1,12 +1,15 @@
 import weaponsData from '../../data/weapons.json';
 import { calculateWeaponCost } from '../../utils/calculator';
+import { normalizeWeaponPatch } from '../../utils/progressionContracts';
 
 export const createWeaponsSlice = (set, get) => ({
   trackedWeapons: [],
 
   addTrackedWeapon: (weaponName, assignedTo = null, config = {}) => {
     // Generate the ID outside set() so we can return it to the caller
-    const id = crypto.randomUUID()
+    // Guard against duplicate UUID (Fixture 18)
+    const existingWeapons = get().trackedWeapons || [];
+    const id = config?.id && !existingWeapons.some((w) => w.id === config.id) ? config.id : crypto.randomUUID();
     const newWeapon = {
       id,
       weapon_id: weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
@@ -132,10 +135,13 @@ export const createWeaponsSlice = (set, get) => ({
         }
       }
 
-      // 2. Finally, apply the standard patch to the target weapon itself
+      // 2. Finally, apply the normalized patch to the target weapon itself
+      const wData = weaponsData.find((wd) => wd.name === weapon.weaponName) || weapon.data;
+      const normalizedPatch = normalizeWeaponPatch(weapon, patch, wData?.rarity || weapon.rarity);
+
       updatedWeapons = updatedWeapons.map((w) => {
         if (w.id === id) {
-          const updated = { ...w, ...patch };
+          const updated = { ...w, ...normalizedPatch };
           if ('currentRefinement' in patch) {
             updated.currentRefinement = Math.max(0, Math.min(5, Number(updated.currentRefinement) || 0));
           }
@@ -177,7 +183,9 @@ export const createWeaponsSlice = (set, get) => ({
 
         if (isMatch) {
           const currentPatch = isPayloads ? payloadsMap[weapon.id] : patch;
-          const updatedWeapon = { ...weapon, ...currentPatch };
+          const wDataMatch = weaponsData.find((w) => w.name === weapon.weaponName);
+          const normalizedPatch = normalizeWeaponPatch(weapon, currentPatch, wDataMatch?.rarity || weapon.rarity);
+          const updatedWeapon = { ...weapon, ...normalizedPatch };
 
           if ('assignedTo' in currentPatch && currentPatch.assignedTo !== weapon.assignedTo) {
              unassignFromChar(weapon.assignedTo);

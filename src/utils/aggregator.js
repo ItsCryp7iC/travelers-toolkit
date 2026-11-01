@@ -10,6 +10,7 @@ import weaponsData from '../data/weapons.json'
 import costsData from '../data/costs.json'
 import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost, calculateWeaponCost, WEAPON_ORE_KEY } from './calculator'
 import { resolveSpecificItem } from './resolver'
+import { validateLevelAscension } from './progressionContracts'
 import { getOwnedQty } from './inventoryUtils'
 
 // Build a fast character lookup
@@ -39,6 +40,7 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
   const grandTotalCategories = {}
   const grandTotalRarities = {}
   const breakdown = []
+  const invalidPlans = []
   
   let processedTravelerAscension = false;
 
@@ -47,6 +49,22 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     const fromAsc = entry.ascension ?? 0
     const toLevel = entry.targetLevel ?? 90
     const toAsc = entry.targetAscension ?? 6
+
+    const fromValidation = validateLevelAscension(fromLevel, fromAsc, 'character')
+    const toValidation = validateLevelAscension(toLevel, toAsc, 'character')
+    if (!fromValidation.isValid || !toValidation.isValid) {
+      invalidPlans.push({
+        id: charName,
+        name: charName,
+        isWeapon: false,
+        reason: [
+          !fromValidation.isValid && `Current state invalid: ${fromValidation.reason}`,
+          !toValidation.isValid && `Target state invalid: ${toValidation.reason}`
+        ].filter(Boolean).join('; '),
+        entry
+      })
+      continue
+    }
 
     const ascNoop = fromAsc === toAsc && fromLevel >= toLevel
 
@@ -82,6 +100,7 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     if (!ascNoop) {
       ascCosts = calculateProgressionCost(character, fromLevel, toLevel, fromAsc, toAsc)
     }
+
 
     let normalCosts = null, skillCosts = null, burstCosts = null
     if (!talentNoop) {
@@ -119,17 +138,34 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
   }
 
   for (const weapon of trackedWeapons) {
+    const wData = WEAPON_MAP[weapon.weaponName]
+    if (!wData) continue
+
     const wFromLv = weapon.level ?? 1
     const wToLv = weapon.targetLevel ?? 90
     const wFromAsc = weapon.ascension ?? 0
     const wToAsc = weapon.targetAscension ?? 6
 
+    const fromValidation = validateLevelAscension(wFromLv, wFromAsc, 'weapon', wData.rarity)
+    const toValidation = validateLevelAscension(wToLv, wToAsc, 'weapon', wData.rarity)
+    if (!fromValidation.isValid || !toValidation.isValid) {
+      invalidPlans.push({
+        id: weapon.id,
+        name: weapon.weaponName,
+        isWeapon: true,
+        reason: [
+          !fromValidation.isValid && `Current weapon state invalid: ${fromValidation.reason}`,
+          !toValidation.isValid && `Target weapon state invalid: ${toValidation.reason}`
+        ].filter(Boolean).join('; '),
+        entry: weapon
+      })
+      continue
+    }
+
     if (wFromAsc === wToAsc && wFromLv >= wToLv) continue
 
-    const wData = WEAPON_MAP[weapon.weaponName]
-    if (!wData) continue
-
     const weaponCosts = calculateWeaponCost(wData, wFromLv, wToLv, wFromAsc, wToAsc, false, roster)
+
 
     const totalCosts = {}
     const processWeaponCosts = (costObj) => {
@@ -158,6 +194,9 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     categories: grandTotalCategories,
     rarities: grandTotalRarities,
     breakdown,
+    invalidPlans,
+    invalidCount: invalidPlans.length,
+    isPartial: invalidPlans.length > 0,
     trackedCount: breakdown.length,
     characterCount: breakdown.filter(b => !b.isWeapon).length,
     weaponCount: breakdown.filter(b => b.isWeapon).length,

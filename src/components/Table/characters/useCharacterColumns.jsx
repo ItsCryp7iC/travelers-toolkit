@@ -8,6 +8,7 @@ import { formatNumber } from '../../../utils/calculator';
 import { universalFilterFn } from '../UnifiedHeaderMenu';
 import { getRarityColorClass } from '../shared/tableDisplayUtils';
 import AscensionLevelCell from '../shared/AscensionLevelCell';
+import { resolveCoherentProgression } from '../../../utils/progressionContracts';
 import CharacterTalentMaterialCell from './CharacterTalentMaterialCell';
 import InlineNumberInput from '../../InlineNumberInput';
 
@@ -117,7 +118,19 @@ export default function useCharacterColumns({
                   />
                 </div>
                 <div className="truncate">
-                  <p className={`text-xs font-semibold ${getRarityColorClass(char.data?.rarity || char.rarity)} truncate`}>{formatName(char.name)}</p>
+                  <div className="flex items-center gap-1 truncate">
+                    <p className={`text-xs font-semibold ${getRarityColorClass(char.data?.rarity || char.rarity)} truncate`}>{formatName(char.name)}</p>
+                    {char.ascCosts?.isInvalid && (
+                      <span
+                        title={char.ascCosts.invalidReason}
+                        className="text-amber-400 text-xs cursor-help select-none shrink-0"
+                        role="img"
+                        aria-label={`Invalid progression: ${char.ascCosts.invalidReason}`}
+                      >
+                        ⚠️
+                      </span>
+                    )}
+                  </div>
                   <p className={`text-xs ${getRarityClass(char.rarity)}`}>{getStars(char.rarity)}</p>
                 </div>
               </div>
@@ -206,7 +219,13 @@ export default function useCharacterColumns({
             <AscensionLevelCell
               level={getValue()}
               ascension={row.original.entry?.ascension ?? 0}
-              onLevelChange={(val) => updateCharacter(row.original.name, { level: val })}
+              isInvalid={row.original.ascCosts?.isInvalid}
+              invalidReason={row.original.ascCosts?.invalidReason}
+              onLevelChange={(val) => {
+                const currentAsc = row.original.entry?.ascension ?? 0;
+                const coherent = resolveCoherentProgression(val, currentAsc, 'character', null, 'current');
+                updateCharacter(row.original.name, coherent);
+              }}
               onAscensionChange={(val) => updateCharacter(row.original.name, { ascension: val })}
               inputClassName="text-xs text-[var(--text)]"
             />
@@ -276,7 +295,17 @@ export default function useCharacterColumns({
             <AscensionLevelCell
               level={getValue()}
               ascension={row.original.entry?.targetAscension ?? 6}
-              onLevelChange={(val) => updateCharacter(row.original.name, { targetLevel: val })}
+              min={row.original.entry?.level ?? 1}
+              isInvalid={row.original.ascCosts?.isInvalid}
+              invalidReason={row.original.ascCosts?.invalidReason}
+              onLevelChange={(val) => {
+                const targetAsc = row.original.entry?.targetAscension ?? 6;
+                const coherent = resolveCoherentProgression(val, targetAsc, 'character', null, 'target');
+                updateCharacter(row.original.name, {
+                  targetLevel: coherent.level,
+                  targetAscension: coherent.ascension,
+                });
+              }}
               onAscensionChange={(val) => updateCharacter(row.original.name, { targetAscension: val })}
               inputClassName="text-xs text-[var(--gold)]"
             />
@@ -338,7 +367,7 @@ export default function useCharacterColumns({
         {
           id: 'asc_wit', header: 'Wit', accessorFn: row => row.ascCosts?.heros_wit || 0,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-purple-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.ascCosts?.heros_wit || 0} icon="📘" color="text-purple-400" nameKey="Hero's Wit" category="Experience" />
+          cell: ({ row }) => <MatQuantity val={row.original.ascCosts?.heros_wit || 0} icon="📘" color="text-purple-400" nameKey="Hero's Wit" category="Experience" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />
         },
         {
           id: 'asc_nboss', header: 'N.Boss',
@@ -349,7 +378,7 @@ export default function useCharacterColumns({
           enableSorting: true, enableColumnFilter: true,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.boss_material || 0} icon="👹" color="text-purple-400" nameKey={resolvedMats?.worldBoss?.name || ''} category="Normal Boss Material" />;
+            return <MatQuantity val={row.original.ascCosts?.boss_material || 0} icon="👹" color="text-purple-400" nameKey={resolvedMats?.worldBoss?.name || ''} category="Normal Boss Material" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -359,7 +388,7 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-gray-400 text-center px-2 py-2 font-semibold", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.local_specialty || 0} icon="🌸" color="text-gray-400" nameKey={resolvedMats?.localSpecialty?.name || ''} category="Local Specialty" />;
+            return <MatQuantity val={row.original.ascCosts?.local_specialty || 0} icon="🌸" color="text-gray-400" nameKey={resolvedMats?.localSpecialty?.name || ''} category="Local Specialty" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -369,7 +398,7 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#FBBF24]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.gem_gemstone || 0} icon="💎" color="text-amber-400" nameKey={resolvedMats?.gem?.tiers?.['4_star']?.name} category="Character Ascension Gem" />;
+            return <MatQuantity val={row.original.ascCosts?.gem_gemstone || 0} icon="💎" color="text-amber-400" nameKey={resolvedMats?.gem?.tiers?.['4_star']?.name} category="Character Ascension Gem" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -379,7 +408,7 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#A78BFA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.gem_chunk || 0} icon="💎" color="text-purple-400" nameKey={resolvedMats?.gem?.tiers?.['3_star']?.name} category="Character Ascension Gem" />;
+            return <MatQuantity val={row.original.ascCosts?.gem_chunk || 0} icon="💎" color="text-purple-400" nameKey={resolvedMats?.gem?.tiers?.['3_star']?.name} category="Character Ascension Gem" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -389,7 +418,7 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#60A5FA]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.gem_fragment || 0} icon="💎" color="text-blue-400" nameKey={resolvedMats?.gem?.tiers?.['2_star']?.name} category="Character Ascension Gem" />;
+            return <MatQuantity val={row.original.ascCosts?.gem_fragment || 0} icon="💎" color="text-blue-400" nameKey={resolvedMats?.gem?.tiers?.['2_star']?.name} category="Character Ascension Gem" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -399,7 +428,7 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-[#4ADE80]", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.gem_sliver || 0} icon="💎" color="text-green-400" nameKey={resolvedMats?.gem?.tiers?.['1_star']?.name} category="Character Ascension Gem" />;
+            return <MatQuantity val={row.original.ascCosts?.gem_sliver || 0} icon="💎" color="text-green-400" nameKey={resolvedMats?.gem?.tiers?.['1_star']?.name} category="Character Ascension Gem" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -409,7 +438,7 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-blue-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.ascCosts?.['3_star_enemy_material'] || 0} icon="💧" color="text-blue-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['3_star']?.name} category="Common Enhancement Material" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -419,7 +448,7 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-green-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.ascCosts?.['2_star_enemy_material'] || 0} icon="💧" color="text-green-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['2_star']?.name} category="Common Enhancement Material" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
@@ -429,18 +458,18 @@ export default function useCharacterColumns({
           meta: { filterType: 'text', thClassName: "text-center px-2 py-2 font-semibold text-gray-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
           cell: ({ row }) => {
             const resolvedMats = row.original.resolvedMaterials || resolveCharacterMaterials(row.original);
-            return <MatQuantity val={row.original.ascCosts?.['1_star_enemy_material'] || 0} icon="💧" color="text-gray-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" />;
+            return <MatQuantity val={row.original.ascCosts?.['1_star_enemy_material'] || 0} icon="💧" color="text-gray-400" nameKey={resolvedMats?.ascensionEnemy?.tiers?.['1_star']?.name} category="Common Enhancement Material" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />;
           }
         },
         {
           id: 'asc_stella', header: 'Stella', accessorFn: row => row.ascCosts?.masterless_stella_fortuna || 0,
           meta: { filterType: 'number', thClassName: "text-center px-2 py-2 font-semibold text-amber-400", tdClassName: "px-3 py-2 text-center" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.ascCosts?.masterless_stella_fortuna || 0} icon="⭐" color="text-amber-400" nameKey="Masterless Stella Fortuna" category="others" />
+          cell: ({ row }) => <MatQuantity val={row.original.ascCosts?.masterless_stella_fortuna || 0} icon="⭐" color="text-amber-400" nameKey="Masterless Stella Fortuna" category="others" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />
         },
         {
           id: 'asc_mora', header: 'Asc. Mora', accessorFn: row => row.ascCosts?.mora || 0,
           meta: { filterType: 'number', thClassName: "text-right px-2 py-2 font-semibold text-blue-400 border-r border-[var(--border)]", tdClassName: "px-3 py-2 text-right border-r border-[var(--border)]" }, enableSorting: true, enableColumnFilter: true, filterFn: universalFilterFn,
-          cell: ({ row }) => <MatQuantity val={row.original.ascCosts?.mora || 0} icon="🪙" color="text-blue-400" align="right" nameKey="Mora" category="Currency" />
+          cell: ({ row }) => <MatQuantity val={row.original.ascCosts?.mora || 0} icon="🪙" color="text-blue-400" align="right" nameKey="Mora" category="Currency" isInvalid={row.original.ascCosts?.isInvalid} invalidReason={row.original.ascCosts?.invalidReason} />
         }
       ]
     },
@@ -636,6 +665,19 @@ export default function useCharacterColumns({
           cell: ({ row }) => {
             const asc = row.original.ascCosts;
             const tal = row.original.talentCosts;
+            if (asc?.isInvalid) {
+              return (
+                <div
+                  className="flex items-center justify-end gap-1.5 text-amber-400 cursor-help"
+                  title={`Total Mora is incomplete: ${asc.invalidReason}`}
+                  aria-label={`Total Mora incomplete: ${asc.invalidReason}`}
+                >
+                  <span className="text-xs select-none">⚠️</span>
+                  <span className="text-xs font-bold">{formatNumber(tal?.mora || 0)}</span>
+                  <img src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/Mora.png" alt="Mora" className="w-6 h-6 object-contain shrink-0 opacity-70" />
+                </div>
+              );
+            }
             const grandMora = (asc?.mora || 0) + (tal?.mora || 0);
             return (
               <div className="flex items-center justify-end gap-2 text-blue-400">

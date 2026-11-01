@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import useStore from '../store/useStore';
 import { formatNumber } from '../utils/calculator';
@@ -17,6 +17,7 @@ export default function Planner() {
   const rawTab = searchParams.get('tab');
   const activeTab = getPlannerTabId(rawTab);
   const tabsContainerRef = useRef(null);
+  const [showInvalidDetails, setShowInvalidDetails] = useState(false);
 
   const {
     totals,
@@ -115,6 +116,7 @@ export default function Planner() {
                 {(() => {
                   const charPlanCount = totals.activeCharacterPlans ?? totals.characterCount ?? 0;
                   const weapPlanCount = totals.activeWeaponPlans ?? totals.weaponCount ?? 0;
+                  const invalidCount = totals.invalidCount ?? 0;
                   if (charPlanCount > 0 && weapPlanCount > 0) {
                     return `Resources across ${charPlanCount} character plan${charPlanCount !== 1 ? 's' : ''} and ${weapPlanCount} weapon plan${weapPlanCount !== 1 ? 's' : ''} — inventory subtracted`;
                   }
@@ -123,6 +125,9 @@ export default function Planner() {
                   }
                   if (charPlanCount > 0) {
                     return `Resources across ${charPlanCount} character plan${charPlanCount !== 1 ? 's' : ''} — inventory subtracted`;
+                  }
+                  if (invalidCount > 0) {
+                    return `${invalidCount} invalid progression record${invalidCount !== 1 ? 's' : ''} excluded from planning`;
                   }
                   return 'No outstanding upgrade plans';
                 })()}
@@ -165,6 +170,57 @@ export default function Planner() {
           })}
         </div>
       </div>
+
+      {/* ── Partial Totals Warning ── */}
+      {totals.isPartial && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="mb-4 sm:mb-6 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3.5 sm:p-4 text-xs text-amber-300 shadow-sm"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="flex items-start gap-2.5 min-w-0">
+              <span className="text-base leading-none select-none mt-0.5 shrink-0" aria-hidden="true">⚠️</span>
+              <div className="min-w-0">
+                <p className="font-semibold text-amber-200 leading-snug">
+                  Some progression records are invalid. Resource totals are incomplete.
+                </p>
+                <p className="text-[11px] text-amber-300/80 mt-0.5">
+                  {totals.invalidCount} {totals.invalidCount === 1 ? 'record has' : 'records have'} invalid level or ascension combinations and {totals.invalidCount === 1 ? 'was' : 'were'} excluded from calculations.
+                </p>
+              </div>
+            </div>
+            {totals.invalidPlans && totals.invalidPlans.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowInvalidDetails(prev => !prev)}
+                className="self-start sm:self-auto px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-[11px] font-medium text-amber-200 transition-colors shrink-0 cursor-pointer"
+                aria-expanded={showInvalidDetails}
+                aria-controls="planner-invalid-records-list"
+              >
+                {showInvalidDetails ? 'Hide Affected Records ▲' : 'View Affected Records ▼'}
+              </button>
+            )}
+          </div>
+          {showInvalidDetails && totals.invalidPlans && totals.invalidPlans.length > 0 && (
+            <div id="planner-invalid-records-list" className="mt-3 pt-3 border-t border-amber-500/20 flex flex-col gap-1.5">
+              <p className="text-[11px] uppercase tracking-wider text-amber-400 font-semibold mb-0.5">
+                Affected Characters & Weapons ({totals.invalidPlans.length}):
+              </p>
+              <ul className="space-y-1.5 pl-1 max-h-48 overflow-y-auto pr-1">
+                {totals.invalidPlans.map((plan, idx) => (
+                  <li key={`${plan.name}-${idx}`} className="flex flex-wrap items-baseline gap-1.5 text-[11px] bg-black/20 p-1.5 rounded border border-amber-500/15">
+                    <span className="font-semibold text-amber-200 shrink-0">
+                      {plan.isWeapon ? '🗡️' : '👤'} {plan.name}:
+                    </span>
+                    <span className="text-amber-300/80 break-words">{plan.reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Grand Total Stats ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-6">

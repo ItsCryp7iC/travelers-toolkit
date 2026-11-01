@@ -19,8 +19,8 @@ describe('C1D — Mora Normalization & Aggregation Integrity', () => {
       },
     };
     const result = aggregateRosterCosts(roster, []);
-    // Authoritative Row 81 Mora delta in costs.json is 647,990
-    expect(result.totalCosts.Mora).toBe(647990);
+    // Authoritative Level 80 A6 -> 90 A6 leveling Mora is 684,625
+    expect(result.totalCosts.Mora).toBe(684625);
     expect(result.totalCosts.mora).toBeUndefined();
     expect(result.totalCosts.total_mora).toBeUndefined();
   });
@@ -105,9 +105,9 @@ describe('C1D — Mora Normalization & Aggregation Integrity', () => {
       },
     ];
     const result = aggregateRosterCosts(roster, trackedWeapons);
-    // 647,990 (Jean) + 247,648 (Favonius Sword) = 895,638 Mora
-    expect(result.totalCosts.Mora).toBe(647990 + 247648);
-    expect(result.totalCosts.Mora).toBe(895638);
+    // 684,625 (Jean) + 247,648 (Favonius Sword) = 932,273 Mora
+    expect(result.totalCosts.Mora).toBe(684625 + 247648);
+    expect(result.totalCosts.Mora).toBe(932273);
   });
 
   // 6. Mora inventory below, equal to, and above total gross requirement

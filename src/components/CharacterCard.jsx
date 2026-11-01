@@ -88,15 +88,13 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
     return catWeight * 100 + tierWeight;
   }
 
-  const { totalCosts, categories, talentState } = useMemo(() => {
+  const { totalCosts, categories, talentState, isInvalid, invalidReason } = useMemo(() => {
     if (!inRoster || !rosterEntry) return { totalCosts: null, categories: null, talentState: null }
 
     const fromLevel = rosterEntry.level ?? 1
     const fromAsc = rosterEntry.ascension ?? 0
     const toLevel = rosterEntry.targetLevel ?? 90
     const toAsc = rosterEntry.targetAscension ?? 6
-
-    const ascNoop = fromAsc === toAsc && fromLevel >= toLevel
 
     const tState = {
       normalFrom: rosterEntry.talents?.normal ?? 1,
@@ -108,10 +106,10 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
     }
     const talentNoop = tState.normalTo <= tState.normalFrom && tState.skillTo <= tState.skillFrom && tState.burstTo <= tState.burstFrom
 
-    if (ascNoop && talentNoop) return { totalCosts: {}, categories: {}, talentState: tState }
-
-    let ascCosts = null
-    if (!ascNoop) ascCosts = calculateProgressionCost(character, fromLevel, toLevel, fromAsc, toAsc)
+    const ascCosts = calculateProgressionCost(character, fromLevel, toLevel, fromAsc, toAsc);
+    if (ascCosts?.isInvalid) {
+      return { totalCosts: {}, categories: {}, talentState: tState, isInvalid: true, invalidReason: ascCosts.invalidReason }
+    }
 
     let normalCosts = null, skillCosts = null, burstCosts = null
     if (!talentNoop) {
@@ -139,7 +137,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
     processCosts(skillCosts, false)
     processCosts(burstCosts, false)
 
-    return { totalCosts: costs, categories: cats, talentState: tState }
+    return { totalCosts: costs, categories: cats, talentState: tState, isInvalid: ascCosts?.isInvalid || false, invalidReason: ascCosts?.invalidReason || null }
   }, [inRoster, rosterEntry, character])
 
   const initials = getInitials(name)
@@ -406,7 +404,12 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
         {inRoster && totalCosts && (
           <div className="border-t border-white/5 pt-2 flex-1 flex flex-col">
             <p className="text-xs text-[var(--muted)] uppercase tracking-wider mb-2">Required Materials</p>
-            {Object.keys(totalCosts || {}).length === 0 ? (
+            {isInvalid ? (
+              <div className="flex flex-col items-center justify-center p-2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs mt-auto mb-auto text-center" title={invalidReason}>
+                <span className="font-semibold">⚠️ Invalid Progression</span>
+                <span className="text-[10px] text-amber-300/80 mt-0.5 line-clamp-2">{invalidReason}</span>
+              </div>
+            ) : Object.keys(totalCosts || {}).length === 0 ? (
               <p className="text-xs text-[var(--gold)] italic mt-auto mb-auto">Maxed out! 🎉</p>
             ) : (
               <div className="grid grid-cols-4 gap-2">

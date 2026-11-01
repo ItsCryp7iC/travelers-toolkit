@@ -49,7 +49,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
     return catWeight * 100 + tierWeight;
   }
 
-  const { totalCosts, categories } = useMemo(() => {
+  const { totalCosts, categories, isInvalid, invalidReason } = useMemo(() => {
     if (!inArmory || !armoryEntry) return { totalCosts: null, categories: null }
 
     const fromLevel = armoryEntry.level ?? 1
@@ -59,14 +59,12 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
     
     const fromRef = armoryEntry.refinement ?? 1
     const toRef = armoryEntry.targetRefinement ?? 1
-
-    const ascNoop = fromAsc === toAsc && fromLevel >= toLevel
     const refNoop = toRef <= fromRef
 
-    if (ascNoop && refNoop) return { totalCosts: {}, categories: {} }
-
-    let ascCosts = null
-    if (!ascNoop) ascCosts = calculateWeaponCost(weapon, fromLevel, toLevel, fromAsc, toAsc)
+    const ascCosts = calculateWeaponCost(weapon, fromLevel, toLevel, fromAsc, toAsc);
+    if (ascCosts?.isInvalid) {
+      return { totalCosts: {}, categories: {}, isInvalid: true, invalidReason: ascCosts.invalidReason }
+    }
 
     let refCosts = null
     if (!refNoop) {
@@ -98,7 +96,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
     processCosts(ascCosts)
     processCosts(refCosts)
 
-    return { totalCosts: costs, categories: cats }
+    return { totalCosts: costs, categories: cats, isInvalid: ascCosts?.isInvalid || false, invalidReason: ascCosts?.invalidReason || null }
   }, [inArmory, armoryEntry, weapon])
 
 
@@ -289,7 +287,12 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
       {inArmory && totalCosts && (
         <div className="border-t border-white/5 pt-2 flex-1 flex flex-col">
           <p className="text-xs text-[var(--muted)] uppercase tracking-wider mb-2">Required Materials</p>
-          {Object.keys(totalCosts || {}).length === 0 ? (
+          {isInvalid ? (
+            <div className="flex flex-col items-center justify-center p-2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs mt-auto mb-auto text-center" title={invalidReason}>
+              <span className="font-semibold">⚠️ Invalid Progression</span>
+              <span className="text-[10px] text-amber-300/80 mt-0.5 line-clamp-2">{invalidReason}</span>
+            </div>
+          ) : Object.keys(totalCosts || {}).length === 0 ? (
             <p className="text-xs text-[var(--gold)] italic mt-auto mb-auto">Maxed out! 🎉</p>
           ) : (
             <div className="grid grid-cols-4 gap-2">

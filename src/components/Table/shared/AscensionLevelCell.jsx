@@ -8,19 +8,30 @@ export default function AscensionLevelCell({
   ascension,
   onLevelChange,
   onAscensionChange,
-  inputClassName = "text-xs text-[var(--text)]"
+  inputClassName = "text-xs text-[var(--text)]",
+  min = 1,
+  max = 90,
+  isInvalid = false,
+  invalidReason = null,
 }) {
   return (
-    <div className="flex items-center justify-center gap-1" onClick={e => e.stopPropagation()}>
+    <div
+      className={`flex items-center justify-center gap-1 ${isInvalid ? 'text-amber-400' : ''}`}
+      onClick={e => e.stopPropagation()}
+      title={isInvalid ? invalidReason : undefined}
+    >
+      {isInvalid && (
+        <span className="text-amber-400 text-xs select-none shrink-0" role="img" aria-label={`Invalid state: ${invalidReason}`}>⚠️</span>
+      )}
       <InlineNumberInput
         value={level}
-        min={1}
-        max={90}
+        min={min}
+        max={max}
         onChangeSubmit={onLevelChange}
         className={inputClassName}
       />
 
-      {isAscended(level, ascension) && level < 90 && (
+      {isAscended(level, ascension) && level < max && (
         <img
           src="https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/others/AscensionWhite.png"
           alt="Ascended"
