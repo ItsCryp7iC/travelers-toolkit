@@ -583,22 +583,22 @@ const WEAPON_ASCENSION_2STAR = [
   // Phase 0: T1 asc (1), T1 elite (1), T1 mob (1)
   { mora: 5000,   ascMat: [1,0,0,0], elite: [1,0,0], mob: [1,0,0] },
   // Phase 1: T2 asc (1), T1 elite (5), T1 mob (4)
-  { mora: 10000,  ascMat: [0,1,0,0], elite: [5,0,0], mob: [4,0,0] },
+  { mora: 5000,   ascMat: [0,1,0,0], elite: [5,0,0], mob: [4,0,0] },
   // Phase 2: T2 asc (3), T2 elite (3), T2 mob (3)
-  { mora: 15000,  ascMat: [0,3,0,0], elite: [0,3,0], mob: [0,3,0] },
+  { mora: 10000,  ascMat: [0,3,0,0], elite: [0,3,0], mob: [0,3,0] },
   // Phase 3: T3 asc (1), T2 elite (5), T2 mob (4)
-  { mora: 20000,  ascMat: [0,0,1,0], elite: [0,5,0], mob: [0,4,0] },
+  { mora: 15000,  ascMat: [0,0,1,0], elite: [0,5,0], mob: [0,4,0] },
 ]
 
 const WEAPON_ASCENSION_1STAR = [
   // Phase 0: T1 asc (1), T1 elite (1), T1 mob (1)
-  { mora: 5000,   ascMat: [1,0,0,0], elite: [1,0,0], mob: [1,0,0] },
+  { mora: 0,      ascMat: [1,0,0,0], elite: [1,0,0], mob: [1,0,0] },
   // Phase 1: T2 asc (1), T1 elite (4), T1 mob (2)
-  { mora: 10000,  ascMat: [0,1,0,0], elite: [4,0,0], mob: [2,0,0] },
+  { mora: 5000,   ascMat: [0,1,0,0], elite: [4,0,0], mob: [2,0,0] },
   // Phase 2: T2 asc (2), T2 elite (2), T2 mob (2)
-  { mora: 15000,  ascMat: [0,2,0,0], elite: [0,2,0], mob: [0,2,0] },
+  { mora: 5000,   ascMat: [0,2,0,0], elite: [0,2,0], mob: [0,2,0] },
   // Phase 3: T3 asc (1), T2 elite (4), T2 mob (3)
-  { mora: 20000,  ascMat: [0,0,1,0], elite: [0,4,0], mob: [0,3,0] },
+  { mora: 10000,  ascMat: [0,0,1,0], elite: [0,4,0], mob: [0,3,0] },
 ]
 
 // Weapon leveling mora cost (cumulative from 1 to each level — the delta approach)
@@ -690,6 +690,97 @@ export function buildWeaponEliteKey(base, tier) {
 // ─── Weapon Ore Key ─────────────────────────────────────────────────────
 export const WEAPON_ORE_KEY = 'MysticEnhancementOre'
 
+// ─── Weapon Ascension Mora Discount Helpers ──────────────────────────────
+const CHARACTER_CANONICAL_ALIASES = {
+  'Raiden Shogun': ['Raiden Shogun', 'RaidenShogun'],
+  'Wanderer': ['Wanderer'],
+};
+
+/**
+ * Checks whether an eligible character is owned in the roster.
+ * Supports:
+ * - Zustand state.roster (name-keyed dictionary, e.g. { 'Raiden Shogun': { level: 90, ... } })
+ * - Array of character objects ({ name: 'Raiden Shogun' } or { id: 'RaidenShogun' })
+ * - Array of character name/ID strings (['Raiden Shogun'])
+ * - Set of character name/ID strings
+ * - Explicitly rejects unowned character entries ({ owned: false }, null, undefined)
+ *
+ * @param {any} charactersRoster
+ * @param {string} targetCharName
+ * @returns {boolean}
+ */
+export function isCharacterInRoster(charactersRoster, targetCharName) {
+  if (!charactersRoster || !targetCharName) return false;
+
+  const validIdentifiers = CHARACTER_CANONICAL_ALIASES[targetCharName] || [targetCharName];
+
+  // Set lookup
+  if (charactersRoster instanceof Set) {
+    return validIdentifiers.some((id) => charactersRoster.has(id));
+  }
+
+  // Array lookup
+  if (Array.isArray(charactersRoster)) {
+    return charactersRoster.some((item) => {
+      if (!item) return false;
+      if (typeof item === 'string') {
+        return validIdentifiers.includes(item);
+      }
+      if (typeof item === 'object') {
+        if ('owned' in item && item.owned === false) return false;
+        return validIdentifiers.includes(item.name) || validIdentifiers.includes(item.id);
+      }
+      return false;
+    });
+  }
+
+  // Object / Dictionary lookup (e.g. Zustand state.roster)
+  if (typeof charactersRoster === 'object') {
+    return validIdentifiers.some((id) => {
+      const entry = charactersRoster[id];
+      if (entry === undefined || entry === null) return false;
+      if (typeof entry === 'object' && 'owned' in entry && entry.owned === false) return false;
+      if (typeof entry === 'boolean') return entry;
+      return true;
+    });
+  }
+
+  return false;
+}
+
+/**
+ * Determines weapon ascension discount eligibility based on weapon type and roster.
+ *
+ * Rules:
+ * - Raiden Shogun: 50% reduction in Sword and Polearm ascension Mora.
+ * - Wanderer: 50% reduction in Bow and Catalyst ascension Mora.
+ * - Claymores: no discount from these passives.
+ * - Both owned: applies to their respective classes without double stacking.
+ *
+ * @param {Object} weapon - Weapon object (must contain type)
+ * @param {any} charactersRoster - Roster state
+ * @returns {{ multiplier: number, hasDiscount: boolean, discountSource: string|null }}
+ */
+export function getWeaponAscensionDiscount(weapon, charactersRoster = {}) {
+  const weaponType = weapon?.type;
+  if (!weaponType) {
+    return { multiplier: 1, hasDiscount: false, discountSource: null };
+  }
+
+  const hasRaiden = isCharacterInRoster(charactersRoster, 'Raiden Shogun');
+  const hasWanderer = isCharacterInRoster(charactersRoster, 'Wanderer');
+
+  if (hasRaiden && (weaponType === 'Sword' || weaponType === 'Polearm')) {
+    return { multiplier: 0.5, hasDiscount: true, discountSource: 'Raiden Shogun' };
+  }
+
+  if (hasWanderer && (weaponType === 'Bow' || weaponType === 'Catalyst')) {
+    return { multiplier: 0.5, hasDiscount: true, discountSource: 'Wanderer' };
+  }
+
+  return { multiplier: 1, hasDiscount: false, discountSource: null };
+}
+
 // ─── Main Weapon Cost Calculator ──────────────────────────────────────────
 /**
  * Calculate total resources to ascend + level a weapon.
@@ -758,7 +849,7 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
     '5_star_ascension_material', '4_star_ascension_material', '3_star_ascension_material', '2_star_ascension_material',
     '4_star_enhancement_material', '3_star_enhancement_material', '2_star_enhancement_material',
     '3_star_enemy_material', '2_star_enemy_material', '1_star_enemy_material',
-    'mora', 'mystic_ore'
+    'mora', 'mystic_ore', 'exp_to_next_level'
   ];
   keysToRemove.forEach(k => delete result[k]);
 
@@ -817,31 +908,9 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
     }
   }
 
-  const checkRosterHas = (name) => {
-    if (!charactersRoster) return false;
-    if (Array.isArray(charactersRoster)) {
-      return charactersRoster.some(c => (typeof c === 'string' ? c === name : c?.name === name));
-    }
-    if (typeof charactersRoster === 'object') {
-      return Boolean(charactersRoster[name]);
-    }
-    return false;
-  };
-  const hasRaiden = checkRosterHas('Raiden Shogun');
-  const hasWanderer = checkRosterHas('Wanderer');
+  const { multiplier: ascensionMultiplier, hasDiscount, discountSource } = getWeaponAscensionDiscount(weapon, charactersRoster);
 
-  let ascensionMultiplier = 1;
-  let discountSource = null;
-
-  if (hasRaiden && (weapon?.type === 'Sword' || weapon?.type === 'Polearm')) {
-      ascensionMultiplier = 0.5;
-      discountSource = 'Raiden Shogun';
-  } else if (hasWanderer && (weapon?.type === 'Bow' || weapon?.type === 'Catalyst')) {
-      ascensionMultiplier = 0.5;
-      discountSource = 'Wanderer';
-  }
-
-  result.has_ascension_discount = !!discountSource;
+  result.has_ascension_discount = hasDiscount;
   result.discount_source = discountSource;
 
   ascensionMora = Math.ceil(ascensionMora * ascensionMultiplier);

@@ -77,7 +77,7 @@ export default function usePlannerData({ roster, trackedWeapons, inventory }) {
     let sumItems = 0;
 
     for (const key of Object.keys(toFarm)) {
-      if (['totalItems', 'allDone', 'mora', 'crown'].includes(key)) continue;
+      if (['totalItems', 'allDone', 'mora', 'crown', 'isPartial', 'oreExp'].includes(key)) continue;
       const val = toFarm[key];
       if (Array.isArray(val)) {
         val.forEach(item => {

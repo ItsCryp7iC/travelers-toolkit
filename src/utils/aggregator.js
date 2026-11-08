@@ -12,6 +12,7 @@ import { calculateProgressionCost, calculateTalentCost, calculateAllTalentsCost,
 import { resolveSpecificItem } from './resolver'
 import { validateLevelAscension } from './progressionContracts'
 import { getOwnedQty } from './inventoryUtils'
+import { isInformationalMetric } from './resourceClassification'
 
 // Build a fast character lookup
 const CHAR_MAP = Object.fromEntries(charactersData.map((c) => [c.name, c]))
@@ -114,8 +115,10 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     const processCosts = (costObj, isWeapon = false, isAscension = false, skipGrandTotals = false) => {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
+        if (isInformationalMetric(key)) return
         if (typeof val === 'number' && val > 0) {
           const resolved = resolveSpecificItem(key, isWeapon ? null : character, null, isAscension);
+          if (resolved.category === 'metric') return
           const finalId = resolved.id;
           totalCosts[finalId] = (totalCosts[finalId] || 0) + val
           if (!skipGrandTotals) {
@@ -171,8 +174,10 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
     const processWeaponCosts = (costObj) => {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
+        if (isInformationalMetric(key)) return
         if (typeof val === 'number' && val > 0) {
           const resolved = resolveSpecificItem(key, null, wData);
+          if (resolved.category === 'metric') return
           const finalId = resolved.id;
           totalCosts[finalId] = (totalCosts[finalId] || 0) + val
           grandTotalCosts[finalId] = (grandTotalCosts[finalId] || 0) + val
@@ -212,11 +217,58 @@ export function computeToFarm(totals, inventory) {
   const totalCosts = totals.totalCosts || {}
   const categories = totals.categories || {}
   const rarities = totals.rarities || {}
+  const isPartial = Boolean(totals.isPartial)
+
+  // 1. Enhancement Ore Accounting Pool (EXP constants: Mystic = 10k, Fine = 2k, Enhancement = 400)
+  const EXP_PER_MYSTIC = 10000;
+  const EXP_PER_FINE = 2000;
+  const EXP_PER_NORMAL = 400;
+
+  const reqMystic = totalCosts['MysticEnhancementOre'] || 0;
+  const reqFine = totalCosts['FineEnhancementOre'] || 0;
+  const reqNormal = totalCosts['EnhancementOre'] || 0;
+
+  const ownedMystic = getOwnedQty(inv, 'MysticEnhancementOre');
+  const ownedFine = getOwnedQty(inv, 'FineEnhancementOre');
+  const ownedNormal = getOwnedQty(inv, 'EnhancementOre');
+
+  const grossRequiredExp = (reqMystic * EXP_PER_MYSTIC) + (reqFine * EXP_PER_FINE) + (reqNormal * EXP_PER_NORMAL);
+  const availableExp = (ownedMystic * EXP_PER_MYSTIC) + (ownedFine * EXP_PER_FINE) + (ownedNormal * EXP_PER_NORMAL);
+  const outstandingExp = Math.max(0, grossRequiredExp - availableExp);
+
+  let toFarmMystic = 0;
+  let toFarmFine = 0;
+  let toFarmNormal = 0;
+
+  if (outstandingExp > 0) {
+    if (availableExp === 0) {
+      toFarmMystic = reqMystic;
+      toFarmFine = reqFine;
+      toFarmNormal = reqNormal;
+    } else {
+      toFarmMystic = Math.floor(outstandingExp / EXP_PER_MYSTIC);
+      const rem1 = outstandingExp % EXP_PER_MYSTIC;
+      toFarmFine = Math.floor(rem1 / EXP_PER_FINE);
+      const rem2 = rem1 % EXP_PER_FINE;
+      toFarmNormal = Math.ceil(rem2 / EXP_PER_NORMAL);
+    }
+  }
 
   const allItems = Object.entries(totalCosts)
+    .filter(([name]) => !isInformationalMetric(name))
     .map(([name, required]) => {
       const owned = getOwnedQty(inv, name)
-      const toFarm = Math.max(0, required - owned)
+      let toFarm;
+      if (name === 'MysticEnhancementOre') {
+        toFarm = toFarmMystic;
+      } else if (name === 'FineEnhancementOre') {
+        toFarm = toFarmFine;
+      } else if (name === 'EnhancementOre') {
+        toFarm = toFarmNormal;
+      } else {
+        toFarm = Math.max(0, required - owned);
+      }
+
       return {
         name,
         required,
@@ -239,6 +291,8 @@ export function computeToFarm(totals, inventory) {
     heroWits: allItems.find(i => i.name === 'HerosWit'),
     crown: allItems.find(i => i.name === 'CrownOfInsight'),
     mysticOre: allItems.find(i => i.name === 'MysticEnhancementOre'),
+    fineOre: allItems.find(i => i.name === 'FineEnhancementOre'),
+    normalOre: allItems.find(i => i.name === 'EnhancementOre'),
     stellaFortuna: allItems.find(i => i.name === 'MasterlessStellaFortuna'),
     gemstones: filterCategory('gemstones'),
     worldBoss: filterCategory('worldBoss'),
@@ -250,7 +304,18 @@ export function computeToFarm(totals, inventory) {
     eliteMob: filterCategory('eliteMob'),
     forgingMats: allItems.filter(item => item.category === 'billet' || item.category === 'forgingOre' || item.category === 'Forging Material'),
     totalItems: allItems.length,
-    allDone: allItems.every(i => i.toFarm === 0),
+    allDone: !isPartial && allItems.every(i => i.toFarm === 0),
+    isPartial,
+    oreExp: {
+      grossRequiredExp,
+      availableExp,
+      outstandingExp,
+      suggestedOres: {
+        mystic: toFarmMystic,
+        fine: toFarmFine,
+        normal: toFarmNormal,
+      },
+    },
   }
 }
 

@@ -10,7 +10,9 @@ import {
   calculateProgressionCost,
   calculateTalentCost,
   calculateAllTalentsCost,
-  calculateWeaponCost
+  calculateWeaponCost,
+  isCharacterInRoster,
+  getWeaponAscensionDiscount
 } from './calculator';
 import weaponsData from '../data/weapons.json';
 import charactersData from './characters'; // Need to load from correct path if needed, we can just mock characters
@@ -509,5 +511,238 @@ describe('DEF-C2-01 & DEF-C2-02 Authoritative Character Progression Boundaries',
 
     const cost100 = calculateProgressionCost(dummy5StarChar, 90, 100, 6, 6);
     expect(cost100.masterless_stella_fortuna).toBe(3);
+  });
+});
+
+describe('DEF-C2-06 Authoritative 1★ and 2★ Weapon Ascension Mora', () => {
+  const dullBlade = weaponsData.find(w => w.name === 'Dull Blade');
+  const silverSword = weaponsData.find(w => w.name === 'Silver Sword');
+
+  // 1★ Dull Blade
+  it('1★ weapon: individual ascension phase Mora matches authoritative schedule [0, 5000, 5000, 10000]', () => {
+    // Phase 0: 20 A0 -> 20 A1 (0 Mora)
+    const p0 = calculateWeaponCost(dullBlade, 20, 20, 0, 1, false, {});
+    expect(p0.total_mora).toBe(0);
+
+    // Phase 1: 40 A1 -> 40 A2 (5,000 Mora)
+    const p1 = calculateWeaponCost(dullBlade, 40, 40, 1, 2, false, {});
+    expect(p1.total_mora).toBe(5000);
+
+    // Phase 2: 50 A2 -> 50 A3 (5,000 Mora)
+    const p2 = calculateWeaponCost(dullBlade, 50, 50, 2, 3, false, {});
+    expect(p2.total_mora).toBe(5000);
+
+    // Phase 3: 60 A3 -> 60 A4 (10,000 Mora)
+    const p3 = calculateWeaponCost(dullBlade, 60, 60, 3, 4, false, {});
+    expect(p3.total_mora).toBe(10000);
+  });
+
+  it('1★ weapon: full 1 -> 70 A0 -> A4 progression calculates exactly 71,988 leveling + 20,000 ascension = 91,988 Mora', () => {
+    const cost = calculateWeaponCost(dullBlade, 1, 70, 0, 4, false, {});
+    expect(cost.total_mora).toBe(91988);
+    assertValidQuantities(cost);
+  });
+
+  it('1★ weapon: capped at Ascension 4 / Level 70 (higher progression is invalid)', () => {
+    const invalidTarget = calculateWeaponCost(dullBlade, 1, 90, 0, 6, false, {});
+    expect(invalidTarget.isInvalid).toBe(true);
+  });
+
+  it('1★ weapon: completed 70 A4 -> 70 A4 yields empty cost object', () => {
+    const completed = calculateWeaponCost(dullBlade, 70, 70, 4, 4, false, {});
+    expect(completed).toEqual({});
+  });
+
+  // 2★ Silver Sword
+  it('2★ weapon: individual ascension phase Mora matches authoritative schedule [5000, 5000, 10000, 15000]', () => {
+    // Phase 0: 20 A0 -> 20 A1 (5,000 Mora)
+    const p0 = calculateWeaponCost(silverSword, 20, 20, 0, 1, false, {});
+    expect(p0.total_mora).toBe(5000);
+
+    // Phase 1: 40 A1 -> 40 A2 (5,000 Mora)
+    const p1 = calculateWeaponCost(silverSword, 40, 40, 1, 2, false, {});
+    expect(p1.total_mora).toBe(5000);
+
+    // Phase 2: 50 A2 -> 50 A3 (10,000 Mora)
+    const p2 = calculateWeaponCost(silverSword, 50, 50, 2, 3, false, {});
+    expect(p2.total_mora).toBe(10000);
+
+    // Phase 3: 60 A3 -> 60 A4 (15,000 Mora)
+    const p3 = calculateWeaponCost(silverSword, 60, 60, 3, 4, false, {});
+    expect(p3.total_mora).toBe(15000);
+  });
+
+  it('2★ weapon: full 1 -> 70 A0 -> A4 progression calculates exactly 107,968 leveling + 35,000 ascension = 142,968 Mora', () => {
+    const cost = calculateWeaponCost(silverSword, 1, 70, 0, 4, false, {});
+    expect(cost.total_mora).toBe(142968);
+    assertValidQuantities(cost);
+  });
+
+  it('2★ weapon: capped at Ascension 4 / Level 70 (higher progression is invalid)', () => {
+    const invalidTarget = calculateWeaponCost(silverSword, 1, 80, 0, 5, false, {});
+    expect(invalidTarget.isInvalid).toBe(true);
+  });
+
+  it('2★ weapon: completed 70 A4 -> 70 A4 yields empty cost object', () => {
+    const completed = calculateWeaponCost(silverSword, 70, 70, 4, 4, false, {});
+    expect(completed).toEqual({});
+  });
+});
+
+describe('DEF-C2-03 Roster Detection (isCharacterInRoster)', () => {
+  it('detects character in Zustand dictionary state.roster format', () => {
+    const roster = {
+      'Raiden Shogun': { level: 90, ascension: 6 },
+      'Wanderer': { level: 80, ascension: 5 },
+    };
+    expect(isCharacterInRoster(roster, 'Raiden Shogun')).toBe(true);
+    expect(isCharacterInRoster(roster, 'Wanderer')).toBe(true);
+    expect(isCharacterInRoster(roster, 'Zhongli')).toBe(false);
+  });
+
+  it('handles canonical alias variations (e.g., RaidenShogun without space)', () => {
+    const rosterWithSpacelessKey = {
+      'RaidenShogun': { level: 90, ascension: 6 },
+    };
+    expect(isCharacterInRoster(rosterWithSpacelessKey, 'Raiden Shogun')).toBe(true);
+  });
+
+  it('rejects unowned character records ({ owned: false }, null, undefined, false)', () => {
+    const roster = {
+      'Raiden Shogun': { owned: false, level: 1 },
+      'Wanderer': null,
+      'Zhongli': undefined,
+      'Furina': false,
+    };
+    expect(isCharacterInRoster(roster, 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster(roster, 'Wanderer')).toBe(false);
+    expect(isCharacterInRoster(roster, 'Zhongli')).toBe(false);
+    expect(isCharacterInRoster(roster, 'Furina')).toBe(false);
+  });
+
+  it('detects character in array of objects format (name or id)', () => {
+    const arrayByName = [{ name: 'Raiden Shogun' }, { name: 'Nahida' }];
+    const arrayById = [{ id: 'RaidenShogun' }];
+    const arrayUnowned = [{ name: 'Raiden Shogun', owned: false }];
+
+    expect(isCharacterInRoster(arrayByName, 'Raiden Shogun')).toBe(true);
+    expect(isCharacterInRoster(arrayById, 'Raiden Shogun')).toBe(true);
+    expect(isCharacterInRoster(arrayUnowned, 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster(arrayByName, 'Wanderer')).toBe(false);
+  });
+
+  it('detects character in array of strings format', () => {
+    const stringArray = ['Raiden Shogun', 'Bennett'];
+    expect(isCharacterInRoster(stringArray, 'Raiden Shogun')).toBe(true);
+    expect(isCharacterInRoster(stringArray, 'Wanderer')).toBe(false);
+  });
+
+  it('detects character in Set format', () => {
+    const rosterSet = new Set(['Wanderer', 'Kazuha']);
+    expect(isCharacterInRoster(rosterSet, 'Wanderer')).toBe(true);
+    expect(isCharacterInRoster(rosterSet, 'Raiden Shogun')).toBe(false);
+  });
+
+  it('returns false safely for empty, null, undefined, or invalid inputs', () => {
+    expect(isCharacterInRoster(null, 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster(undefined, 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster({}, 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster([], 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster('invalid', 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster(12345, 'Raiden Shogun')).toBe(false);
+    expect(isCharacterInRoster({ 'Raiden Shogun': {} }, null)).toBe(false);
+  });
+});
+
+describe('DEF-C2-03 Weapon Ascension Discount Determination (getWeaponAscensionDiscount)', () => {
+  const sword = { type: 'Sword' };
+  const polearm = { type: 'Polearm' };
+  const bow = { type: 'Bow' };
+  const catalyst = { type: 'Catalyst' };
+  const claymore = { type: 'Claymore' };
+
+  it('Raiden Shogun grants 50% discount to Swords and Polearms only', () => {
+    const roster = { 'Raiden Shogun': { level: 90 } };
+    expect(getWeaponAscensionDiscount(sword, roster)).toEqual({ multiplier: 0.5, hasDiscount: true, discountSource: 'Raiden Shogun' });
+    expect(getWeaponAscensionDiscount(polearm, roster)).toEqual({ multiplier: 0.5, hasDiscount: true, discountSource: 'Raiden Shogun' });
+    expect(getWeaponAscensionDiscount(bow, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+    expect(getWeaponAscensionDiscount(catalyst, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+    expect(getWeaponAscensionDiscount(claymore, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+  });
+
+  it('Wanderer grants 50% discount to Bows and Catalysts only', () => {
+    const roster = { 'Wanderer': { level: 90 } };
+    expect(getWeaponAscensionDiscount(bow, roster)).toEqual({ multiplier: 0.5, hasDiscount: true, discountSource: 'Wanderer' });
+    expect(getWeaponAscensionDiscount(catalyst, roster)).toEqual({ multiplier: 0.5, hasDiscount: true, discountSource: 'Wanderer' });
+    expect(getWeaponAscensionDiscount(sword, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+    expect(getWeaponAscensionDiscount(polearm, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+    expect(getWeaponAscensionDiscount(claymore, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+  });
+
+  it('Claymores receive no discount even when both passives are owned', () => {
+    const roster = { 'Raiden Shogun': {}, 'Wanderer': {} };
+    expect(getWeaponAscensionDiscount(claymore, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+  });
+
+  it('Owning both Raiden and Wanderer does not double-stack on any weapon type', () => {
+    const roster = { 'Raiden Shogun': {}, 'Wanderer': {} };
+    expect(getWeaponAscensionDiscount(sword, roster).multiplier).toBe(0.5);
+    expect(getWeaponAscensionDiscount(polearm, roster).multiplier).toBe(0.5);
+    expect(getWeaponAscensionDiscount(bow, roster).multiplier).toBe(0.5);
+    expect(getWeaponAscensionDiscount(catalyst, roster).multiplier).toBe(0.5);
+    expect(getWeaponAscensionDiscount(claymore, roster).multiplier).toBe(1.0);
+  });
+
+  it('Neither owned yields multiplier 1.0 and no discount', () => {
+    const roster = {};
+    expect(getWeaponAscensionDiscount(sword, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+    expect(getWeaponAscensionDiscount(bow, roster)).toEqual({ multiplier: 1, hasDiscount: false, discountSource: null });
+  });
+});
+
+describe('DEF-C2-03 Mora Calculation Separation & Interaction', () => {
+  const aquila = weaponsData.find(w => w.name === 'Aquila Favonia');
+  const skywardHarp = weaponsData.find(w => w.name === 'Skyward Harp');
+
+  it('leveling-only progression (80 A6 -> 90 A6) receives 0 discount even when Raiden is owned', () => {
+    const noDiscount = calculateWeaponCost(aquila, 80, 90, 6, 6, false, {});
+    const withRaiden = calculateWeaponCost(aquila, 80, 90, 6, 6, false, { 'Raiden Shogun': {} });
+    expect(noDiscount.total_mora).toBe(371478);
+    expect(withRaiden.total_mora).toBe(371478);
+    expect(withRaiden.has_ascension_discount).toBe(true);
+  });
+
+  it('same-level ascension progression (80 A5 -> 80 A6) applies 50% discount strictly to ascension Mora', () => {
+    const noDiscount = calculateWeaponCost(aquila, 80, 80, 5, 6, false, {});
+    const withRaiden = calculateWeaponCost(aquila, 80, 80, 5, 6, false, { 'Raiden Shogun': {} });
+    expect(noDiscount.total_mora).toBe(65000);
+    expect(withRaiden.total_mora).toBe(32500); // Math.ceil(65000 * 0.5)
+  });
+
+  it('combined leveling and ascension progression (80 A5 -> 90 A6) discounts only ascension Mora (not leveling)', () => {
+    const noDiscount = calculateWeaponCost(aquila, 80, 90, 5, 6, false, {});
+    const withRaiden = calculateWeaponCost(aquila, 80, 90, 5, 6, false, { 'Raiden Shogun': {} });
+    // Base: 371,478 leveling + 65,000 ascension = 436,478
+    expect(noDiscount.total_mora).toBe(436478);
+    // Discounted: 371,478 leveling + 32,500 ascension = 403,978
+    expect(withRaiden.total_mora).toBe(403978);
+    expect(withRaiden.total_mora).toBe(371478 + 32500);
+  });
+
+  it('multi-phase progression (1 A0 -> 90 A6) discounts full cumulative ascension Mora accurately', () => {
+    const noDiscount = calculateWeaponCost(aquila, 1, 90, 0, 6, false, {});
+    const withRaiden = calculateWeaponCost(aquila, 1, 90, 0, 6, false, { 'Raiden Shogun': {} });
+    // Leveling: 906,445. Total ascension Mora: 225,000.
+    expect(noDiscount.total_mora).toBe(1131445);
+    // With 50% ascension discount: 906,445 + 112,500 = 1,018,945
+    expect(withRaiden.total_mora).toBe(1018945);
+    expect(noDiscount.total_mora - withRaiden.total_mora).toBe(112500);
+  });
+
+  it('Wanderer Bow discount behaves identically on Bow combined leveling and ascension', () => {
+    const noDiscount = calculateWeaponCost(skywardHarp, 80, 90, 5, 6, false, {});
+    const withWanderer = calculateWeaponCost(skywardHarp, 80, 90, 5, 6, false, { 'Wanderer': {} });
+    expect(noDiscount.total_mora).toBe(436478);
+    expect(withWanderer.total_mora).toBe(403978);
   });
 });

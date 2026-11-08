@@ -26,6 +26,7 @@ const characterByName = new Map(charactersData.map((c) => [c.name, c]))
 
 export default function Weapons() {
   const trackedWeapons      = useStore((s) => s.trackedWeapons)
+  const roster              = useStore((s) => s.roster)
   const removeTrackedWeapon = useStore((s) => s.removeTrackedWeapon)
   const batchRemoveWeapons  = useStore((s) => s.batchRemoveWeapons)
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
@@ -65,7 +66,7 @@ export default function Weapons() {
     const mapped = trackedWeapons.map((tw) => {
       const data = weaponById.get(tw.weapon_id) || weaponByName.get(tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
       const assignedChar = tw.assignedTo ? (characterByName.get(tw.assignedTo) || null) : null
-      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus)
+      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus, roster)
       const resolvedMaterials = resolveWeaponMaterials(data)
 
       return { ...tw, data, assignedChar, costs, resolvedMaterials }
@@ -76,7 +77,7 @@ export default function Weapons() {
     
     // Add sequential Sl No
     return mapped.map((w, idx) => ({ ...w, sl_no: idx + 1 }))
-  }, [trackedWeapons])
+  }, [trackedWeapons, roster])
 
   const filtered = useMemo(() => {
     let list = [...enriched]

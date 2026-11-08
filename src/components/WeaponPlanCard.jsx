@@ -12,6 +12,8 @@ import weeklyBossData from '../data/weekly_boss.json'
 import eliteEnemyData from '../data/elite_enemy.json'
 import weaponAscData from '../data/weapon_ascension.json'
 import weaponsData from '../data/weapons.json'
+import miscMaterialsData from '../data/misc_materials.json'
+import { isInformationalMetric } from '../utils/resourceClassification'
 
 export default function WeaponPlanCard({ entryObj, inventory, categories = {} }) {
  const { name, entry, totalCosts } = entryObj;
@@ -47,7 +49,8 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  const allItems = [
  ...localSpecialtyData,
  ...normalBossData,
- ...weeklyBossData
+ ...weeklyBossData,
+ ...miscMaterialsData
  ];
  
  const allTierFamilies = [
@@ -114,7 +117,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  </div>
  <div className="min-w-0 flex-1">
  <h3 className=" text-[var(--text)] text-sm truncate">{displayName}</h3>
- <p className="text-xs text-[var(--gold)] tracking-wider" title={`Total Mora: ${(totalCosts?.mora || 0).toLocaleString()}`}>Mora: {formatPlannerQuantity(totalCosts?.mora || 0)}</p>
+ <p className="text-xs text-[var(--gold)] tracking-wider" title={`Total Mora: ${(totalCosts?.Mora ?? totalCosts?.mora ?? 0).toLocaleString()}`}>Mora: {formatPlannerQuantity(totalCosts?.Mora ?? totalCosts?.mora ?? 0)}</p>
  </div>
  {weapon.type && (
  <img 
@@ -147,7 +150,7 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  {Object.entries(totalCosts || {})
  .filter(([matId, qty]) => {
  const sanitizedKey = matId.toString().toLowerCase().replace(/[\s_]/g, '');
- return qty > 0 && sanitizedKey !== 'mora' && !['totalexp', 'normalore', 'fineore', 'wastedexp', 'exptonextlevel'].includes(sanitizedKey);
+ return qty > 0 && sanitizedKey !== 'mora' && !isInformationalMetric(matId);
  })
  .sort(([keyA], [keyB]) => {
  const a = keyA.toString().toLowerCase().replace(/[\s_]/g, '');

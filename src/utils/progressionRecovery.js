@@ -621,8 +621,8 @@ export function executeRepairTransaction({
             updatedW.targetLevel,
             updatedW.ascension,
             updatedW.targetAscension,
-            updatedW.currentRefinement || 1,
-            updatedW.targetRefinement || 1
+            Boolean(updatedW.hasEventBonus),
+            updatedRoster
           );
         }
         updatedWeapons[wIdx] = updatedW;

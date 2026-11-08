@@ -201,7 +201,7 @@ export const createWeaponsSlice = (set, get) => ({
               updatedWeapon.ascension || 0,
               updatedWeapon.targetAscension || 6,
               updatedWeapon.hasEventBonus,
-              Object.values(state.roster)
+              updatedRoster
             );
             return { ...updatedWeapon, costs: newCosts };
           }

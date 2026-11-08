@@ -9,6 +9,7 @@ import localSpecialtyData from '../data/local_specialty.json'
 import forgingMatsData from '../data/forging_materials.json'
 import miscMaterialsData from '../data/misc_materials.json'
 import weaponsData from '../data/weapons.json'
+import { isInformationalMetric } from './resourceClassification'
 
 const DB = {
   talent: Object.fromEntries(talentMatsData.map(i => [i.id, i])),
@@ -42,12 +43,18 @@ const getRarity = (key) => {
  * Returns { id: string, category: string, name: string, rarity: number }
  */
 export function resolveSpecificItem(genericKey, character = null, weapon = null, isAscension = false) {
+  if (isInformationalMetric(genericKey)) {
+    return { id: genericKey, category: 'metric', name: genericKey, rarity: 0 };
+  }
+
   const rarity = getRarity(genericKey);
   
   if (genericKey === 'mora' || genericKey === 'total_mora' || genericKey === 'totalMora') return { id: 'Mora', category: 'mora', name: 'Mora', rarity: 3 }
   if (genericKey === 'heros_wit') return { id: 'HerosWit', category: 'heroWits', name: "Hero's Wit", rarity: 4 }
   if (genericKey === 'crown') return { id: 'CrownOfInsight', category: 'crown', name: 'Crown of Insight', rarity: 5 }
-  if (genericKey === 'mystic_ore') return { id: 'MysticEnhancementOre', category: 'mysticOre', name: 'Mystic Enhancement Ore', rarity: 3 }
+  if (genericKey === 'mystic_ore' || genericKey === 'mysticOre' || genericKey === 'MysticEnhancementOre') return { id: 'MysticEnhancementOre', category: 'mysticOre', name: 'Mystic Enhancement Ore', rarity: 3 }
+  if (genericKey === 'fine_ore' || genericKey === 'fineOre' || genericKey === 'FineEnhancementOre') return { id: 'FineEnhancementOre', category: 'mysticOre', name: 'Fine Enhancement Ore', rarity: 2 }
+  if (genericKey === 'normal_ore' || genericKey === 'normalOre' || genericKey === 'enhancement_ore' || genericKey === 'EnhancementOre') return { id: 'EnhancementOre', category: 'mysticOre', name: 'Enhancement Ore', rarity: 1 }
   if (genericKey === 'masterless_stella_fortuna') return { id: 'MasterlessStellaFortuna', category: 'stellaFortuna', name: 'Masterless Stella Fortuna', rarity: 5 }
 
   // Character specific

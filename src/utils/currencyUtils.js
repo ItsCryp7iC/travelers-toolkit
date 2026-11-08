@@ -26,6 +26,22 @@ export const CURRENCY_EXP_CONFIG = [
     rarity: 3,
   },
   {
+    key: "fineOre",
+    id: "FineEnhancementOre",
+    displayName: "Fine Enhancement Ore",
+    domainName: "Weapon EXP",
+    folder: "experience",
+    rarity: 2,
+  },
+  {
+    key: "normalOre",
+    id: "EnhancementOre",
+    displayName: "Enhancement Ore",
+    domainName: "Weapon EXP",
+    folder: "experience",
+    rarity: 1,
+  },
+  {
     key: "crown",
     id: "CrownOfInsight",
     displayName: "Crown of Insight",

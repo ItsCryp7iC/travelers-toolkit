@@ -138,7 +138,7 @@ export default function CharacterPlanCard({ entryObj, inventory, categories = {}
  </div>
  <div className="min-w-0 flex-1">
  <h3 className=" text-[var(--text)] text-sm truncate">{displayName}</h3>
- <p className="text-xs text-[var(--gold)] tracking-wider" title={`Total Mora: ${(totalCosts?.mora || 0).toLocaleString()}`}>Mora: {formatPlannerQuantity(totalCosts?.mora || 0)}</p>
+ <p className="text-xs text-[var(--gold)] tracking-wider" title={`Total Mora: ${(totalCosts?.Mora ?? totalCosts?.mora ?? 0).toLocaleString()}`}>Mora: {formatPlannerQuantity(totalCosts?.Mora ?? totalCosts?.mora ?? 0)}</p>
  </div>
  {character?.element && (
  <img 

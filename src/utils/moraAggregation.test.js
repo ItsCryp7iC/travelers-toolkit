@@ -236,3 +236,218 @@ describe('C1D — Mora Normalization & Aggregation Integrity', () => {
     expect(result.totalCosts.Mora).toBe(w1.totalCosts.Mora + w2.totalCosts.Mora);
   });
 });
+
+describe('C2C-B — Cross-Page Mora and Weapon Ascension Discount Parity', () => {
+  const aquila = weaponsData.find(w => w.name === 'Aquila Favonia'); // Sword
+  const skywardHarp = weaponsData.find(w => w.name === 'Skyward Harp'); // Bow
+  const wgs = weaponsData.find(w => w.name === "Wolf's Gravestone"); // Claymore
+
+  it('1. gross Mora matches across Table, Card, Store, and Planner when neither character owned', () => {
+    const roster = {};
+    const trackedWeapon = {
+      id: 'aquila-parity-1',
+      weaponName: 'Aquila Favonia',
+      level: 80,
+      targetLevel: 90,
+      ascension: 5,
+      targetAscension: 6,
+    };
+
+    // 1. Direct Table calculation
+    const tableMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, false, roster).total_mora;
+
+    // 2. Card calculation
+    const cardMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, Boolean(trackedWeapon.hasEventBonus), roster).total_mora;
+
+    // 3. Planner aggregate breakdown & total
+    const agg = aggregateRosterCosts(roster, [trackedWeapon]);
+    const plannerCardMora = agg.breakdown[0].totalCosts.Mora;
+    const plannerGrandTotalMora = agg.totalCosts.Mora;
+
+    // Base Mora: 371,478 leveling + 65,000 ascension = 436,478
+    expect(tableMora).toBe(436478);
+    expect(cardMora).toBe(436478);
+    expect(plannerCardMora).toBe(436478);
+    expect(plannerGrandTotalMora).toBe(436478);
+  });
+
+  it('2. gross Mora matches across Table, Card, Store, and Planner with Raiden Shogun owned (Sword discounted)', () => {
+    const roster = {
+      'Raiden Shogun': { level: 90, ascension: 6 },
+    };
+    const trackedWeapon = {
+      id: 'aquila-parity-raiden',
+      weaponName: 'Aquila Favonia',
+      level: 80,
+      targetLevel: 90,
+      ascension: 5,
+      targetAscension: 6,
+    };
+
+    const tableMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, false, roster).total_mora;
+    const cardMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, Boolean(trackedWeapon.hasEventBonus), roster).total_mora;
+    const agg = aggregateRosterCosts(roster, [trackedWeapon]);
+    const plannerCardMora = agg.breakdown[0].totalCosts.Mora;
+    const plannerGrandTotalMora = agg.totalCosts.Mora;
+
+    // Discounted: 371,478 leveling + 32,500 ascension = 403,978
+    expect(tableMora).toBe(403978);
+    expect(cardMora).toBe(403978);
+    expect(plannerCardMora).toBe(403978);
+    expect(plannerGrandTotalMora).toBe(403978);
+  });
+
+  it('3. gross Mora matches across Table, Card, Store, and Planner with Wanderer owned (Bow discounted, Sword not)', () => {
+    const roster = {
+      'Wanderer': { level: 90, ascension: 6 },
+    };
+    const trackedBow = {
+      id: 'harp-parity-wanderer',
+      weaponName: 'Skyward Harp',
+      level: 80,
+      targetLevel: 90,
+      ascension: 5,
+      targetAscension: 6,
+    };
+    const trackedSword = {
+      id: 'aquila-parity-no-discount',
+      weaponName: 'Aquila Favonia',
+      level: 80,
+      targetLevel: 90,
+      ascension: 5,
+      targetAscension: 6,
+    };
+
+    // Bow gets discount
+    const bowTableMora = calculateWeaponCost(skywardHarp, trackedBow.level, trackedBow.targetLevel, trackedBow.ascension, trackedBow.targetAscension, false, roster).total_mora;
+    const bowCardMora = calculateWeaponCost(skywardHarp, trackedBow.level, trackedBow.targetLevel, trackedBow.ascension, trackedBow.targetAscension, Boolean(trackedBow.hasEventBonus), roster).total_mora;
+    expect(bowTableMora).toBe(403978);
+    expect(bowCardMora).toBe(403978);
+
+    // Sword gets NO discount
+    const swordTableMora = calculateWeaponCost(aquila, trackedSword.level, trackedSword.targetLevel, trackedSword.ascension, trackedSword.targetAscension, false, roster).total_mora;
+    expect(swordTableMora).toBe(436478);
+
+    const agg = aggregateRosterCosts(roster, [trackedBow, trackedSword]);
+    const bowBreakdown = agg.breakdown.find(b => b.entry.id === trackedBow.id);
+    const swordBreakdown = agg.breakdown.find(b => b.entry.id === trackedSword.id);
+
+    expect(bowBreakdown.totalCosts.Mora).toBe(403978);
+    expect(swordBreakdown.totalCosts.Mora).toBe(436478);
+    expect(agg.totalCosts.Mora).toBe(403978 + 436478);
+  });
+
+  it('4. gross Mora matches when both Raiden and Wanderer are owned (each discounts its own weapon type, Claymore unaffected)', () => {
+    const roster = {
+      'Raiden Shogun': { level: 90, ascension: 6 },
+      'Wanderer': { level: 90, ascension: 6 },
+    };
+    const trackedSword = {
+      id: 'sword-both',
+      weaponName: 'Aquila Favonia',
+      level: 80,
+      targetLevel: 90,
+      ascension: 5,
+      targetAscension: 6,
+    };
+    const trackedBow = {
+      id: 'bow-both',
+      weaponName: 'Skyward Harp',
+      level: 80,
+      targetLevel: 90,
+      ascension: 5,
+      targetAscension: 6,
+    };
+    const trackedClaymore = {
+      id: 'claymore-both',
+      weaponName: "Wolf's Gravestone",
+      level: 80,
+      targetLevel: 90,
+      ascension: 5,
+      targetAscension: 6,
+    };
+
+    const swordCost = calculateWeaponCost(aquila, 80, 90, 5, 6, false, roster).total_mora;
+    const bowCost = calculateWeaponCost(skywardHarp, 80, 90, 5, 6, false, roster).total_mora;
+    const claymoreCost = calculateWeaponCost(wgs, 80, 90, 5, 6, false, roster).total_mora;
+
+    expect(swordCost).toBe(403978); // discounted by Raiden
+    expect(bowCost).toBe(403978); // discounted by Wanderer
+    expect(claymoreCost).toBe(436478); // untouched by passives
+
+    const agg = aggregateRosterCosts(roster, [trackedSword, trackedBow, trackedClaymore]);
+    expect(agg.totalCosts.Mora).toBe(403978 + 403978 + 436478);
+  });
+
+  it('5. aggregates multiple distinct weapon UUIDs independently and subtracts Mora inventory only once at grand total level', () => {
+    const roster = {
+      'Raiden Shogun': { level: 90, ascension: 6 },
+    };
+    const trackedWeapons = [
+      {
+        id: 'sword-copy-1',
+        weaponName: 'Aquila Favonia',
+        level: 80,
+        targetLevel: 90,
+        ascension: 5,
+        targetAscension: 6,
+      },
+      {
+        id: 'sword-copy-2',
+        weaponName: 'Aquila Favonia',
+        level: 80,
+        targetLevel: 90,
+        ascension: 5,
+        targetAscension: 6,
+      },
+    ];
+
+    const agg = aggregateRosterCosts(roster, trackedWeapons);
+    expect(agg.breakdown.length).toBe(2);
+    expect(agg.breakdown[0].totalCosts.Mora).toBe(403978);
+    expect(agg.breakdown[1].totalCosts.Mora).toBe(403978);
+    expect(agg.totalCosts.Mora).toBe(807956);
+
+    // Compute to farm with 500k inventory
+    const toFarm = computeToFarm(agg, { Mora: 500000 });
+    expect(toFarm.mora.required).toBe(807956);
+    expect(toFarm.mora.owned).toBe(500000);
+    expect(toFarm.mora.toFarm).toBe(307956);
+  });
+
+  it('6. preserves invalid progression status and zero cost for completed weapons in aggregation', () => {
+    const roster = {
+      'Raiden Shogun': {
+        level: 90,
+        targetLevel: 90,
+        ascension: 6,
+        targetAscension: 6,
+        talents: { normal: 10, skill: 10, burst: 10 },
+        targetTalents: { normal: 10, skill: 10, burst: 10 },
+      },
+    };
+    const invalidWeapon = {
+      id: 'invalid-weapon-1',
+      weaponName: 'Aquila Favonia',
+      level: 1,
+      targetLevel: 90,
+      ascension: 6, // Incompatible
+      targetAscension: 6,
+    };
+    const completedWeapon = {
+      id: 'completed-weapon-1',
+      weaponName: 'Aquila Favonia',
+      level: 90,
+      targetLevel: 90,
+      ascension: 6,
+      targetAscension: 6,
+    };
+
+    const agg = aggregateRosterCosts(roster, [invalidWeapon, completedWeapon]);
+    expect(agg.invalidCount).toBe(1);
+    expect(agg.isPartial).toBe(true);
+    expect(agg.invalidPlans.some(p => p.id === 'invalid-weapon-1')).toBe(true);
+    expect(agg.breakdown.some(b => b.entry.id === 'completed-weapon-1')).toBe(false);
+    expect(agg.totalCosts.Mora).toBeUndefined();
+  });
+});

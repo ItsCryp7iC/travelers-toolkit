@@ -6,6 +6,7 @@ import { getWeaponIcon, getWeaponTypeIcon, getMaterialIcon, toPascalCase, getCha
 import { calculateWeaponCost, formatNumber, formatItemName } from '../utils/calculator'
 import { calculateForgingCost } from '../utils/aggregator'
 import { resolveSpecificItem } from '../utils/resolver'
+import { isInformationalMetric } from '../utils/resourceClassification'
 import weaponForgingData from '../data/weapon_forging.json'
 
 export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = 'detailed' }) {
@@ -20,6 +21,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
   const inArmoryStore = useStore((s) => Boolean(s.trackedWeapons.some(w => w.weaponName === name)))
   const armoryEntryStore = useStore((s) => s.trackedWeapons.find(w => w.weaponName === name))
   const inventory = useStore((s) => s.inventory)
+  const roster = useStore((s) => s.roster)
   
   const inArmory = trackedWeapon ? true : inArmoryStore
   const armoryEntry = trackedWeapon || armoryEntryStore
@@ -61,7 +63,15 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
     const toRef = armoryEntry.targetRefinement ?? 1
     const refNoop = toRef <= fromRef
 
-    const ascCosts = calculateWeaponCost(weapon, fromLevel, toLevel, fromAsc, toAsc);
+    const ascCosts = calculateWeaponCost(
+      weapon,
+      fromLevel,
+      toLevel,
+      fromAsc,
+      toAsc,
+      Boolean(armoryEntry.hasEventBonus),
+      roster
+    );
     if (ascCosts?.isInvalid) {
       return { totalCosts: {}, categories: {}, isInvalid: true, invalidReason: ascCosts.invalidReason }
     }
@@ -79,7 +89,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
     const processCosts = (costObj) => {
       if (!costObj) return
       Object.entries(costObj).forEach(([key, val]) => {
-        if (key === 'totalExp' || key === 'normalOre' || key === 'fineOre' || key === 'wastedExp' || key === 'expToNextLevel') return;
+        if (isInformationalMetric(key)) return;
         if (typeof val === 'number' && val > 0) {
           let resolvedKey = key;
           if (key === 'totalMora' || key === 'total_mora') resolvedKey = 'mora';
@@ -97,7 +107,7 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
     processCosts(refCosts)
 
     return { totalCosts: costs, categories: cats, isInvalid: ascCosts?.isInvalid || false, invalidReason: ascCosts?.invalidReason || null }
-  }, [inArmory, armoryEntry, weapon])
+  }, [inArmory, armoryEntry, weapon, roster])
 
 
   if (variant === 'compact') {

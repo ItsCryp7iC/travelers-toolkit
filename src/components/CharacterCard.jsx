@@ -7,6 +7,7 @@ import GenshinImage from './GenshinImage'
 import { getCharacterAvatar, getElementIcon, getWeaponIcon, getWeaponTypeIcon, getMaterialIcon, toPascalCase } from '../utils/assetHelper'
 import { calculateProgressionCost, calculateTalentCost, formatNumber, formatItemName } from '../utils/calculator'
 import { resolveSpecificItem } from '../utils/resolver'
+import { isInformationalMetric } from '../utils/resourceClassification'
 import { getTravelerAwareWeaponId } from '../utils/travelerHelper'
 
 /**
@@ -414,7 +415,7 @@ export default function CharacterCard({ character, hideRoster = false, onClick, 
             ) : (
               <div className="grid grid-cols-4 gap-2">
                 {Object.entries(totalCosts)
-                  .filter(([matId, qty]) => qty > 0 && matId !== 'mora' && matId !== 'Mora')
+                  .filter(([matId, qty]) => qty > 0 && matId !== 'mora' && matId !== 'Mora' && !isInformationalMetric(matId))
                   .sort(([idA], [idB]) => {
                     const weightA = getSortWeight(idA, categories[idA]);
                     const weightB = getSortWeight(idB, categories[idB]);
