@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 export default function PrivacyPolicy() {
   useEffect(() => {
     document.title = "Traveler's Toolkit — Privacy Policy";
-    window.scrollTo(0, 0);
   }, []);
 
   return (

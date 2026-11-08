@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
+import ScrollManager from './components/ScrollManager'
 import Dashboard from './pages/Dashboard'
 import useStore from './store/useStore'
 
@@ -54,6 +55,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <ScrollManager />
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<Dashboard />} />

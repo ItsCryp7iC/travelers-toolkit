@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 export default function TermsOfService() {
   useEffect(() => {
     document.title = "Traveler's Toolkit — Terms of Service";
-    window.scrollTo(0, 0);
   }, []);
 
   return (
