@@ -1,10 +1,12 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import CharacterCard from '../components/CharacterCard'
 import CharactersTable from '../components/CharactersTable'
 import CharacterModal from '../components/CharacterModal'
 import AddCharacterModal from '../components/AddCharacterModal'
 import BulkEditCharacterModal from '../components/BulkEditCharacterModal'
 import SortDirectionButton from '../components/SortDirectionButton'
+import CompactFilterToolbar from '../components/CompactFilterToolbar'
+import { useCompactSentinel } from '../hooks/useCompactSentinel'
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import charactersData from '../utils/characters'
 import weaponsData from '../data/weapons.json'
@@ -62,6 +64,18 @@ export default function Characters() {
     if (sortDirection !== 'asc') count++
     return count
   }, [elementFilter, weaponFilter, rarityFilter, sortOrder, sortDirection])
+
+  const sentinelRef = useRef(null)
+  const isCompactToolbarVisible = useCompactSentinel(sentinelRef)
+
+  const handleClearAllFilters = () => {
+    setSearch('')
+    setElementFilter('All')
+    setWeaponFilter('All')
+    setRarityFilter('All')
+    setSortOrder('Release')
+    setSortDirection('asc')
+  }
 
   // Build full character objects for rostered characters, calculate their maths and pre-resolve materials
   const rostered = useMemo(() => {
@@ -480,9 +494,98 @@ export default function Characters() {
             </div>
           </div>
 
+          {/* ── Sentinel for scroll-triggered compact toolbar ── */}
+          <div ref={sentinelRef} className="h-0 w-full pointer-events-none" aria-hidden="true" />
+
+          {/* ── Compact Scroll-Triggered Search/Filter Toolbar ── */}
+          <CompactFilterToolbar
+            isVisible={isCompactToolbarVisible}
+            search={search}
+            onSearchChange={setSearch}
+            searchPlaceholder="Search roster…"
+            activeFilterCount={activeFilterCount}
+            onClearFilters={handleClearAllFilters}
+            totalCount={rostered.length}
+            filteredCount={filtered.length}
+            popoverContent={
+              <>
+                {/* Sort row */}
+                <div className="flex items-center gap-2 mb-2.5">
+                  <div className="relative flex-1">
+                    <select
+                      id="char-sort-select-compact"
+                      value={sortOrder}
+                      onChange={(e) => setSortOrder(e.target.value)}
+                      className="w-full appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors min-h-[36px]"
+                      aria-label="Sort characters"
+                    >
+                      <option value="Release">by Release</option>
+                      <option value="Name">by Name</option>
+                      <option value="Rarity">by Rarity</option>
+                      <option value="Element">by Element</option>
+                      <option value="Weapon">by Weapon</option>
+                    </select>
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
+                  </div>
+                  <SortDirectionButton direction={sortDirection} onToggle={setSortDirection} />
+                </div>
+
+                <div className="genshin-divider my-2" />
+
+                {/* Element filters */}
+                <div className="mb-2">
+                  <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Element</p>
+                  <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by element">
+                    {ALL_ELEMENTS.map((el) => {
+                      const cfg = ELEMENTS[el]
+                      return (
+                        <button key={el} onClick={() => setElementFilter(el)} className={`filter-pill shrink-0 ${elementFilter === el ? 'active' : ''}`}>
+                          {el !== 'All' ? (
+                            <GenshinImage src={getElementIcon(el)} alt={el} className="w-4 h-4 object-contain inline-block mr-1 shrink-0" fallback={<span>{cfg?.emoji}</span>} />
+                          ) : <span className="mr-1">⚪</span>}
+                          {el}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Weapon filters */}
+                <div className="mb-2">
+                  <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Weapon</p>
+                  <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by weapon type">
+                    {ALL_WEAPONS.map((wp) => {
+                      const cfg = WEAPON_TYPES[wp]
+                      return (
+                        <button key={wp} onClick={() => setWeaponFilter(wp)} className={`filter-pill shrink-0 ${weaponFilter === wp ? 'active' : ''}`}>
+                          {wp !== 'All' ? (
+                            <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-5 h-5 object-contain inline-block mr-1.5 shrink-0" fallback={<span>{cfg?.emoji}</span>} />
+                          ) : <span className="mr-1.5">⚔️</span>}
+                          {wp}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Rarity filters */}
+                <div>
+                  <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Rarity</p>
+                  <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by rarity">
+                    {ALL_RARITIES.map((r) => (
+                      <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill shrink-0 ${rarityFilter === r ? 'active' : ''}`}>
+                        {r}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            }
+          />
+
           {/* ── Table View ── */}
           {viewMode === 'table' && (
-            <div className="w-full min-w-0 max-w-full overflow-hidden">
+            <div className="w-full min-w-0 max-w-full table-overflow-clip overflow-x-clip">
               <CharactersTable
                 data={filtered}
                 selectedNames={selectedNames}

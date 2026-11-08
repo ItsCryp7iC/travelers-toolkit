@@ -103,12 +103,12 @@ export default function WeaponsTable({
   }, [table.getRowModel().rows]);
 
   return (
-    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-md relative pb-10">
-      <div className="overflow-x-auto custom-scrollbar table-horizontal-scroll-source" ref={scrollContainerRef}>
+    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl table-overflow-clip overflow-x-clip shadow-md relative pb-10">
+      <div className="overflow-x-auto overflow-y-clip custom-scrollbar table-horizontal-scroll-source" ref={scrollContainerRef}>
         <table className="w-full text-sm border-collapse whitespace-nowrap min-w-max">
           <thead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id} className="bg-[var(--elevated)] border-b border-[var(--border)]">
+            {table.getHeaderGroups().map((headerGroup, groupIdx) => (
+              <tr key={headerGroup.id} className={`bg-[var(--elevated)] border-b border-[var(--border)] ${groupIdx === 0 ? 'h-8' : 'h-9'}`}>
                 {headerGroup.headers.map((header) => {
                   const isInteractive = header.column.getCanSort() || header.column.getCanFilter();
                   const thClass = header.column.columnDef.meta?.thClassName || "";
@@ -159,7 +159,7 @@ export default function WeaponsTable({
           </thead>
           <tbody>
             {table.getRowModel().rows.length > 0 && (
-              <tr className="bg-[var(--surface)] font-bold border-b-2 border-slate-600 sticky top-0 z-10 shadow-sm pointer-events-none">
+              <tr className="bg-[var(--surface)] font-bold border-b-2 border-slate-600 shadow-sm pointer-events-none table-totals-row">
                 {table.getVisibleLeafColumns().map((column) => {
                   const tdClass = column.columnDef.meta?.tdClassName || "px-3 py-2 border-r border-[var(--border)]/50";
 

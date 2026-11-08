@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import WeaponCard from '../components/WeaponCard'
 import AddWeaponModal from '../components/AddWeaponModal'
 import BatchAddWeaponModal from '../components/BatchAddWeaponModal'
 import BulkEditWeaponModal from '../components/BulkEditWeaponModal'
 import SortDirectionButton from '../components/SortDirectionButton'
+import CompactFilterToolbar from '../components/CompactFilterToolbar'
+import { useCompactSentinel } from '../hooks/useCompactSentinel'
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import ForgingQueuePanel from '../components/ForgingQueuePanel'
 import weaponsData from '../data/weapons.json'
@@ -60,6 +62,17 @@ export default function Weapons() {
     if (sortDirection !== 'asc') count++
     return count
   }, [typeFilter, rarityFilter, sortOrder, sortDirection])
+
+  const sentinelRef = useRef(null)
+  const isCompactToolbarVisible = useCompactSentinel(sentinelRef)
+
+  const handleClearAllFilters = () => {
+    setSearch('')
+    setTypeFilter('All')
+    setRarityFilter('All')
+    setSortOrder('Release')
+    setSortDirection('asc')
+  }
 
   // Enrich tracked weapons with their static metadata, pre-resolved materials and costs
   const enriched = useMemo(() => {
@@ -442,9 +455,79 @@ export default function Weapons() {
                 </div>
               </div>
 
+              {/* ── Sentinel for scroll-triggered compact toolbar ── */}
+              <div ref={sentinelRef} className="h-0 w-full pointer-events-none" aria-hidden="true" />
+
+              {/* ── Compact Scroll-Triggered Search/Filter Toolbar ── */}
+              <CompactFilterToolbar
+                isVisible={isCompactToolbarVisible && pageTab === 'armory'}
+                search={search}
+                onSearchChange={setSearch}
+                searchPlaceholder="Search armory…"
+                activeFilterCount={activeFilterCount}
+                onClearFilters={handleClearAllFilters}
+                totalCount={trackedWeapons.length}
+                filteredCount={filtered.length}
+                popoverContent={
+                  <>
+                    {/* Sort row */}
+                    <div className="flex items-center gap-2 mb-2.5">
+                      <div className="relative flex-1">
+                        <select
+                          id="wpn-sort-select-compact"
+                          value={sortOrder}
+                          onChange={(e) => setSortOrder(e.target.value)}
+                          className="w-full appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors min-h-[36px]"
+                          aria-label="Sort weapons"
+                        >
+                          <option value="Release">by Release</option>
+                          <option value="Name">by Name</option>
+                          <option value="Rarity">by Rarity</option>
+                          <option value="Weapon">by Weapon</option>
+                        </select>
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
+                      </div>
+                      <SortDirectionButton direction={sortDirection} onToggle={setSortDirection} />
+                    </div>
+
+                    <div className="genshin-divider my-2" />
+
+                    {/* Weapon type filters */}
+                    <div className="mb-2">
+                      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Weapon Type</p>
+                      <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by weapon type">
+                        {ALL_TYPES.map((wp) => {
+                          const cfg = WEAPON_TYPES[wp]
+                          return (
+                            <button key={wp} onClick={() => setTypeFilter(wp)} className={`filter-pill shrink-0 ${typeFilter === wp ? 'active' : ''}`}>
+                              {wp !== 'All' ? (
+                                <GenshinImage src={getWeaponTypeIcon(wp)} alt={wp} className="w-5 h-5 object-contain inline-block mr-1.5 shrink-0" fallback={<span>{cfg?.emoji}</span>} />
+                              ) : <span className="mr-1.5">⚔️</span>}
+                              {wp}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Rarity filters */}
+                    <div>
+                      <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Rarity</p>
+                      <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by rarity">
+                        {ALL_RARITIES.map((r) => (
+                          <button key={r} onClick={() => setRarityFilter(r)} className={`filter-pill shrink-0 ${rarityFilter === r ? 'active' : ''}`}>
+                            {r}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                }
+              />
+
               {/* ── Table View ── */}
               {viewMode === 'table' && (
-                <div className="w-full min-w-0 max-w-full overflow-hidden">
+                <div className="w-full min-w-0 max-w-full table-overflow-clip overflow-x-clip">
                   <WeaponsTable
                     data={filtered}
                     selectedIds={selectedIds}

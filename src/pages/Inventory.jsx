@@ -8,6 +8,7 @@ import GenshinImage from '../components/GenshinImage';
 import { getInventoryTabId, filterMaterialsByTab, INVENTORY_TABS, formatInventoryQuantity } from '../utils/inventoryFilters';
 import SortDirectionButton from '../components/SortDirectionButton';
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils';
+import StickyHeaderTabShell from '../components/StickyHeaderTabShell';
 
 const getCardOuterBg = (rarity) => {
   const r = parseInt(rarity, 10);
@@ -236,52 +237,20 @@ export default function Inventory() {
 
   return (
     <div className="animate-fade-in">
-      {/* ── Page Header ── */}
-      <div className="sticky top-[var(--topbar-h,64px)] z-40 bg-[var(--bg)]/80 backdrop-blur-xl pb-3 sm:pb-4 pt-2 mb-4 sm:mb-6 border-b border-[var(--border)] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <img src="/Inventory.png" alt="Inventory" className="w-8 h-8 object-contain drop-shadow-sm shrink-0" />
-          <div>
-            <h1 className="font-bold text-2xl md:text-3xl text-[var(--text)] leading-tight">
-              Inventory
-            </h1>
-            <p className="text-[var(--muted)] text-xs sm:text-sm">
-              Track your current material counts — updates sync automatically to the Planner
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* ── Page Header & In-Page Category Navigation (Sticky) ── */}
+      <StickyHeaderTabShell
+        icon="/Inventory.png"
+        title="Inventory"
+        subtitle="Track your current material counts — updates sync automatically to the Planner"
+        tabs={INVENTORY_TABS}
+        activeTab={activeTabId}
+        onTabChange={handleTabChange}
+        tabIdPrefix="inv-tab"
+        tablistAriaLabel="Inventory categories"
+      />
 
       {/* ── Quick Stats ── */}
       <QuickStats />
-
-      {/* ── Category Tabs Strip ── */}
-      <div className="mb-4 sm:mb-6 overflow-x-auto no-scrollbar pb-1">
-        <div className="flex items-center gap-1.5 sm:gap-2 min-w-max" role="tablist" aria-label="Inventory categories">
-          {INVENTORY_TABS.map((tab) => {
-            const isActive = activeTabId === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                role="tab"
-                id={`inv-tab-${tab.id}`}
-                aria-selected={isActive}
-                onClick={() => handleTabChange(tab.id)}
-                className={`filter-pill shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all ${
-                  isActive
-                    ? 'active bg-[var(--gold)] text-[var(--bg)] border-[var(--gold)] shadow-sm'
-                    : 'bg-[var(--surface)] text-[var(--muted)] border-[var(--border)] hover:text-[var(--text)] hover:border-[var(--border-light)]'
-                }`}
-              >
-                {tab.icon && (
-                  <img src={tab.icon} alt="" className="w-4 h-4 object-contain shrink-0" />
-                )}
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       {/* ── Mobile Search/Filter Toggle Buttons (< 768px) ── */}
       <div className="flex md:hidden items-center gap-2 mb-3">

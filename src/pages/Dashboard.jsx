@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CharacterCard from '../components/CharacterCard'
 import WeaponCard from '../components/WeaponCard'
@@ -16,6 +16,8 @@ import { getElementIcon, getWeaponTypeIcon, getCharacterAvatar } from '../utils/
 import SortDirectionButton from '../components/SortDirectionButton'
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils'
 import notify from '../utils/notify'
+import CompactFilterToolbar from '../components/CompactFilterToolbar'
+import { useCompactSentinel } from '../hooks/useCompactSentinel'
 
 const ALL_ELEMENTS = ['All', ...Object.keys(ELEMENTS).filter((e) => e !== 'Unknown')]
 const ALL_WEAPONS = ['All', ...Object.keys(WEAPON_TYPES)]
@@ -131,6 +133,9 @@ export default function Dashboard() {
    setWeaponFilter('All');
    setRarityFilter('All');
  };
+
+ const sentinelRef = useRef(null);
+ const isCompactToolbarVisible = useCompactSentinel(sentinelRef);
 
  // Filtered + sorted characters
  const filtered = useMemo(() => {
@@ -634,6 +639,131 @@ export default function Dashboard() {
  </div>
  </div>
  </div>
+
+ {/* ── Sentinel for scroll-triggered compact toolbar ── */}
+ <div ref={sentinelRef} className="h-0 w-full pointer-events-none" aria-hidden="true" />
+
+ {/* ── Compact Scroll-Triggered Search/Filter Toolbar ── */}
+ <CompactFilterToolbar
+   isVisible={isCompactToolbarVisible}
+   search={search}
+   onSearchChange={setSearch}
+   searchPlaceholder={activeTab === 'characters' ? "Search characters or elements…" : "Search weapons…"}
+   activeFilterCount={activeFilterCount}
+   onClearFilters={handleClearAllFilters}
+   totalCount={activeTab === 'characters' ? charactersData.length : weaponsData.length}
+   filteredCount={filtered.length}
+   children={
+     <div className="bg-[var(--elevated)] border border-[var(--border)] p-0.5 rounded-full inline-flex shrink-0">
+       <button
+         type="button"
+         id="dashboard-compact-tab-characters"
+         data-testid="compact-dashboard-chars-tab"
+         onClick={() => setActiveTab('characters')}
+         className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+           activeTab === 'characters'
+             ? 'bg-primary text-gray-900 shadow-sm'
+             : 'text-[var(--muted)] hover:text-white'
+         }`}
+       >
+         Characters
+       </button>
+       <button
+         type="button"
+         id="dashboard-compact-tab-weapons"
+         data-testid="compact-dashboard-weapons-tab"
+         onClick={() => setActiveTab('weapons')}
+         className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+           activeTab === 'weapons'
+             ? 'bg-primary text-gray-900 shadow-sm'
+             : 'text-[var(--muted)] hover:text-white'
+         }`}
+       >
+         Weapons
+       </button>
+     </div>
+   }
+   popoverContent={
+     <>
+       {/* Sort row */}
+       <div className="flex items-center gap-2 mb-2.5">
+         <div className="relative flex-1">
+           <select
+             id="dashboard-sort-select-compact"
+             value={sortBy}
+             onChange={(e) => setSortBy(e.target.value)}
+             className="w-full appearance-none bg-[var(--elevated)] border border-[var(--border)] text-[var(--text)] text-xs font-medium rounded-lg px-3 py-2 pr-7 cursor-pointer outline-none focus:border-[var(--gold)] transition-colors min-h-[36px]"
+             aria-label="Sort options"
+           >
+             <option value="Release">by Release</option>
+             <option value="Name">by Name</option>
+             <option value="Rarity">by Rarity</option>
+             {activeTab === 'characters' && <option value="Element">by Element</option>}
+             <option value="Weapon">by Weapon</option>
+           </select>
+           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs pointer-events-none">▼</span>
+         </div>
+         <SortDirectionButton direction={sortDirection} onToggle={setSortDirection} />
+       </div>
+
+       <div className="genshin-divider my-2" />
+
+       {/* Element filters (Characters only) */}
+       {activeTab === 'characters' && (
+         <div className="mb-2">
+           <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Element</p>
+           <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by element">
+             {ALL_ELEMENTS.map((el) => {
+               const cfg = ELEMENTS[el]
+               return (
+                 <button key={el} onClick={() => setElementFilter(el)} className={`filter-pill shrink-0 ${elementFilter === el ? 'active' : ''}`}>
+                   {el !== 'All' ? (
+                     <GenshinImage src={getElementIcon(el)} alt={el} className="w-4 h-4 object-contain inline-block mr-1 shrink-0" fallback={<span>{cfg?.emoji}</span>} />
+                   ) : <span className="mr-1">⚪</span>}
+                   {el}
+                 </button>
+               )
+             })}
+           </div>
+         </div>
+       )}
+
+       {/* Weapon filters */}
+       <div className="mb-2">
+         <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Weapon Type</p>
+         <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by weapon type">
+           {ALL_WEAPONS.map((w) => {
+             const cfg = WEAPON_TYPES[w]
+             return (
+               <button key={w} onClick={() => setWeaponFilter(w)} className={`filter-pill shrink-0 ${weaponFilter === w ? 'active' : ''}`}>
+                 {w !== 'All' ? (
+                   <GenshinImage src={getWeaponTypeIcon(w)} alt={w} className="w-5 h-5 object-contain inline-block mr-1.5 shrink-0" fallback={<span>{cfg?.emoji}</span>} />
+                 ) : <span className="mr-1.5">⚔️</span>}
+                 {w}
+               </button>
+             )
+           })}
+         </div>
+       </div>
+
+       {/* Rarity filters */}
+       <div>
+         <p className="text-[10px] font-semibold text-[var(--muted)] tracking-widest uppercase mb-1">Rarity</p>
+         <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pb-1 max-w-full no-scrollbar" role="group" aria-label="Filter by rarity">
+           {[...RARITY_FILTERS, ...(activeTab === 'weapons' ? [
+             { label: '🔵 3★', value: 3 },
+             { label: '🟢 2★', value: 2 },
+             { label: '⚪ 1★', value: 1 }
+           ] : [])].map((r) => (
+             <button key={r.value} onClick={() => setRarityFilter(r.value)} className={`filter-pill shrink-0 ${rarityFilter === r.value ? 'active' : ''}`}>
+               {r.label}
+             </button>
+           ))}
+         </div>
+       </div>
+     </>
+   }
+ />
 
  {/* ── Character Grid ──────────────────────────── */}
  {filtered.length > 0 ? (
