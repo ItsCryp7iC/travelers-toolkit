@@ -114,6 +114,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
   const [targetRefinement, setTargetRefinement] = useState(existingWeapon ? (existingWeapon.targetRefinement ?? 1) : 1)
   const [assignedTo,     setAssignedTo]     = useState(existingWeapon ? (existingWeapon.assignedTo || '') : '')
   const [planningToForge, setplanningToForge] = useState(existingWeapon ? (existingWeapon.currentRefinement === 0) : false)
+  const [hasEventBonus,  setHasEventBonus]  = useState(Boolean(existingWeapon?.hasEventBonus))
 
   // Sync state when navigating between duplicate weapons
   useEffect(() => {
@@ -127,6 +128,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
       setTargetRefinement(existingWeapon.targetRefinement ?? 1)
       setplanningToForge(existingWeapon.currentRefinement === 0)
       setAssignedTo(existingWeapon.assignedTo || '')
+      setHasEventBonus(Boolean(existingWeapon.hasEventBonus))
     }
   }, [existingWeapon, currentIndex])
 
@@ -205,6 +207,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         targetAscension: planningToForge ? 6 : targetAscension,
         currentRefinement: planningToForge ? 0 : currentRefinement,
         targetRefinement: planningToForge ? Math.max(1, targetRefinement) : targetRefinement,
+        hasEventBonus,
         assignedTo: assignedTo || null
       })
     } else {
@@ -214,7 +217,8 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         targetLevel: planningToForge ? 90 : targetLevel,
         targetAscension: planningToForge ? 6 : targetAscension,
         currentRefinement: planningToForge ? 0 : currentRefinement,
-        targetRefinement: planningToForge ? Math.max(1, targetRefinement) : targetRefinement
+        targetRefinement: planningToForge ? Math.max(1, targetRefinement) : targetRefinement,
+        hasEventBonus,
       })
     }
     onClose()
@@ -547,6 +551,25 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                     ]}
                   />
                 )}
+              </div>
+
+              {/* Event Enhancement EXP Bonus (1.5×) */}
+              <div className="flex items-start gap-3 p-3.5 sm:p-4 rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+                <input
+                  type="checkbox"
+                  id="hasEventBonusToggle"
+                  checked={hasEventBonus}
+                  onChange={(e) => setHasEventBonus(e.target.checked)}
+                  className="w-4 h-4 mt-0.5 accent-[var(--gold)] cursor-pointer"
+                />
+                <div className="flex flex-col flex-1">
+                  <label htmlFor="hasEventBonusToggle" className="text-sm font-semibold text-[var(--text)] cursor-pointer select-none">
+                    Event Enhancement EXP Bonus (1.5×)
+                  </label>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">
+                    Manually selected planning assumption. Enable only when the relevant event bonus applies to this weapon.
+                  </p>
+                </div>
               </div>
             </div>
             

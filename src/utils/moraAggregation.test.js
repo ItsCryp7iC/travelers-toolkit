@@ -254,7 +254,7 @@ describe('C2C-B — Cross-Page Mora and Weapon Ascension Discount Parity', () =>
     };
 
     // 1. Direct Table calculation
-    const tableMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, false, roster).total_mora;
+    const tableMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, Boolean(trackedWeapon.hasEventBonus), roster).total_mora;
 
     // 2. Card calculation
     const cardMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, Boolean(trackedWeapon.hasEventBonus), roster).total_mora;
@@ -284,7 +284,7 @@ describe('C2C-B — Cross-Page Mora and Weapon Ascension Discount Parity', () =>
       targetAscension: 6,
     };
 
-    const tableMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, false, roster).total_mora;
+    const tableMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, Boolean(trackedWeapon.hasEventBonus), roster).total_mora;
     const cardMora = calculateWeaponCost(aquila, trackedWeapon.level, trackedWeapon.targetLevel, trackedWeapon.ascension, trackedWeapon.targetAscension, Boolean(trackedWeapon.hasEventBonus), roster).total_mora;
     const agg = aggregateRosterCosts(roster, [trackedWeapon]);
     const plannerCardMora = agg.breakdown[0].totalCosts.Mora;
@@ -319,13 +319,13 @@ describe('C2C-B — Cross-Page Mora and Weapon Ascension Discount Parity', () =>
     };
 
     // Bow gets discount
-    const bowTableMora = calculateWeaponCost(skywardHarp, trackedBow.level, trackedBow.targetLevel, trackedBow.ascension, trackedBow.targetAscension, false, roster).total_mora;
+    const bowTableMora = calculateWeaponCost(skywardHarp, trackedBow.level, trackedBow.targetLevel, trackedBow.ascension, trackedBow.targetAscension, Boolean(trackedBow.hasEventBonus), roster).total_mora;
     const bowCardMora = calculateWeaponCost(skywardHarp, trackedBow.level, trackedBow.targetLevel, trackedBow.ascension, trackedBow.targetAscension, Boolean(trackedBow.hasEventBonus), roster).total_mora;
     expect(bowTableMora).toBe(403978);
     expect(bowCardMora).toBe(403978);
 
     // Sword gets NO discount
-    const swordTableMora = calculateWeaponCost(aquila, trackedSword.level, trackedSword.targetLevel, trackedSword.ascension, trackedSword.targetAscension, false, roster).total_mora;
+    const swordTableMora = calculateWeaponCost(aquila, trackedSword.level, trackedSword.targetLevel, trackedSword.ascension, trackedSword.targetAscension, Boolean(trackedSword.hasEventBonus), roster).total_mora;
     expect(swordTableMora).toBe(436478);
 
     const agg = aggregateRosterCosts(roster, [trackedBow, trackedSword]);

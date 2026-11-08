@@ -230,6 +230,14 @@ export default function WeaponCard({ weapon, trackedWeapon, onClick, variant = '
           <h3 className="text-[var(--text)] text-sm truncate font-bold">{displayName}</h3>
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className={`text-xs tracking-wide leading-none ${getRarityClass(rarity)}`}>{getStars(rarity)}</span>
+            {inArmory && armoryEntry?.hasEventBonus && (
+              <span
+                title="Event Enhancement EXP Bonus (1.5×) active"
+                className="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0"
+              >
+                1.5× EXP
+              </span>
+            )}
             {inArmory && (totalCosts?.Mora !== undefined || totalCosts?.mora !== undefined) && (
               <span className="text-xs text-[var(--gold)] tracking-wider">
                 • Mora: {formatNumber(totalCosts?.Mora ?? totalCosts?.mora ?? 0)}

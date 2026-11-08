@@ -116,7 +116,17 @@ export default function WeaponPlanCard({ entryObj, inventory, categories = {} })
  </div>
  </div>
  <div className="min-w-0 flex-1">
+ <div className="flex items-center gap-1.5 min-w-0">
  <h3 className=" text-[var(--text)] text-sm truncate">{displayName}</h3>
+ {entry?.hasEventBonus && (
+   <span
+     title="Event Enhancement EXP Bonus (1.5×) active"
+     className="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0"
+   >
+     1.5× EXP
+   </span>
+ )}
+ </div>
  <p className="text-xs text-[var(--gold)] tracking-wider" title={`Total Mora: ${(totalCosts?.Mora ?? totalCosts?.mora ?? 0).toLocaleString()}`}>Mora: {formatPlannerQuantity(totalCosts?.Mora ?? totalCosts?.mora ?? 0)}</p>
  </div>
  {weapon.type && (

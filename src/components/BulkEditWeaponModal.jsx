@@ -35,6 +35,8 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
   // Toggles
   const [overrideCurrentLevel, setOverrideCurrentLevel] = useState(false)
   const [overrideTargetLevel, setOverrideTargetLevel] = useState(false)
+  const [overrideEventBonus, setOverrideEventBonus] = useState(false)
+  const [eventBonusValue, setEventBonusValue] = useState(false)
 
   // Baseline initial state for bulk edit
   const [fromLevel, setFromLevel] = useState(1)
@@ -88,6 +90,8 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
       // Reset state to baseline on close
       setOverrideCurrentLevel(false)
       setOverrideTargetLevel(false)
+      setOverrideEventBonus(false)
+      setEventBonusValue(false)
       setFromLevel(1)
       setFromAsc(0)
       setToLevel(90)
@@ -116,6 +120,10 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
         if (overrideTargetLevel) {
           payload.targetLevel = toLevel
           payload.targetAscension = toAsc
+        }
+
+        if (overrideEventBonus) {
+          payload.hasEventBonus = eventBonusValue
         }
         
         const newAssignment = assignments[w.id] || null;
@@ -214,6 +222,54 @@ export default function BulkEditWeaponModal({ isOpen, onClose, selectedIds, onSa
                   <div className="mt-4"><LevelSlider value={safeToLevel} onChange={setToLevel} ascension={safeToAsc} label="Level" elementColor={targetColor} isCharacter={false} /></div>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* Event Enhancement Bonus Section */}
+          <section>
+            <h3 className="modal-section-title text-sm mb-3 sm:mb-4">⚡ Event Enhancement EXP Bonus</h3>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl sm:rounded-2xl p-4 shadow-sm">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={overrideEventBonus}
+                  onChange={(e) => setOverrideEventBonus(e.target.checked)}
+                  className="accent-[var(--gold)] w-4 h-4 mt-0.5"
+                />
+                <div className="flex flex-col flex-1">
+                  <span className={`text-sm font-semibold ${overrideEventBonus ? 'text-[var(--gold)]' : 'text-[var(--text)]'}`}>
+                    Override Event Enhancement EXP Bonus (1.5×)
+                  </span>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">
+                    Manually selected planning assumption. Enable only when the relevant event bonus applies to the selected weapons.
+                  </p>
+                </div>
+              </label>
+
+              {overrideEventBonus && (
+                <div className="mt-3 pt-3 border-t border-[var(--border)] pl-7 flex items-center gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="bulkEventBonus"
+                      checked={eventBonusValue === true}
+                      onChange={() => setEventBonusValue(true)}
+                      className="accent-[var(--gold)] w-3.5 h-3.5"
+                    />
+                    <span className="text-xs font-semibold text-[var(--text)]">Enable 1.5× Bonus</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="bulkEventBonus"
+                      checked={eventBonusValue === false}
+                      onChange={() => setEventBonusValue(false)}
+                      className="accent-[var(--gold)] w-3.5 h-3.5"
+                    />
+                    <span className="text-xs font-semibold text-[var(--text)]">Disable (Normal EXP)</span>
+                  </label>
+                </div>
+              )}
             </div>
           </section>
 

@@ -10,6 +10,7 @@ export const createWeaponsSlice = (set, get) => ({
     // Guard against duplicate UUID (Fixture 18)
     const existingWeapons = get().trackedWeapons || [];
     const id = config?.id && !existingWeapons.some((w) => w.id === config.id) ? config.id : crypto.randomUUID();
+    const wData = weaponsData.find((w) => w.name === weaponName);
     const newWeapon = {
       id,
       weapon_id: weaponName.toLowerCase().replace(/[^a-z0-9]/g, ''),
@@ -20,8 +21,20 @@ export const createWeaponsSlice = (set, get) => ({
       targetAscension: config.targetAscension ?? 6,
       currentRefinement: config.currentRefinement ?? 1,
       targetRefinement: config.targetRefinement ?? 1,
+      hasEventBonus: Boolean(config.hasEventBonus),
       assignedTo,
       createdAt: Date.now(),
+    }
+    if (wData) {
+      newWeapon.costs = calculateWeaponCost(
+        wData,
+        newWeapon.level,
+        newWeapon.targetLevel,
+        newWeapon.ascension,
+        newWeapon.targetAscension,
+        newWeapon.hasEventBonus,
+        get().roster
+      );
     }
     set((state) => {
       let updatedRoster = state.roster
@@ -148,6 +161,17 @@ export const createWeaponsSlice = (set, get) => ({
           if ('targetRefinement' in patch) {
             updated.targetRefinement = Math.max(0, Math.min(5, Number(updated.targetRefinement) || 0));
           }
+          if (wData) {
+            updated.costs = calculateWeaponCost(
+              wData,
+              updated.level || 1,
+              updated.targetLevel || 90,
+              updated.ascension || 0,
+              updated.targetAscension || 6,
+              Boolean(updated.hasEventBonus),
+              updatedRoster
+            );
+          }
           return updated;
         }
         return w;
@@ -200,7 +224,7 @@ export const createWeaponsSlice = (set, get) => ({
               updatedWeapon.targetLevel || 90,
               updatedWeapon.ascension || 0,
               updatedWeapon.targetAscension || 6,
-              updatedWeapon.hasEventBonus,
+              Boolean(updatedWeapon.hasEventBonus),
               updatedRoster
             );
             return { ...updatedWeapon, costs: newCosts };

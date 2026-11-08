@@ -135,6 +135,14 @@ export default function useWeaponColumns({
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs ${getRarityClass(wp.data?.rarity)}`}>{getStars(wp.data?.rarity)}</span>
+                    {wp.hasEventBonus && (
+                      <span
+                        title="Event Enhancement EXP Bonus (1.5×) active"
+                        className="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0"
+                      >
+                        1.5× EXP
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

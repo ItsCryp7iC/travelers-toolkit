@@ -149,7 +149,7 @@ export const createImportSlice = (set: SetState<ImportSliceState>, _get: unknown
             mergedWeapon.targetLevel,
             mergedWeapon.ascension,
             mergedWeapon.targetAscension,
-            mergedWeapon.hasEventBonus,
+            Boolean(mergedWeapon.hasEventBonus),
             newRoster
           ) as WeaponCalculatedCosts;
         }

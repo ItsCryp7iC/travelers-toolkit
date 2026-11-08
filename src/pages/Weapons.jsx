@@ -66,7 +66,7 @@ export default function Weapons() {
     const mapped = trackedWeapons.map((tw) => {
       const data = weaponById.get(tw.weapon_id) || weaponByName.get(tw.weaponName) || { name: tw.weaponName, rarity: 3, type: 'Unknown', materials: {} }
       const assignedChar = tw.assignedTo ? (characterByName.get(tw.assignedTo) || null) : null
-      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, tw.hasEventBonus, roster)
+      const costs = calculateWeaponCost(data, tw.level, tw.targetLevel, tw.ascension, tw.targetAscension, Boolean(tw.hasEventBonus), roster)
       const resolvedMaterials = resolveWeaponMaterials(data)
 
       return { ...tw, data, assignedChar, costs, resolvedMaterials }

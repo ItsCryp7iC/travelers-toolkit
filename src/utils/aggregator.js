@@ -167,7 +167,7 @@ export function aggregateRosterCosts(roster, trackedWeapons = []) {
 
     if (wFromAsc === wToAsc && wFromLv >= wToLv) continue
 
-    const weaponCosts = calculateWeaponCost(wData, wFromLv, wToLv, wFromAsc, wToAsc, false, roster)
+    const weaponCosts = calculateWeaponCost(wData, wFromLv, wToLv, wFromAsc, wToAsc, Boolean(weapon.hasEventBonus), roster)
 
 
     const totalCosts = {}

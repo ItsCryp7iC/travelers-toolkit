@@ -602,69 +602,6 @@ const WEAPON_ASCENSION_1STAR = [
 ]
 
 // Weapon leveling mora cost (cumulative from 1 to each level — the delta approach)
-// Standard values per rarity:
-// 5★: 300 mora/lv early, scales up
-// We use simplified flat per-level costs aggregated by phase bracket (1-20, 21-40, etc.)
-// Source: genshin.honeyhunterworld.com weapon upgrade table
-const WEAPON_LEVELING_MORA_5STAR = [
-  // [fromLv, toLv, moraPerLevel]
-  [1,  20, 800],
-  [20, 40, 1200],
-  [40, 50, 1600],
-  [50, 60, 2400],
-  [60, 70, 3200],
-  [70, 80, 4800],
-  [80, 90, 6400],
-]
-const WEAPON_LEVELING_MORA_4STAR = [
-  [1,  20, 500],
-  [20, 40, 800],
-  [40, 50, 1000],
-  [50, 60, 1500],
-  [60, 70, 2000],
-  [70, 80, 3000],
-  [80, 90, 4000],
-]
-const WEAPON_LEVELING_MORA_3STAR = [
-  [1,  20, 250],
-  [20, 40, 400],
-  [40, 50, 500],
-  [50, 60, 750],
-  [60, 70, 1000],
-  [70, 80, 1500],
-  [80, 90, 2000],
-]
-
-// Mystic Enhancement Ore needed per level bracket (per level)
-// 1 Mystic Ore = 1 unit here; Fine Ore = 0.33; Basic = 0.11
-const WEAPON_ORE_PER_LEVEL_5STAR = [
-  [1,  20, 2],
-  [20, 40, 3],
-  [40, 50, 4],
-  [50, 60, 5],
-  [60, 70, 6],
-  [70, 80, 8],
-  [80, 90, 10],
-]
-const WEAPON_ORE_PER_LEVEL_4STAR = [
-  [1,  20, 1],
-  [20, 40, 2],
-  [40, 50, 2],
-  [50, 60, 3],
-  [60, 70, 4],
-  [70, 80, 5],
-  [80, 90, 7],
-]
-const WEAPON_ORE_PER_LEVEL_3STAR = [
-  [1,  20, 1],
-  [20, 40, 1],
-  [40, 50, 1],
-  [50, 60, 2],
-  [60, 70, 2],
-  [70, 80, 3],
-  [80, 90, 4],
-]
-
 // ─── Weapon Ascension Material Tier Key Builders ───────────────────────────
 // Each weapon ascension material has 4 tiers.
 // Since weapons.json has no material names, we label generically with the
@@ -854,10 +791,14 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
   keysToRemove.forEach(k => delete result[k]);
 
   // 2. Calculate precise ore distribution and wasted exp
-  let totalExpNeeded = result.total_exp || 0;
+  const baseExpNeeded = result.total_exp || 0;
+  let totalExpNeeded = baseExpNeeded;
   if (hasEventBonus) {
     totalExpNeeded = Math.ceil(totalExpNeeded / 1.5);
   }
+
+  result.has_event_bonus = Boolean(hasEventBonus);
+  result.effective_exp = totalExpNeeded;
 
   if (totalExpNeeded > 0) {
     const mysticOre = Math.floor(totalExpNeeded / 10000);
