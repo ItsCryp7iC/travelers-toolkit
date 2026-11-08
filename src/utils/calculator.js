@@ -157,10 +157,23 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
   if (!costsData?.character_levels) return {};
 
   // Extract levels — accept both positional args and character object properties
-  const rawFromLv  = extractLevel(character?.currentLevel  ?? character?.level              ?? fromLv ?? 1);
-  const rawToLv    = extractLevel(character?.targetLevel    ?? character?.target?.level      ?? toLv   ?? 90);
-  const rawFromAsc = character?.currentAscension ?? character?.ascension ?? character?.current?.ascension ?? fromAsc ?? 0;
-  const rawToAsc   = character?.targetAscension  ?? character?.target?.ascension             ?? toAsc  ?? 6;
+  let rawFromLv = fromLv;
+  let rawToLv = toLv;
+  let rawFromAsc = fromAsc;
+  let rawToAsc = toAsc;
+
+  if (character && typeof character === 'object') {
+    if (rawFromLv === undefined) rawFromLv = character.currentLevel ?? character.level ?? character.current?.level;
+    if (rawToLv === undefined) rawToLv = character.targetLevel ?? character.target?.level;
+    if (rawFromAsc === undefined) rawFromAsc = character.currentAscension ?? character.ascension ?? character.current?.ascension;
+    if (rawToAsc === undefined) rawToAsc = character.targetAscension ?? character.target?.ascension;
+  }
+
+  // Canonical fallbacks when truly omitted
+  if (rawFromLv === undefined) rawFromLv = 1;
+  if (rawToLv === undefined) rawToLv = 90;
+  if (rawFromAsc === undefined) rawFromAsc = 0;
+  if (rawToAsc === undefined) rawToAsc = 6;
 
   // Explicit validation safeguards: detect invalid inputs without silent clamping
   const fromValidation = validateLevelAscension(rawFromLv, rawFromAsc, 'character');
@@ -180,8 +193,13 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
     };
   }
 
+  const numFromLv = fromValidation.numericLevel;
+  const numToLv = toValidation.numericLevel;
+  const numFromAsc = fromValidation.numericAscension;
+  const numToAsc = toValidation.numericAscension;
+
   // Completed or reverse target: standard no-op
-  if (rawFromLv > rawToLv || (rawFromLv === rawToLv && rawFromAsc >= rawToAsc)) {
+  if (numFromLv > numToLv || (numFromLv === numToLv && numFromAsc >= numToAsc)) {
     return {};
   }
 
@@ -189,8 +207,8 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
 
   // 1. Leveling costs (EXP and Leveling Mora)
   // Clamp lookup levels within costs.json range [1, 90]
-  const clampedFromLv = Math.min(Math.max(rawFromLv, 1), 90);
-  const clampedToLv   = Math.min(Math.max(rawToLv, 1), 90);
+  const clampedFromLv = Math.min(Math.max(numFromLv, 1), 90);
+  const clampedToLv   = Math.min(Math.max(numToLv, 1), 90);
 
   let levelingMora = 0;
   let levelingWits = 0;
@@ -209,9 +227,9 @@ export function calculateProgressionCost(character, fromLv, toLv, fromAsc, toAsc
   let totalAscMora = 0;
   const ascMats = {};
 
-  if (rawFromAsc < rawToAsc) {
-    const startPhase = Math.max(0, Math.min(rawFromAsc, 6));
-    const endPhase   = Math.max(0, Math.min(rawToAsc, 6));
+  if (numFromAsc < numToAsc) {
+    const startPhase = Math.max(0, Math.min(numFromAsc, 6));
+    const endPhase   = Math.max(0, Math.min(numToAsc, 6));
 
     for (let p = startPhase; p < endPhase; p++) {
       const phaseData = ASCENSION_PHASE_COSTS[p];
@@ -697,14 +715,14 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
   }
   const rarity = `${rarityNum}_star`;
   if (!costsData?.weapon_levels?.[rarity]) return {};
-  const sLv = extractLevel(fromLv);
-  const tLv = extractLevel(toLv);
-  const sAsc = fromAsc ?? 0;
-  const tAsc = toAsc ?? 6;
+  const rawFromLv = fromLv !== undefined ? fromLv : (weapon?.level ?? 1);
+  const rawToLv = toLv !== undefined ? toLv : (weapon?.targetLevel ?? 90);
+  const rawFromAsc = fromAsc !== undefined ? fromAsc : (weapon?.ascension ?? 0);
+  const rawToAsc = toAsc !== undefined ? toAsc : (weapon?.targetAscension ?? 6);
 
   // Explicit validation safeguards: detect invalid inputs without silent clamping
-  const fromValidation = validateLevelAscension(sLv, sAsc, 'weapon', rarityNum);
-  const toValidation = validateLevelAscension(tLv, tAsc, 'weapon', rarityNum);
+  const fromValidation = validateLevelAscension(rawFromLv, rawFromAsc, 'weapon', rarityNum);
+  const toValidation = validateLevelAscension(rawToLv, rawToAsc, 'weapon', rarityNum);
 
   if (!fromValidation.isValid || !toValidation.isValid) {
     const reasons = [
@@ -718,6 +736,11 @@ export function calculateWeaponCost(weapon, fromLv, toLv, fromAsc, toAsc, hasEve
       total_mora: 0,
     };
   }
+
+  const sLv = fromValidation.numericLevel;
+  const tLv = toValidation.numericLevel;
+  const sAsc = fromValidation.numericAscension;
+  const tAsc = toValidation.numericAscension;
 
   if (sLv > tLv || (sLv === tLv && sAsc >= tAsc)) {
     return {};

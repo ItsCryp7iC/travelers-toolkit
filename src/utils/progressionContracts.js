@@ -53,10 +53,48 @@ export function getWeaponMilestones(rarity) {
   return isLowTierWeapon(rarity) ? WEAPON_LOW_TIER_MILESTONES : WEAPON_STANDARD_MILESTONES;
 }
 
+// ─── Numeric & Progression Value Parsing ────────────────────────────────────
+/**
+ * Strictly parses and validates a progression integer value.
+ * Valid progression integers are:
+ * - Finite integer numbers (e.g. 1, 20, 90).
+ * - Numeric strings representing an exact integer with no decimals or trailing characters (e.g. "1", "20", "90").
+ *
+ * Explicitly rejects (returns null):
+ * - null or undefined
+ * - booleans (true, false)
+ * - empty or whitespace-only strings ("", "   ")
+ * - non-numeric strings ("abc", "20a")
+ * - fractional numbers (20.5, 0.1)
+ * - fractional numeric strings ("20.5", "1.0")
+ * - NaN, Infinity, -Infinity
+ * - objects, arrays, symbols
+ *
+ * @param {any} val
+ * @returns {number|null} Parsed integer number, or null if invalid
+ */
+export function parseProgressionInteger(val) {
+  if (val === null || val === undefined) return null;
+  if (typeof val === 'boolean') return null;
+  if (typeof val === 'number') {
+    if (!Number.isFinite(val) || !Number.isInteger(val)) return null;
+    return val;
+  }
+  if (typeof val === 'string') {
+    const trimmed = val.trim();
+    if (trimmed === '') return null;
+    if (!/^-?\d+$/.test(trimmed)) return null;
+    const num = Number(trimmed);
+    if (!Number.isFinite(num) || !Number.isInteger(num)) return null;
+    return num;
+  }
+  return null;
+}
+
 // ─── Character Progression Boundaries ──────────────────────────────────────
 export function getValidCharacterAscensions(level) {
-  const lv = Number(level);
-  if (Number.isNaN(lv) || lv < CHARACTER_MIN_LEVEL || lv > CHARACTER_MAX_LEVEL) return [];
+  const lv = parseProgressionInteger(level);
+  if (lv === null || lv < CHARACTER_MIN_LEVEL || lv > CHARACTER_MAX_LEVEL) return [];
   if (lv < 20) return [0];
   if (lv === 20) return [0, 1];
   if (lv < 40) return [1];
@@ -73,7 +111,9 @@ export function getValidCharacterAscensions(level) {
 }
 
 export function isCharacterMilestone(level) {
-  return CHARACTER_MILESTONES.includes(Number(level));
+  const lv = parseProgressionInteger(level);
+  if (lv === null) return false;
+  return CHARACTER_MILESTONES.includes(lv);
 }
 
 export function getCharacterMinAscensionForLevel(level) {
@@ -87,7 +127,7 @@ export function getCharacterMaxAscensionForLevel(level) {
 }
 
 export function getCharacterLevelRangeForAscension(ascension) {
-  const a = Number(ascension);
+  const a = parseProgressionInteger(ascension);
   switch (a) {
     case 0: return { min: 1, max: 20 };
     case 1: return { min: 20, max: 40 };
@@ -102,10 +142,10 @@ export function getCharacterLevelRangeForAscension(ascension) {
 
 // ─── Weapon Progression Boundaries ─────────────────────────────────────────
 export function getValidWeaponAscensions(level, rarity) {
-  const lv = Number(level);
+  const lv = parseProgressionInteger(level);
   const isLowTier = isLowTierWeapon(rarity);
   const maxLv = isLowTier ? WEAPON_LOW_TIER_MAX_LEVEL : WEAPON_STANDARD_MAX_LEVEL;
-  if (Number.isNaN(lv) || lv < WEAPON_MIN_LEVEL || lv > maxLv) return [];
+  if (lv === null || lv < WEAPON_MIN_LEVEL || lv > maxLv) return [];
 
   if (isLowTier) {
     if (lv < 20) return [0];
@@ -136,8 +176,10 @@ export function getValidWeaponAscensions(level, rarity) {
 }
 
 export function isWeaponMilestone(level, rarity) {
+  const lv = parseProgressionInteger(level);
+  if (lv === null) return false;
   const milestones = getWeaponMilestones(rarity);
-  return milestones.includes(Number(level));
+  return milestones.includes(lv);
 }
 
 export function getWeaponMinAscensionForLevel(level, rarity) {
@@ -181,13 +223,17 @@ export function getWeaponLevelRangeForAscension(ascension, rarity) {
 export function resolveCoherentProgression(newLevel, oldAscension, type = 'character', rarity = null, role = 'current') {
   const isChar = type === 'character';
   const maxLevel = isChar ? CHARACTER_MAX_LEVEL : getWeaponMaxLevel(rarity);
-  const clampedLevel = Math.max(1, Math.min(maxLevel, Number(newLevel) || 1));
+  const parsedLevel = parseProgressionInteger(newLevel);
+  if (parsedLevel === null) {
+    return { level: newLevel, ascension: oldAscension };
+  }
+  const clampedLevel = Math.max(1, Math.min(maxLevel, parsedLevel));
 
   const validAscs = isChar
     ? getValidCharacterAscensions(clampedLevel)
     : getValidWeaponAscensions(clampedLevel, rarity);
 
-  const numOldAsc = oldAscension != null ? Number(oldAscension) : null;
+  const numOldAsc = parseProgressionInteger(oldAscension);
 
   // Rule 1: Preserve existing ascension if it remains valid
   if (numOldAsc != null && validAscs.includes(numOldAsc)) {
@@ -240,17 +286,20 @@ export function validateLevelAscension(level, ascension, type = 'character', rar
     };
   }
 
-  const numLv = Number(level);
-  const numAsc = Number(ascension);
-
-  if (Number.isNaN(numLv) || numLv < 1 || numLv > maxLevel) {
+  const numLv = parseProgressionInteger(level);
+  if (numLv === null) {
+    const isFractional = typeof level === 'number' && Number.isFinite(level) && !Number.isInteger(level);
+    const isFractionalStr = typeof level === 'string' && /^-?\d+\.\d+$/.test(level.trim());
+    const reason = (isFractional || isFractionalStr)
+      ? `Level ${level} must be an integer`
+      : `Level ${level} is not a valid number`;
     return {
       isValid: false,
       status: 'invalid',
       entityType: type,
       level,
       ascension,
-      reason: Number.isNaN(numLv) ? `Level ${level} is not a valid number` : `Level ${level} is out of valid range (1–${maxLevel})`,
+      reason,
       allowedAscensions: [],
       validLevelRange: { min: 1, max: maxLevel },
       isUnambiguous: false,
@@ -258,14 +307,35 @@ export function validateLevelAscension(level, ascension, type = 'character', rar
     };
   }
 
-  if (Number.isNaN(numAsc)) {
+  if (numLv < 1 || numLv > maxLevel) {
+    return {
+      isValid: false,
+      status: 'invalid',
+      entityType: type,
+      level,
+      ascension,
+      reason: `Level ${level} is out of valid range (1–${maxLevel})`,
+      allowedAscensions: [],
+      validLevelRange: { min: 1, max: maxLevel },
+      isUnambiguous: false,
+      requiresHumanInput: true,
+    };
+  }
+
+  const numAsc = parseProgressionInteger(ascension);
+  if (numAsc === null) {
+    const isFractional = typeof ascension === 'number' && Number.isFinite(ascension) && !Number.isInteger(ascension);
+    const isFractionalStr = typeof ascension === 'string' && /^-?\d+\.\d+$/.test(ascension.trim());
+    const reason = (isFractional || isFractionalStr)
+      ? `Ascension ${ascension} must be an integer`
+      : `Ascension ${ascension} is not a valid number`;
     return {
       isValid: false,
       status: 'invalid',
       entityType: type,
       level: numLv,
       ascension,
-      reason: `Ascension ${ascension} is not a valid number`,
+      reason,
       allowedAscensions: [],
       validLevelRange: { min: 1, max: maxLevel },
       isUnambiguous: false,
@@ -302,6 +372,8 @@ export function validateLevelAscension(level, ascension, type = 'character', rar
     entityType: type,
     level: numLv,
     ascension: numAsc,
+    numericLevel: numLv,
+    numericAscension: numAsc,
     allowedAscensions,
     validLevelRange: { min: 1, max: maxLevel },
     isUnambiguous: true,
@@ -316,10 +388,17 @@ export function validateProgressionOrdering(fromLevel, fromAsc, toLevel, toAsc) 
   if (fromLevel == null || toLevel == null) {
     return { isValid: false, reason: 'Level values missing for ordering validation' };
   }
-  const fL = Number(fromLevel);
-  const tL = Number(toLevel);
-  const fA = fromAsc != null ? Number(fromAsc) : 0;
-  const tA = toAsc != null ? Number(toAsc) : 0;
+  const fL = parseProgressionInteger(fromLevel);
+  const tL = parseProgressionInteger(toLevel);
+  const fA = fromAsc != null ? parseProgressionInteger(fromAsc) : 0;
+  const tA = toAsc != null ? parseProgressionInteger(toAsc) : 0;
+
+  if (fL === null || tL === null) {
+    return { isValid: false, reason: 'Level values must be finite integers for ordering validation' };
+  }
+  if (fA === null || tA === null) {
+    return { isValid: false, reason: 'Ascension values must be finite integers for ordering validation' };
+  }
 
   if (fL > tL) {
     return {

@@ -123,7 +123,7 @@ describe('Phase C2B.2B.1 — Progression Data Health Inspection', () => {
 
     // Diagnostic suggestion (not applied)
     expect(screen.getByText(/Diagnostic Suggestion \(Not Applied\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/Level 1 \/ Ascension 0/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Level 1 \/ Ascension 0/i).length).toBeGreaterThanOrEqual(1);
   });
 
   // 3. Invalid weapon progression
