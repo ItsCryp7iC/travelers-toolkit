@@ -21,6 +21,8 @@ export default function PlannerTabContent({
   groupedLocalSpecialties,
   groupedEliteEnemies,
   groupedCommonEnemies,
+  craftingMode = 'crafting-aware',
+  craftingPlan = null,
 }) {
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -80,6 +82,8 @@ export default function PlannerTabContent({
                         globalCosts={totals.totalCosts}
                         inventory={inventory}
                         itemFolder={itemFolder}
+                        craftingMode={craftingMode}
+                        craftingPlan={craftingPlan}
                       />
                     ))
                 ))}
@@ -132,6 +136,8 @@ export default function PlannerTabContent({
                         globalCosts={totals.totalCosts}
                         inventory={inventory}
                         itemFolder={itemFolder}
+                        craftingMode={craftingMode}
+                        craftingPlan={craftingPlan}
                       />
                     );
                   })}
@@ -158,6 +164,8 @@ export default function PlannerTabContent({
               globalCosts={totals.totalCosts}
               inventory={inventory}
               itemFolder={itemFolder}
+              craftingMode={craftingMode}
+              craftingPlan={craftingPlan}
             />
           ))}
       </div>
@@ -173,12 +181,20 @@ export default function PlannerTabContent({
               style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.3)' }}>
               <span className="text-3xl">🎉</span>
               <div>
-                <p className="font-bold text-lg" style={{ color: '#4ADE80' }}>Inventory is fully stocked!</p>
-                <p className="text-sm text-[var(--muted)] mt-0.5">Your current inventory covers all progression goals. Time to ascend!</p>
+                <p className="font-bold text-lg" style={{ color: '#4ADE80' }}>
+                  {craftingMode === 'crafting-aware' && craftingPlan?.requiresCrafting
+                    ? 'Materials covered by crafting!'
+                    : 'Inventory is fully stocked!'}
+                </p>
+                <p className="text-sm text-[var(--muted)] mt-0.5">
+                  {craftingMode === 'crafting-aware' && craftingPlan?.requiresCrafting
+                    ? 'Your current inventory can fulfill all progression goals through crafting. See crafting checklist!'
+                    : 'Your current inventory covers all progression goals. Time to ascend!'}
+                </p>
               </div>
             </div>
           )}
-          <FarmableToday />
+          <FarmableToday craftingMode={craftingMode} craftingPlan={craftingPlan} />
         </>
       )}
 
@@ -199,6 +215,8 @@ export default function PlannerTabContent({
               globalCosts={totals.totalCosts}
               inventory={inventory}
               itemFolder={config.folder}
+              craftingMode={craftingMode}
+              craftingPlan={craftingPlan}
             />
           ))}
         </div>
@@ -274,6 +292,8 @@ export default function PlannerTabContent({
                       globalCosts={totals.totalCosts}
                       inventory={inventory}
                       itemFolder="elite_enhancement_materials"
+                      craftingMode={craftingMode}
+                      craftingPlan={craftingPlan}
                     />
                   ))}
               </div>
@@ -302,6 +322,8 @@ export default function PlannerTabContent({
                       globalCosts={totals.totalCosts}
                       inventory={inventory}
                       itemFolder="common_enhancement_materials"
+                      craftingMode={craftingMode}
+                      craftingPlan={craftingPlan}
                     />
                   ))}
               </div>

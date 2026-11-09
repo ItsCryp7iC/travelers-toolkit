@@ -5,6 +5,7 @@ import { formatNumber } from '../utils/calculator';
 import PlannerStats from '../components/Planner/PlannerStats';
 import PlannerEmptyState from '../components/Planner/PlannerEmptyState';
 import PlannerTabContent from '../components/Planner/PlannerTabContent';
+import PlannerCraftingChecklist from '../components/Planner/PlannerCraftingChecklist';
 import usePlannerData from './planner/usePlannerData';
 import { PLANNER_TABS, getPlannerTabId } from '../utils/plannerTabs';
 
@@ -18,10 +19,12 @@ export default function Planner() {
   const activeTab = getPlannerTabId(rawTab);
   const tabsContainerRef = useRef(null);
   const [showInvalidDetails, setShowInvalidDetails] = useState(false);
+  const [craftingMode, setCraftingMode] = useState('crafting-aware');
 
   const {
     totals,
     toFarm,
+    craftingPlan,
     groupedBooksData,
     groupedWeaponMatsData,
     groupedGemstonesData,
@@ -31,7 +34,7 @@ export default function Planner() {
     groupedEliteEnemies,
     groupedCommonEnemies,
     remainingTotals
-  } = usePlannerData({ roster, trackedWeapons, inventory });
+  } = usePlannerData({ roster, trackedWeapons, inventory, craftingMode });
 
   const handleTabChange = useCallback((tabId) => {
     setSearchParams(prev => {
@@ -107,7 +110,7 @@ export default function Planner() {
     <div className="animate-fade-in">
       {/* ── Page Header & In-Page Category Navigation ── */}
       <div className="sticky top-[var(--topbar-h,64px)] z-40 bg-[var(--bg)]/80 backdrop-blur-xl pb-2 sm:pb-3 pt-1 mb-4 sm:mb-6 border-b border-[var(--border)] shadow-sm">
-        <div className="flex items-center justify-between gap-3 mb-2 sm:mb-3">
+        <div className="flex items-center justify-between gap-3 mb-2 sm:mb-3 flex-wrap">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             <img src="/Planner.png" alt="Planner" className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-sm shrink-0" />
             <div className="min-w-0">
@@ -133,6 +136,42 @@ export default function Planner() {
                 })()}
               </p>
             </div>
+          </div>
+
+          {/* Crafting Mode Toggle */}
+          <div
+            className="flex items-center bg-[var(--surface)] p-1 rounded-xl border border-[var(--border)] shrink-0 self-start sm:self-auto"
+            role="group"
+            aria-label="Calculation Mode"
+          >
+            <button
+              type="button"
+              id="crafting-mode-aware-btn"
+              onClick={() => setCraftingMode('crafting-aware')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                craftingMode === 'crafting-aware'
+                  ? 'bg-[var(--primary)] text-white shadow-sm'
+                  : 'text-[var(--muted)] hover:text-white'
+              }`}
+              aria-pressed={craftingMode === 'crafting-aware'}
+            >
+              <span>🔨</span>
+              <span>Crafting-Aware</span>
+            </button>
+            <button
+              type="button"
+              id="crafting-mode-raw-btn"
+              onClick={() => setCraftingMode('raw')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                craftingMode === 'raw'
+                  ? 'bg-[var(--primary)] text-white shadow-sm'
+                  : 'text-[var(--muted)] hover:text-white'
+              }`}
+              aria-pressed={craftingMode === 'raw'}
+            >
+              <span>📦</span>
+              <span>Raw Shortages</span>
+            </button>
           </div>
         </div>
 
@@ -222,6 +261,14 @@ export default function Planner() {
         </div>
       )}
 
+      {/* ── Consolidated Crafting Checklist ── */}
+      <PlannerCraftingChecklist
+        craftingPlan={craftingPlan}
+        craftingMode={craftingMode}
+        userMora={inventory?.['Mora'] ?? 0}
+        progressionMora={remainingTotals.mora}
+      />
+
       {/* ── Grand Total Stats ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-6">
         <PlannerStats
@@ -235,12 +282,27 @@ export default function Planner() {
           }
           accent="#4EC9B0"
         />
-        <PlannerStats icon={<img src="/CurrencyExp.png" alt="Total Mora" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Total Mora" value={formatNumber(remainingTotals.mora)} accent="#FAB632" />
+        <PlannerStats
+          icon={<img src="/CurrencyExp.png" alt="Total Mora" className="w-5 h-5 object-contain drop-shadow-sm" />}
+          label="Total Mora"
+          value={formatNumber(remainingTotals.mora)}
+          sub={
+            craftingMode === 'crafting-aware' && remainingTotals.craftingMora > 0
+              ? `+ ${formatNumber(remainingTotals.craftingMora)} crafting fee`
+              : undefined
+          }
+          accent="#FAB632"
+        />
         <PlannerStats icon={<img src="/CrownOfInsight.png" alt="Crowns Needed" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Crowns Needed" value={remainingTotals.crowns} accent="#FBBF24"
           sub={remainingTotals.crowns > 0 ? 'Crown of Insight' : 'None needed'} />
         <PlannerStats icon="🎒" label="Still to Farm" value={formatNumber(remainingTotals.sumItems)}
           accent={toFarm.allDone ? '#4ADE80' : '#F97316'}
-          sub={toFarm.allDone ? '✅ All stocked!' : 'materials left'} />
+          sub={
+            toFarm.allDone
+              ? (craftingMode === 'crafting-aware' && craftingPlan?.requiresCrafting ? '🔨 Covered by crafting!' : '✅ All stocked!')
+              : `${formatNumber(remainingTotals.sumItems)} materials left`
+          }
+        />
       </div>
 
       {/* ── Tab Content ── */}
@@ -257,6 +319,8 @@ export default function Planner() {
         groupedLocalSpecialties={groupedLocalSpecialties}
         groupedEliteEnemies={groupedEliteEnemies}
         groupedCommonEnemies={groupedCommonEnemies}
+        craftingMode={craftingMode}
+        craftingPlan={craftingPlan}
       />
 
       {/* ── Inventory link ── */}

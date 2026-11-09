@@ -10,6 +10,7 @@ import weaponsData from '../data/weapons.json'
 import { resolveSpecificItem, getJsonData } from '../utils/resolver'
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
 import weeklyBossData from '../data/weekly_boss.json'
+import { computeCraftingPlan } from '../utils/craftingEngine'
 
 const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya'];
 
@@ -43,7 +44,7 @@ const getScheduleWeight = (familyData) => {
   return 99;
 }
 
-function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
+function DomainCard({ domainName, familyObj, accent, globalCosts, inventory, craftingMode = 'crafting-aware', craftingPlan = null }) {
   const { familyName, familyData, items, neededBy } = familyObj;
 
   return (
@@ -67,10 +68,24 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
              required = items[tier.id].item.required;
           }
           const owned = inventory[tier.id] || 0;
+          const directShortage = Math.max(0, required - owned);
+          const adjustedShortage = craftingPlan?.adjustedShortages?.[tier.id] !== undefined
+            ? craftingPlan.adjustedShortages[tier.id]
+            : directShortage;
+          const toFarm = craftingMode === 'raw' ? directShortage : adjustedShortage;
+          const craftStep = craftingPlan?.craftingSteps?.find((s) => s.outputItemId === tier.id);
+          const craftQuantity = (craftingMode === 'crafting-aware' && craftStep)
+            ? craftStep.totalOutputProduced
+            : 0;
           
           if (required === 0 && owned === 0) return null;
 
-          const percent = required > 0 ? Math.min(100, (owned / required) * 100) : (owned > 0 ? 100 : 0);
+          const isCovered = craftingMode === 'crafting-aware'
+            ? toFarm === 0
+            : (required > 0 && owned >= required);
+          const percent = required > 0
+            ? (isCovered ? 100 : Math.min(100, (owned / required) * 100))
+            : (owned > 0 ? 100 : 0);
           const rarityColor = RARITY_COLORS[tier.rarity] || RARITY_COLORS[3];
 
           return (
@@ -92,11 +107,16 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory }) {
                 <div className="flex items-center gap-2.5 sm:gap-3 text-[11px] sm:text-xs shrink-0 self-end sm:self-auto pl-7 sm:pl-0 flex-wrap">
                   <span className="text-[var(--muted)]" title={`Need: ${(required || 0).toLocaleString()}`}>Need: <span className="font-bold text-[var(--text)]">{formatPlannerQuantity(required)}</span></span>
                   <span className="text-[var(--muted)]" title={`Have: ${(owned || 0).toLocaleString()}`}>Have: <span className="text-[var(--text)] font-bold">{formatPlannerQuantity(owned)}</span></span>
-                  <span className="text-[var(--muted)]" title={`To Farm: ${(Math.max(0, required - owned) || 0).toLocaleString()}`}>To Farm: <span className="font-bold" style={{ color: Math.max(0, required - owned) > 0 ? accent : 'var(--muted)' }}>{formatPlannerQuantity(Math.max(0, required - owned))}</span></span>
+                  {craftingMode === 'crafting-aware' && craftQuantity > 0 && (
+                    <span className="text-amber-400 font-semibold" title={`Recommended craft: ${craftQuantity.toLocaleString()}`}>
+                      Craft: <span className="font-bold text-amber-300">+{formatPlannerQuantity(craftQuantity)}</span>
+                    </span>
+                  )}
+                  <span className="text-[var(--muted)]" title={`To Farm: ${(toFarm || 0).toLocaleString()}`}>To Farm: <span className="font-bold" style={{ color: toFarm > 0 ? accent : 'var(--muted)' }}>{formatPlannerQuantity(toFarm)}</span></span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
-                <div className="absolute top-0 left-0 h-full rounded-full transition-all" style={{ width: `${percent}%`, background: required > 0 && owned >= required ? '#4ADE80' : rarityColor }} />
+                <div className="absolute top-0 left-0 h-full rounded-full transition-all" style={{ width: `${percent}%`, background: isCovered ? '#4ADE80' : rarityColor }} />
               </div>
             </div>
           )
@@ -204,7 +224,7 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
   )
 }
 
-export default function FarmableToday() {
+export default function FarmableToday({ craftingMode = 'crafting-aware', craftingPlan = null }) {
   const roster = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const inventory = useStore((s) => s.inventory)
@@ -307,6 +327,13 @@ export default function FarmableToday() {
   };
 
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons])
+  const activeCraftingPlan = useMemo(() => {
+    if (craftingPlan) return craftingPlan;
+    return computeCraftingPlan(totals.totalCosts, inventory, {
+      priority: 'highest-tier',
+      affordabilityMora: inventory?.['Mora'] ?? 0,
+    });
+  }, [craftingPlan, totals.totalCosts, inventory]);
   const toFarm = useMemo(() => computeToFarm(totals, inventory), [totals, inventory])
 
   const [collapsed, setCollapsed] = useState(() => {
@@ -588,6 +615,8 @@ export default function FarmableToday() {
                         accent={accent} 
                         globalCosts={totals.totalCosts}
                         inventory={inventory}
+                        craftingMode={craftingMode}
+                        craftingPlan={activeCraftingPlan}
                       />
                   ))
                 ))}
