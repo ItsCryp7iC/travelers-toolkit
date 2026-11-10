@@ -5,6 +5,7 @@ import { formatNumber, formatItemName } from '../../utils/calculator';
 import { formatPlannerQuantity } from '../../utils/plannerTabs';
 import { getMaterialIcon } from '../../utils/assetHelper';
 import { acquireBodyScrollLock } from '../../utils/scrollLock';
+import { compareCraftingSessionSource } from '../../utils/craftingSession';
 import GenshinImage from '../GenshinImage';
 
 export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossRequirements = {}, liveMora = 0 }) {
@@ -15,7 +16,8 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
   const undoLastBatch = useCraftingSessionStore((s) => s.undoLastBatch);
   const discardSession = useCraftingSessionStore((s) => s.discardSession);
   const validateResult = useCraftingSessionStore((s) => s.validateResult);
-  const checkIsStale = useCraftingSessionStore((s) => s.checkIsStale);
+  const acknowledgeConflict = useCraftingSessionStore((s) => s.acknowledgeConflict);
+  const restartSession = useCraftingSessionStore((s) => s.restartSession);
 
   // Form & Interaction State
   const [selectedRecipeId, setSelectedRecipeId] = useState('');
@@ -30,6 +32,7 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
   const [submitError, setSubmitError] = useState('');
   const [lastRecordedSummary, setLastRecordedSummary] = useState('');
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false);
 
   const drawerRef = useRef(null);
 
@@ -42,6 +45,8 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
       if (e.key === 'Escape') {
         if (showDiscardConfirm) {
           setShowDiscardConfirm(false);
+        } else if (showRestartConfirm) {
+          setShowRestartConfirm(false);
         } else {
           closeDrawer();
         }
@@ -53,7 +58,7 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
       releaseScrollLock();
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isDrawerOpen, showDiscardConfirm, closeDrawer]);
+  }, [isDrawerOpen, showDiscardConfirm, showRestartConfirm, closeDrawer]);
 
   // Synchronize default recipe with recommended step
   const activeFamilyId = session?.snapshot?.familyId;
@@ -78,11 +83,50 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
     }
   }, [activeFamilyId, recommendedRecipeId, suggestedInitialBatch, session?.events?.length]);
 
-  // Check if live inventory diverged from frozen snapshot
-  const isStale = useMemo(() => {
-    if (!session) return false;
-    return checkIsStale(liveInventory, liveGrossRequirements, liveMora);
-  }, [session, checkIsStale, liveInventory, liveGrossRequirements, liveMora]);
+  // Canonical live source object
+  const liveSource = useMemo(
+    () => ({
+      inventory: liveInventory,
+      grossRequirements: liveGrossRequirements,
+      mora: liveMora,
+    }),
+    [liveInventory, liveGrossRequirements, liveMora]
+  );
+
+  // Check structured freshness against live source
+  const freshness = useMemo(() => {
+    if (!session) return null;
+    return compareCraftingSessionSource(
+      session.snapshot,
+      liveSource,
+      session.acknowledgedFingerprint
+    );
+  }, [session, liveSource]);
+
+  const isStale = freshness ? freshness.hasConflict : false;
+
+  const handleRestartClick = () => {
+    if (session?.events?.length > 0) {
+      setShowRestartConfirm(true);
+    } else {
+      executeRestart();
+    }
+  };
+
+  const executeRestart = () => {
+    restartSession({
+      inventory: liveInventory,
+      grossRequirements: liveGrossRequirements,
+      mora: liveMora,
+    });
+    setLastRecordedSummary('');
+    setOperationsInput('');
+    setTotalOutputInput('');
+    setRefundsInput('');
+    setObservedBalanceInput('');
+    setSubmitError('');
+    setShowRestartConfirm(false);
+  };
 
   if (!isDrawerOpen || !session) return null;
 
@@ -113,7 +157,7 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
   };
 
   const validation = hasValidOps
-    ? validateResult(validationPayload)
+    ? validateResult(validationPayload, liveSource)
     : { isValid: false, errors: [] };
 
   // Derived Preview calculations
@@ -184,13 +228,13 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
   // Form submission
   const handleSubmitResult = (e) => {
     e.preventDefault();
-    if (isSubmitting || !validation.isValid) return;
+    if (isSubmitting || !validation.isValid || freshness?.status === 'conflict_unreviewed') return;
 
     setIsSubmitting(true);
     setSubmitError('');
 
     try {
-      const res = recordResult(validationPayload);
+      const res = recordResult(validationPayload, liveSource);
       if (!res.success) {
         setSubmitError(res.error || 'Failed to record crafting result.');
       } else {
@@ -326,20 +370,87 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
             </div>
           </div>
 
-          {/* Stale / Drift Informational Banner */}
-          {isStale && (
+          {/* Conflict — Unreviewed Warning Card */}
+          {freshness?.status === 'conflict_unreviewed' && (
             <div
-              className="mt-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2"
+              className="mt-3 p-3.5 rounded-xl bg-amber-500/15 border-2 border-amber-500/40 text-xs text-amber-200 space-y-2.5 animate-fade-in"
               role="alert"
-              data-testid="session-stale-banner"
+              data-testid="session-conflict-card"
             >
-              <span className="shrink-0 text-sm">⚠️</span>
-              <div>
-                <span className="font-semibold">Note: Live inventory has changed. </span>
-                <span>
-                  This session is continuing from its frozen starting snapshot. Discard and restart if you wish to capture current inventory.
-                </span>
+              <div className="flex items-start gap-2.5">
+                <span className="shrink-0 text-base">⚠️</span>
+                <div className="space-y-1 min-w-0 flex-1">
+                  <div className="font-bold text-amber-100 text-sm">
+                    Your crafting plan may be outdated
+                  </div>
+                  <p className="text-gray-200 text-xs leading-relaxed">
+                    {freshness.reasons.length === 1
+                      ? freshness.reasons[0]
+                      : `${freshness.reasons.length} relevant values have changed in your saved inventory, Mora, or progression goals.`}
+                  </p>
+
+                  {/* Expandable diff details */}
+                  {freshness.reasons.length > 0 && (
+                    <details className="mt-2 text-xs group" data-testid="conflict-diff-details">
+                      <summary className="font-semibold text-amber-300 hover:text-amber-200 cursor-pointer select-none flex items-center gap-1">
+                        <span>What Changed?</span>
+                        <span className="text-[10px] group-open:rotate-180 transition-transform">▼</span>
+                      </summary>
+                      <ul className="mt-2 space-y-1 pl-4 list-disc text-gray-300 bg-black/30 p-2.5 rounded-lg border border-amber-500/20">
+                        {freshness.reasons.map((r, i) => (
+                          <li key={i} className="text-[11px]">{r}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                </div>
               </div>
+
+              {/* Resolution Choices */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-500/20">
+                <button
+                  type="button"
+                  id="conflict-continue-btn"
+                  data-testid="conflict-continue-btn"
+                  onClick={() => acknowledgeConflict(freshness.currentFingerprint)}
+                  className="px-3 py-1.5 rounded-lg bg-amber-500/25 hover:bg-amber-500/35 text-amber-100 border border-amber-500/40 text-xs font-semibold transition-colors cursor-pointer"
+                  title="Keep your recorded results and continue using the inventory from when this session started"
+                >
+                  Continue Original Plan
+                </button>
+                <button
+                  type="button"
+                  id="conflict-restart-btn"
+                  data-testid="conflict-restart-btn"
+                  onClick={handleRestartClick}
+                  className="px-3 py-1.5 rounded-lg bg-black/40 hover:bg-black/60 text-gray-200 border border-white/10 text-xs font-semibold transition-colors cursor-pointer"
+                  title="Start a new plan using your currently saved inventory"
+                >
+                  Restart with Current Inventory
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Conflict — Continued Persistent Banner */}
+          {freshness?.status === 'conflict_continued' && (
+            <div
+              className="mt-3 p-2.5 rounded-xl bg-blue-500/15 border border-blue-500/30 text-xs text-blue-200 flex items-center justify-between gap-2 flex-wrap"
+              role="status"
+              data-testid="session-continued-banner"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="shrink-0 text-sm">ℹ️</span>
+                <span className="font-semibold text-blue-200">Using original inventory snapshot</span>
+                <span className="text-gray-300 text-[11px] hidden sm:inline">— Live data has changed.</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleRestartClick}
+                className="text-[11px] text-amber-300 hover:text-amber-200 underline cursor-pointer shrink-0 font-medium"
+              >
+                Restart with Current Inventory
+              </button>
             </div>
           )}
         </div>
@@ -680,8 +791,8 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
                       type="submit"
                       id="submit-record-result-btn"
                       data-testid="submit-record-result-btn"
-                      disabled={!validation.isValid || isSubmitting}
-                      className={`w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${validation.isValid && !isSubmitting
+                      disabled={!validation.isValid || isSubmitting || freshness?.status === 'conflict_unreviewed'}
+                      className={`w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${validation.isValid && !isSubmitting && freshness?.status !== 'conflict_unreviewed'
                           ? 'genshin-btn text-white shadow-lg'
                           : 'bg-gray-700/50 text-gray-500 border border-white/5 cursor-not-allowed'
                         }`}
@@ -1047,6 +1158,60 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
                 className="px-4 py-2 text-xs font-bold rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-lg cursor-pointer transition-colors"
               >
                 Confirm Discard
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Restart Confirmation Modal ── */}
+      {showRestartConfirm && (
+        <div
+          className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-fade-in"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="restart-confirm-title"
+          data-testid="restart-confirm-dialog"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowRestartConfirm(false);
+          }}
+        >
+          <div className="w-full max-w-md bg-[var(--elevated)] border border-[var(--border)] rounded-2xl p-5 shadow-2xl space-y-4 text-[var(--text)]">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🔄</span>
+              <div>
+                <h4 id="restart-confirm-title" className="text-base font-bold text-amber-400">
+                  Restart with Current Inventory?
+                </h4>
+                <p className="text-xs text-[var(--muted)] mt-0.5">
+                  Start a fresh plan from your live saved inventory.
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-300 leading-relaxed">
+              You have <b className="text-white">{events.length} recorded crafting {events.length === 1 ? 'batch' : 'batches'}</b> in this temporary session.
+              Restarting will clear these temporary records and recalculate your crafting plan using your currently saved inventory, Mora, and progression goals.
+            </p>
+
+            <div className="flex justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                id="cancel-restart-btn"
+                data-testid="cancel-restart-btn"
+                onClick={() => setShowRestartConfirm(false)}
+                className="genshin-btn-ghost px-4 py-2 text-xs font-semibold rounded-xl cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                id="confirm-restart-btn"
+                data-testid="confirm-restart-btn"
+                onClick={executeRestart}
+                className="px-4 py-2 text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-lg cursor-pointer transition-colors"
+              >
+                Confirm Restart
               </button>
             </div>
           </div>

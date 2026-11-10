@@ -23,6 +23,54 @@ import {
 
 export type CraftingSessionBonusType = 'double_output' | 'ingredient_refund' | null;
 
+export type CraftingSessionFreshnessStatus =
+  | 'fresh'
+  | 'conflict_unreviewed'
+  | 'conflict_continued';
+
+export interface SessionMaterialDiff {
+  id: string;
+  name: string;
+  tierIndex: number;
+  snapshotOwned: number;
+  liveOwned: number;
+  delta: number;
+}
+
+export interface SessionRequirementDiff {
+  id: string;
+  name: string;
+  tierIndex: number;
+  snapshotRequired: number;
+  liveRequired: number;
+  delta: number;
+}
+
+export interface SessionMoraDiff {
+  snapshotMora: number;
+  liveMora: number;
+  delta: number;
+}
+
+export interface LiveCraftingSource {
+  inventory: Record<string, unknown>;
+  grossRequirements: Record<string, unknown>;
+  mora?: number;
+}
+
+export interface SessionFreshnessComparison {
+  isFresh: boolean;
+  hasConflict: boolean;
+  status: CraftingSessionFreshnessStatus;
+  currentFingerprint: string;
+  snapshotFingerprint: string;
+  materialDiffs: SessionMaterialDiff[];
+  requirementDiffs: SessionRequirementDiff[];
+  moraDiff: SessionMoraDiff;
+  recipeDiffs: string[];
+  reasons: string[];
+}
+
 export interface SessionMaterialItem {
   id: string;
   name: string;
@@ -114,6 +162,7 @@ export interface CraftingSessionState {
   remainingPlan: CraftingPlanResult;
   remainingForecast: FamilyCraftingForecast | null;
   nextRecommendedStep: OptimizedCraftingStep | null;
+  acknowledgedFingerprint?: string | null;
   updatedAt: number;
 }
 
@@ -147,9 +196,186 @@ export function computeSessionFingerprint(
   const reqEntries = itemIds
     .map((id) => `${id}:${Math.max(0, Number(grossRequirements[id]) || 0)}`)
     .join('|');
-  const moraVal = Math.max(0, Number(mora) || 0);
+  const rcpEntries = (family.recipes || [])
+    .map(
+      (r) =>
+        `${r.id}:${r.inputItemId}:${r.inputQty}->${r.outputItemId}:${r.outputQty}:${r.moraCost}`
+    )
+    .sort()
+    .join('|');
+  const moraVal = Math.max(
+    0,
+    Number(mora !== undefined && mora !== 0 ? mora : (inventory?.['Mora'] ?? mora ?? 0)) || 0
+  );
   const bonusStr = bonusType ?? 'none';
-  return `${family.familyId}@${bonusStr}#INV[${invEntries}|Mora:${moraVal}]#REQ[${reqEntries}]`;
+  return `${family.familyId}@${bonusStr}#INV[${invEntries}|Mora:${moraVal}]#REQ[${reqEntries}]#RCP[${rcpEntries}]`;
+}
+
+/**
+ * Compares an active session's snapshot against live source state.
+ * Pure, deterministic, and ignores unrelated inventory/roster data.
+ */
+export function compareCraftingSessionSource(
+  snapshot: CraftingSessionSnapshot,
+  liveSource: LiveCraftingSource,
+  acknowledgedFingerprint?: string | null
+): SessionFreshnessComparison {
+  const family = getCraftingFamily(snapshot.familyId);
+  const liveInv = liveSource.inventory || {};
+  const liveReq = liveSource.grossRequirements || {};
+  const liveMora = Math.max(
+    0,
+    Number(liveSource.mora !== undefined ? liveSource.mora : liveInv['Mora']) || 0
+  );
+
+  if (!family) {
+    return {
+      isFresh: false,
+      hasConflict: true,
+      status: 'conflict_unreviewed',
+      currentFingerprint: 'UNKNOWN_FAMILY',
+      snapshotFingerprint: snapshot.fingerprint,
+      materialDiffs: [],
+      requirementDiffs: [],
+      moraDiff: {
+        snapshotMora: snapshot.startingMora,
+        liveMora,
+        delta: liveMora - snapshot.startingMora,
+      },
+      recipeDiffs: ['Invalid family'],
+      reasons: [`Family "${snapshot.familyId}" could not be resolved.`],
+    };
+  }
+
+  const currentFingerprint = computeSessionFingerprint(
+    family,
+    liveInv,
+    liveReq,
+    snapshot.bonusType,
+    liveMora
+  );
+
+  const materialDiffs: SessionMaterialDiff[] = [];
+  const requirementDiffs: SessionRequirementDiff[] = [];
+  const reasons: string[] = [];
+
+  family.tiers.forEach((tier) => {
+    const snapOwned = snapshot.startingInventory[tier.id] ?? 0;
+    const liveOwned = Math.max(0, Number(liveInv[tier.id]) || 0);
+    const ownedDelta = liveOwned - snapOwned;
+    if (ownedDelta !== 0) {
+      materialDiffs.push({
+        id: tier.id,
+        name: tier.name,
+        tierIndex: tier.tierIndex,
+        snapshotOwned: snapOwned,
+        liveOwned,
+        delta: ownedDelta,
+      });
+      const sign = ownedDelta > 0 ? `+${ownedDelta.toLocaleString()}` : ownedDelta.toLocaleString();
+      reasons.push(
+        `Saved ${tier.name} changed from ${snapOwned.toLocaleString()} to ${liveOwned.toLocaleString()} (${sign}).`
+      );
+    }
+
+    const snapReq = snapshot.grossRequirements[tier.id] ?? 0;
+    const liveRequired = Math.max(0, Number(liveReq[tier.id]) || 0);
+    const reqDelta = liveRequired - snapReq;
+    if (reqDelta !== 0) {
+      requirementDiffs.push({
+        id: tier.id,
+        name: tier.name,
+        tierIndex: tier.tierIndex,
+        snapshotRequired: snapReq,
+        liveRequired,
+        delta: reqDelta,
+      });
+      const sign = reqDelta > 0 ? `+${reqDelta.toLocaleString()}` : reqDelta.toLocaleString();
+      reasons.push(
+        `Required ${tier.name} changed from ${snapReq.toLocaleString()} to ${liveRequired.toLocaleString()} (${sign}).`
+      );
+    }
+  });
+
+  const moraDelta = liveMora - snapshot.startingMora;
+  const moraDiff: SessionMoraDiff = {
+    snapshotMora: snapshot.startingMora,
+    liveMora,
+    delta: moraDelta,
+  };
+  if (moraDelta !== 0) {
+    const sign = moraDelta > 0 ? `+${moraDelta.toLocaleString()}` : moraDelta.toLocaleString();
+    reasons.push(
+      `Saved Mora changed from ${snapshot.startingMora.toLocaleString()} to ${liveMora.toLocaleString()} (${sign}).`
+    );
+  }
+
+  // Recipe definition comparison
+  const recipeDiffs: string[] = [];
+  const currentRecipes = family.recipes || [];
+  if (currentRecipes.length !== snapshot.recipes.length) {
+    recipeDiffs.push(
+      `Recipe count changed from ${snapshot.recipes.length} to ${currentRecipes.length}`
+    );
+    reasons.push(`Recipe definitions for ${family.name} have changed.`);
+  } else {
+    for (let i = 0; i < currentRecipes.length; i++) {
+      const cr = currentRecipes[i];
+      const sr = snapshot.recipes[i];
+      if (
+        !sr ||
+        cr.id !== sr.id ||
+        cr.inputItemId !== sr.inputItemId ||
+        cr.inputQty !== sr.inputQty ||
+        cr.outputItemId !== sr.outputItemId ||
+        cr.outputQty !== sr.outputQty ||
+        cr.moraCost !== sr.moraCost
+      ) {
+        recipeDiffs.push(`Recipe "${cr.id}" definition altered`);
+        reasons.push(`Recipe "${cr.id}" definition changed.`);
+        break;
+      }
+    }
+  }
+
+  const isFresh = currentFingerprint === snapshot.fingerprint && recipeDiffs.length === 0;
+  const hasConflict = !isFresh;
+
+  let status: CraftingSessionFreshnessStatus = 'fresh';
+  if (hasConflict) {
+    if (acknowledgedFingerprint && acknowledgedFingerprint === currentFingerprint) {
+      status = 'conflict_continued';
+    } else {
+      status = 'conflict_unreviewed';
+    }
+  }
+
+  return {
+    isFresh,
+    hasConflict,
+    status,
+    currentFingerprint,
+    snapshotFingerprint: snapshot.fingerprint,
+    materialDiffs,
+    requirementDiffs,
+    moraDiff,
+    recipeDiffs,
+    reasons,
+  };
+}
+
+/**
+ * Derives the conflict status for an active session and freshness comparison.
+ */
+export function getSessionFreshnessStatus(
+  session: CraftingSessionState,
+  comparison: SessionFreshnessComparison
+): CraftingSessionFreshnessStatus {
+  if (comparison.isFresh) return 'fresh';
+  if (session.acknowledgedFingerprint && session.acknowledgedFingerprint === comparison.currentFingerprint) {
+    return 'conflict_continued';
+  }
+  return 'conflict_unreviewed';
 }
 
 /**
@@ -271,6 +497,7 @@ export function createCraftingSession(options: {
     remainingPlan: remaining.remainingPlan,
     remainingForecast: remaining.remainingForecast,
     nextRecommendedStep: remaining.nextRecommendedStep,
+    acknowledgedFingerprint: null,
     updatedAt: now,
   };
 }
@@ -501,12 +728,31 @@ export function calculateRemainingSessionPlan(
 /**
  * Validates a proposed crafting result against session rules,
  * canonical recipe specifications, and current shadow inventory.
+ * Optionally enforces action-time freshness against live source state.
  */
 export function validateCraftingResultInput(
   session: CraftingSessionState,
-  input: RecordCraftingResultInput
+  input: RecordCraftingResultInput,
+  liveSource?: LiveCraftingSource
 ): SessionValidationResult {
   const errors: SessionValidationDiagnostic[] = [];
+
+  // 0. Action-time freshness gate
+  if (liveSource) {
+    const freshness = compareCraftingSessionSource(
+      session.snapshot,
+      liveSource,
+      session.acknowledgedFingerprint
+    );
+    if (freshness.status === 'conflict_unreviewed') {
+      errors.push({
+        field: 'session',
+        code: 'UNREVIEWED_SOURCE_CONFLICT',
+        message:
+          'Cannot record result: live inventory or requirements have changed. Please review the conflict before recording.',
+      });
+    }
+  }
 
   // 1. Session and family sanity
   const family = getCraftingFamily(session.snapshot.familyId);
@@ -671,12 +917,14 @@ export function validateCraftingResultInput(
 /**
  * Appends a confirmed crafting result event to the session ledger.
  * Pure and non-mutating: returns a newly computed CraftingSessionState.
+ * Optionally enforces action-time freshness against live source state.
  */
 export function recordCraftingResult(
   session: CraftingSessionState,
-  input: RecordCraftingResultInput
+  input: RecordCraftingResultInput,
+  liveSource?: LiveCraftingSource
 ): CraftingSessionState {
-  const validation = validateCraftingResultInput(session, input);
+  const validation = validateCraftingResultInput(session, input, liveSource);
   if (!validation.isValid) {
     const firstErr = validation.errors[0];
     throw new Error(`Invalid crafting result: [${firstErr.code}] ${firstErr.message}`);
@@ -748,6 +996,7 @@ export function recordCraftingResult(
     remainingPlan: remaining.remainingPlan,
     remainingForecast: remaining.remainingForecast,
     nextRecommendedStep: remaining.nextRecommendedStep,
+    acknowledgedFingerprint: session.acknowledgedFingerprint ?? null,
     updatedAt: timestamp,
   };
 }
@@ -775,6 +1024,7 @@ export function undoLastCraftingResult(
     remainingPlan: remaining.remainingPlan,
     remainingForecast: remaining.remainingForecast,
     nextRecommendedStep: remaining.nextRecommendedStep,
+    acknowledgedFingerprint: session.acknowledgedFingerprint ?? null,
     updatedAt: Date.now(),
   };
 }

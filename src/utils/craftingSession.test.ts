@@ -6,6 +6,8 @@ import {
   replayCraftingSession,
   validateCraftingResultInput,
   computeSessionFingerprint,
+  compareCraftingSessionSource,
+  getSessionFreshnessStatus,
   CraftingSessionState,
 } from './craftingSession';
 import { getCraftingFamily } from '../data/craftingRecipes';
@@ -1032,5 +1034,404 @@ describe('Phase CRAFT-D4-B2-A: Pure Crafting Session Ledger & Replay Engine', ()
     );
 
     expect(fp1).not.toBe(fp3); // Must differ! Relevant item changed.
+  });
+
+  // ── 43. Initial Session Freshness ──
+  it('43. Initial session freshness: freshly created session is completely fresh against matching live source', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      bonusType: 'double_output',
+    });
+
+    const liveSource = {
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      mora: 50000,
+    };
+
+    const comparison = compareCraftingSessionSource(session.snapshot, liveSource, session.acknowledgedFingerprint);
+    expect(comparison.isFresh).toBe(true);
+    expect(comparison.hasConflict).toBe(false);
+    expect(comparison.status).toBe('fresh');
+    expect(comparison.materialDiffs).toHaveLength(0);
+    expect(comparison.requirementDiffs).toHaveLength(0);
+    expect(comparison.moraDiff.delta).toBe(0);
+    expect(comparison.recipeDiffs).toHaveLength(0);
+    expect(comparison.reasons).toHaveLength(0);
+    expect(getSessionFreshnessStatus(session, comparison)).toBe('fresh');
+  });
+
+  // ── 44. Relevant Tier 1 Inventory Change ──
+  it('44. Relevant Tier 1 inventory change: detected with exact diff and human-readable reason', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 6309, SlimeSecretions: 281, SlimeConcentrate: 57, Mora: 100000 },
+      grossRequirements: { SlimeConcentrate: 200 },
+      bonusType: 'ingredient_refund',
+    });
+
+    const liveSource = {
+      inventory: { SlimeCondensate: 5000, SlimeSecretions: 281, SlimeConcentrate: 57, Mora: 100000 },
+      grossRequirements: { SlimeConcentrate: 200 },
+      mora: 100000,
+    };
+
+    const comparison = compareCraftingSessionSource(session.snapshot, liveSource, session.acknowledgedFingerprint);
+    expect(comparison.isFresh).toBe(false);
+    expect(comparison.hasConflict).toBe(true);
+    expect(comparison.status).toBe('conflict_unreviewed');
+    expect(comparison.materialDiffs).toHaveLength(1);
+    expect(comparison.materialDiffs[0]).toEqual({
+      id: 'SlimeCondensate',
+      name: 'Slime Condensate',
+      tierIndex: 0,
+      snapshotOwned: 6309,
+      liveOwned: 5000,
+      delta: -1309,
+    });
+    expect(comparison.requirementDiffs).toHaveLength(0);
+    expect(comparison.moraDiff.delta).toBe(0);
+    expect(comparison.reasons[0]).toContain('Slime Condensate changed from 6,309 to 5,000 (-1,309)');
+  });
+
+  // ── 45. Relevant Tier 2 Inventory Change ──
+  it('45. Relevant Tier 2 inventory change: detected properly', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      bonusType: 'double_output',
+    });
+
+    const liveSource = {
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 35, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      mora: 50000,
+    };
+
+    const comparison = compareCraftingSessionSource(session.snapshot, liveSource);
+    expect(comparison.isFresh).toBe(false);
+    expect(comparison.materialDiffs).toHaveLength(1);
+    expect(comparison.materialDiffs[0].id).toBe('SlimeSecretions');
+    expect(comparison.materialDiffs[0].delta).toBe(15);
+  });
+
+  // ── 46. Relevant Highest-Tier Inventory Change ──
+  it('46. Relevant highest-tier inventory change: detected properly', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      bonusType: 'double_output',
+    });
+
+    const liveSource = {
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 10, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      mora: 50000,
+    };
+
+    const comparison = compareCraftingSessionSource(session.snapshot, liveSource);
+    expect(comparison.isFresh).toBe(false);
+    expect(comparison.materialDiffs).toHaveLength(1);
+    expect(comparison.materialDiffs[0].id).toBe('SlimeConcentrate');
+    expect(comparison.materialDiffs[0].delta).toBe(5);
+  });
+
+  // ── 47. Unrelated Inventory Change Ignored ──
+  it('47. False-positive prevention: unrelated inventory items do NOT trigger conflict', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      bonusType: 'double_output',
+    });
+
+    const liveSource = {
+      inventory: {
+        SlimeCondensate: 100,
+        SlimeSecretions: 20,
+        SlimeConcentrate: 5,
+        SweetFlower: 9999, // Unrelated
+        DamagedMask: 500, // Unrelated
+        Mora: 50000,
+      },
+      grossRequirements: {
+        SlimeConcentrate: 15,
+        OminousMask: 50, // Unrelated requirement
+      },
+      mora: 50000,
+    };
+
+    const comparison = compareCraftingSessionSource(session.snapshot, liveSource);
+    expect(comparison.isFresh).toBe(true);
+    expect(comparison.hasConflict).toBe(false);
+    expect(comparison.status).toBe('fresh');
+    expect(comparison.materialDiffs).toHaveLength(0);
+    expect(comparison.requirementDiffs).toHaveLength(0);
+  });
+
+  // ── 48. Mora-Only Change Detected ──
+  it('48. Mora-only change: detected without falsely claiming material quantities changed', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 42590000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      bonusType: 'double_output',
+    });
+
+    const liveSource = {
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 42500000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      mora: 42500000,
+    };
+
+    const comparison = compareCraftingSessionSource(session.snapshot, liveSource);
+    expect(comparison.isFresh).toBe(false);
+    expect(comparison.hasConflict).toBe(true);
+    expect(comparison.materialDiffs).toHaveLength(0); // Zero material differences!
+    expect(comparison.requirementDiffs).toHaveLength(0); // Zero requirement differences!
+    expect(comparison.moraDiff).toEqual({
+      snapshotMora: 42590000,
+      liveMora: 42500000,
+      delta: -90000,
+    });
+    expect(comparison.reasons).toHaveLength(1);
+    expect(comparison.reasons[0]).toContain('Saved Mora changed from 42,590,000 to 42,500,000 (-90,000)');
+  });
+
+  // ── 49. Requirements-Only Change Detected ──
+  it('49. Requirements-only change: detected with exact demand delta without changing snapshot', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 689 },
+      bonusType: 'double_output',
+    });
+
+    const liveSource = {
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 720 },
+      mora: 50000,
+    };
+
+    const comparison = compareCraftingSessionSource(session.snapshot, liveSource);
+    expect(comparison.isFresh).toBe(false);
+    expect(comparison.materialDiffs).toHaveLength(0);
+    expect(comparison.moraDiff.delta).toBe(0);
+    expect(comparison.requirementDiffs).toHaveLength(1);
+    expect(comparison.requirementDiffs[0]).toEqual({
+      id: 'SlimeConcentrate',
+      name: 'Slime Concentrate',
+      tierIndex: 2,
+      snapshotRequired: 689,
+      liveRequired: 720,
+      delta: 31,
+    });
+    expect(comparison.reasons[0]).toContain('Required Slime Concentrate changed from 689 to 720 (+31)');
+    // Snapshot requirements remain frozen!
+    expect(session.snapshot.grossRequirements.SlimeConcentrate).toBe(689);
+  });
+
+  // ── 50. Recipe Definition Alteration Detected ──
+  it('50. Recipe definition alteration: alters fingerprint and records recipe diff', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      bonusType: 'double_output',
+    });
+
+    // Artificially simulate a mutated snapshot recipe definition
+    const modifiedSnapshot = {
+      ...session.snapshot,
+      recipes: session.snapshot.recipes.map((r, i) =>
+        i === 0 ? { ...r, moraCost: 999 } : r
+      ),
+    };
+
+    const liveSource = {
+      inventory: { SlimeCondensate: 100, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      mora: 50000,
+    };
+
+    const comparison = compareCraftingSessionSource(modifiedSnapshot, liveSource);
+    expect(comparison.isFresh).toBe(false);
+    expect(comparison.recipeDiffs.length).toBeGreaterThan(0);
+    expect(comparison.reasons.some((r) => r.includes('Recipe') && r.includes('definition changed'))).toBe(true);
+  });
+
+  // ── 51. Shadow Inventory Updates Do NOT Trigger False Conflict ──
+  it('51. Shadow inventory updates: ledger progress does NOT conflict with live source', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      bonusType: 'double_output',
+    });
+
+    // Record a crafting event inside the session
+    const updatedSession = recordCraftingResult(session, {
+      recipeId: slimeFamily.recipes[0].id,
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+    });
+
+    // Shadow inventory has changed: Condensate decreased by 30, Secretions increased by 10, Mora decreased by 250
+    expect(updatedSession.ledger.shadowInventory.SlimeCondensate).toBe(70);
+    expect(updatedSession.ledger.shadowInventory.SlimeSecretions).toBe(30);
+
+    // Live inventory is STILL what was originally saved
+    const liveSource = {
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 5, Mora: 50000 },
+      grossRequirements: { SlimeConcentrate: 15 },
+      mora: 50000,
+    };
+
+    const comparison = compareCraftingSessionSource(updatedSession.snapshot, liveSource);
+    expect(comparison.isFresh).toBe(true);
+    expect(comparison.hasConflict).toBe(false);
+    expect(comparison.status).toBe('fresh');
+  });
+
+  // ── 52. Conflict Acknowledgment Lifecycle ──
+  it('52. Acknowledgment lifecycle: transitions fresh -> unreviewed -> continued -> unreviewed on subsequent change', () => {
+    let session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      bonusType: 'double_output',
+    });
+
+    const live1 = {
+      inventory: { SlimeCondensate: 100, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      mora: 50000,
+    };
+    expect(compareCraftingSessionSource(session.snapshot, live1, session.acknowledgedFingerprint).status).toBe('fresh');
+
+    // 1. Live inventory changes to 120 -> conflict_unreviewed
+    const live2 = {
+      inventory: { SlimeCondensate: 120, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      mora: 50000,
+    };
+    const comp2 = compareCraftingSessionSource(session.snapshot, live2, session.acknowledgedFingerprint);
+    expect(comp2.status).toBe('conflict_unreviewed');
+
+    // 2. User acknowledges conflict for live2 -> conflict_continued
+    session = { ...session, acknowledgedFingerprint: comp2.currentFingerprint };
+    const comp3 = compareCraftingSessionSource(session.snapshot, live2, session.acknowledgedFingerprint);
+    expect(comp3.status).toBe('conflict_continued');
+
+    // 3. Live inventory changes AGAIN to 150 -> MUST revert to conflict_unreviewed!
+    const live3 = {
+      inventory: { SlimeCondensate: 150, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      mora: 50000,
+    };
+    const comp4 = compareCraftingSessionSource(session.snapshot, live3, session.acknowledgedFingerprint);
+    expect(comp4.status).toBe('conflict_unreviewed');
+
+    // 4. Live inventory returns to original 100 -> returns to fresh!
+    const comp5 = compareCraftingSessionSource(session.snapshot, live1, session.acknowledgedFingerprint);
+    expect(comp5.status).toBe('fresh');
+  });
+
+  // ── 53. Action-Time Validation Blocks Stale Submissions ──
+  it('53. Action-time validation: rejects recordResult when live source has unreviewed conflict', () => {
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      bonusType: 'double_output',
+    });
+
+    const liveDiverged = {
+      inventory: { SlimeCondensate: 50, Mora: 50000 }, // Changed from 100 to 50
+      grossRequirements: { SlimeSecretions: 10 },
+      mora: 50000,
+    };
+
+    const validation = validateCraftingResultInput(
+      session,
+      {
+        recipeId: slimeFamily.recipes[0].id,
+        operationsPerformed: 10,
+        totalOutputReceived: 10,
+      },
+      liveDiverged
+    );
+
+    expect(validation.isValid).toBe(false);
+    expect(validation.errors[0].code).toBe('UNREVIEWED_SOURCE_CONFLICT');
+
+    expect(() => {
+      recordCraftingResult(
+        session,
+        {
+          recipeId: slimeFamily.recipes[0].id,
+          operationsPerformed: 10,
+          totalOutputReceived: 10,
+        },
+        liveDiverged
+      );
+    }).toThrow('[UNREVIEWED_SOURCE_CONFLICT]');
+  });
+
+  // ── 54. Acknowledged Conflict Allows Recording and Preserves Acknowledgment ──
+  it('54. Acknowledged conflict allows recording and preserves acknowledgedFingerprint', () => {
+    let session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      bonusType: 'double_output',
+    });
+
+    const liveDiverged = {
+      inventory: { SlimeCondensate: 150, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      mora: 50000,
+    };
+
+    const comp = compareCraftingSessionSource(session.snapshot, liveDiverged);
+    session = { ...session, acknowledgedFingerprint: comp.currentFingerprint };
+
+    const nextSession = recordCraftingResult(
+      session,
+      {
+        recipeId: slimeFamily.recipes[0].id,
+        operationsPerformed: 10,
+        totalOutputReceived: 10,
+      },
+      liveDiverged
+    );
+
+    expect(nextSession.events).toHaveLength(1);
+    expect(nextSession.acknowledgedFingerprint).toBe(comp.currentFingerprint);
+  });
+
+  // ── 55. Undo Works in Conflicted Session ──
+  it('55. Undo works in conflicted session and preserves acknowledgedFingerprint', () => {
+    let session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, Mora: 50000 },
+      grossRequirements: { SlimeSecretions: 10 },
+      bonusType: 'double_output',
+    });
+
+    session = recordCraftingResult(session, {
+      recipeId: slimeFamily.recipes[0].id,
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+    });
+    session = { ...session, acknowledgedFingerprint: 'mock-ack-fp' };
+
+    const undone = undoLastCraftingResult(session);
+    expect(undone.events).toHaveLength(0);
+    expect(undone.acknowledgedFingerprint).toBe('mock-ack-fp');
   });
 });

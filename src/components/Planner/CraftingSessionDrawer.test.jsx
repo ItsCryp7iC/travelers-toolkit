@@ -195,15 +195,17 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
 
   // ── 8. Double-output result entry ──
   it('8. Double-output result entry: input fields, validation, and submission for 10% Double', () => {
+    const inv = { SlimeCondensate: 300, Mora: 10000 };
+    const reqs = { SlimeSecretions: 10 };
     useCraftingSessionStore.getState().startSession({
       familyId: 'Slime',
-      inventory: { SlimeCondensate: 300, Mora: 10000 },
-      grossRequirements: { SlimeSecretions: 10 },
+      inventory: inv,
+      grossRequirements: reqs,
       bonusType: 'double_output',
       startingMora: 10000,
     });
 
-    render(<CraftingSessionDrawer liveInventory={{}} liveGrossRequirements={{}} liveMora={10000} />);
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={10000} />);
 
     const opsInput = screen.getByTestId('operations-input');
     const totalOutputInput = screen.getByTestId('total-output-input');
@@ -226,15 +228,17 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
 
   // ── 9. Refund result entry ──
   it('9. Refund result entry: input fields, validation, and submission for 25% Refund', () => {
+    const inv = { DamagedMask: 300, Mora: 10000 };
+    const reqs = { StainedMask: 10 };
     useCraftingSessionStore.getState().startSession({
       familyId: 'Hilichurl',
-      inventory: { DamagedMask: 300, Mora: 10000 },
-      grossRequirements: { StainedMask: 10 },
+      inventory: inv,
+      grossRequirements: reqs,
       bonusType: 'ingredient_refund',
       startingMora: 10000,
     });
 
-    render(<CraftingSessionDrawer liveInventory={{}} liveGrossRequirements={{}} liveMora={10000} />);
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={10000} />);
 
     const opsInput = screen.getByTestId('operations-input');
     const refundsInput = screen.getByTestId('refunds-input');
@@ -296,15 +300,16 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
 
   // ── 12. Exact crafting Mora ──
   it('12. Exact crafting Mora: fee = ops * moraCost; refunds do not refund Mora', () => {
+    const inv = { DamagedMask: 500, Mora: 5000 };
     useCraftingSessionStore.getState().startSession({
       familyId: 'Hilichurl',
-      inventory: { DamagedMask: 500, Mora: 5000 },
+      inventory: inv,
       grossRequirements: {},
       bonusType: 'ingredient_refund',
       startingMora: 5000,
     });
 
-    render(<CraftingSessionDrawer liveInventory={{}} liveGrossRequirements={{}} liveMora={5000} />);
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={{}} liveMora={5000} />);
 
     fireEvent.change(screen.getByTestId('operations-input'), { target: { value: '10' } });
     fireEvent.change(screen.getByTestId('refunds-input'), { target: { value: '5' } });
@@ -379,15 +384,16 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
 
   // ── 16. Insufficient materials ──
   it('16. Insufficient materials: rejects batch requiring more gross ingredients than available in shadow inventory with advisory message', () => {
+    const inv = { SlimeCondensate: 50, Mora: 10000 };
     useCraftingSessionStore.getState().startSession({
       familyId: 'Slime',
-      inventory: { SlimeCondensate: 50, Mora: 10000 }, // Only 50
+      inventory: inv, // Only 50
       grossRequirements: {},
       bonusType: 'double_output',
       startingMora: 10000,
     });
 
-    render(<CraftingSessionDrawer liveInventory={{}} liveGrossRequirements={{}} liveMora={10000} />);
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={{}} liveMora={10000} />);
 
     fireEvent.change(screen.getByTestId('operations-input'), { target: { value: '20' } }); // Needs 60 Condensate
 
@@ -398,15 +404,16 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
 
   // ── 17. Insufficient Mora ──
   it('17. Insufficient Mora: rejects batch when fee exceeds remaining shadow Mora', () => {
+    const inv = { SlimeCondensate: 300, Mora: 50 };
     useCraftingSessionStore.getState().startSession({
       familyId: 'Slime',
-      inventory: { SlimeCondensate: 300, Mora: 50 }, // Only 50 Mora
+      inventory: inv, // Only 50 Mora
       grossRequirements: {},
       bonusType: 'double_output',
       startingMora: 50,
     });
 
-    render(<CraftingSessionDrawer liveInventory={{}} liveGrossRequirements={{}} liveMora={50} />);
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={{}} liveMora={50} />);
 
     fireEvent.change(screen.getByTestId('operations-input'), { target: { value: '10' } }); // Needs 250 Mora
 
@@ -416,15 +423,16 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
 
   // ── 18. Duplicate-submit prevention ──
   it('18. Duplicate-submit prevention: button disabled while submitting, prevents double submission', () => {
+    const inv = { SlimeCondensate: 300, Mora: 10000 };
     useCraftingSessionStore.getState().startSession({
       familyId: 'Slime',
-      inventory: { SlimeCondensate: 300, Mora: 10000 },
+      inventory: inv,
       grossRequirements: {},
       bonusType: 'double_output',
       startingMora: 10000,
     });
 
-    render(<CraftingSessionDrawer liveInventory={{}} liveGrossRequirements={{}} liveMora={10000} />);
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={{}} liveMora={10000} />);
 
     fireEvent.change(screen.getByTestId('operations-input'), { target: { value: '10' } });
     fireEvent.change(screen.getByTestId('total-output-input'), { target: { value: '10' } });
@@ -1128,6 +1136,362 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
     const replaceDialog = screen.getByTestId('session-replacement-dialog');
     expect(replaceDialog).toHaveClass('z-[1000]');
     expect(document.body).toContainElement(replaceDialog);
+  });
+
+  // ── 45. B2-C: Fresh session renders without conflict card ──
+  it('45. B2-C: Fresh session renders without conflict card when live inventory matches snapshot', () => {
+    const inv = { SlimeCondensate: 6309, SlimeSecretions: 281, SlimeConcentrate: 57, Mora: 1000000 };
+    const reqs = { SlimeCondensate: 219, SlimeSecretions: 411, SlimeConcentrate: 689 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'ingredient_refund',
+      startingMora: 1000000,
+    });
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={1000000} />);
+
+    expect(screen.queryByTestId('session-conflict-card')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('session-continued-banner')).not.toBeInTheDocument();
+  });
+
+  // ── 46. B2-C: Relevant material inventory change renders conflict card ──
+  it('46. B2-C: Relevant material inventory change renders warning card with diff details and actions', () => {
+    const snapInv = { SlimeCondensate: 6309, SlimeSecretions: 281, SlimeConcentrate: 57, Mora: 1000000 };
+    const reqs = { SlimeConcentrate: 200 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'ingredient_refund',
+      startingMora: 1000000,
+    });
+
+    // Live inventory changed: SlimeCondensate decreased from 6309 to 5000
+    const liveInv = { SlimeCondensate: 5000, SlimeSecretions: 281, SlimeConcentrate: 57, Mora: 1000000 };
+
+    render(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={1000000} />);
+
+    const conflictCard = screen.getByTestId('session-conflict-card');
+    expect(conflictCard).toBeInTheDocument();
+    expect(conflictCard).toHaveTextContent(/Your crafting plan may be outdated/i);
+    expect(conflictCard).toHaveTextContent(/Slime Condensate changed from 6,309 to 5,000/i);
+
+    expect(screen.getByTestId('conflict-continue-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('conflict-restart-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('conflict-diff-details')).toBeInTheDocument();
+  });
+
+  // ── 47. B2-C: Unreviewed conflict disables result submission ──
+  it('47. B2-C: Unreviewed conflict disables result submission', () => {
+    const snapInv = { SlimeCondensate: 300, Mora: 10000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 10000,
+    });
+
+    const liveInv = { SlimeCondensate: 200, Mora: 10000 }; // Diverged!
+
+    render(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={10000} />);
+
+    fireEvent.change(screen.getByTestId('operations-input'), { target: { value: '10' } });
+    fireEvent.change(screen.getByTestId('total-output-input'), { target: { value: '10' } });
+
+    const submitBtn = screen.getByTestId('submit-record-result-btn');
+    expect(submitBtn).toBeDisabled();
+
+    // Store recordResult with liveSource also blocks submission
+    const res = useCraftingSessionStore.getState().recordResult(
+      {
+        recipeId: 'craft_SlimeSecretions',
+        operationsPerformed: 10,
+        totalOutputReceived: 10,
+      },
+      { inventory: liveInv, grossRequirements: reqs, mora: 10000 }
+    );
+    expect(res.success).toBe(false);
+    expect(res.code).toBe('UNREVIEWED_SOURCE_CONFLICT');
+  });
+
+  // ── 48. B2-C: Continue Original Plan workflow ──
+  it('48. B2-C: Continue Original Plan acknowledges conflict and shows persistent banner', () => {
+    const snapInv = { SlimeCondensate: 300, Mora: 10000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 10000,
+    });
+
+    const liveInv = { SlimeCondensate: 200, Mora: 10000 };
+
+    const { rerender } = render(
+      <CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={10000} />
+    );
+
+    expect(screen.getByTestId('session-conflict-card')).toBeInTheDocument();
+
+    // Click Continue Original Plan
+    fireEvent.click(screen.getByTestId('conflict-continue-btn'));
+
+    // Rerender with updated store state
+    rerender(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={10000} />);
+
+    // Warning card is replaced with persistent continued banner
+    expect(screen.queryByTestId('session-conflict-card')).not.toBeInTheDocument();
+    const banner = screen.getByTestId('session-continued-banner');
+    expect(banner).toBeInTheDocument();
+    expect(banner).toHaveTextContent(/Using original inventory snapshot/i);
+
+    // Form submission is now enabled
+    fireEvent.change(screen.getByTestId('operations-input'), { target: { value: '10' } });
+    fireEvent.change(screen.getByTestId('total-output-input'), { target: { value: '10' } });
+    const submitBtn = screen.getByTestId('submit-record-result-btn');
+    expect(submitBtn).not.toBeDisabled();
+
+    fireEvent.click(submitBtn);
+    expect(useCraftingSessionStore.getState().session.events).toHaveLength(1);
+  });
+
+  // ── 49. B2-C: Subsequent live inventory change re-triggers conflict ──
+  it('49. B2-C: Subsequent live inventory change re-triggers unreviewed conflict', () => {
+    const snapInv = { SlimeCondensate: 300, Mora: 10000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 10000,
+    });
+
+    const liveInv1 = { SlimeCondensate: 200, Mora: 10000 };
+
+    const { rerender } = render(
+      <CraftingSessionDrawer liveInventory={liveInv1} liveGrossRequirements={reqs} liveMora={10000} />
+    );
+
+    // Acknowledge first change
+    fireEvent.click(screen.getByTestId('conflict-continue-btn'));
+    rerender(<CraftingSessionDrawer liveInventory={liveInv1} liveGrossRequirements={reqs} liveMora={10000} />);
+    expect(screen.getByTestId('session-continued-banner')).toBeInTheDocument();
+
+    // Live inventory changes AGAIN to 150
+    const liveInv2 = { SlimeCondensate: 150, Mora: 10000 };
+    rerender(<CraftingSessionDrawer liveInventory={liveInv2} liveGrossRequirements={reqs} liveMora={10000} />);
+
+    // Conflict card MUST reappear!
+    expect(screen.getByTestId('session-conflict-card')).toBeInTheDocument();
+    expect(screen.queryByTestId('session-continued-banner')).not.toBeInTheDocument();
+  });
+
+  // ── 50. B2-C: Mora-only change detected ──
+  it('50. B2-C: Mora-only change detected without material diffs', () => {
+    const inv = { SlimeCondensate: 300, Mora: 50000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 50000,
+    });
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={40000} />);
+
+    const conflictCard = screen.getByTestId('session-conflict-card');
+    expect(conflictCard).toHaveTextContent(/Saved Mora changed from 50,000 to 40,000/i);
+    expect(conflictCard).not.toHaveTextContent(/Slime Condensate changed/i);
+  });
+
+  // ── 51. B2-C: Requirements-only change detected ──
+  it('51. B2-C: Requirements-only change detected', () => {
+    const inv = { SlimeCondensate: 300, Mora: 50000 };
+    const reqs1 = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs1,
+      bonusType: 'double_output',
+      startingMora: 50000,
+    });
+
+    const reqs2 = { SlimeSecretions: 25 }; // Changed demand
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs2} liveMora={50000} />);
+
+    const conflictCard = screen.getByTestId('session-conflict-card');
+    expect(conflictCard).toHaveTextContent(/Required Slime Secretions changed from 10 to 25/i);
+  });
+
+  // ── 52. B2-C: False-positive prevention ──
+  it('52. B2-C: False-positive prevention: unrelated item change ignored', () => {
+    const inv = { SlimeCondensate: 300, Mora: 50000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 50000,
+    });
+
+    // Unrelated items added
+    const liveInv = { ...inv, SweetFlower: 999, DamagedMask: 500 };
+    const liveReqs = { ...reqs, OminousMask: 50 };
+
+    render(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={liveReqs} liveMora={50000} />);
+
+    expect(screen.queryByTestId('session-conflict-card')).not.toBeInTheDocument();
+  });
+
+  // ── 53. B2-C: Restart with 0 events restarts immediately without confirmation modal ──
+  it('53. B2-C: Restart with 0 events restarts immediately without confirmation modal', () => {
+    const snapInv = { SlimeCondensate: 300, Mora: 50000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 50000,
+    });
+
+    const liveInv = { SlimeCondensate: 500, Mora: 60000 }; // Fresh data
+
+    render(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={60000} />);
+
+    fireEvent.click(screen.getByTestId('conflict-restart-btn'));
+
+    // No restart confirmation dialog needed when 0 events exist
+    expect(screen.queryByTestId('restart-confirm-dialog')).not.toBeInTheDocument();
+
+    const newSession = useCraftingSessionStore.getState().session;
+    expect(newSession.snapshot.startingInventory.SlimeCondensate).toBe(500);
+    expect(newSession.snapshot.startingMora).toBe(60000);
+    expect(newSession.events).toHaveLength(0);
+  });
+
+  // ── 54. B2-C: Restart with events prompts confirmation dialog (z-[1000]) ──
+  it('54. B2-C: Restart with recorded events prompts confirmation dialog with z-[1000]', () => {
+    const snapInv = { SlimeCondensate: 300, Mora: 50000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 50000,
+    });
+
+    useCraftingSessionStore.getState().recordResult({
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+    });
+
+    const liveInv = { SlimeCondensate: 500, Mora: 60000 };
+
+    render(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={60000} />);
+
+    fireEvent.click(screen.getByTestId('conflict-restart-btn'));
+
+    const dialog = screen.getByTestId('restart-confirm-dialog');
+    expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveClass('z-[1000]');
+    expect(document.body).toContainElement(dialog);
+    expect(dialog).toHaveTextContent(/Restart with Current Inventory\?/i);
+    expect(dialog).toHaveTextContent(/1 recorded crafting batch/i);
+
+    // Cancel preserves session
+    fireEvent.click(screen.getByTestId('cancel-restart-btn'));
+    expect(screen.queryByTestId('restart-confirm-dialog')).not.toBeInTheDocument();
+    expect(useCraftingSessionStore.getState().session.events).toHaveLength(1);
+  });
+
+  // ── 55. B2-C: Confirming restart captures fresh live data and clears records ──
+  it('55. B2-C: Confirming restart captures fresh live data and clears records', () => {
+    const snapInv = { SlimeCondensate: 300, Mora: 50000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 50000,
+    });
+
+    useCraftingSessionStore.getState().recordResult({
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+    });
+
+    const liveInv = { SlimeCondensate: 800, Mora: 75000 };
+
+    render(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={75000} />);
+
+    fireEvent.click(screen.getByTestId('conflict-restart-btn'));
+    fireEvent.click(screen.getByTestId('confirm-restart-btn'));
+
+    const newSession = useCraftingSessionStore.getState().session;
+    expect(newSession.snapshot.startingInventory.SlimeCondensate).toBe(800);
+    expect(newSession.snapshot.startingMora).toBe(75000);
+    expect(newSession.events).toHaveLength(0);
+    expect(newSession.snapshot.bonusType).toBe('double_output');
+  });
+
+  // ── 56. B2-C: Escape key closes restart confirmation dialog without closing drawer ──
+  it('56. B2-C: Escape key closes restart confirmation dialog without closing drawer', () => {
+    const snapInv = { SlimeCondensate: 300, Mora: 50000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: snapInv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 50000,
+    });
+
+    useCraftingSessionStore.getState().recordResult({
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+    });
+
+    const liveInv = { SlimeCondensate: 500, Mora: 50000 };
+
+    render(<CraftingSessionDrawer liveInventory={liveInv} liveGrossRequirements={reqs} liveMora={50000} />);
+
+    fireEvent.click(screen.getByTestId('conflict-restart-btn'));
+    expect(screen.getByTestId('restart-confirm-dialog')).toBeInTheDocument();
+
+    // Press Escape
+    fireEvent.keyDown(window, { key: 'Escape' });
+
+    // Dialog is closed
+    expect(screen.queryByTestId('restart-confirm-dialog')).not.toBeInTheDocument();
+    // Drawer is still OPEN!
+    expect(useCraftingSessionStore.getState().isDrawerOpen).toBe(true);
   });
 });
 
