@@ -20,11 +20,16 @@ export default function Planner() {
   const tabsContainerRef = useRef(null);
   const [showInvalidDetails, setShowInvalidDetails] = useState(false);
   const [craftingMode, setCraftingMode] = useState('crafting-aware');
+  const [craftingBonusOptions, setCraftingBonusOptions] = useState({
+    enabled: false,
+    bonusType: 'double_output',
+  });
 
   const {
     totals,
     toFarm,
     craftingPlan,
+    bonusForecast,
     groupedBooksData,
     groupedWeaponMatsData,
     groupedGemstonesData,
@@ -34,7 +39,13 @@ export default function Planner() {
     groupedEliteEnemies,
     groupedCommonEnemies,
     remainingTotals
-  } = usePlannerData({ roster, trackedWeapons, inventory, craftingMode });
+  } = usePlannerData({
+    roster,
+    trackedWeapons,
+    inventory,
+    craftingMode,
+    craftingBonusOptions,
+  });
 
   const handleTabChange = useCallback((tabId) => {
     setSearchParams(prev => {
@@ -138,40 +149,125 @@ export default function Planner() {
             </div>
           </div>
 
-          {/* Crafting Mode Toggle */}
-          <div
-            className="flex items-center bg-[var(--surface)] p-1 rounded-xl border border-[var(--border)] shrink-0 self-start sm:self-auto"
-            role="group"
-            aria-label="Calculation Mode"
-          >
-            <button
-              type="button"
-              id="crafting-mode-aware-btn"
-              onClick={() => setCraftingMode('crafting-aware')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                craftingMode === 'crafting-aware'
-                  ? 'bg-[var(--primary)] text-white shadow-sm'
-                  : 'text-[var(--muted)] hover:text-white'
-              }`}
-              aria-pressed={craftingMode === 'crafting-aware'}
+          {/* Controls: Mode & Crafting Bonuses */}
+          <div className="flex items-center gap-2 flex-wrap shrink-0 self-start sm:self-auto">
+            {/* Crafting Mode Toggle */}
+            <div
+              className="flex items-center bg-[var(--surface)] p-1 rounded-xl border border-[var(--border)] shrink-0"
+              role="group"
+              aria-label="Calculation Mode"
             >
-              <span>🔨</span>
-              <span>Crafting-Aware</span>
-            </button>
-            <button
-              type="button"
-              id="crafting-mode-raw-btn"
-              onClick={() => setCraftingMode('raw')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                craftingMode === 'raw'
-                  ? 'bg-[var(--primary)] text-white shadow-sm'
-                  : 'text-[var(--muted)] hover:text-white'
-              }`}
-              aria-pressed={craftingMode === 'raw'}
-            >
-              <span>📦</span>
-              <span>Raw Shortages</span>
-            </button>
+              <button
+                type="button"
+                id="crafting-mode-aware-btn"
+                onClick={() => setCraftingMode('crafting-aware')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  craftingMode === 'crafting-aware'
+                    ? 'bg-[var(--primary)] text-white shadow-sm'
+                    : 'text-[var(--muted)] hover:text-white'
+                }`}
+                aria-pressed={craftingMode === 'crafting-aware'}
+              >
+                <span>🔨</span>
+                <span>Crafting-Aware</span>
+              </button>
+              <button
+                type="button"
+                id="crafting-mode-raw-btn"
+                onClick={() => setCraftingMode('raw')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  craftingMode === 'raw'
+                    ? 'bg-[var(--primary)] text-white shadow-sm'
+                    : 'text-[var(--muted)] hover:text-white'
+                }`}
+                aria-pressed={craftingMode === 'raw'}
+              >
+                <span>📦</span>
+                <span>Raw Shortages</span>
+              </button>
+            </div>
+
+            {/* Crafting Bonus Controls (Crafting-Aware mode only) */}
+            {craftingMode === 'crafting-aware' && (
+              <div
+                className="flex items-center gap-1.5 bg-[var(--surface)] p-1 rounded-xl border border-[var(--border)] shrink-0"
+                role="group"
+                aria-label="Crafting Bonus Options"
+              >
+                {/* Control 1: Include Crafting Bonuses */}
+                <button
+                  type="button"
+                  id="crafting-bonus-toggle-btn"
+                  onClick={() =>
+                    setCraftingBonusOptions((prev) => ({
+                      ...prev,
+                      enabled: !prev.enabled,
+                    }))
+                  }
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    craftingBonusOptions.enabled
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                      : 'text-[var(--muted)] hover:text-white'
+                  }`}
+                  aria-pressed={craftingBonusOptions.enabled}
+                  title="Include generic alchemy crafting bonuses (probabilistic forecast)"
+                >
+                  <span>🎲</span>
+                  <span>Include Crafting Bonuses</span>
+                </button>
+
+                {/* Control 2: Bonus Type (Visible only when Control 1 is enabled) */}
+                {craftingBonusOptions.enabled && (
+                  <div
+                    id="crafting-bonus-type-group"
+                    className="flex items-center gap-1 bg-black/20 p-0.5 rounded-lg border border-white/5"
+                    role="radiogroup"
+                    aria-label="Bonus Type"
+                  >
+                    <button
+                      type="button"
+                      id="crafting-bonus-type-double"
+                      role="radio"
+                      aria-checked={craftingBonusOptions.bonusType === 'double_output'}
+                      onClick={() =>
+                        setCraftingBonusOptions((prev) => ({
+                          ...prev,
+                          bonusType: 'double_output',
+                        }))
+                      }
+                      className={`px-2.5 py-1 rounded text-[11px] font-semibold transition-all cursor-pointer ${
+                        craftingBonusOptions.bonusType === 'double_output'
+                          ? 'bg-[var(--primary)] text-white shadow-sm'
+                          : 'text-[var(--muted)] hover:text-white'
+                      }`}
+                      title="10% chance to duplicate output"
+                    >
+                      10% Double
+                    </button>
+                    <button
+                      type="button"
+                      id="crafting-bonus-type-refund"
+                      role="radio"
+                      aria-checked={craftingBonusOptions.bonusType === 'ingredient_refund'}
+                      onClick={() =>
+                        setCraftingBonusOptions((prev) => ({
+                          ...prev,
+                          bonusType: 'ingredient_refund',
+                        }))
+                      }
+                      className={`px-2.5 py-1 rounded text-[11px] font-semibold transition-all cursor-pointer ${
+                        craftingBonusOptions.bonusType === 'ingredient_refund'
+                          ? 'bg-[var(--primary)] text-white shadow-sm'
+                          : 'text-[var(--muted)] hover:text-white'
+                      }`}
+                      title="25% chance to refund 1 consumed ingredient"
+                    >
+                      25% Refund
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -267,6 +363,9 @@ export default function Planner() {
         craftingMode={craftingMode}
         userMora={inventory?.['Mora'] ?? 0}
         progressionMora={remainingTotals.mora}
+        craftingBonusOptions={craftingBonusOptions}
+        bonusForecast={bonusForecast}
+        inventory={inventory}
       />
 
       {/* ── Grand Total Stats ── */}
@@ -288,18 +387,43 @@ export default function Planner() {
           value={formatNumber(remainingTotals.mora)}
           sub={
             craftingMode === 'crafting-aware' && remainingTotals.craftingMora > 0
-              ? `+ ${formatNumber(remainingTotals.craftingMora)} crafting fee`
+              ? (craftingBonusOptions.enabled && remainingTotals.estimatedMoraSavings > 0
+                ? `+ ~${formatNumber(remainingTotals.estimatedCraftingMora)} crafting fee (${bonusForecast?.sameDemandCovered ? 'saves' : 'fee diff:'} ~${formatNumber(remainingTotals.estimatedMoraSavings)})`
+                : `+ ${formatNumber(remainingTotals.craftingMora)} crafting fee`)
               : undefined
           }
           accent="#FAB632"
         />
         <PlannerStats icon={<img src="/CrownOfInsight.png" alt="Crowns Needed" className="w-5 h-5 object-contain drop-shadow-sm" />} label="Crowns Needed" value={remainingTotals.crowns} accent="#FBBF24"
           sub={remainingTotals.crowns > 0 ? 'Crown of Insight' : 'None needed'} />
-        <PlannerStats icon="🎒" label="Still to Farm" value={formatNumber(remainingTotals.sumItems)}
-          accent={toFarm.allDone ? '#4ADE80' : '#F97316'}
+        <PlannerStats
+          icon="🎒"
+          label={
+            craftingMode === 'crafting-aware' && craftingBonusOptions.enabled
+              ? 'Still to Farm (Est.)'
+              : 'Still to Farm'
+          }
+          value={
+            craftingMode === 'crafting-aware' && craftingBonusOptions.enabled
+              ? toFarm.likelyAllDone && !toFarm.allDone
+                ? '🎲 ~0'
+                : `≈${formatNumber(Math.round(remainingTotals.sumItems))}`
+              : formatNumber(remainingTotals.sumItems)
+          }
+          accent={
+            toFarm.allDone
+              ? '#4ADE80'
+              : (craftingMode === 'crafting-aware' && craftingBonusOptions.enabled && toFarm.likelyAllDone)
+              ? '#60A5FA'
+              : '#F97316'
+          }
           sub={
             toFarm.allDone
               ? (craftingMode === 'crafting-aware' && craftingPlan?.requiresCrafting ? '🔨 Covered by crafting!' : '✅ All stocked!')
+              : (craftingMode === 'crafting-aware' && craftingBonusOptions.enabled && toFarm.likelyAllDone)
+              ? `🎲 Likely covered with bonuses! (Guaranteed: ${formatNumber(remainingTotals.craftingAdjustedSumItems)})`
+              : (craftingMode === 'crafting-aware' && craftingBonusOptions.enabled && remainingTotals.craftingAdjustedSumItems !== remainingTotals.sumItems)
+              ? `Est. ≈${formatNumber(Math.round(remainingTotals.sumItems))} left (Guaranteed: ${formatNumber(remainingTotals.craftingAdjustedSumItems)})`
               : `${formatNumber(remainingTotals.sumItems)} materials left`
           }
         />
@@ -321,6 +445,8 @@ export default function Planner() {
         groupedCommonEnemies={groupedCommonEnemies}
         craftingMode={craftingMode}
         craftingPlan={craftingPlan}
+        craftingBonusOptions={craftingBonusOptions}
+        bonusForecast={bonusForecast}
       />
 
       {/* ── Inventory link ── */}

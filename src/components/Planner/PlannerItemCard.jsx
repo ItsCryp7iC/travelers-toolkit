@@ -19,25 +19,53 @@ export const RARITY_BORDERS = {
   1: 'var(--rarity-1)',
 };
 
-function ProgressBar({ owned, required, toFarm, accent }) {
-  const isCovered = toFarm === 0;
-  const pct = required > 0 ? (isCovered ? 100 : Math.min(100, Math.round((owned / required) * 100))) : 100;
+function ProgressBar({ owned, required, toFarm, guaranteedToFarm, accent }) {
+  const isGuaranteedCovered = (typeof guaranteedToFarm === 'number' ? guaranteedToFarm === 0 : toFarm === 0);
+  const isLikelyCovered = !isGuaranteedCovered && toFarm === 0;
+  const pct = required > 0
+    ? (isGuaranteedCovered ? 100 : Math.min(100, Math.round((owned / required) * 100)))
+    : 100;
   return (
     <div className="flex items-center gap-2 mt-1.5">
       <div className="flex-1 h-1.5 rounded-full bg-[var(--elevated)] overflow-hidden">
-        <div className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, background: isCovered ? '#4ADE80' : accent || 'var(--gold)' }} />
+        <div
+          className="h-full rounded-full transition-all duration-500"
+          style={{
+            width: `${pct}%`,
+            background: isGuaranteedCovered ? '#4ADE80' : isLikelyCovered ? '#60A5FA' : accent || 'var(--gold)',
+          }}
+        />
       </div>
-      <span className="text-xs font-bold tabular-nums"
-        style={{ color: isCovered ? '#4ADE80' : 'var(--muted)' }}>
+      <span
+        className="text-xs font-bold tabular-nums"
+        style={{ color: isGuaranteedCovered ? '#4ADE80' : isLikelyCovered ? '#60A5FA' : 'var(--muted)' }}
+      >
         {pct}%
       </span>
     </div>
-  )
+  );
 }
 
 export default function PlannerItemCard({ item, accent }) {
   const rarityBg = RARITY_COLORS[item.rarity || 3] || RARITY_COLORS[3];
+  const isGuaranteedCovered =
+    typeof item.guaranteedToFarm === 'number' ? item.guaranteedToFarm === 0 : item.toFarm === 0;
+  const isLikelyCovered = !isGuaranteedCovered && item.toFarm === 0;
+  const isEstimatedDiff =
+    typeof item.guaranteedToFarm === 'number' && item.toFarm !== item.guaranteedToFarm;
+
+  const craftQuantity = item.craftQuantity || 0;
+  const isOptimized = Boolean(
+    (item.isBonusActive && item.optimizedStep) ||
+    (item.expectedCrafts !== undefined && item.expectedCrafts !== craftQuantity)
+  );
+  const displayCraftCount = isOptimized
+    ? Math.round(item.expectedCrafts ?? craftQuantity)
+    : craftQuantity;
+  const expectedOutput = isOptimized
+    ? (item.expectedCraftQuantity ?? craftQuantity)
+    : craftQuantity;
+  const hasCrafting = isOptimized ? displayCraftCount > 0 : craftQuantity > 0;
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors relative overflow-hidden group">
@@ -63,23 +91,85 @@ export default function PlannerItemCard({ item, accent }) {
           <span className="text-xs font-semibold text-[var(--text)] truncate mr-2" title={formatItemName(item.name)}>{formatItemName(item.name)}</span>
           <span
             className="font-bold text-xs shrink-0"
-            style={{ color: item.toFarm === 0 ? '#4ADE80' : (accent || 'var(--gold)') }}
-            title={item.toFarm === 0 ? 'All stocked' : `To Farm: ${(item.toFarm || 0).toLocaleString()}`}
+            style={{
+              color: isGuaranteedCovered
+                ? '#4ADE80'
+                : isLikelyCovered
+                ? '#60A5FA'
+                : accent || 'var(--gold)',
+            }}
+            title={
+              isGuaranteedCovered
+                ? 'All stocked'
+                : isLikelyCovered
+                ? `Guaranteed shortage: ${item.guaranteedToFarm} | Likely covered with bonus`
+                : isEstimatedDiff
+                ? `Est. To Farm: ${item.toFarm} (Guaranteed: ${item.guaranteedToFarm})`
+                : `To Farm: ${(item.toFarm || 0).toLocaleString()}`
+            }
           >
-            {item.toFarm === 0 ? '✅' : `×${formatPlannerQuantity(item.toFarm)}`}
+            {isGuaranteedCovered
+              ? '✅'
+              : isLikelyCovered
+              ? '🎲 ~0'
+              : isEstimatedDiff
+              ? `×~${formatPlannerQuantity(item.toFarm)}`
+              : `×${formatPlannerQuantity(item.toFarm)}`}
           </span>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-[var(--muted)] mb-1 flex-wrap">
           <span title={`Need: ${(item.required || 0).toLocaleString()}`}>Need: <b className="text-[var(--text)] font-semibold">{formatPlannerQuantity(item.required)}</b></span>
           <span title={`Have: ${(item.owned || 0).toLocaleString()}`}>Have: <b className="font-semibold" style={{ color: item.owned > 0 ? '#4ADE80' : 'var(--muted)' }}>{formatPlannerQuantity(item.owned)}</b></span>
-          {item.craftQuantity > 0 && (
-            <span className="text-amber-400 font-semibold" title={`Recommended craft: ${(item.craftQuantity || 0).toLocaleString()}`}>
-              Craft: <b className="text-amber-300 font-bold">+{formatPlannerQuantity(item.craftQuantity)}</b>
+          {hasCrafting && (
+            <span
+              className="text-amber-400 font-semibold"
+              title={
+                isOptimized
+                  ? `Est. craft operations: ≈${displayCraftCount.toLocaleString()} (Guaranteed: ${craftQuantity.toLocaleString()}) | Est. output: ~${Math.round(expectedOutput).toLocaleString()}`
+                  : `Recommended craft: ${craftQuantity.toLocaleString()}`
+              }
+            >
+              Craft:{' '}
+              <b className="text-amber-300 font-bold">
+                {isOptimized ? `≈${formatPlannerQuantity(displayCraftCount)}` : `+${formatPlannerQuantity(craftQuantity)}`}
+              </b>
             </span>
           )}
-          <span title={`To Farm: ${(item.toFarm || 0).toLocaleString()}`}>To Farm: <b className="font-semibold" style={{ color: item.toFarm > 0 ? accent || 'var(--gold)' : 'var(--muted)' }}>{formatPlannerQuantity(item.toFarm)}</b></span>
+          <span
+            title={
+              isEstimatedDiff
+                ? `Est. To Farm: ${item.toFarm} (Guaranteed: ${item.guaranteedToFarm})`
+                : `To Farm: ${(item.toFarm || 0).toLocaleString()}`
+            }
+          >
+            To Farm:{' '}
+            <b
+              className="font-semibold"
+              style={{
+                color: isGuaranteedCovered
+                  ? 'var(--muted)'
+                  : isLikelyCovered
+                  ? '#60A5FA'
+                  : item.toFarm > 0
+                  ? accent || 'var(--gold)'
+                  : 'var(--muted)',
+              }}
+            >
+              {isLikelyCovered
+                ? '🎲 ~0'
+                : isEstimatedDiff
+                ? `~${formatPlannerQuantity(item.toFarm)}`
+                : formatPlannerQuantity(item.toFarm)}
+            </b>
+          </span>
         </div>
-        <ProgressBar owned={item.owned} required={item.required} toFarm={item.toFarm} accent={accent} />
+        <ProgressBar
+          owned={item.owned}
+          required={item.required}
+          toFarm={item.toFarm}
+          guaranteedToFarm={item.guaranteedToFarm}
+          accent={accent}
+        />
       </div>
     </div>
   )

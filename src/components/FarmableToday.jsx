@@ -44,7 +44,17 @@ const getScheduleWeight = (familyData) => {
   return 99;
 }
 
-function DomainCard({ domainName, familyObj, accent, globalCosts, inventory, craftingMode = 'crafting-aware', craftingPlan = null }) {
+function DomainCard({
+  domainName,
+  familyObj,
+  accent,
+  globalCosts,
+  inventory,
+  craftingMode = 'crafting-aware',
+  craftingPlan = null,
+  craftingBonusOptions = null,
+  bonusForecast = null,
+}) {
   const { familyName, familyData, items, neededBy } = familyObj;
 
   return (
@@ -72,17 +82,35 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory, cra
           const adjustedShortage = craftingPlan?.adjustedShortages?.[tier.id] !== undefined
             ? craftingPlan.adjustedShortages[tier.id]
             : directShortage;
-          const toFarm = craftingMode === 'raw' ? directShortage : adjustedShortage;
+          const isBonusActive = craftingMode === 'crafting-aware' && Boolean(craftingBonusOptions?.enabled);
+          const expectedShortage =
+            isBonusActive && bonusForecast?.expectedShortages?.[tier.id] !== undefined
+              ? bonusForecast.expectedShortages[tier.id]
+              : adjustedShortage;
+          const toFarm = craftingMode === 'raw' ? directShortage : (isBonusActive ? expectedShortage : adjustedShortage);
           const craftStep = craftingPlan?.craftingSteps?.find((s) => s.outputItemId === tier.id);
           const craftQuantity = (craftingMode === 'crafting-aware' && craftStep)
             ? craftStep.totalOutputProduced
             : 0;
+          const optStep = isBonusActive
+            ? bonusForecast?.optimizedSteps?.find((s) => s.outputItemId === tier.id)
+            : null;
+          const isOptimized = Boolean(isBonusActive && optStep);
+          const displayCraftCount = isOptimized
+            ? Math.round(optStep.expectedCrafts ?? craftQuantity)
+            : craftQuantity;
+          const expectedOutput = isOptimized
+            ? (optStep.expectedOutput ?? craftQuantity)
+            : craftQuantity;
+          const hasCrafting = craftingMode === 'crafting-aware' && (isOptimized ? displayCraftCount > 0 : craftQuantity > 0);
           
           if (required === 0 && owned === 0) return null;
 
           const isCovered = craftingMode === 'crafting-aware'
-            ? toFarm === 0
+            ? adjustedShortage === 0
             : (required > 0 && owned >= required);
+          const isLikelyCovered = isBonusActive && adjustedShortage > 0 && expectedShortage === 0;
+
           const percent = required > 0
             ? (isCovered ? 100 : Math.min(100, (owned / required) * 100))
             : (owned > 0 ? 100 : 0);
@@ -107,16 +135,63 @@ function DomainCard({ domainName, familyObj, accent, globalCosts, inventory, cra
                 <div className="flex items-center gap-2.5 sm:gap-3 text-[11px] sm:text-xs shrink-0 self-end sm:self-auto pl-7 sm:pl-0 flex-wrap">
                   <span className="text-[var(--muted)]" title={`Need: ${(required || 0).toLocaleString()}`}>Need: <span className="font-bold text-[var(--text)]">{formatPlannerQuantity(required)}</span></span>
                   <span className="text-[var(--muted)]" title={`Have: ${(owned || 0).toLocaleString()}`}>Have: <span className="text-[var(--text)] font-bold">{formatPlannerQuantity(owned)}</span></span>
-                  {craftingMode === 'crafting-aware' && craftQuantity > 0 && (
-                    <span className="text-amber-400 font-semibold" title={`Recommended craft: ${craftQuantity.toLocaleString()}`}>
-                      Craft: <span className="font-bold text-amber-300">+{formatPlannerQuantity(craftQuantity)}</span>
+                  {hasCrafting && (
+                    <span
+                      className="text-amber-400 font-semibold"
+                      title={
+                        isOptimized
+                          ? `Est. craft operations: ≈${displayCraftCount.toLocaleString()} (Guaranteed: ${craftQuantity.toLocaleString()}) | Est. output: ~${Math.round(expectedOutput).toLocaleString()}`
+                          : `Recommended craft: ${craftQuantity.toLocaleString()}`
+                      }
+                    >
+                      Craft:{' '}
+                      <span className="font-bold text-amber-300">
+                        {isOptimized
+                          ? `≈${formatPlannerQuantity(displayCraftCount)}`
+                          : `+${formatPlannerQuantity(craftQuantity)}`}
+                      </span>
                     </span>
                   )}
-                  <span className="text-[var(--muted)]" title={`To Farm: ${(toFarm || 0).toLocaleString()}`}>To Farm: <span className="font-bold" style={{ color: toFarm > 0 ? accent : 'var(--muted)' }}>{formatPlannerQuantity(toFarm)}</span></span>
+                  <span
+                    className="text-[var(--muted)]"
+                    title={
+                      isBonusActive && expectedShortage !== adjustedShortage
+                        ? `Est. To Farm: ${expectedShortage} (Guaranteed: ${adjustedShortage})`
+                        : `To Farm: ${(toFarm || 0).toLocaleString()}`
+                    }
+                  >
+                    To Farm:{' '}
+                    <span
+                      className="font-bold"
+                      style={{
+                        color: isCovered
+                          ? 'var(--muted)'
+                          : isLikelyCovered
+                          ? '#60A5FA'
+                          : toFarm > 0
+                          ? accent
+                          : 'var(--muted)',
+                      }}
+                    >
+                      {isLikelyCovered ? (
+                        <span title={`Guaranteed shortage: ${adjustedShortage}`}>🎲 ~0</span>
+                      ) : isBonusActive && expectedShortage !== adjustedShortage ? (
+                        <span title={`Guaranteed shortage: ${adjustedShortage}`}>~{formatPlannerQuantity(toFarm)}</span>
+                      ) : (
+                        formatPlannerQuantity(toFarm)
+                      )}
+                    </span>
+                  </span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
-                <div className="absolute top-0 left-0 h-full rounded-full transition-all" style={{ width: `${percent}%`, background: isCovered ? '#4ADE80' : rarityColor }} />
+                <div
+                  className="absolute top-0 left-0 h-full rounded-full transition-all"
+                  style={{
+                    width: `${percent}%`,
+                    background: isCovered ? '#4ADE80' : isLikelyCovered ? '#60A5FA' : rarityColor,
+                  }}
+                />
               </div>
             </div>
           )
@@ -224,7 +299,12 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
   )
 }
 
-export default function FarmableToday({ craftingMode = 'crafting-aware', craftingPlan = null }) {
+export default function FarmableToday({
+  craftingMode = 'crafting-aware',
+  craftingPlan = null,
+  craftingBonusOptions = null,
+  bonusForecast = null,
+}) {
   const roster = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const inventory = useStore((s) => s.inventory)
@@ -617,6 +697,8 @@ export default function FarmableToday({ craftingMode = 'crafting-aware', craftin
                         inventory={inventory}
                         craftingMode={craftingMode}
                         craftingPlan={activeCraftingPlan}
+                        craftingBonusOptions={craftingBonusOptions}
+                        bonusForecast={bonusForecast}
                       />
                   ))
                 ))}

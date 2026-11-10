@@ -23,6 +23,8 @@ export default function PlannerTabContent({
   groupedCommonEnemies,
   craftingMode = 'crafting-aware',
   craftingPlan = null,
+  craftingBonusOptions = null,
+  bonusForecast = null,
 }) {
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -84,6 +86,8 @@ export default function PlannerTabContent({
                         itemFolder={itemFolder}
                         craftingMode={craftingMode}
                         craftingPlan={craftingPlan}
+                        craftingBonusOptions={craftingBonusOptions}
+                        bonusForecast={bonusForecast}
                       />
                     ))
                 ))}
@@ -138,6 +142,8 @@ export default function PlannerTabContent({
                         itemFolder={itemFolder}
                         craftingMode={craftingMode}
                         craftingPlan={craftingPlan}
+                        craftingBonusOptions={craftingBonusOptions}
+                        bonusForecast={bonusForecast}
                       />
                     );
                   })}
@@ -166,6 +172,8 @@ export default function PlannerTabContent({
               itemFolder={itemFolder}
               craftingMode={craftingMode}
               craftingPlan={craftingPlan}
+              craftingBonusOptions={craftingBonusOptions}
+              bonusForecast={bonusForecast}
             />
           ))}
       </div>
@@ -176,7 +184,7 @@ export default function PlannerTabContent({
     <div className="animate-fade-in">
       {activeTab === 'daily_action' && (
         <>
-          {toFarm.allDone && (
+          {toFarm.allDone ? (
             <div className="rounded-2xl border mb-8 px-6 py-5 flex items-center gap-4"
               style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.3)' }}>
               <span className="text-3xl">🎉</span>
@@ -193,8 +201,26 @@ export default function PlannerTabContent({
                 </p>
               </div>
             </div>
-          )}
-          <FarmableToday craftingMode={craftingMode} craftingPlan={craftingPlan} />
+          ) : toFarm.likelyAllDone ? (
+            <div className="rounded-2xl border mb-8 px-6 py-5 flex items-center gap-4"
+              style={{ background: 'rgba(96,165,250,0.08)', borderColor: 'rgba(96,165,250,0.3)' }}>
+              <span className="text-3xl">🎲</span>
+              <div>
+                <p className="font-bold text-lg text-blue-400">
+                  Materials likely covered with crafting bonuses!
+                </p>
+                <p className="text-sm text-[var(--muted)] mt-0.5">
+                  Under the active crafting bonus forecast, your current inventory has a high probability of covering all remaining shortages.
+                </p>
+              </div>
+            </div>
+          ) : null}
+          <FarmableToday
+            craftingMode={craftingMode}
+            craftingPlan={craftingPlan}
+            craftingBonusOptions={craftingBonusOptions}
+            bonusForecast={bonusForecast}
+          />
         </>
       )}
 
@@ -217,6 +243,8 @@ export default function PlannerTabContent({
               itemFolder={config.folder}
               craftingMode={craftingMode}
               craftingPlan={craftingPlan}
+              craftingBonusOptions={craftingBonusOptions}
+              bonusForecast={bonusForecast}
             />
           ))}
         </div>
@@ -294,6 +322,8 @@ export default function PlannerTabContent({
                       itemFolder="elite_enhancement_materials"
                       craftingMode={craftingMode}
                       craftingPlan={craftingPlan}
+                      craftingBonusOptions={craftingBonusOptions}
+                      bonusForecast={bonusForecast}
                     />
                   ))}
               </div>
@@ -324,6 +354,8 @@ export default function PlannerTabContent({
                       itemFolder="common_enhancement_materials"
                       craftingMode={craftingMode}
                       craftingPlan={craftingPlan}
+                      craftingBonusOptions={craftingBonusOptions}
+                      bonusForecast={bonusForecast}
                     />
                   ))}
               </div>

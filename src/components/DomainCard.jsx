@@ -20,7 +20,9 @@ export default function DomainCard({
   inventory,
   itemFolder = "weapon_ascension_materials",
   craftingMode = 'crafting-aware',
-  craftingPlan = null
+  craftingPlan = null,
+  craftingBonusOptions = null,
+  bonusForecast = null,
 }) {
   const [expandedCrafting, setExpandedCrafting] = useState(false);
   const { familyName, familyData, items, neededBy } = familyObj;
@@ -30,7 +32,7 @@ export default function DomainCard({
 
   if (!familyData || !familyData.tiers) return null;
 
-  // Resolve family plan for craftable families
+  // Resolve family plan and bonus forecast for craftable families
   const familyKeyCandidate = familyData?.familyId || familyObj.familyId || familyObj.familyKey;
   let resolvedFamilyId = familyKeyCandidate;
   if (!resolvedFamilyId && familyData.tiers?.[0]?.id) {
@@ -38,6 +40,11 @@ export default function DomainCard({
     if (fam) resolvedFamilyId = fam.familyId;
   }
   const familyPlan = craftingPlan?.families?.[resolvedFamilyId] || familyObj.craftingPlan || null;
+  const familyForecast = bonusForecast?.families?.[resolvedFamilyId] || null;
+  const isBonusActive =
+    craftingMode === 'crafting-aware' &&
+    Boolean(craftingBonusOptions?.enabled) &&
+    Boolean(familyForecast?.isEligible);
 
   // Compute family-level crafting status pill
   let familyStatusPill = null;
@@ -58,9 +65,20 @@ export default function DomainCard({
         border: 'rgba(78, 201, 176, 0.3)',
         icon: '🔨'
       };
+    } else if (isBonusActive && familyForecast?.isLikelyCovered) {
+      const bonusName = craftingBonusOptions.bonusType === 'ingredient_refund' ? '25% Refund' : '10% Double';
+      familyStatusPill = {
+        label: `Likely covered with ${bonusName}`,
+        bg: 'rgba(96, 165, 250, 0.15)',
+        text: '#60A5FA',
+        border: 'rgba(96, 165, 250, 0.3)',
+        icon: '🎲'
+      };
     } else if (familyPlan.requiresCrafting && !familyPlan.allCoveredByCrafting) {
       familyStatusPill = {
-        label: 'Farming required',
+        label: isBonusActive && familyForecast && familyForecast.totalExpectedShortage < familyPlan.totalShortage
+          ? 'Farming reduced with bonus'
+          : 'Farming required',
         bg: 'rgba(249, 115, 22, 0.15)',
         text: '#F97316',
         border: 'rgba(249, 115, 22, 0.3)',
@@ -107,8 +125,18 @@ export default function DomainCard({
           }
           const owned = inventory[tier.id] ?? 0;
           const directShortage = Math.max(0, required - owned);
-          const adjustedShortage = itemObj?.craftingAdjustedToFarm ?? (familyPlan?.adjustedShortages?.[tier.id] ?? directShortage);
-          const toFarm = craftingMode === 'raw' ? directShortage : (itemObj?.toFarm ?? adjustedShortage);
+          const guaranteedShortage =
+            itemObj?.guaranteedToFarm ??
+            itemObj?.craftingAdjustedToFarm ??
+            (familyPlan?.adjustedShortages?.[tier.id] ?? directShortage);
+          const expectedShortage =
+            isBonusActive && familyForecast?.expectedShortages?.[tier.id] !== undefined
+              ? familyForecast.expectedShortages[tier.id]
+              : (itemObj?.expectedShortage ?? guaranteedShortage);
+
+          const toFarm = craftingMode === 'raw'
+            ? directShortage
+            : (isBonusActive ? expectedShortage : guaranteedShortage);
 
           let craftQuantity = 0;
           if (craftingMode === 'crafting-aware') {
@@ -120,11 +148,26 @@ export default function DomainCard({
             }
           }
 
+          const optStep = isBonusActive
+            ? (familyForecast?.optimizedSteps?.find((s) => s.outputItemId === tier.id) || itemObj?.optimizedStep || null)
+            : null;
+          const isOptimized = Boolean(isBonusActive && optStep);
+          const displayCraftCount = isOptimized
+            ? Math.round(optStep.expectedCrafts ?? craftQuantity)
+            : craftQuantity;
+          const expectedOutput = isOptimized
+            ? (optStep.expectedOutput ?? craftQuantity)
+            : craftQuantity;
+          const hasCrafting = craftingMode === 'crafting-aware' && (isOptimized ? displayCraftCount > 0 : craftQuantity > 0);
+
           if (required === 0 && owned === 0 && familyObj.type !== 'currency') return null;
 
           const isFullyCovered = craftingMode === 'crafting-aware'
-            ? toFarm === 0
+            ? guaranteedShortage === 0
             : (required > 0 && owned >= required);
+          const isLikelyCoveredTier =
+            isBonusActive && guaranteedShortage > 0 && expectedShortage === 0;
+
           const percent = required > 0
             ? (isFullyCovered ? 100 : Math.min(100, (owned / required) * 100))
             : (owned > 0 ? 100 : 0);
@@ -153,18 +196,67 @@ export default function DomainCard({
                   <span className="text-[var(--muted)]" title={`Have: ${(owned || 0).toLocaleString()}`}>
                     Have: <span className="text-[var(--text)] font-bold">{formatPlannerQuantity(owned)}</span>
                   </span>
-                  {craftingMode === 'crafting-aware' && craftQuantity > 0 && (
-                    <span className="text-amber-400 font-semibold" title={`Recommended craft: ${craftQuantity.toLocaleString()}`}>
-                      Craft: <span className="font-bold text-amber-300">+{formatPlannerQuantity(craftQuantity)}</span>
+                  {hasCrafting && (
+                    <span
+                      className="text-amber-400 font-semibold"
+                      title={
+                        isOptimized
+                          ? `Est. craft operations: ≈${displayCraftCount.toLocaleString()} (Guaranteed: ${craftQuantity.toLocaleString()}) | Est. output: ~${Math.round(expectedOutput).toLocaleString()}`
+                          : `Recommended craft: ${craftQuantity.toLocaleString()}`
+                      }
+                    >
+                      Craft:{' '}
+                      <span className="font-bold text-amber-300">
+                        {isOptimized
+                          ? `≈${formatPlannerQuantity(displayCraftCount)}`
+                          : `+${formatPlannerQuantity(craftQuantity)}`}
+                      </span>
                     </span>
                   )}
-                  <span className="text-[var(--muted)]" title={`To Farm: ${(toFarm || 0).toLocaleString()}`}>
-                    To Farm: <span className="font-bold" style={{ color: toFarm > 0 ? accent : 'var(--muted)' }}>{formatPlannerQuantity(toFarm)}</span>
+                  <span
+                    className="text-[var(--muted)]"
+                    title={
+                      isBonusActive && expectedShortage !== guaranteedShortage
+                        ? `Est. To Farm: ${expectedShortage} (Guaranteed: ${guaranteedShortage})`
+                        : `To Farm: ${(toFarm || 0).toLocaleString()}`
+                    }
+                  >
+                    To Farm:{' '}
+                    <span
+                      className="font-bold"
+                      style={{
+                        color: isFullyCovered
+                          ? 'var(--muted)'
+                          : isLikelyCoveredTier
+                          ? '#60A5FA'
+                          : toFarm > 0
+                          ? accent
+                          : 'var(--muted)',
+                      }}
+                    >
+                      {isLikelyCoveredTier ? (
+                        <span title={`Guaranteed shortage: ${guaranteedShortage}`}>🎲 ~0</span>
+                      ) : isBonusActive && expectedShortage !== guaranteedShortage ? (
+                        <span title={`Guaranteed shortage: ${guaranteedShortage}`}>~{formatPlannerQuantity(toFarm)}</span>
+                      ) : (
+                        formatPlannerQuantity(toFarm)
+                      )}
+                    </span>
                   </span>
                 </div>
               </div>
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
-                <div className="absolute top-0 left-0 h-full rounded-full transition-all" style={{ width: `${percent}%`, background: isFullyCovered ? '#4ADE80' : rarityColor }} />
+                <div
+                  className="absolute top-0 left-0 h-full rounded-full transition-all"
+                  style={{
+                    width: `${percent}%`,
+                    background: isFullyCovered
+                      ? '#4ADE80'
+                      : isLikelyCoveredTier
+                      ? '#60A5FA'
+                      : rarityColor,
+                  }}
+                />
               </div>
             </div>
           )
@@ -185,30 +277,111 @@ export default function DomainCard({
               <span>Crafting Instructions ({familyPlan.steps.length} step{familyPlan.steps.length !== 1 ? 's' : ''})</span>
             </span>
             <span className="text-[11px] text-[var(--muted)] flex items-center gap-1">
-              <span>Fee: {(familyPlan.craftingMora || 0).toLocaleString()} Mora</span>
+              <span>
+                Fee:{' '}
+                {isBonusActive && familyForecast && familyForecast.estimatedCraftingMora !== familyPlan.craftingMora
+                  ? `~${Math.round(familyForecast.estimatedCraftingMora).toLocaleString()} Mora`
+                  : `${(familyPlan.craftingMora || 0).toLocaleString()} Mora`}
+              </span>
               <span>{expandedCrafting ? '▲' : '▼'}</span>
             </span>
           </button>
 
           {expandedCrafting && (
             <div className="mt-2 space-y-2 text-xs bg-black/25 p-2.5 rounded-lg border border-white/5">
-              {familyPlan.steps.map((step, idx) => (
-                <div key={step.recipeId} className="flex flex-col gap-0.5 border-b border-white/5 last:border-b-0 pb-1.5 last:pb-0">
-                  <div className="flex items-center justify-between font-medium text-gray-200">
-                    <span>
-                      {idx + 1}. Craft <b className="text-emerald-400">{step.totalOutputProduced.toLocaleString()}</b> {formatItemName(step.outputItemName)}
-                    </span>
-                    <span className="text-amber-300 text-[11px]">{(step.totalMoraCost || 0).toLocaleString()} Mora</span>
+              {familyPlan.steps.map((step, idx) => {
+                const optStep = isBonusActive && familyForecast?.optimizedSteps
+                  ? familyForecast.optimizedSteps.find((s) => s.recipeId === step.recipeId)
+                  : null;
+                const showBonus = Boolean(isBonusActive && optStep);
+
+                const isRefund = craftingBonusOptions?.bonusType === 'ingredient_refund';
+                const inputQtyPerCraft = optStep?.inputQty || 3;
+                const initialBatchCount = optStep?.suggestedInitialBatch || 0;
+                const initialIngredients = optStep?.firstBatchIngredients ?? (initialBatchCount * inputQtyPerCraft);
+                const initialMora = optStep?.firstBatchMora ?? (initialBatchCount * (optStep?.moraCostPerCraft || (step.totalMoraCost / (step.count || 1))));
+
+                const priorStepIndex = familyPlan.steps.findIndex(
+                  (s, sIdx) => sIdx < idx && s.outputItemId === step.inputItemId
+                );
+                const effectivePriorIndex = optStep?.priorStepIndex ?? (priorStepIndex !== -1 ? priorStepIndex : null);
+                const isConditional = Boolean(optStep?.isConditional || (priorStepIndex !== -1 && (inventory?.[step.inputItemId] ?? 0) < initialIngredients));
+
+                return (
+                  <div key={step.recipeId} className="flex flex-col gap-1 border-b border-white/5 last:border-b-0 pb-2 last:pb-0">
+                    <div className="flex items-center justify-between font-medium text-gray-200">
+                      <span>
+                        {idx + 1}. Craft{' '}
+                        <b className="text-emerald-400">
+                          {showBonus ? `~${Math.round(optStep.expectedOutput).toLocaleString()}` : step.totalOutputProduced.toLocaleString()}
+                        </b>{' '}
+                        {formatItemName(step.outputItemName)}
+                        {showBonus && (
+                          <span className="text-[10px] text-blue-300 font-normal ml-1">
+                            (≈{Math.round(optStep.expectedCrafts).toLocaleString()} crafts)
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-amber-300 text-[11px]">
+                        {showBonus
+                          ? `Est. fee ~${formatPlannerQuantity(optStep.expectedMoraCost)} Mora`
+                          : `${(step.totalMoraCost || 0).toLocaleString()} Mora`}
+                      </span>
+                    </div>
+
+                    {showBonus ? (
+                      <div className="text-[11px] space-y-0.5">
+                        <p className="text-amber-200/90 font-medium">
+                          • {isConditional && effectivePriorIndex !== null
+                            ? `Suggested 1st batch (after Step ${effectivePriorIndex + 1}): Up to ${initialBatchCount.toLocaleString()}× crafts (uses ${initialIngredients.toLocaleString()}× ${formatItemName(step.inputItemName)}, ${formatPlannerQuantity(initialMora)} Mora)`
+                            : `Suggested 1st batch: Craft ${initialBatchCount.toLocaleString()}× (uses ${initialIngredients.toLocaleString()}× ${formatItemName(step.inputItemName)}, ${formatPlannerQuantity(initialMora)} Mora)`}
+                        </p>
+                        <p className="text-[var(--muted)]">
+                          • Est. full plan: ~{Math.round(optStep.expectedGrossInputConsumed).toLocaleString()}× {formatItemName(step.inputItemName)} consumed
+                          {isRefund && optStep.expectedIngredientRefunds > 0 && ` (net ~${Math.round(optStep.expectedNetInputConsumed).toLocaleString()})`}
+                          {' '}(Baseline: {step.count.toLocaleString()} crafts)
+                        </p>
+                        {isConditional && effectivePriorIndex !== null && (
+                          <p className="text-[10px] text-amber-300/90 italic">
+                            *Check your actual {formatItemName(step.inputItemName)} after Step {effectivePriorIndex + 1}. Bonus results may change this limit.*
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-[11px] text-[var(--muted)]">
+                        Use {step.totalInputConsumed.toLocaleString()}× {formatItemName(step.inputItemName)}
+                      </p>
+                    )}
                   </div>
-                  <p className="text-[11px] text-[var(--muted)]">
-                    Use {step.totalInputConsumed.toLocaleString()} {formatItemName(step.inputItemName)}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
 
               <div className="pt-1.5 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-[var(--muted)]">
-                <span>Total Fee: <b className="text-amber-300">{(familyPlan.craftingMora || 0).toLocaleString()} Mora</b></span>
+                <span>
+                  Total Fee:{' '}
+                  <b className="text-amber-300">
+                    {isBonusActive && familyForecast && familyForecast.estimatedCraftingMora !== familyPlan.craftingMora
+                      ? `~${Math.round(familyForecast.estimatedCraftingMora).toLocaleString()} Mora (Baseline: ${(familyPlan.craftingMora || 0).toLocaleString()} Mora)`
+                      : `${(familyPlan.craftingMora || 0).toLocaleString()} Mora`}
+                  </b>
+                </span>
                 {(() => {
+                  if (isBonusActive && familyForecast?.expectedLeftovers) {
+                    const estLeftovers = Object.entries(familyForecast.expectedLeftovers)
+                      .filter(([_, qty]) => qty > 0)
+                      .map(([id, qty]) => `${Math.round(qty).toLocaleString()} ${formatItemName(familyData.tiers.find((t) => t.id === id)?.name || id)}`);
+                    if (estLeftovers.length === 0) return null;
+                    return (
+                      <span className="text-teal-300">
+                        Est. leftover: {estLeftovers.join(', ')}
+                        {familyForecast.estimatedMoraDifference > 0 && (
+                          <span className="text-blue-300 ml-1">
+                            ({familyForecast.sameDemandCovered ? 'saves' : 'fee diff:'} ~{Math.round(familyForecast.estimatedMoraDifference).toLocaleString()} Mora)
+                          </span>
+                        )}
+                      </span>
+                    );
+                  }
                   const leftovers = Object.entries(familyPlan.projectedInventory || {})
                     .filter(([_, qty]) => qty > 0)
                     .map(([id, qty]) => `${qty.toLocaleString()} ${formatItemName(familyData.tiers.find((t) => t.id === id)?.name || id)}`);

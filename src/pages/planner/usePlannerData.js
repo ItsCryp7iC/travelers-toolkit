@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { aggregateRosterCosts, getForgingCosts, computeToFarm } from '../../utils/aggregator';
 import weaponForgingData from '../../data/weapon_forging.json';
 import { computeCraftingPlan } from '../../utils/craftingEngine';
+import { forecastCraftingPlan } from '../../utils/craftingBonusForecast';
 import { isMaterialCraftable, getFamilyForMaterial } from '../../data/craftingRecipes';
 import {
   groupTalentBooks,
@@ -17,29 +18,53 @@ import {
 /**
  * Augments a toFarm dataset with crafting-adjusted shortages and metadata.
  */
-function enhanceToFarm(baseToFarm, craftingPlan, mode) {
+function enhanceToFarm(baseToFarm, craftingPlan, mode, craftingBonusOptions, bonusForecast) {
   if (!baseToFarm) return baseToFarm;
+
+  const isBonusActive = mode === 'crafting-aware' && Boolean(craftingBonusOptions?.enabled);
 
   const enhanceItem = (item) => {
     if (!item) return item;
     const rawShortage = typeof item.rawToFarm === 'number' ? item.rawToFarm : item.toFarm;
-    const adjustedShortage = craftingPlan.adjustedShortages[item.name] !== undefined
+    const guaranteedShortage = craftingPlan.adjustedShortages[item.name] !== undefined
       ? craftingPlan.adjustedShortages[item.name]
       : rawShortage;
-    const activeToFarm = mode === 'raw' ? rawShortage : adjustedShortage;
+
+    const expectedShortage = (isBonusActive && bonusForecast?.expectedShortages?.[item.name] !== undefined)
+      ? bonusForecast.expectedShortages[item.name]
+      : guaranteedShortage;
+
+    const activeToFarm = mode === 'raw'
+      ? rawShortage
+      : (isBonusActive ? expectedShortage : guaranteedShortage);
+
     const step = craftingPlan.craftingSteps.find((s) => s.outputItemId === item.name);
     const craftQuantity = step ? step.totalOutputProduced : 0;
     const family = getFamilyForMaterial(item.name);
     const familyPlan = family ? craftingPlan.families[family.familyId] : null;
+    const familyForecast = family && bonusForecast ? bonusForecast.families[family.familyId] : null;
+    const optimizedStep = familyForecast?.optimizedSteps?.find((s) => s.outputItemId === item.name) || null;
+    const expectedCraftQuantity = (isBonusActive && optimizedStep) ? optimizedStep.expectedOutput : craftQuantity;
+    const expectedCrafts = (isBonusActive && optimizedStep) ? optimizedStep.expectedCrafts : (step?.count || 0);
+    const suggestedInitialBatch = (isBonusActive && optimizedStep) ? optimizedStep.suggestedInitialBatch : craftQuantity;
 
     return {
       ...item,
       rawToFarm: rawShortage,
-      craftingAdjustedToFarm: adjustedShortage,
+      craftingAdjustedToFarm: guaranteedShortage,
+      guaranteedToFarm: guaranteedShortage,
+      expectedShortage,
       toFarm: activeToFarm,
       craftQuantity,
+      expectedCraftQuantity,
+      expectedCrafts,
+      suggestedInitialBatch,
+      optimizedStep,
       craftingPlan: familyPlan,
+      bonusForecast: familyForecast,
       isCraftable: isMaterialCraftable(item.name),
+      isBonusEligible: familyForecast?.isEligible ?? false,
+      isBonusActive,
     };
   };
 
@@ -65,35 +90,48 @@ function enhanceToFarm(baseToFarm, craftingPlan, mode) {
     forgingMats: mapList(baseToFarm.forgingMats),
   };
 
-  // Recalculate allDone based on active mode
+  // Recalculate allDone and likelyAllDone based on active mode
   if (mode === 'raw') {
     enhanced.allDone = baseToFarm.allDone;
+    enhanced.likelyAllDone = baseToFarm.allDone;
   } else {
-    // In crafting-aware mode, allDone requires no partial calculation errors
-    // and every material's adjusted shortage to be 0
-    let allCovered = !baseToFarm.isPartial;
-    if (allCovered) {
+    // In crafting-aware mode, guaranteed allDone requires every material's guaranteed shortage to be 0.
+    // Probabilistic bonuses never grant guaranteed allDone.
+    let allGuaranteedCovered = !baseToFarm.isPartial;
+    let allLikelyCovered = !baseToFarm.isPartial;
+
+    if (!baseToFarm.isPartial) {
       for (const key of Object.keys(enhanced)) {
-        if (['totalItems', 'allDone', 'mora', 'crown', 'isPartial', 'oreExp'].includes(key)) continue;
+        if (['totalItems', 'allDone', 'likelyAllDone', 'mora', 'crown', 'isPartial', 'oreExp'].includes(key)) continue;
         const val = enhanced[key];
         if (Array.isArray(val)) {
-          if (val.some((i) => i && i.toFarm > 0)) {
-            allCovered = false;
-            break;
+          for (const i of val) {
+            if (i) {
+              if (i.guaranteedToFarm > 0) allGuaranteedCovered = false;
+              if (i.toFarm > 0) allLikelyCovered = false;
+            }
           }
-        } else if (val && val.toFarm > 0) {
-          allCovered = false;
-          break;
+        } else if (val) {
+          if (val.guaranteedToFarm > 0) allGuaranteedCovered = false;
+          if (val.toFarm > 0) allLikelyCovered = false;
         }
       }
     }
-    enhanced.allDone = allCovered;
+
+    enhanced.allDone = allGuaranteedCovered;
+    enhanced.likelyAllDone = allLikelyCovered;
   }
 
   return enhanced;
 }
 
-export default function usePlannerData({ roster, trackedWeapons, inventory, craftingMode = 'crafting-aware' }) {
+export default function usePlannerData({
+  roster,
+  trackedWeapons,
+  inventory,
+  craftingMode = 'crafting-aware',
+  craftingBonusOptions = { enabled: false, bonusType: 'double_output' },
+}) {
   const totals = useMemo(() => aggregateRosterCosts(roster, trackedWeapons), [roster, trackedWeapons]);
   const forgingTotals = useMemo(() => getForgingCosts(trackedWeapons, weaponForgingData), [trackedWeapons]);
 
@@ -121,17 +159,27 @@ export default function usePlannerData({ roster, trackedWeapons, inventory, craf
     });
   }, [combinedTotals.totalCosts, inventory]);
 
-  // 3. Crafting-adjusted shortage dataset
+  // 3. Pure deterministic bonus-aware crafting forecast
+  const bonusForecast = useMemo(() => {
+    return forecastCraftingPlan(
+      craftingPlan,
+      combinedTotals.totalCosts,
+      inventory,
+      craftingBonusOptions
+    );
+  }, [craftingPlan, combinedTotals.totalCosts, inventory, craftingBonusOptions]);
+
+  // 4. Crafting-adjusted shortage dataset
   const craftingAdjustedToFarm = useMemo(() => {
-    return enhanceToFarm(rawToFarm, craftingPlan, 'crafting-aware');
-  }, [rawToFarm, craftingPlan]);
+    return enhanceToFarm(rawToFarm, craftingPlan, 'crafting-aware', craftingBonusOptions, bonusForecast);
+  }, [rawToFarm, craftingPlan, craftingBonusOptions, bonusForecast]);
 
-  // 4. Enhanced raw shortage dataset
+  // 5. Enhanced raw shortage dataset
   const enhancedRawToFarm = useMemo(() => {
-    return enhanceToFarm(rawToFarm, craftingPlan, 'raw');
-  }, [rawToFarm, craftingPlan]);
+    return enhanceToFarm(rawToFarm, craftingPlan, 'raw', craftingBonusOptions, bonusForecast);
+  }, [rawToFarm, craftingPlan, craftingBonusOptions, bonusForecast]);
 
-  // 5. Active toFarm model based on current craftingMode
+  // 6. Active toFarm model based on current craftingMode
   const toFarm = craftingMode === 'raw' ? enhancedRawToFarm : craftingAdjustedToFarm;
 
   const groupedBooksData = useMemo(
@@ -180,33 +228,45 @@ export default function usePlannerData({ roster, trackedWeapons, inventory, craf
     let sumItems = 0;
     let rawSumItems = 0;
     let craftingAdjustedSumItems = 0;
+    let expectedSumItems = 0;
 
     for (const key of Object.keys(toFarm)) {
-      if (['totalItems', 'allDone', 'mora', 'crown', 'isPartial', 'oreExp'].includes(key)) continue;
+      if (['totalItems', 'allDone', 'likelyAllDone', 'mora', 'crown', 'isPartial', 'oreExp'].includes(key)) continue;
       const val = toFarm[key];
       if (Array.isArray(val)) {
-        val.forEach(item => {
+        val.forEach((item) => {
           if (item?.toFarm) sumItems += item.toFarm;
           if (typeof item?.rawToFarm === 'number') rawSumItems += item.rawToFarm;
-          if (typeof item?.craftingAdjustedToFarm === 'number') craftingAdjustedSumItems += item.craftingAdjustedToFarm;
+          if (typeof item?.guaranteedToFarm === 'number') craftingAdjustedSumItems += item.guaranteedToFarm;
+          if (typeof item?.expectedShortage === 'number') expectedSumItems += item.expectedShortage;
         });
-      } else if (val?.toFarm) {
-        sumItems += val.toFarm;
+      } else if (val) {
+        if (val?.toFarm) sumItems += val.toFarm;
         if (typeof val?.rawToFarm === 'number') rawSumItems += val.rawToFarm;
-        if (typeof val?.craftingAdjustedToFarm === 'number') craftingAdjustedSumItems += val.craftingAdjustedToFarm;
+        if (typeof val?.guaranteedToFarm === 'number') craftingAdjustedSumItems += val.guaranteedToFarm;
+        if (typeof val?.expectedShortage === 'number') expectedSumItems += val.expectedShortage;
       }
     }
+
+    const effectiveCraftingMora =
+      craftingMode === 'crafting-aware' && craftingBonusOptions?.enabled
+        ? (bonusForecast?.estimatedTotalMora ?? craftingPlan.craftingMora)
+        : craftingPlan.craftingMora;
+
     return {
       mora,
       crowns,
       sumItems,
       rawSumItems,
       craftingAdjustedSumItems,
+      expectedSumItems,
       craftingMora: craftingPlan.craftingMora,
-      totalMoraWithCrafting: mora + craftingPlan.craftingMora,
+      estimatedCraftingMora: bonusForecast?.estimatedTotalMora ?? craftingPlan.craftingMora,
+      estimatedMoraSavings: bonusForecast?.estimatedTotalMoraSavings ?? 0,
+      totalMoraWithCrafting: mora + effectiveCraftingMora,
       isAffordableMora: craftingPlan.isAffordableMora,
     };
-  }, [toFarm, craftingPlan]);
+  }, [toFarm, craftingPlan, bonusForecast, craftingMode, craftingBonusOptions]);
 
   const statusIndicators = useMemo(() => {
     return {
@@ -215,9 +275,10 @@ export default function usePlannerData({ roster, trackedWeapons, inventory, craf
       requiresCrafting: craftingPlan.requiresCrafting,
       requiresFarming: remainingTotals.sumItems > 0,
       craftingMoraAffordable: craftingPlan.isAffordableMora,
+      isLikelyCovered: bonusForecast?.allLikelyCovered ?? craftingPlan.allMaterialsCoveredByCrafting,
       isPartial: totals.isPartial,
     };
-  }, [craftingPlan, remainingTotals.sumItems, totals.isPartial]);
+  }, [craftingPlan, remainingTotals.sumItems, bonusForecast, totals.isPartial]);
 
   return {
     totals,
@@ -228,6 +289,8 @@ export default function usePlannerData({ roster, trackedWeapons, inventory, craf
     activeToFarm: toFarm,
     toFarm,
     craftingPlan,
+    bonusForecast,
+    craftingBonusOptions,
     craftingMode,
     groupedBooksData,
     groupedWeaponMatsData,
