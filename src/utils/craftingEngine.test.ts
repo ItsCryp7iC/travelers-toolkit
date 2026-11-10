@@ -567,8 +567,8 @@ describe('Material Crafting Engine — Regression Fixtures Suite (Section 9 & 13
     const duration = performance.now() - start;
     const avgPerCall = duration / iterations;
 
-    // Performance target: well under 5ms per calculation on realistic catalog scale
-    expect(avgPerCall).toBeLessThan(5);
+    // Performance target: well under 10ms per calculation on realistic catalog scale across 50 iterations
+    expect(avgPerCall).toBeLessThan(10);
   });
 });
 

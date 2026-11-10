@@ -3,6 +3,7 @@ import { getCharacterAvatar, getWeaponIcon, getMaterialIcon, toPascalCase } from
 import { formatItemName } from '../utils/calculator'
 import { formatPlannerQuantity } from '../utils/plannerTabs'
 import { getFamilyForMaterial } from '../data/craftingRecipes'
+import useCraftingSessionStore from '../store/useCraftingSessionStore'
 
 const RARITY_COLORS = {
   5: '#D87A34',
@@ -25,6 +26,10 @@ export default function DomainCard({
   bonusForecast = null,
 }) {
   const [expandedCrafting, setExpandedCrafting] = useState(false);
+  const activeFamilyId = useCraftingSessionStore((s) => s.session?.snapshot?.familyId);
+  const startSession = useCraftingSessionStore((s) => s.startSession);
+  const openDrawer = useCraftingSessionStore((s) => s.openDrawer);
+
   const { familyName, familyData, items, neededBy } = familyObj;
 
   const chars = neededBy?.filter(e => e.type === 'character') || [];
@@ -45,6 +50,24 @@ export default function DomainCard({
     craftingMode === 'crafting-aware' &&
     Boolean(craftingBonusOptions?.enabled) &&
     Boolean(familyForecast?.isEligible);
+
+  const isFamilyActiveSession = Boolean(resolvedFamilyId && activeFamilyId === resolvedFamilyId);
+  const canCraftFamily = Boolean(resolvedFamilyId && familyPlan && familyPlan.isCraftable && familyPlan.requiresCrafting);
+
+  const handleSessionAction = () => {
+    if (!resolvedFamilyId) return;
+    if (isFamilyActiveSession) {
+      openDrawer();
+    } else {
+      startSession({
+        familyId: resolvedFamilyId,
+        inventory,
+        grossRequirements: globalCosts,
+        bonusType: craftingBonusOptions?.enabled ? craftingBonusOptions.bonusType : null,
+        startingMora: inventory?.['Mora'] ?? 0,
+      });
+    }
+  };
 
   // Compute family-level crafting status pill
   let familyStatusPill = null;
@@ -100,19 +123,42 @@ export default function DomainCard({
             {['weekly_boss', 'world_boss', 'elite_mob', 'gemstones', 'currency'].includes(familyObj.type) ? domainName : `Domain: ${domainName}`}
           </span>
         </div>
-        {familyStatusPill && (
-          <span
-            className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1 border"
-            style={{
-              background: familyStatusPill.bg,
-              color: familyStatusPill.text,
-              borderColor: familyStatusPill.border,
-            }}
-          >
-            <span>{familyStatusPill.icon}</span>
-            <span className="hidden sm:inline">{familyStatusPill.label}</span>
-          </span>
-        )}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {canCraftFamily && (
+            <button
+              type="button"
+              onClick={handleSessionAction}
+              id={`domain-crafting-session-btn-${resolvedFamilyId}`}
+              data-testid={`domain-crafting-session-btn-${resolvedFamilyId}`}
+              className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
+                isFamilyActiveSession
+                  ? 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border-emerald-500/40 shadow-xs font-bold'
+                  : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-200 border-amber-500/30'
+              }`}
+              title={
+                isFamilyActiveSession
+                  ? 'Continue active crafting session'
+                  : 'Start an interactive crafting session'
+              }
+            >
+              <span>🔨</span>
+              <span className="hidden sm:inline">{isFamilyActiveSession ? 'Continue' : 'Start'}</span>
+            </button>
+          )}
+          {familyStatusPill && (
+            <span
+              className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1 border"
+              style={{
+                background: familyStatusPill.bg,
+                color: familyStatusPill.text,
+                borderColor: familyStatusPill.border,
+              }}
+            >
+              <span>{familyStatusPill.icon}</span>
+              <span className="hidden sm:inline">{familyStatusPill.label}</span>
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Body: Tier List */}

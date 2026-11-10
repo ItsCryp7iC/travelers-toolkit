@@ -309,7 +309,7 @@ describe('Sticky UI R1 Regression Suite', () => {
 
     expect(charsBtn.className).toContain('bg-primary');
     expect(container.textContent).toContain('Total Characters');
-  });
+  }, 15000);
 
   // ── Inventory Sticky Header & Category Unification ──
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { formatNumber, formatItemName } from '../../utils/calculator';
 import { formatPlannerQuantity } from '../../utils/plannerTabs';
 import { isBonusEligibleCategory } from '../../data/craftingBonuses';
+import useCraftingSessionStore from '../../store/useCraftingSessionStore';
 
 const CATEGORY_LABELS = {
   talent_materials: 'Talent Books',
@@ -27,9 +28,14 @@ export default function PlannerCraftingChecklist({
   craftingBonusOptions = null,
   bonusForecast = null,
   inventory = {},
+  grossRequirements = {},
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMathExplainer, setShowMathExplainer] = useState(false);
+
+  const activeSession = useCraftingSessionStore((s) => s.session);
+  const startSession = useCraftingSessionStore((s) => s.startSession);
+  const openDrawer = useCraftingSessionStore((s) => s.openDrawer);
 
   if (craftingMode !== 'crafting-aware' || !craftingPlan || !craftingPlan.requiresCrafting) {
     return null;
@@ -110,6 +116,22 @@ export default function PlannerCraftingChecklist({
 
         {/* ── Actions & Mora Pill ── */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-end md:self-auto flex-wrap">
+          {activeSession && (
+            <button
+              type="button"
+              id="header-resume-crafting-session-btn"
+              data-testid="header-resume-crafting-session-btn"
+              onClick={openDrawer}
+              className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+              title={`Resume active crafting session for ${activeSession.snapshot.familyName}`}
+            >
+              <span>🔨</span>
+              <span className="hidden sm:inline">Active Session:</span>
+              <span className="font-bold">{activeSession.snapshot.familyName}</span>
+              <span className="text-[10px] bg-emerald-400/20 px-1 rounded">({activeSession.events.length})</span>
+            </button>
+          )}
+
           <div
             className={`px-2.5 py-1 rounded-xl text-xs font-semibold flex items-center gap-1.5 border ${
               isAffordable
@@ -199,6 +221,21 @@ export default function PlannerCraftingChecklist({
                     const isEligible = isBonusActive && familyForecast?.isEligible;
                     const isLikelyCovered = isEligible && familyForecast.isLikelyCovered;
 
+                    const isFamilyActiveSession = activeSession?.snapshot?.familyId === fam.familyId;
+                    const handleSessionAction = () => {
+                      if (isFamilyActiveSession) {
+                        openDrawer();
+                      } else {
+                        startSession({
+                          familyId: fam.familyId,
+                          inventory,
+                          grossRequirements,
+                          bonusType: craftingBonusOptions?.enabled ? craftingBonusOptions.bonusType : null,
+                          startingMora: userMora,
+                        });
+                      }
+                    };
+
                     return (
                       <div
                         key={fam.familyId}
@@ -221,22 +258,43 @@ export default function PlannerCraftingChecklist({
                               </p>
                             )}
                           </div>
-                          <span
-                            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
-                              isAllCovered
-                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={handleSessionAction}
+                              id={`crafting-session-btn-${fam.familyId}`}
+                              data-testid={`crafting-session-btn-${fam.familyId}`}
+                              className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
+                                isFamilyActiveSession
+                                  ? 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border-emerald-500/40 shadow-xs font-bold'
+                                  : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border-amber-500/40'
+                              }`}
+                              title={
+                                isFamilyActiveSession
+                                  ? 'Continue active crafting session for this family'
+                                  : 'Start an interactive crafting session for this family'
+                              }
+                            >
+                              <span>🔨</span>
+                              <span>{isFamilyActiveSession ? 'Continue Session' : 'Start Session'}</span>
+                            </button>
+                            <span
+                              className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
+                                isAllCovered
+                                  ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                                  : isLikelyCovered
+                                  ? 'bg-blue-500/15 text-blue-300 border-blue-500/30'
+                                  : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                              }`}
+                              title={isLikelyCovered && familyForecast ? familyForecast.coverageDisplay : undefined}
+                            >
+                              {isAllCovered
+                                ? '✅ Covered by crafting'
                                 : isLikelyCovered
-                                ? 'bg-blue-500/15 text-blue-300 border-blue-500/30'
-                                : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                            }`}
-                            title={isLikelyCovered && familyForecast ? familyForecast.coverageDisplay : undefined}
-                          >
-                            {isAllCovered
-                              ? '✅ Covered by crafting'
-                              : isLikelyCovered
-                              ? `🎲 Likely covered with ${craftingBonusOptions.bonusType === 'ingredient_refund' ? '25% Refund' : '10% Double'}`
-                              : '🌾 Farming required'}
-                          </span>
+                                ? `🎲 Likely covered with ${craftingBonusOptions.bonusType === 'ingredient_refund' ? '25% Refund' : '10% Double'}`
+                                : '🌾 Farming required'}
+                            </span>
+                          </div>
                         </div>
 
                         {/* Ordered Crafting Steps */}

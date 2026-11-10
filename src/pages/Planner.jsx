@@ -6,6 +6,8 @@ import PlannerStats from '../components/Planner/PlannerStats';
 import PlannerEmptyState from '../components/Planner/PlannerEmptyState';
 import PlannerTabContent from '../components/Planner/PlannerTabContent';
 import PlannerCraftingChecklist from '../components/Planner/PlannerCraftingChecklist';
+import CraftingSessionDrawer from '../components/Planner/CraftingSessionDrawer';
+import CraftingSessionReplacementModal from '../components/Planner/CraftingSessionReplacementModal';
 import usePlannerData from './planner/usePlannerData';
 import { PLANNER_TABS, getPlannerTabId } from '../utils/plannerTabs';
 
@@ -27,6 +29,7 @@ export default function Planner() {
 
   const {
     totals,
+    combinedTotals,
     toFarm,
     craftingPlan,
     bonusForecast,
@@ -366,6 +369,7 @@ export default function Planner() {
         craftingBonusOptions={craftingBonusOptions}
         bonusForecast={bonusForecast}
         inventory={inventory}
+        grossRequirements={combinedTotals.totalCosts}
       />
 
       {/* ── Grand Total Stats ── */}
@@ -460,6 +464,14 @@ export default function Planner() {
           Open Inventory →
         </Link>
       </div>
+
+      {/* ── Ephemeral Crafting Session Drawer & Replacement Dialog ── */}
+      <CraftingSessionDrawer
+        liveInventory={inventory}
+        liveGrossRequirements={combinedTotals.totalCosts}
+        liveMora={inventory?.['Mora'] ?? 0}
+      />
+      <CraftingSessionReplacementModal />
     </div>
   );
 }
