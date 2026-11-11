@@ -103,6 +103,29 @@ export interface TransactionValidationResult {
   errors: TransactionDiagnostic[];
 }
 
+export type ApplyCraftingTransactionResult =
+  | {
+      success: true;
+      status: 'applied';
+      transactionId: string;
+      appliedAt: number;
+      updatedInventory: Record<string, number>;
+      deltas: Record<string, number>;
+    }
+  | {
+      success: false;
+      status: 'rejected';
+      code: string;
+      message: string;
+    }
+  | {
+      success: false;
+      status: 'uncertain';
+      code: string;
+      message: string;
+      transactionId?: string;
+    };
+
 /**
  * Deterministic 32-bit FNV-1a string hash.
  */
