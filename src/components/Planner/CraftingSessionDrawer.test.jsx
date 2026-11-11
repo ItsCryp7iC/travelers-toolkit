@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import useCraftingSessionStore from '../../store/useCraftingSessionStore';
 import useStore from '../../store/useStore';
@@ -809,7 +809,9 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
 
     const closeBtn = screen.getByTestId('close-crafting-drawer-btn');
     expect(closeBtn).toBeVisible();
-    expect(screen.getByText(/Your saved inventory won't change/i)).toBeVisible();
+    expect(
+      screen.getByText(/Recording batches won't change saved inventory\. Only Apply Results does/i)
+    ).toBeVisible();
 
     // Verify non-scrolling header and scrolling body layout
     const header = panel.firstElementChild;
@@ -1492,6 +1494,242 @@ describe('Phase CRAFT-D4-B2-B: Interactive Crafting Session Drawer Suite', () =>
     expect(screen.queryByTestId('restart-confirm-dialog')).not.toBeInTheDocument();
     // Drawer is still OPEN!
     expect(useCraftingSessionStore.getState().isDrawerOpen).toBe(true);
+  });
+});
+
+describe('Phase CRAFT-D4-C2-C.2: Spent Mora Accuracy & Clarified Inventory Safety Suite', () => {
+  beforeEach(() => {
+    resetBodyScrollLockForTesting();
+    useCraftingSessionStore.getState().discardSession();
+    useStore.getState().resetStore();
+    useStore.setState({
+      inventory: {
+        SlimeCondensate: 100,
+        SlimeSecretions: 0,
+        SlimeConcentrate: 0,
+        Mora: 1000,
+      },
+      goals: [],
+      appliedCraftingTransactions: [],
+    });
+  });
+
+  // 1. Zero recorded batches -> 0 Mora spent
+  it('1. Zero recorded batches: displays 0 Mora spent and 0 batches', () => {
+    const inv = { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 1000,
+    });
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={1000} />);
+
+    expect(screen.getByTestId('batches-count-summary')).toHaveTextContent('0');
+    expect(screen.getByTestId('spent-mora-summary')).toHaveTextContent('0');
+  });
+
+  // 2. 10 Slime Secretions crafts -> 250 Mora spent (Screenshot fixture)
+  it('2. 10 Slime Secretions crafts: displays 250 Mora spent and 1 batch, and Apply preview shows 1,000 -> 750', () => {
+    const inv = { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 1000,
+    });
+
+    // 10 operations of craft_SlimeSecretions (fee = 25 Mora * 10 = 250 Mora)
+    useCraftingSessionStore.getState().recordResult(
+      {
+        recipeId: 'craft_SlimeSecretions',
+        operationsPerformed: 10,
+        totalOutputReceived: 10,
+        bonusOutputReceived: 0,
+        refundsReceived: 0,
+      },
+      { inventory: inv, grossRequirements: reqs, mora: 1000 }
+    );
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={1000} />);
+
+    // Progress summary verification
+    expect(screen.getByTestId('batches-count-summary')).toHaveTextContent('1');
+    expect(screen.getByTestId('spent-mora-summary')).toHaveTextContent('250');
+
+    // Open Apply Results modal
+    fireEvent.click(screen.getByTestId('apply-crafting-results-btn'));
+
+    // Apply preview Mora verification: 1,000 -> 750 (▼ -250)
+    const moraRow = screen.getByTestId('apply-row-mora');
+    expect(within(moraRow).getByText('1,000')).toBeInTheDocument();
+    expect(within(moraRow).getByText('▼ -250')).toBeInTheDocument();
+    expect(within(moraRow).getByText('750')).toBeInTheDocument();
+  });
+
+  // 3. Two recorded batches -> cumulative actual fees
+  it('3. Two recorded batches: displays cumulative actual fees across batches', () => {
+    const inv = { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 0, Mora: 1000 };
+    const reqs = { SlimeConcentrate: 5 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 1000,
+    });
+
+    // Batch 1: 10 Slime Secretions (10 * 25 = 250 Mora)
+    useCraftingSessionStore.getState().recordResult(
+      {
+        recipeId: 'craft_SlimeSecretions',
+        operationsPerformed: 10,
+        totalOutputReceived: 10,
+        bonusOutputReceived: 0,
+        refundsReceived: 0,
+      },
+      { inventory: inv, grossRequirements: reqs, mora: 1000 }
+    );
+
+    // Batch 2: 5 Slime Concentrate (5 * 50 = 250 Mora)
+    useCraftingSessionStore.getState().recordResult(
+      {
+        recipeId: 'craft_SlimeConcentrate',
+        operationsPerformed: 5,
+        totalOutputReceived: 5,
+        bonusOutputReceived: 0,
+        refundsReceived: 0,
+      },
+      { inventory: inv, grossRequirements: reqs, mora: 1000 }
+    );
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={1000} />);
+
+    // Total batches = 2, total Mora spent = 250 + 250 = 500
+    expect(screen.getByTestId('batches-count-summary')).toHaveTextContent('2');
+    expect(screen.getByTestId('spent-mora-summary')).toHaveTextContent('500');
+  });
+
+  // 4. Undo Last Batch -> recalculated Mora spent
+  it('4. Undo Last Batch: recalculates Mora spent correctly after reverting a batch', () => {
+    const inv = { SlimeCondensate: 100, SlimeSecretions: 20, SlimeConcentrate: 0, Mora: 1000 };
+    const reqs = { SlimeConcentrate: 5 };
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 1000,
+    });
+
+    // Batch 1: 10 crafts (250 Mora)
+    useCraftingSessionStore.getState().recordResult(
+      {
+        recipeId: 'craft_SlimeSecretions',
+        operationsPerformed: 10,
+        totalOutputReceived: 10,
+        bonusOutputReceived: 0,
+        refundsReceived: 0,
+      },
+      { inventory: inv, grossRequirements: reqs, mora: 1000 }
+    );
+
+    // Batch 2: 5 crafts (250 Mora)
+    useCraftingSessionStore.getState().recordResult(
+      {
+        recipeId: 'craft_SlimeConcentrate',
+        operationsPerformed: 5,
+        totalOutputReceived: 5,
+        bonusOutputReceived: 0,
+        refundsReceived: 0,
+      },
+      { inventory: inv, grossRequirements: reqs, mora: 1000 }
+    );
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={1000} />);
+
+    expect(screen.getByTestId('batches-count-summary')).toHaveTextContent('2');
+    expect(screen.getByTestId('spent-mora-summary')).toHaveTextContent('500');
+
+    // Click Undo Last Batch
+    fireEvent.click(screen.getByTestId('undo-last-batch-btn'));
+
+    // Batches should be 1, spent Mora should be 250
+    expect(screen.getByTestId('batches-count-summary')).toHaveTextContent('1');
+    expect(screen.getByTestId('spent-mora-summary')).toHaveTextContent('250');
+  });
+
+  // 5. Applying results does not deduct Mora a second time
+  it('5. Applying results does not deduct Mora a second time: store Mora deducted exactly once', () => {
+    const inv = { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 };
+    const reqs = { SlimeSecretions: 10 };
+
+    useStore.setState({
+      inventory: { ...inv },
+      goals: { ...reqs },
+      appliedCraftingTransactions: [],
+    });
+
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: reqs,
+      bonusType: 'double_output',
+      startingMora: 1000,
+    });
+
+    useCraftingSessionStore.getState().recordResult(
+      {
+        recipeId: 'craft_SlimeSecretions',
+        operationsPerformed: 10,
+        totalOutputReceived: 10,
+        bonusOutputReceived: 0,
+        refundsReceived: 0,
+      },
+      { inventory: inv, grossRequirements: reqs, mora: 1000 }
+    );
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={reqs} liveMora={1000} />);
+
+    // Open Apply modal and confirm
+    fireEvent.click(screen.getByTestId('apply-crafting-results-btn'));
+    fireEvent.click(screen.getByTestId('confirm-apply-results-btn'));
+
+    // Check store inventory: Mora must be 750 (1,000 - 250), not 500
+    expect(useStore.getState().inventory.Mora).toBe(750);
+    expect(useStore.getState().inventory.SlimeCondensate).toBe(70);
+    expect(useStore.getState().inventory.SlimeSecretions).toBe(10);
+
+    // Verify trying to apply again is blocked
+    const appliedTxs = useStore.getState().appliedCraftingTransactions;
+    expect(appliedTxs.length).toBe(1);
+  });
+
+  // 6. Clarified Saved Inventory Wording
+  it('6. Clarified saved inventory wording: header warns that recording batches does not change inventory, only Apply Results does', () => {
+    const inv = { SlimeCondensate: 100, Mora: 1000 };
+    useCraftingSessionStore.getState().startSession({
+      familyId: 'Slime',
+      inventory: inv,
+      grossRequirements: {},
+      bonusType: 'double_output',
+      startingMora: 1000,
+    });
+
+    render(<CraftingSessionDrawer liveInventory={inv} liveGrossRequirements={{}} liveMora={1000} />);
+
+    expect(
+      screen.getByText('🔒 Recording batches won\'t change saved inventory. Only Apply Results does.')
+    ).toBeVisible();
   });
 });
 

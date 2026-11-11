@@ -5,6 +5,7 @@ import {
   createCraftingSession,
   recordCraftingResult,
 } from '../../utils/craftingSession';
+import { calculateAuthoritativeGrossRequirements } from '../../utils/aggregator';
 import { STORE_NAME } from '../persistence';
 
 describe('Phase CRAFT-D4-C2-B: Persistent Crafting Inventory Transaction Integration Suite', () => {
@@ -1776,5 +1777,616 @@ describe('Phase CRAFT-D4-C2-B.1: Final Persistence Integrity & Cross-Tab Data Pr
     expect(secondRes.success).toBe(false);
     expect(secondRes.status).toBe('rejected');
     expect(secondRes.code).toBe('DUPLICATE_TRANSACTION');
+  });
+});
+
+describe('Phase CRAFT-D4-C2-C.1: Authoritative Requirements & Canonical Transaction Verification Suite', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    window.localStorage.clear();
+    useStore.getState().resetStore();
+    useStore.setState({ appliedCraftingTransactions: [] });
+  });
+
+  // ── 1. Real Planner Requirements ──
+  it('1. Real Planner requirements: derives gross requirements from roster with goals: [] and applies transaction', () => {
+    const initialState = {
+      inventory: {
+        SlimeCondensate: 1000,
+        SlimeSecretions: 0,
+        SlimeConcentrate: 0,
+        Mora: 500000,
+      },
+      goals: [], // Realistic production shape!
+      roster: {
+        Xiangling: {
+          name: 'Xiangling',
+          level: 1,
+          targetLevel: 90,
+          ascension: 0,
+          targetAscension: 6,
+          talents: { normal: 1, skill: 1, burst: 1 },
+          targetTalents: { normal: 10, skill: 10, burst: 10 },
+        },
+      },
+      trackedWeapons: [],
+    };
+    useStore.setState(initialState);
+
+    // Derive authoritative gross requirements
+    const authoritativeReqs = calculateAuthoritativeGrossRequirements(useStore.getState());
+    expect(authoritativeReqs.SlimeCondensate).toBeGreaterThan(0);
+    expect(authoritativeReqs.SlimeSecretions).toBeGreaterThan(0);
+    expect(authoritativeReqs.SlimeConcentrate).toBeGreaterThan(0);
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: initialState.inventory,
+      startingInventory: initialState.inventory,
+      grossRequirements: authoritativeReqs,
+      mora: 500000,
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: authoritativeReqs,
+      mora: 500000,
+    });
+    expect(prep.isPrepared).toBe(true);
+
+    const res = useStore.getState().applyCraftingTransaction(prep.transaction, s1);
+    expect(res.success).toBe(true);
+    expect(res.status).toBe('applied');
+
+    // Assert store inventory updated
+    const liveInv = useStore.getState().inventory;
+    expect(liveInv.SlimeCondensate).toBe(1000 - 30);
+    expect(liveInv.SlimeSecretions).toBe(10);
+    expect(liveInv.Mora).toBe(500000 - 10 * 25);
+    // Assert goals remained an array
+    expect(Array.isArray(useStore.getState().goals)).toBe(true);
+  });
+
+  // ── 2. Relevant Demand Change ──
+  it('2. Relevant demand change: modifying Xiangling target talents causes UNREVIEWED_SOURCE_CONFLICT or SOURCE_CONFLICT', () => {
+    const initialState = {
+      inventory: {
+        SlimeCondensate: 1000,
+        SlimeSecretions: 0,
+        SlimeConcentrate: 0,
+        Mora: 500000,
+      },
+      goals: [],
+      roster: {
+        Xiangling: {
+          name: 'Xiangling',
+          level: 1,
+          targetLevel: 90,
+          ascension: 0,
+          targetAscension: 6,
+          talents: { normal: 1, skill: 1, burst: 1 },
+          targetTalents: { normal: 10, skill: 10, burst: 10 },
+        },
+      },
+      trackedWeapons: [],
+    };
+    useStore.setState(initialState);
+
+    const authoritativeReqs = calculateAuthoritativeGrossRequirements(useStore.getState());
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: initialState.inventory,
+      startingInventory: initialState.inventory,
+      grossRequirements: authoritativeReqs,
+      mora: 500000,
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: authoritativeReqs,
+      mora: 500000,
+    });
+    expect(prep.isPrepared).toBe(true);
+
+    // Now user changes Xiangling's target talents in the planner
+    useStore.setState({
+      roster: {
+        Xiangling: {
+          name: 'Xiangling',
+          level: 1,
+          targetLevel: 90,
+          ascension: 0,
+          targetAscension: 6,
+          talents: { normal: 1, skill: 1, burst: 1 },
+          targetTalents: { normal: 8, skill: 8, burst: 8 }, // Lowered demand!
+        },
+      },
+    });
+
+    const res = useStore.getState().applyCraftingTransaction(prep.transaction, s1);
+    expect(res.success).toBe(false);
+    expect(res.status).toBe('rejected');
+    expect(['UNREVIEWED_SOURCE_CONFLICT', 'SOURCE_CONFLICT']).toContain(res.code);
+
+    // Inventory remained untouched
+    expect(useStore.getState().inventory.SlimeCondensate).toBe(1000);
+  });
+
+  // ── 3. Unrelated Plan Change ──
+  it('3. Unrelated plan change: adding character requiring Hilichurl masks (Amber) does not cause conflict for Slime transaction', () => {
+    const initialState = {
+      inventory: {
+        SlimeCondensate: 1000,
+        SlimeSecretions: 0,
+        SlimeConcentrate: 0,
+        Mora: 500000,
+      },
+      goals: [],
+      roster: {
+        Xiangling: {
+          name: 'Xiangling',
+          level: 1,
+          targetLevel: 90,
+          ascension: 0,
+          targetAscension: 6,
+          talents: { normal: 1, skill: 1, burst: 1 },
+          targetTalents: { normal: 10, skill: 10, burst: 10 },
+        },
+      },
+      trackedWeapons: [],
+    };
+    useStore.setState(initialState);
+
+    const authoritativeReqs = calculateAuthoritativeGrossRequirements(useStore.getState());
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: initialState.inventory,
+      startingInventory: initialState.inventory,
+      grossRequirements: authoritativeReqs,
+      mora: 500000,
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 10,
+      totalOutputReceived: 10,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: authoritativeReqs,
+      mora: 500000,
+    });
+    expect(prep.isPrepared).toBe(true);
+
+    // Add Amber to roster (Amber needs Hilichurl masks and arrowheads, not Slime)
+    useStore.setState({
+      roster: {
+        ...useStore.getState().roster,
+        Amber: {
+          name: 'Amber',
+          level: 1,
+          targetLevel: 80,
+          ascension: 0,
+          targetAscension: 5,
+          talents: { normal: 1, skill: 1, burst: 1 },
+          targetTalents: { normal: 6, skill: 6, burst: 6 },
+        },
+      },
+    });
+
+    const res = useStore.getState().applyCraftingTransaction(prep.transaction, s1);
+    expect(res.success).toBe(true);
+    expect(res.status).toBe('applied');
+    expect(useStore.getState().inventory.SlimeCondensate).toBe(970);
+    expect(useStore.getState().inventory.SlimeSecretions).toBe(10);
+  });
+
+  // ── 4. Forging Requirements ──
+  it('4. Forging requirements: derives authoritative requirements from tracked weapon forging (Amenoma Kageuchi)', () => {
+    const state = {
+      roster: {},
+      trackedWeapons: [
+        {
+          id: 'tw_amenoma_1',
+          weaponName: 'Amenoma Kageuchi',
+          level: 90,
+          targetLevel: 90,
+          ascension: 6,
+          targetAscension: 6,
+          currentRefinement: 1,
+          targetRefinement: 5,
+        },
+      ],
+      goals: [],
+    };
+    useStore.setState(state);
+
+    const authoritativeReqs = calculateAuthoritativeGrossRequirements(useStore.getState());
+    // Refinement 1 -> 5 is 4 refinements
+    // Amenoma needs 1 Sword Billet, 50 Amethyst Lump, 50 White Iron Chunk, 500 Mora per craft
+    expect(authoritativeReqs.northlander_sword_billet).toBe(4);
+    expect(authoritativeReqs.amethyst_lump).toBe(200);
+    expect(authoritativeReqs.white_iron_chunk).toBe(200);
+    expect(authoritativeReqs.Mora).toBe(2000);
+  });
+
+  // ── 5. No Artificial Goals Map ──
+  it('5. No artificial goals map: goals remains an array throughout store operations and realistic scenarios', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    expect(Array.isArray(useStore.getState().goals)).toBe(true);
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    useStore.getState().applyCraftingTransaction(prep.transaction, s1);
+
+    expect(Array.isArray(useStore.getState().goals)).toBe(true);
+  });
+
+  // ── 6. Missing Negative Delta ──
+  it('6. Missing negative delta: proposed transaction omitting negative ingredient delta is rejected with DELTA_MISMATCH', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    // Tamper: delete tier 1 ingredient delta (SlimeCondensate)
+    const tamperedTx = {
+      ...prep.transaction,
+      deltas: { ...prep.transaction.deltas },
+    };
+    delete tamperedTx.deltas.SlimeCondensate;
+
+    const res = useStore.getState().applyCraftingTransaction(tamperedTx, s1);
+    expect(res.success).toBe(false);
+    expect(res.status).toBe('rejected');
+    expect(res.code).toBe('DELTA_MISMATCH');
+    expect(useStore.getState().inventory.SlimeCondensate).toBe(100);
+  });
+
+  // ── 7. Missing Mora Delta ──
+  it('7. Missing Mora delta: proposed transaction omitting Mora cost is rejected with DELTA_MISMATCH', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    // Tamper: delete Mora delta
+    const tamperedTx = {
+      ...prep.transaction,
+      deltas: { ...prep.transaction.deltas },
+    };
+    delete tamperedTx.deltas.Mora;
+
+    const res = useStore.getState().applyCraftingTransaction(tamperedTx, s1);
+    expect(res.success).toBe(false);
+    expect(res.status).toBe('rejected');
+    expect(res.code).toBe('DELTA_MISMATCH');
+    expect(useStore.getState().inventory.Mora).toBe(1000);
+  });
+
+  // ── 8. Unexpected Additional Delta ──
+  it('8. Unexpected additional delta: client proposing transaction with injected SweetFlower is rejected with DELTA_MISMATCH', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000, SweetFlower: 5 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    // Tamper: inject SweetFlower: 100
+    const tamperedTx = {
+      ...prep.transaction,
+      deltas: { ...prep.transaction.deltas, SweetFlower: 100 },
+    };
+
+    const res = useStore.getState().applyCraftingTransaction(tamperedTx, s1);
+    expect(res.success).toBe(false);
+    expect(res.status).toBe('rejected');
+    expect(res.code).toBe('DELTA_MISMATCH');
+    expect(useStore.getState().inventory.SweetFlower).toBe(5);
+  });
+
+  // ── 9. Modified Ending Balance ──
+  it('9. Modified ending balance: proposed transaction claiming inflated ending balance is rejected with ENDING_BALANCE_MISMATCH', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    // Tamper: claim ending balance of 9999 for SlimeSecretions
+    const tamperedTx = {
+      ...prep.transaction,
+      endingBalances: { ...prep.transaction.endingBalances, SlimeSecretions: 9999 },
+    };
+
+    const res = useStore.getState().applyCraftingTransaction(tamperedTx, s1);
+    expect(res.success).toBe(false);
+    expect(res.status).toBe('rejected');
+    expect(res.code).toBe('ENDING_BALANCE_MISMATCH');
+    expect(useStore.getState().inventory.SlimeSecretions).toBe(0);
+  });
+
+  // ── 10. Modified Identity ──
+  it('10. Modified identity: proposed transaction with tampered transactionId is rejected with TRANSACTION_ID_MISMATCH', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    // Tamper: transactionId
+    const tamperedTx = {
+      ...prep.transaction,
+      transactionId: 'tx-tampered-fake-id',
+    };
+
+    const res = useStore.getState().applyCraftingTransaction(tamperedTx, s1);
+    expect(res.success).toBe(false);
+    expect(res.status).toBe('rejected');
+    expect(res.code).toBe('TRANSACTION_ID_MISMATCH');
+  });
+
+  // ── 11. Modified Starting Balance ──
+  it('11. Modified starting balance: proposed transaction with altered starting balance is rejected with STARTING_BALANCES_MISMATCH or SOURCE_CONFLICT', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    // Tamper: alter starting balance
+    const tamperedTx = {
+      ...prep.transaction,
+      startingBalances: { ...prep.transaction.startingBalances, SlimeCondensate: 9999 },
+    };
+
+    const res = useStore.getState().applyCraftingTransaction(tamperedTx, s1);
+    expect(res.success).toBe(false);
+    expect(res.status).toBe('rejected');
+    expect(['STARTING_BALANCES_MISMATCH', 'SOURCE_CONFLICT']).toContain(res.code);
+  });
+
+  // ── 12. Tampered Session Identity & Metadata ──
+  it('12. Tampered session identity & metadata: mismatches in sessionId, familyId, or operations count are rejected', () => {
+    useStore.setState({
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      goals: [],
+      roster: {},
+      trackedWeapons: [],
+    });
+
+    const session = createCraftingSession({
+      familyId: 'Slime',
+      inventory: { SlimeCondensate: 100, SlimeSecretions: 0, SlimeConcentrate: 0, Mora: 1000 },
+      grossRequirements: {},
+      bonusType: null,
+    });
+
+    const s1 = recordCraftingResult(session, {
+      recipeId: 'craft_SlimeSecretions',
+      operationsPerformed: 5,
+      totalOutputReceived: 5,
+      bonusOutputReceived: 0,
+      refundsReceived: 0,
+    });
+
+    const prep = prepareCraftingInventoryTransaction(s1, {
+      inventory: useStore.getState().inventory,
+      grossRequirements: {},
+      mora: 1000,
+    });
+
+    // Tamper: sessionId
+    const resSession = useStore.getState().applyCraftingTransaction(
+      { ...prep.transaction, sessionId: 'session-tampered' },
+      s1
+    );
+    expect(resSession.success).toBe(false);
+    expect(resSession.code).toBe('SESSION_ID_MISMATCH');
+
+    // Tamper: familyId
+    const resFamily = useStore.getState().applyCraftingTransaction(
+      { ...prep.transaction, familyId: 'HilichurlMask' },
+      s1
+    );
+    expect(resFamily.success).toBe(false);
+    expect(resFamily.code).toBe('FAMILY_ID_MISMATCH');
+
+    // Tamper: totalOperations
+    const resOps = useStore.getState().applyCraftingTransaction(
+      { ...prep.transaction, totalOperations: 99 },
+      s1
+    );
+    expect(resOps.success).toBe(false);
+    expect(resOps.code).toBe('OPERATIONS_MISMATCH');
+
+    // Tamper: totalMoraSpent
+    const resMora = useStore.getState().applyCraftingTransaction(
+      { ...prep.transaction, totalMoraSpent: 0 },
+      s1
+    );
+    expect(resMora.success).toBe(false);
+    expect(resMora.code).toBe('MORA_SPENT_MISMATCH');
   });
 });

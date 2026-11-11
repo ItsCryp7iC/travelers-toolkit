@@ -1,5 +1,9 @@
-import { calculateConfirmedCraftingDeltas } from '../../utils/craftingInventoryTransaction';
+import {
+  prepareCraftingInventoryTransaction,
+  validateCraftingInventoryTransaction,
+} from '../../utils/craftingInventoryTransaction';
 import { compareCraftingSessionSource } from '../../utils/craftingSession';
+import { calculateAuthoritativeGrossRequirements } from '../../utils/aggregator';
 import { partializeStore } from '../persistence';
 
 /**
@@ -126,69 +130,7 @@ export const createInventorySlice = (set, get) => ({
       };
     }
 
-    if (session.sessionId !== preparedTransaction.sessionId) {
-      return {
-        success: false,
-        status: 'rejected',
-        code: 'SESSION_ID_MISMATCH',
-        message: `Session ID "${session.sessionId}" does not match transaction "${preparedTransaction.sessionId}".`,
-      };
-    }
-
-    if (session.snapshot.familyId !== preparedTransaction.familyId) {
-      return {
-        success: false,
-        status: 'rejected',
-        code: 'FAMILY_ID_MISMATCH',
-        message: `Family ID "${session.snapshot.familyId}" does not match transaction "${preparedTransaction.familyId}".`,
-      };
-    }
-
-    if (session.snapshot.fingerprint !== preparedTransaction.sourceFingerprint) {
-      return {
-        success: false,
-        status: 'rejected',
-        code: 'SOURCE_FINGERPRINT_MISMATCH',
-        message: 'Source fingerprint does not match transaction.',
-      };
-    }
-
-    // 3. Revalidate entire confirmed event ledger from scratch
-    const deltasResult = calculateConfirmedCraftingDeltas(session);
-    if (!deltasResult.isValid) {
-      const err = deltasResult.errors[0];
-      return {
-        success: false,
-        status: 'rejected',
-        code: err?.code || 'LEDGER_INTEGRITY_MISMATCH',
-        message: err?.message || 'Event ledger failed canonical revalidation.',
-      };
-    }
-
-    // Recheck deltas against transaction
-    for (const [tierId, delta] of Object.entries(preparedTransaction.deltas || {})) {
-      if (tierId === 'Mora') {
-        if (deltasResult.moraDelta.delta !== delta) {
-          return {
-            success: false,
-            status: 'rejected',
-            code: 'DELTA_MISMATCH',
-            message: 'Mora delta does not match canonical revalidation.',
-          };
-        }
-      } else {
-        if (deltasResult.materialDeltas[tierId] !== delta) {
-          return {
-            success: false,
-            status: 'rejected',
-            code: 'DELTA_MISMATCH',
-            message: `Material delta for ${tierId} does not match canonical revalidation.`,
-          };
-        }
-      }
-    }
-
-    // 4. Duplicate submission check (in-memory)
+    // 3. Duplicate submission check (in-memory)
     const appliedList = get().appliedCraftingTransactions || [];
     if (appliedList.includes(preparedTransaction.transactionId)) {
       return {
@@ -196,6 +138,227 @@ export const createInventorySlice = (set, get) => ({
         status: 'rejected',
         code: 'DUPLICATE_TRANSACTION',
         message: 'This crafting transaction has already been applied.',
+      };
+    }
+
+    // 4. Starting balances exact-match check against live state
+    const currentStore = get();
+    for (const [tierId, expectedStart] of Object.entries(preparedTransaction.startingBalances || {})) {
+      const currentVal = tierId === 'Mora' ? (currentStore.inventory?.['Mora'] ?? 0) : (currentStore.inventory?.[tierId] ?? 0);
+      if (currentVal !== expectedStart) {
+        return {
+          success: false,
+          status: 'rejected',
+          code: 'SOURCE_CONFLICT',
+          message: `Current balance for ${tierId} (${currentVal}) does not match transaction starting balance (${expectedStart}).`,
+        };
+      }
+    }
+
+    // 5. Construct live authoritative source at execution time
+    const liveSource = {
+      inventory: currentStore.inventory || {},
+      grossRequirements: calculateAuthoritativeGrossRequirements(currentStore),
+      mora: currentStore.inventory?.['Mora'] ?? 0,
+    };
+
+    // 6. Independently calculate the canonical expected transaction from session & live source
+    const canonicalPrep = prepareCraftingInventoryTransaction(session, liveSource);
+    if (!canonicalPrep.isPrepared || !canonicalPrep.transaction) {
+      const err = canonicalPrep.errors[0];
+      return {
+        success: false,
+        status: 'rejected',
+        code: err?.code || 'TRANSACTION_PREPARATION_FAILED',
+        message: err?.message || 'Cannot prepare canonical transaction from current state.',
+      };
+    }
+
+    const canonicalTx = canonicalPrep.transaction;
+
+    // 7. Strict completeness & equivalence validation between submitted and canonical transactions
+
+    // 7.1 Session identity
+    if (preparedTransaction.sessionId !== canonicalTx.sessionId) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'SESSION_ID_MISMATCH',
+        message: `Session ID "${preparedTransaction.sessionId}" does not match canonical session "${canonicalTx.sessionId}".`,
+      };
+    }
+
+    // 7.2 Material family
+    if (preparedTransaction.familyId !== canonicalTx.familyId) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'FAMILY_ID_MISMATCH',
+        message: `Family ID "${preparedTransaction.familyId}" does not match canonical family "${canonicalTx.familyId}".`,
+      };
+    }
+
+    // 7.3 Transaction identity (do not trust caller-supplied ID as proof of validity)
+    if (preparedTransaction.transactionId !== canonicalTx.transactionId) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'TRANSACTION_ID_MISMATCH',
+        message: `Transaction ID "${preparedTransaction.transactionId}" does not match canonical transaction "${canonicalTx.transactionId}".`,
+      };
+    }
+
+    // 7.4 Event identity and ledger revision
+    if (preparedTransaction.ledgerFingerprint !== canonicalTx.ledgerFingerprint) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'LEDGER_FINGERPRINT_MISMATCH',
+        message: 'Transaction ledger fingerprint does not match canonical ledger revision.',
+      };
+    }
+
+    if (
+      !Array.isArray(preparedTransaction.eventIds) ||
+      preparedTransaction.eventIds.length !== canonicalTx.eventIds.length ||
+      preparedTransaction.eventIds.some((id, idx) => id !== canonicalTx.eventIds[idx])
+    ) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'EVENT_IDS_MISMATCH',
+        message: 'Transaction event IDs do not match canonical event ledger.',
+      };
+    }
+
+    // 7.5 Source fingerprint
+    if (preparedTransaction.sourceFingerprint !== canonicalTx.sourceFingerprint) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'SOURCE_FINGERPRINT_MISMATCH',
+        message: 'Source fingerprint does not match canonical source fingerprint.',
+      };
+    }
+
+    // 7.6 Operations, batches, and Mora spent counts
+    if (preparedTransaction.totalOperations !== canonicalTx.totalOperations) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'OPERATIONS_MISMATCH',
+        message: `Submitted operations (${preparedTransaction.totalOperations}) does not match canonical operations (${canonicalTx.totalOperations}).`,
+      };
+    }
+
+    if (preparedTransaction.totalBatches !== canonicalTx.totalBatches) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'BATCHES_MISMATCH',
+        message: `Submitted batches (${preparedTransaction.totalBatches}) does not match canonical batches (${canonicalTx.totalBatches}).`,
+      };
+    }
+
+    if (preparedTransaction.totalMoraSpent !== canonicalTx.totalMoraSpent) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'MORA_SPENT_MISMATCH',
+        message: `Submitted Mora spent (${preparedTransaction.totalMoraSpent}) does not match canonical Mora spent (${canonicalTx.totalMoraSpent}).`,
+      };
+    }
+
+    // 7.7 Complete set of delta keys and values, including Mora
+    const submittedDeltaKeys = Object.keys(preparedTransaction.deltas || {}).sort();
+    const canonicalDeltaKeys = Object.keys(canonicalTx.deltas || {}).sort();
+
+    if (
+      submittedDeltaKeys.length !== canonicalDeltaKeys.length ||
+      submittedDeltaKeys.some((k, idx) => k !== canonicalDeltaKeys[idx])
+    ) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'DELTA_MISMATCH',
+        message: 'Submitted delta keys do not match canonical expected deltas.',
+      };
+    }
+
+    for (const key of canonicalDeltaKeys) {
+      if (preparedTransaction.deltas[key] !== canonicalTx.deltas[key]) {
+        return {
+          success: false,
+          status: 'rejected',
+          code: 'DELTA_MISMATCH',
+          message: `Submitted delta for ${key} (${preparedTransaction.deltas[key]}) does not match canonical delta (${canonicalTx.deltas[key]}).`,
+        };
+      }
+    }
+
+    // 7.8 Complete set of starting balances
+    const submittedStartKeys = Object.keys(preparedTransaction.startingBalances || {}).sort();
+    const canonicalStartKeys = Object.keys(canonicalTx.startingBalances || {}).sort();
+
+    if (
+      submittedStartKeys.length !== canonicalStartKeys.length ||
+      submittedStartKeys.some((k, idx) => k !== canonicalStartKeys[idx])
+    ) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'STARTING_BALANCES_MISMATCH',
+        message: 'Submitted starting balance keys do not match canonical starting balances.',
+      };
+    }
+
+    for (const key of canonicalStartKeys) {
+      if (preparedTransaction.startingBalances[key] !== canonicalTx.startingBalances[key]) {
+        return {
+          success: false,
+          status: 'rejected',
+          code: 'STARTING_BALANCES_MISMATCH',
+          message: `Submitted starting balance for ${key} does not match canonical starting balance.`,
+        };
+      }
+    }
+
+    // 7.9 Complete set of ending balances
+    const submittedEndKeys = Object.keys(preparedTransaction.endingBalances || {}).sort();
+    const canonicalEndKeys = Object.keys(canonicalTx.endingBalances || {}).sort();
+
+    if (
+      submittedEndKeys.length !== canonicalEndKeys.length ||
+      submittedEndKeys.some((k, idx) => k !== canonicalEndKeys[idx])
+    ) {
+      return {
+        success: false,
+        status: 'rejected',
+        code: 'ENDING_BALANCE_MISMATCH',
+        message: 'Submitted ending balance keys do not match canonical ending balances.',
+      };
+    }
+
+    for (const key of canonicalEndKeys) {
+      if (preparedTransaction.endingBalances[key] !== canonicalTx.endingBalances[key]) {
+        return {
+          success: false,
+          status: 'rejected',
+          code: 'ENDING_BALANCE_MISMATCH',
+          message: `Submitted ending balance for ${key} (${preparedTransaction.endingBalances[key]}) does not match canonical ending balance (${canonicalTx.endingBalances[key]}).`,
+        };
+      }
+    }
+
+    // 7.10 Validate canonical transaction against live source
+    const validation = validateCraftingInventoryTransaction(canonicalTx, liveSource);
+    if (!validation.isValid) {
+      const err = validation.errors[0];
+      return {
+        success: false,
+        status: 'rejected',
+        code: err?.code || 'INVALID_TRANSACTION',
+        message: err?.message || 'Canonical transaction failed live validation.',
       };
     }
 
@@ -266,7 +429,7 @@ export const createInventorySlice = (set, get) => ({
     try {
       set((state) => {
         // A. In-lock duplicate check
-        if ((state.appliedCraftingTransactions || []).includes(preparedTransaction.transactionId)) {
+        if ((state.appliedCraftingTransactions || []).includes(canonicalTx.transactionId)) {
           rejection = {
             code: 'DUPLICATE_TRANSACTION',
             message: 'This crafting transaction has already been applied.',
@@ -275,7 +438,7 @@ export const createInventorySlice = (set, get) => ({
         }
 
         // B. Strict starting balances exact-match check against live state
-        for (const [tierId, expectedStart] of Object.entries(preparedTransaction.startingBalances || {})) {
+        for (const [tierId, expectedStart] of Object.entries(canonicalTx.startingBalances || {})) {
           const currentVal = tierId === 'Mora' ? (state.inventory?.['Mora'] ?? 0) : (state.inventory?.[tierId] ?? 0);
           if (currentVal !== expectedStart) {
             rejection = {
@@ -287,14 +450,14 @@ export const createInventorySlice = (set, get) => ({
         }
 
         // C. Verify source freshness
-        const liveSource = {
-          inventory: state.inventory,
-          grossRequirements: state.goals || {},
-          mora: state.inventory?.['Mora'],
+        const inLockLiveSource = {
+          inventory: state.inventory || {},
+          grossRequirements: calculateAuthoritativeGrossRequirements(state),
+          mora: state.inventory?.['Mora'] ?? 0,
         };
         const comparison = compareCraftingSessionSource(
           session.snapshot,
-          liveSource,
+          inLockLiveSource,
           session.acknowledgedFingerprint
         );
 
@@ -324,7 +487,7 @@ export const createInventorySlice = (set, get) => ({
 
         // D. Calculate next inventory and verify non-negative post-conditions
         const draftInventory = { ...state.inventory };
-        for (const [tierId, delta] of Object.entries(preparedTransaction.deltas || {})) {
+        for (const [tierId, delta] of Object.entries(canonicalTx.deltas || {})) {
           const current = draftInventory[tierId] ?? 0;
           const next = current + delta;
           if (next < 0) {
@@ -338,7 +501,7 @@ export const createInventorySlice = (set, get) => ({
         }
 
         // E. Verify ending balances against expected ending balances
-        for (const [tierId, expectedEnd] of Object.entries(preparedTransaction.endingBalances || {})) {
+        for (const [tierId, expectedEnd] of Object.entries(canonicalTx.endingBalances || {})) {
           if (draftInventory[tierId] !== expectedEnd) {
             rejection = {
               code: 'ENDING_BALANCE_MISMATCH',
@@ -349,7 +512,7 @@ export const createInventorySlice = (set, get) => ({
         }
 
         nextInventory = draftInventory;
-        updatedAppliedList = [...(state.appliedCraftingTransactions || []), preparedTransaction.transactionId];
+        updatedAppliedList = [...(state.appliedCraftingTransactions || []), canonicalTx.transactionId];
 
         return {
           inventory: nextInventory,

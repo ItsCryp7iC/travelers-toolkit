@@ -1,5 +1,10 @@
 import { useMemo } from 'react';
-import { aggregateRosterCosts, getForgingCosts, computeToFarm } from '../../utils/aggregator';
+import {
+  aggregateRosterCosts,
+  getForgingCosts,
+  calculateAuthoritativeGrossRequirements,
+  computeToFarm,
+} from '../../utils/aggregator';
 import weaponForgingData from '../../data/weapon_forging.json';
 import { computeCraftingPlan } from '../../utils/craftingEngine';
 import { forecastCraftingPlan } from '../../utils/craftingBonusForecast';
@@ -136,17 +141,14 @@ export default function usePlannerData({
   const forgingTotals = useMemo(() => getForgingCosts(trackedWeapons, weaponForgingData), [trackedWeapons]);
 
   const combinedTotals = useMemo(() => {
-    const combinedCosts = { ...totals.totalCosts };
-    for (const [k, v] of Object.entries(forgingTotals.totalCosts || {})) {
-      combinedCosts[k] = (combinedCosts[k] || 0) + v;
-    }
+    const combinedCosts = calculateAuthoritativeGrossRequirements({ roster, trackedWeapons });
     return {
       totalCosts: combinedCosts,
       categories: { ...totals.categories, ...forgingTotals.categories },
       rarities: { ...totals.rarities, ...forgingTotals.rarities },
       breakdown: [...(totals.breakdown || []), ...(forgingTotals.breakdown || [])]
     };
-  }, [totals, forgingTotals]);
+  }, [roster, trackedWeapons, totals, forgingTotals]);
 
   // 1. Raw baseline calculation
   const rawToFarm = useMemo(() => computeToFarm(combinedTotals, inventory), [combinedTotals, inventory]);

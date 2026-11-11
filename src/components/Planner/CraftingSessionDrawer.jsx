@@ -7,6 +7,7 @@ import { getMaterialIcon } from '../../utils/assetHelper';
 import { acquireBodyScrollLock } from '../../utils/scrollLock';
 import { compareCraftingSessionSource } from '../../utils/craftingSession';
 import GenshinImage from '../GenshinImage';
+import ApplyCraftingResultsModal from './ApplyCraftingResultsModal';
 
 export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossRequirements = {}, liveMora = 0 }) {
   const session = useCraftingSessionStore((s) => s.session);
@@ -33,8 +34,14 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
   const [lastRecordedSummary, setLastRecordedSummary] = useState('');
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const [showRestartConfirm, setShowRestartConfirm] = useState(false);
+  const [showApplyModal, setShowApplyModal] = useState(false);
 
   const drawerRef = useRef(null);
+  const lastActiveSessionRef = useRef(session);
+  if (session) {
+    lastActiveSessionRef.current = session;
+  }
+  const currentSession = session || (showApplyModal ? lastActiveSessionRef.current : null);
 
   // Scroll lock and keyboard Escape handling
   useEffect(() => {
@@ -43,7 +50,9 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        if (showDiscardConfirm) {
+        if (showApplyModal) {
+          setShowApplyModal(false);
+        } else if (showDiscardConfirm) {
           setShowDiscardConfirm(false);
         } else if (showRestartConfirm) {
           setShowRestartConfirm(false);
@@ -58,7 +67,7 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
       releaseScrollLock();
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isDrawerOpen, showDiscardConfirm, showRestartConfirm, closeDrawer]);
+  }, [isDrawerOpen, showDiscardConfirm, showRestartConfirm, showApplyModal, closeDrawer]);
 
   // Synchronize default recipe with recommended step
   const activeFamilyId = session?.snapshot?.familyId;
@@ -103,8 +112,6 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
     );
   }, [session, liveSource]);
 
-  const isStale = freshness ? freshness.hasConflict : false;
-
   const handleRestartClick = () => {
     if (session?.events?.length > 0) {
       setShowRestartConfirm(true);
@@ -128,9 +135,9 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
     setShowRestartConfirm(false);
   };
 
-  if (!isDrawerOpen || !session) return null;
+  if (!isDrawerOpen || !currentSession) return null;
 
-  const { snapshot, ledger, remainingPlan, remainingForecast, nextRecommendedStep, events } = session;
+  const { snapshot, ledger, remainingPlan, remainingForecast, nextRecommendedStep, events } = currentSession;
   const bonusType = snapshot.bonusType;
 
   // Selected recipe object
@@ -343,7 +350,7 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
                 Follow the suggested batch, then enter what you received.
               </p>
               <p className="text-[11px] text-gray-400 mt-0.5">
-                🔒 Your saved inventory won't change.
+                🔒 Recording batches won't change saved inventory. Only Apply Results does.
               </p>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
@@ -481,6 +488,17 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
                 You have met all material requirements for <b className="text-white">{snapshot.familyName}</b> in this temporary session. Your real saved inventory has not been modified.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                {events.length > 0 && (
+                  <button
+                    type="button"
+                    id="goal-reached-apply-btn"
+                    data-testid="goal-reached-apply-btn"
+                    onClick={() => setShowApplyModal(true)}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white shadow-lg cursor-pointer flex items-center gap-1.5 transition-colors"
+                  >
+                    <span>✓</span> Apply Results to Inventory
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={closeDrawer}
@@ -811,11 +829,13 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
             <div className="flex items-center gap-4 flex-wrap">
               <div>
                 <span className="text-[10px] text-[var(--muted)] uppercase font-semibold block">Batches</span>
-                <span className="font-bold text-gray-200">{events.length}</span>
+                <span className="font-bold text-gray-200" data-testid="batches-count-summary">{events.length}</span>
               </div>
               <div className="border-l border-white/10 pl-3">
                 <span className="text-[10px] text-[var(--muted)] uppercase font-semibold block">Spent Mora</span>
-                <span className="font-bold text-amber-300">{formatPlannerQuantity(ledger.spentMora)}</span>
+                <span className="font-bold text-amber-300" data-testid="spent-mora-summary">
+                  {formatPlannerQuantity(ledger.totalMoraSpent || 0)}
+                </span>
               </div>
               <div className="border-l border-white/10 pl-3">
                 <span className="text-[10px] text-[var(--muted)] uppercase font-semibold block">Still Needed</span>
@@ -1089,18 +1109,44 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
 
         {/* ── Footer ── */}
         <div className="shrink-0 p-3.5 border-t border-[var(--border)] bg-[var(--elevated)] flex items-center justify-between gap-3 text-xs">
-          <span className="text-[11px] text-[var(--muted)]">
-            Closing retains your active session.
+          <span className="text-[11px] text-[var(--muted)] truncate">
+            {events.length > 0
+              ? `${events.length} recorded ${events.length === 1 ? 'batch' : 'batches'}`
+              : 'Closing retains your active session.'}
           </span>
-          <button
-            type="button"
-            id="drawer-close-footer-btn"
-            data-testid="drawer-close-footer-btn"
-            onClick={closeDrawer}
-            className="genshin-btn-ghost px-4 py-2 text-xs font-semibold rounded-xl cursor-pointer"
-          >
-            Close
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              id="drawer-close-footer-btn"
+              data-testid="drawer-close-footer-btn"
+              onClick={closeDrawer}
+              className="genshin-btn-ghost px-3.5 py-2 text-xs font-semibold rounded-xl cursor-pointer"
+            >
+              Close
+            </button>
+            {events.length > 0 ? (
+              <button
+                type="button"
+                id="apply-crafting-results-btn"
+                data-testid="apply-crafting-results-btn"
+                onClick={() => setShowApplyModal(true)}
+                className="px-3.5 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg cursor-pointer transition-colors flex items-center gap-1.5 shrink-0"
+              >
+                <span>✓</span> Apply Results to Inventory
+              </button>
+            ) : (
+              <button
+                type="button"
+                id="apply-crafting-results-btn"
+                data-testid="apply-crafting-results-btn"
+                disabled
+                className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-gray-800 text-gray-500 border border-white/5 cursor-not-allowed hidden sm:flex items-center gap-1.5 shrink-0"
+                title="Record at least 1 crafting batch to apply results to inventory"
+              >
+                <span>✓</span> Apply Results to Inventory
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1216,6 +1262,14 @@ export default function CraftingSessionDrawer({ liveInventory = {}, liveGrossReq
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── Apply Crafting Results Modal ── */}
+      {showApplyModal && (
+        <ApplyCraftingResultsModal
+          isOpen={showApplyModal}
+          onClose={() => setShowApplyModal(false)}
+        />
       )}
     </div>
   );
