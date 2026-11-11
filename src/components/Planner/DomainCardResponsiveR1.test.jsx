@@ -116,8 +116,8 @@ describe('PLANNER-UI-R1: Material Card Readability & Responsive Layout Suite', (
     }
   });
 
-  // ── 3. Acceptance Fixture: Slime Condensate (Need: 121, Have: 1,209, To Farm: 0) ──
-  it('3. Slime Condensate fixture renders Need: 121, Have: 1,209, To Farm: 0 with all values clearly visible', async () => {
+  // ── 3. Acceptance Fixture: Slime Condensate (Need: 121, Have: 1,209, Extra: +1,088) ──
+  it('3. Slime Condensate fixture renders Need: 121, Have: 1,209, Extra: +1,088 with all values clearly visible', async () => {
     const familyObj = {
       familyName: 'Slime',
       type: 'mob',
@@ -146,14 +146,14 @@ describe('PLANNER-UI-R1: Material Card Readability & Responsive Layout Suite', (
 
     expect(container.textContent).toContain('Need: 121');
     expect(container.textContent).toContain('Have: 1,209');
-    expect(container.textContent).toContain('To Farm: 0');
+    expect(container.textContent).toContain('Extra: +1,088');
     // Check cell title tooltips
     expect(container.querySelector('[title="Need: 121"]')).toBeTruthy();
     expect(container.querySelector('[title="Have: 1,209"]')).toBeTruthy();
   });
 
-  // ── 4. Acceptance Fixture: Slime Secretions (Need: 186, Have: 253, Craft: ≈362, To Farm: 0) ──
-  it('4. Slime Secretions fixture renders Need: 186, Have: 253, Craft: ≈362, To Farm: 0 without name truncation', async () => {
+  // ── 4. Acceptance Fixture: Slime Secretions (Need: 186, Have: 253, Craft: ≈362, Extra: +67) ──
+  it('4. Slime Secretions fixture renders Need: 186, Have: 253, Craft: ≈362, Extra: +67 without name truncation', async () => {
     const familyObj = {
       familyName: 'Slime',
       type: 'mob',
@@ -208,7 +208,7 @@ describe('PLANNER-UI-R1: Material Card Readability & Responsive Layout Suite', (
     expect(container.textContent).toContain('Need: 186');
     expect(container.textContent).toContain('Have: 253');
     expect(container.textContent).toContain('Craft: ≈362');
-    expect(container.textContent).toContain('To Farm: 0');
+    expect(container.textContent).toContain('Extra: +67');
 
     // Verify name has not been truncated
     const nameEl = container.querySelector('span[title="Slime Secretions"]');

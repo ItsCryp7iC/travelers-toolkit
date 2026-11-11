@@ -12,6 +12,7 @@ import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/ass
 import weeklyBossData from '../data/weekly_boss.json'
 import { computeCraftingPlan } from '../utils/craftingEngine'
 import PlannerInventoryQuantityInput from './Planner/PlannerInventoryQuantityInput'
+import { getThirdCellPresentation } from '../utils/plannerSurplus'
 
 const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya'];
 
@@ -120,6 +121,19 @@ function DomainCard({
             : (owned > 0 ? 100 : 0);
           const rarityColor = RARITY_COLORS[tier.rarity] || RARITY_COLORS[3];
 
+          const isCraftableFamily = ['talent', 'weapon'].includes(familyObj.type) || (familyData?.tiers?.length > 1);
+
+          const thirdCell = getThirdCellPresentation({
+            required,
+            owned,
+            toFarm,
+            guaranteedShortage: adjustedShortage,
+            expectedShortage,
+            isBonusActive,
+            isCraftable: isCraftableFamily,
+            accent,
+          });
+
           return (
             <div
               key={tier.id}
@@ -170,37 +184,21 @@ function DomainCard({
                   currentQuantity={owned}
                 />
 
-                {/* To Farm */}
+                {/* Dynamic To Farm / Extra */}
                 <div
                   className="flex flex-col items-center justify-center py-1 px-1.5 rounded bg-black/25 border border-white/5 min-w-0"
-                  title={
-                    isBonusActive && expectedShortage !== adjustedShortage
-                      ? `Est. To Farm: ${expectedShortage} (Guaranteed: ${adjustedShortage})`
-                      : `To Farm: ${(toFarm || 0).toLocaleString()}`
-                  }
+                  data-testid={thirdCell.isExtra ? `material-extra-${tier.id}` : `material-to-farm-${tier.id}`}
+                  title={thirdCell.title}
                 >
                   <span className="text-[10px] text-[var(--muted)] font-medium uppercase tracking-wider truncate w-full">
-                    To Farm<span className="sr-only">: </span>
+                    {thirdCell.label}<span className="sr-only">: </span>
                   </span>
                   <span
                     className="font-bold text-xs sm:text-sm truncate w-full"
-                    style={{
-                      color: isCovered
-                        ? 'var(--muted)'
-                        : isLikelyCovered
-                        ? '#60A5FA'
-                        : toFarm > 0
-                        ? accent
-                        : 'var(--muted)',
-                    }}
+                    style={{ color: thirdCell.color }}
+                    title={thirdCell.innerTitle}
                   >
-                    {isLikelyCovered ? (
-                      <span title={`Guaranteed shortage: ${adjustedShortage}`}>🎲 ~0</span>
-                    ) : isBonusActive && expectedShortage !== adjustedShortage ? (
-                      <span title={`Guaranteed shortage: ${adjustedShortage}`}>~{formatPlannerQuantity(toFarm)}</span>
-                    ) : (
-                      formatPlannerQuantity(toFarm)
-                    )}
+                    {thirdCell.formattedValue}
                   </span>
                 </div>
               </div>

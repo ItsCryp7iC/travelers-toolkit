@@ -2,6 +2,7 @@ import React from 'react';
 import { formatItemName } from '../../utils/calculator';
 import { getMaterialIcon } from '../../utils/assetHelper';
 import { formatPlannerQuantity } from '../../utils/plannerTabs';
+import { getThirdCellPresentation } from '../../utils/plannerSurplus';
 
 export const RARITY_COLORS = {
   5: 'rgba(219, 177, 98, 0.2)', // Gold
@@ -66,6 +67,16 @@ export default function PlannerItemCard({ item, accent }) {
     ? (item.expectedCraftQuantity ?? craftQuantity)
     : craftQuantity;
   const hasCrafting = isOptimized ? displayCraftCount > 0 : craftQuantity > 0;
+  const thirdCell = getThirdCellPresentation({
+    required: item.required,
+    owned: item.owned,
+    toFarm: item.toFarm,
+    guaranteedShortage: item.guaranteedToFarm,
+    expectedShortage: item.toFarm,
+    isBonusActive: item.isBonusActive,
+    isCraftable: false,
+    accent,
+  });
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors relative overflow-hidden group">
@@ -136,30 +147,15 @@ export default function PlannerItemCard({ item, accent }) {
             </span>
           )}
           <span
-            title={
-              isEstimatedDiff
-                ? `Est. To Farm: ${item.toFarm} (Guaranteed: ${item.guaranteedToFarm})`
-                : `To Farm: ${(item.toFarm || 0).toLocaleString()}`
-            }
+            data-testid={thirdCell.isExtra ? `material-extra-${item.name}` : `material-to-farm-${item.name}`}
+            title={thirdCell.title}
           >
-            To Farm:{' '}
+            {thirdCell.label}:{' '}
             <b
               className="font-semibold"
-              style={{
-                color: isGuaranteedCovered
-                  ? 'var(--muted)'
-                  : isLikelyCovered
-                  ? '#60A5FA'
-                  : item.toFarm > 0
-                  ? accent || 'var(--gold)'
-                  : 'var(--muted)',
-              }}
+              style={{ color: thirdCell.color }}
             >
-              {isLikelyCovered
-                ? '🎲 ~0'
-                : isEstimatedDiff
-                ? `~${formatPlannerQuantity(item.toFarm)}`
-                : formatPlannerQuantity(item.toFarm)}
+              {thirdCell.formattedValue}
             </b>
           </span>
         </div>

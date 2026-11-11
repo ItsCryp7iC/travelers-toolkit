@@ -6,6 +6,7 @@ import { getFamilyForMaterial } from '../data/craftingRecipes'
 import useCraftingSessionStore from '../store/useCraftingSessionStore'
 import PlannerInventoryQuantityInput from './Planner/PlannerInventoryQuantityInput'
 import { computeFamilyStatus } from '../utils/plannerStatus'
+import { getThirdCellPresentation } from '../utils/plannerSurplus'
 
 const RARITY_COLORS = {
   5: '#D87A34',
@@ -219,6 +220,22 @@ export default function DomainCard({
             : (owned > 0 ? 100 : 0);
           const rarityColor = RARITY_COLORS[tier.rarity] || RARITY_COLORS[3];
 
+          const isCraftableFamily = Boolean(
+            (familyPlan && familyPlan.isCraftable) ||
+            (familyData?.tiers?.length > 1 && !['local_specialty', 'world_boss', 'weekly_boss', 'forging_materials', 'currency'].includes(familyObj.type))
+          );
+
+          const thirdCell = getThirdCellPresentation({
+            required,
+            owned,
+            toFarm,
+            guaranteedShortage,
+            expectedShortage,
+            isBonusActive,
+            isCraftable: isCraftableFamily,
+            accent,
+          });
+
           return (
             <div
               key={tier.id}
@@ -272,37 +289,21 @@ export default function DomainCard({
                   currentQuantity={owned}
                 />
 
-                {/* To Farm */}
+                {/* Dynamic To Farm / Extra */}
                 <div
                   className="flex flex-col items-center justify-center py-1 px-1.5 rounded bg-black/25 border border-white/5 min-w-0"
-                  title={
-                    isBonusActive && expectedShortage !== guaranteedShortage
-                      ? `Est. To Farm: ${expectedShortage} (Guaranteed: ${guaranteedShortage})`
-                      : `To Farm: ${(toFarm || 0).toLocaleString()}`
-                  }
+                  data-testid={thirdCell.isExtra ? `material-extra-${tier.id}` : `material-to-farm-${tier.id}`}
+                  title={thirdCell.title}
                 >
                   <span className="text-[10px] text-[var(--muted)] font-medium uppercase tracking-wider truncate w-full">
-                    To Farm<span className="sr-only">: </span>
+                    {thirdCell.label}<span className="sr-only">: </span>
                   </span>
                   <span
                     className="font-bold text-xs sm:text-sm truncate w-full"
-                    style={{
-                      color: isFullyCovered
-                        ? 'var(--muted)'
-                        : isLikelyCoveredTier
-                        ? '#60A5FA'
-                        : toFarm > 0
-                        ? accent
-                        : 'var(--muted)',
-                    }}
+                    style={{ color: thirdCell.color }}
+                    title={thirdCell.innerTitle}
                   >
-                    {isLikelyCoveredTier ? (
-                      <span title={`Guaranteed shortage: ${guaranteedShortage}`}>🎲 ~0</span>
-                    ) : isBonusActive && expectedShortage !== guaranteedShortage ? (
-                      <span title={`Guaranteed shortage: ${guaranteedShortage}`}>~{formatPlannerQuantity(toFarm)}</span>
-                    ) : (
-                      formatPlannerQuantity(toFarm)
-                    )}
+                    {thirdCell.formattedValue}
                   </span>
                 </div>
               </div>
@@ -471,7 +472,7 @@ export default function DomainCard({
                   if (leftovers.length === 0) return null;
                   return (
                     <span className="text-teal-300">
-                      Projected leftover: {leftovers.join(', ')}
+                      Unallocated after guaranteed plan: {leftovers.join(', ')}
                     </span>
                   );
                 })()}

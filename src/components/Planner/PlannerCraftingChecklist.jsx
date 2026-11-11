@@ -528,7 +528,7 @@ export default function PlannerCraftingChecklist({
                             </div>
                           ) : leftovers.length > 0 ? (
                             <span className="text-teal-300">
-                              Leftover: {leftovers.map(([id, qty]) => `${qty}× ${formatItemName(id)}`).join(', ')}
+                              Unallocated after guaranteed plan: {leftovers.map(([id, qty]) => `${qty}× ${formatItemName(id)}`).join(', ')}
                             </span>
                           ) : (
                             <span className="text-emerald-400">Zero material leftover</span>
