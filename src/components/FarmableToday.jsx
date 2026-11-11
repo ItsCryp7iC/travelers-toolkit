@@ -60,7 +60,7 @@ function DomainCard({
   const { familyName, familyData, items, neededBy } = familyObj;
 
   return (
-    <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors overflow-hidden relative group">
+    <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors overflow-hidden relative group self-start w-full">
       {/* Glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity pointer-events-none" style={{ background: accent }} />
       
@@ -76,7 +76,7 @@ function DomainCard({
       </div>
 
       {/* Body: Tier List */}
-      <div className="p-3 space-y-2.5 flex-1">
+      <div className="p-2.5 space-y-2">
         {familyData.tiers.map(tier => {
           let required = globalCosts[tier.id] || 0;
           if (items[tier.id]) {
@@ -137,7 +137,7 @@ function DomainCard({
           return (
             <div
               key={tier.id}
-              className="flex flex-col gap-2 p-2.5 rounded-lg bg-black/15 border border-white/5 hover:border-white/10 transition-colors"
+              className="flex flex-col gap-1.5 p-2 rounded-lg bg-black/15 border border-white/5 hover:border-white/10 transition-colors"
             >
               {/* Row 1: Material Identity */}
               <div className="flex items-center gap-2.5 min-w-0">
@@ -240,9 +240,9 @@ function DomainCard({
 
       {/* Footer (Needed By) */}
       {neededBy && neededBy.length > 0 && (
-        <div className="px-3 pb-3 mt-auto">
-          <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
-          <p className="text-xs font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
+        <div className="px-2.5 pb-2.5 pt-1">
+          <div className="h-px w-full bg-[var(--border)] mb-1.5 opacity-50" />
+          <p className="text-[11px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1">Needed By</p>
           <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
             {neededBy.map((entity, i) => (
               <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
@@ -267,7 +267,7 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
   const { items, neededBy } = bossObj;
 
   return (
-    <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[#FBBF24] transition-colors overflow-hidden relative group">
+    <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[#FBBF24] transition-colors overflow-hidden relative group self-start w-full">
       <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity pointer-events-none" style={{ background: accent }} />
       
       <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
@@ -277,7 +277,7 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
         </span>
       </div>
 
-      <div className="p-3 space-y-3 flex-1">
+      <div className="p-2.5 space-y-2.5">
         {[...items].sort((a, b) => (a.data.sortOrder || 0) - (b.data.sortOrder || 0)).map(({ data }) => {
           const required = globalCosts[data.id] || 0;
           const owned = inventory[data.id] || 0;
@@ -316,9 +316,9 @@ function BossCard({ bossName, bossObj, accent, globalCosts, inventory }) {
       </div>
 
       {neededBy && neededBy.length > 0 && (
-        <div className="px-3 pb-3 mt-auto">
-          <div className="h-px w-full bg-[var(--border)] mb-2 opacity-50" />
-          <p className="text-xs font-semibold tracking-widest text-[var(--muted)] uppercase mb-1.5">Needed By</p>
+        <div className="px-2.5 pb-2.5 pt-1">
+          <div className="h-px w-full bg-[var(--border)] mb-1.5 opacity-50" />
+          <p className="text-[11px] font-semibold tracking-widest text-[var(--muted)] uppercase mb-1">Needed By</p>
           <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
             {neededBy.map((entity, i) => (
               <div key={i} className="relative w-8 h-8 rounded-full border border-gray-600 overflow-hidden bg-[var(--elevated)] flex-shrink-0">
@@ -672,7 +672,7 @@ export default function FarmableToday({
               <span className="text-sm">📍</span> {region}
             </h3>
             {!isCollapsed && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
                 {Object.values(groupedData[region])
                   .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                   .map(bossObj => (
@@ -723,7 +723,7 @@ export default function FarmableToday({
               <span className="text-sm">📍</span> {region}
             </h3>
             {!isCollapsed && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
                 {Object.keys(groupedData[region]).map(domainName => (
                   Object.values(groupedData[region][domainName])
                     .sort((a, b) => getScheduleWeight(a.familyData) - getScheduleWeight(b.familyData))

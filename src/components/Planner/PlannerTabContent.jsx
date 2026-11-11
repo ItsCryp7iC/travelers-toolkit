@@ -71,7 +71,7 @@ export default function PlannerTabContent({
               <span className="text-sm">📍</span> {region}
             </h3>
             {!isCollapsed && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
                 {Object.keys(groupedData[region]).map(domainName => (
                   Object.values(groupedData[region][domainName])
                     .sort((a, b) => getScheduleWeight(a.familyData) - getScheduleWeight(b.familyData))
@@ -123,7 +123,7 @@ export default function PlannerTabContent({
               <span className="text-sm">📍</span> {region}
             </h3>
             {!isCollapsed && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
                 {Object.values(groupedData[region])
                   .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                   .map(bossObj => {
@@ -158,7 +158,7 @@ export default function PlannerTabContent({
     if (Object.keys(groupedData).length === 0) return null;
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
         {Object.values(groupedData)
           .sort((a, b) => a.jsonSortOrder - b.jsonSortOrder)
           .map(familyObj => (
@@ -225,7 +225,7 @@ export default function PlannerTabContent({
       )}
 
       {activeTab === 'currency_exp' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
           {buildCurrencyExpItems(toFarm, inventory).map(({ config, item }) => (
             <DomainCard
               key={config.id}
@@ -308,7 +308,7 @@ export default function PlannerTabContent({
       {activeTab === 'elite_enhancement' && (
         toFarm.eliteMob?.length > 0
           ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
                 {Object.values(groupedEliteEnemies)
                   .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                   .map(bossObj => (
@@ -340,7 +340,7 @@ export default function PlannerTabContent({
       {activeTab === 'common_enhancement' && (
         toFarm.mob?.length > 0
           ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
                 {Object.values(groupedCommonEnemies)
                   .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                   .map(enemyObj => (

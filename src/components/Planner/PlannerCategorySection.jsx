@@ -21,7 +21,7 @@ export default function PlannerCategorySection({ icon, title, items, accent, emp
           {items.length} items
         </span>
       </div>
-      <div className={`grid gap-4 ${maxCols === 3 ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
+      <div className={`grid gap-4 items-start ${maxCols === 3 ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
         {items.map((item) => (
           <PlannerItemCard key={item.name} item={item} accent={accent} />
         ))}

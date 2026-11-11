@@ -23,7 +23,7 @@ export default function Planner() {
   const [showInvalidDetails, setShowInvalidDetails] = useState(false);
   const [craftingMode, setCraftingMode] = useState('crafting-aware');
   const [craftingBonusOptions, setCraftingBonusOptions] = useState({
-    enabled: false,
+    enabled: true,
     bonusType: 'double_output',
   });
 
@@ -362,6 +362,7 @@ export default function Planner() {
 
       {/* ── Consolidated Crafting Checklist ── */}
       <PlannerCraftingChecklist
+        activeTab={activeTab}
         craftingPlan={craftingPlan}
         craftingMode={craftingMode}
         userMora={inventory?.['Mora'] ?? 0}

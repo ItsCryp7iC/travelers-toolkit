@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { formatNumber, formatItemName } from '../../utils/calculator';
-import { formatPlannerQuantity } from '../../utils/plannerTabs';
+import { formatPlannerQuantity, getCraftingCategoryForTab, getTabLabel } from '../../utils/plannerTabs';
 import { isBonusEligibleCategory } from '../../data/craftingBonuses';
 import useCraftingSessionStore from '../../store/useCraftingSessionStore';
 
@@ -21,6 +21,7 @@ const CATEGORY_ICONS = {
 };
 
 export default function PlannerCraftingChecklist({
+  activeTab,
   craftingPlan,
   craftingMode = 'crafting-aware',
   userMora = 0,
@@ -37,6 +38,14 @@ export default function PlannerCraftingChecklist({
   const startSession = useCraftingSessionStore((s) => s.startSession);
   const openDrawer = useCraftingSessionStore((s) => s.openDrawer);
 
+  const targetCategory = activeTab !== undefined ? getCraftingCategoryForTab(activeTab) : null;
+  const tabLabel = activeTab !== undefined ? getTabLabel(activeTab) : null;
+
+  // If activeTab is explicitly provided, it must map to a canonical crafting category
+  if (activeTab !== undefined && !targetCategory) {
+    return null;
+  }
+
   if (craftingMode !== 'crafting-aware' || !craftingPlan || !craftingPlan.requiresCrafting) {
     return null;
   }
@@ -47,9 +56,14 @@ export default function PlannerCraftingChecklist({
       ? '25% Ingredient Refund'
       : '10% Double Output';
 
-  const activeFamilies = Object.values(craftingPlan.families || {}).filter(
+  const rawActiveFamilies = Object.values(craftingPlan.families || {}).filter(
     (f) => f.steps && f.steps.length > 0
   );
+
+  // Filter to category if targetCategory is specified
+  const activeFamilies = targetCategory
+    ? rawActiveFamilies.filter((f) => f.category === targetCategory)
+    : rawActiveFamilies;
 
   if (activeFamilies.length === 0) return null;
 
@@ -61,17 +75,38 @@ export default function PlannerCraftingChecklist({
     groupedByCategory[cat].push(familyPlan);
   });
 
-  const guaranteedCraftsCount = craftingPlan.craftingSteps.reduce((acc, s) => acc + s.count, 0);
-  const totalProducedUnits = craftingPlan.craftingSteps.reduce(
+  const categorySteps = activeFamilies.flatMap((f) => f.steps || []);
+  const guaranteedCraftsCount = categorySteps.reduce((acc, s) => acc + s.count, 0);
+  const totalProducedUnits = categorySteps.reduce(
     (acc, s) => acc + s.totalOutputProduced,
     0
   );
-  const guaranteedMora = craftingPlan.craftingMora || 0;
-  const effectiveMora = isBonusActive ? (bonusForecast?.estimatedTotalMora ?? guaranteedMora) : guaranteedMora;
-  const moraSavings = isBonusActive ? (bonusForecast?.estimatedTotalMoraSavings ?? 0) : 0;
+  const guaranteedMora = activeFamilies.reduce((acc, f) => acc + (f.craftingMora || 0), 0);
+
+  const effectiveMora = isBonusActive
+    ? activeFamilies.reduce((acc, f) => {
+        const ff = bonusForecast?.families?.[f.familyId];
+        return acc + (ff?.isEligible ? (ff.estimatedCraftingMora ?? (f.craftingMora || 0)) : (f.craftingMora || 0));
+      }, 0)
+    : guaranteedMora;
+
+  const netMoraDifference = guaranteedMora - effectiveMora;
+
+  const isEquivalentDemand =
+    activeFamilies.every((f) => {
+      const ff = bonusForecast?.families?.[f.familyId];
+      if (!ff || !ff.isEligible) return true;
+      return ff.sameDemandCovered !== false;
+    }) && (bonusForecast?.sameDemandCovered ?? true);
+
   const isAffordable = userMora >= effectiveMora;
-  const totalCombinedMora = progressionMora + effectiveMora;
   const moraShortage = Math.max(0, effectiveMora - userMora);
+
+  const checklistTitle = targetCategory && tabLabel
+    ? `Crafting Checklist — ${tabLabel}`
+    : 'Consolidated Crafting Checklist';
+
+  const isSessionInCategory = !targetCategory || activeSession?.snapshot?.category === targetCategory;
 
   return (
     <div
@@ -79,19 +114,19 @@ export default function PlannerCraftingChecklist({
       data-testid="planner-crafting-checklist"
     >
       {/* ── Summary Header ── */}
-      <div className="p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="p-3 sm:p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="flex items-start sm:items-center gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-lg shrink-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-lg shrink-0">
             🔨
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-sm sm:text-base font-bold text-[var(--text)] tracking-tight">
-                Consolidated Crafting Checklist
+                {checklistTitle}
               </h2>
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                 {activeFamilies.length} {activeFamilies.length === 1 ? 'family' : 'families'} •{' '}
-                {craftingPlan.craftingSteps.length} {craftingPlan.craftingSteps.length === 1 ? 'recipe' : 'recipes'}
+                {categorySteps.length} {categorySteps.length === 1 ? 'recipe' : 'recipes'}
               </span>
               {isBonusActive && (
                 <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1">
@@ -104,10 +139,23 @@ export default function PlannerCraftingChecklist({
               Upgrading lower-tier inventory yields{' '}
               <b className="text-emerald-400 font-semibold">{totalProducedUnits.toLocaleString()}</b> higher-tier{' '}
               {totalProducedUnits === 1 ? 'material' : 'materials'}, reducing farming needs.
-              {isBonusActive && moraSavings > 0 && (
-                <span className="text-blue-300 ml-1">
-                  Estimated fee diff: ~<b>{moraSavings.toLocaleString()}</b> Mora
-                  {bonusForecast?.sameDemandCovered ? ' (equivalent demand)' : ' (fulfills additional demand)'}.
+              {isBonusActive && netMoraDifference !== 0 && (
+                <span className={netMoraDifference > 0 ? 'text-blue-300 ml-1' : 'text-amber-300 ml-1'}>
+                  {netMoraDifference > 0 ? (
+                    isEquivalentDemand ? (
+                      <>
+                        Estimated savings: ~<b>{Math.round(netMoraDifference).toLocaleString()}</b> Mora (equivalent demand).
+                      </>
+                    ) : (
+                      <>
+                        Estimated fee diff: ~<b>{Math.round(netMoraDifference).toLocaleString()}</b> Mora (fulfills additional demand).
+                      </>
+                    )
+                  ) : (
+                    <>
+                      Estimated higher fee: +~<b>{Math.round(-netMoraDifference).toLocaleString()}</b> Mora (fulfills additional demand).
+                    </>
+                  )}
                 </span>
               )}
             </p>
@@ -116,7 +164,7 @@ export default function PlannerCraftingChecklist({
 
         {/* ── Actions & Mora Pill ── */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-end md:self-auto flex-wrap">
-          {activeSession && (
+          {isSessionInCategory && activeSession && (
             <button
               type="button"
               id="header-resume-crafting-session-btn"
@@ -165,40 +213,52 @@ export default function PlannerCraftingChecklist({
 
       {/* ── Collapsible Body ── */}
       {isExpanded && (
-        <div id="planner-crafting-checklist-body" className="border-t border-amber-500/20 p-3.5 sm:p-4 bg-black/20 space-y-4">
+        <div id="planner-crafting-checklist-body" className="border-t border-amber-500/20 p-3 sm:p-3.5 bg-black/20 space-y-3.5">
           {/* Mora Reconciliation Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-            <div className="p-2.5 rounded-xl bg-black/30 border border-white/5">
-              <p className="text-[10px] text-[var(--muted)] uppercase font-semibold tracking-wider">Progression Mora</p>
-              <p className="text-xs sm:text-sm font-bold text-gray-200 mt-0.5">{formatPlannerQuantity(progressionMora)}</p>
-            </div>
-            <div className="p-2.5 rounded-xl bg-black/30 border border-amber-500/20">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-black/30 border border-amber-500/20">
               <p className="text-[10px] text-amber-400 uppercase font-semibold tracking-wider">
-                {isBonusActive ? 'Estimated Crafting Fee' : '+ Additional Crafting'}
+                {isBonusActive ? 'Estimated Crafting Fee' : 'Category Crafting Fee'}
               </p>
               <p className="text-xs sm:text-sm font-bold text-amber-300 mt-0.5">
-                +{formatPlannerQuantity(effectiveMora)}
-                {isBonusActive && moraSavings > 0 && (
-                  <span className="text-[10px] text-blue-300 font-normal ml-1">
-                    (saves ~{formatPlannerQuantity(moraSavings)})
+                {formatPlannerQuantity(effectiveMora)} Mora
+                {isBonusActive && netMoraDifference !== 0 && (
+                  <span
+                    className={`text-[10px] font-normal ml-1 ${
+                      netMoraDifference > 0 ? 'text-blue-300' : 'text-amber-300'
+                    }`}
+                  >
+                    {netMoraDifference > 0
+                      ? isEquivalentDemand
+                        ? `(saves ~${formatPlannerQuantity(netMoraDifference)})`
+                        : `(fee diff: ~${formatPlannerQuantity(netMoraDifference)})`
+                      : `(+~${formatPlannerQuantity(-netMoraDifference)} higher fee)`}
                   </span>
                 )}
               </p>
             </div>
-            <div className="p-2.5 rounded-xl bg-black/30 border border-white/5">
-              <p className="text-[10px] text-[var(--muted)] uppercase font-semibold tracking-wider">Combined Total Mora</p>
-              <p className="text-xs sm:text-sm font-bold text-amber-200 mt-0.5">{formatPlannerQuantity(totalCombinedMora)}</p>
-            </div>
-            <div className="p-2.5 rounded-xl bg-black/30 border border-white/5">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-black/30 border border-white/5">
               <p className="text-[10px] text-[var(--muted)] uppercase font-semibold tracking-wider">Owned Inventory Mora</p>
               <p className={`text-xs sm:text-sm font-bold mt-0.5 ${isAffordable ? 'text-emerald-400' : 'text-amber-400'}`}>
-                {formatPlannerQuantity(userMora)}
+                {formatPlannerQuantity(userMora)} Mora
+              </p>
+            </div>
+            <div className="p-2 sm:p-2.5 rounded-xl bg-black/30 border border-white/5">
+              <p className="text-[10px] text-[var(--muted)] uppercase font-semibold tracking-wider">Fee Affordability</p>
+              <p className={`text-xs sm:text-sm font-bold mt-0.5 ${isAffordable ? 'text-emerald-400' : 'text-amber-400'}`}>
+                {isAffordable ? '✅ Fully Affordable' : `⚠️ Short by ${formatPlannerQuantity(moraShortage)}`}
+              </p>
+            </div>
+            <div className="p-2 sm:p-2.5 rounded-xl bg-black/30 border border-white/5">
+              <p className="text-[10px] text-[var(--muted)] uppercase font-semibold tracking-wider">Progression Mora (Global)</p>
+              <p className="text-xs sm:text-sm font-bold text-gray-300 mt-0.5" title="Gross progression Mora for all tracked characters and weapons">
+                {formatPlannerQuantity(progressionMora)} Mora
               </p>
             </div>
           </div>
 
           {/* Families List Grouped by Category */}
-          <div className="space-y-4 pt-1">
+          <div className="space-y-3 pt-0.5">
             {Object.entries(groupedByCategory).map(([category, families]) => (
               <div key={category} className="space-y-2">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--muted)]">
@@ -209,7 +269,7 @@ export default function PlannerCraftingChecklist({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
                   {families.map((fam) => {
                     const isAllCovered = fam.allCoveredByCrafting;
                     const remainingShortages = Object.entries(fam.adjustedShortages || {})
@@ -239,7 +299,8 @@ export default function PlannerCraftingChecklist({
                     return (
                       <div
                         key={fam.familyId}
-                        className="p-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-amber-400/40 transition-colors flex flex-col justify-between gap-2.5"
+                        data-testid={`crafting-family-card-${fam.familyId}`}
+                        className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-amber-400/40 transition-colors flex flex-col gap-2 self-start w-full"
                       >
                         {/* Family Header */}
                         <div className="flex items-center justify-between gap-2">
@@ -298,7 +359,7 @@ export default function PlannerCraftingChecklist({
                         </div>
 
                         {/* Ordered Crafting Steps */}
-                        <div className="space-y-2 text-xs bg-black/20 p-2.5 rounded-lg border border-white/5">
+                        <div className="space-y-1.5 text-xs bg-black/20 p-2 rounded-lg border border-white/5">
                           {fam.steps.map((step, idx) => {
                             const optStep = isEligible
                               ? familyForecast?.optimizedSteps?.find((s) => s.recipeId === step.recipeId)
@@ -344,7 +405,7 @@ export default function PlannerCraftingChecklist({
                             return (
                               <div
                                 key={step.recipeId}
-                                className="p-3 rounded-lg bg-black/30 border border-white/5 space-y-2.5"
+                                className="p-2.5 rounded-lg bg-black/30 border border-white/5 space-y-2"
                                 data-testid={`optimized-step-${step.recipeId}`}
                               >
                                 <div className="flex items-center justify-between gap-2">
@@ -364,7 +425,7 @@ export default function PlannerCraftingChecklist({
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                                   {/* Panel 1: Suggested First Batch */}
-                                  <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 space-y-1">
+                                  <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/25 space-y-1">
                                     <div className="flex items-center justify-between">
                                       <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wide">
                                         {isConditional && effectivePriorIndex !== null
@@ -420,7 +481,7 @@ export default function PlannerCraftingChecklist({
                                   </div>
 
                                   {/* Panel 2: Estimated Full Optimization */}
-                                  <div className="p-2.5 rounded-lg bg-white/5 border border-white/10 space-y-1">
+                                  <div className="p-2 rounded-lg bg-white/5 border border-white/10 space-y-1">
                                     <div className="flex items-center justify-between">
                                       <span className="text-[11px] font-bold text-gray-300 uppercase tracking-wide">
                                         Estimated full optimization:

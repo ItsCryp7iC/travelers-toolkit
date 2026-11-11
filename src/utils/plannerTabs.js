@@ -14,6 +14,24 @@ export const PLANNER_TABS = [
   { id: 'per_weapon', label: 'Weapons', icon: '/Weapons.png' }
 ];
 
+export const TAB_TO_CRAFTING_CATEGORY_MAP = {
+  talent: 'talent_materials',
+  common_enhancement: 'common_enemy',
+  elite_enhancement: 'elite_enemy',
+  weapon_ascension: 'weapon_ascension',
+  character_gem: 'character_gems',
+};
+
+export function getCraftingCategoryForTab(tabId) {
+  if (!tabId || typeof tabId !== 'string') return null;
+  return TAB_TO_CRAFTING_CATEGORY_MAP[tabId] || null;
+}
+
+export function getTabLabel(tabId) {
+  const found = PLANNER_TABS.find((t) => t.id === tabId);
+  return found ? found.label : null;
+}
+
 export function getPlannerTabId(tabParam) {
   if (!tabParam) return 'daily_action';
   const found = PLANNER_TABS.find((t) => t.id === tabParam);

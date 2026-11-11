@@ -19,7 +19,7 @@ describe('Phase CRAFT-D3: Crafting Bonus Forecasting Planner Integration', () =>
     });
   });
 
-  it('1. Bonus controls render in toolbar in Crafting-Aware mode, default to disabled, and are hidden in Raw mode', () => {
+  it('1. Bonus controls render in toolbar in Crafting-Aware mode, default to enabled (10% Double), and are hidden in Raw mode', () => {
     useStore.setState({
       roster: {
         Razor: {
@@ -40,19 +40,12 @@ describe('Phase CRAFT-D3: Crafting Bonus Forecasting Planner Integration', () =>
       </MemoryRouter>
     );
 
-    // Control 1: Include Crafting Bonuses toggle button exists
+    // Control 1: Include Crafting Bonuses toggle button exists and defaults to enabled (R5)
     const bonusToggle = screen.getByRole('button', { name: /Include Crafting Bonuses/i });
     expect(bonusToggle).toBeDefined();
-    expect(bonusToggle.getAttribute('aria-pressed')).toBe('false');
-
-    // Control 2: Bonus type selector is NOT visible when toggle is off
-    expect(screen.queryByRole('radiogroup', { name: /Bonus Type/i })).toBeNull();
-
-    // Click toggle to enable
-    fireEvent.click(bonusToggle);
     expect(bonusToggle.getAttribute('aria-pressed')).toBe('true');
 
-    // Control 2 is now visible and defaults to "10% Double"
+    // Control 2: Bonus type selector is visible immediately and defaults to "10% Double" (R5)
     const radioGroup = screen.getByRole('radiogroup', { name: /Bonus Type/i });
     expect(radioGroup).toBeDefined();
 
@@ -61,10 +54,20 @@ describe('Phase CRAFT-D3: Crafting Bonus Forecasting Planner Integration', () =>
     expect(doubleRadio.getAttribute('aria-checked')).toBe('true');
     expect(refundRadio.getAttribute('aria-checked')).toBe('false');
 
+    // Click toggle to disable
+    fireEvent.click(bonusToggle);
+    expect(bonusToggle.getAttribute('aria-pressed')).toBe('false');
+    expect(screen.queryByRole('radiogroup', { name: /Bonus Type/i })).toBeNull();
+
+    // Click toggle to re-enable
+    fireEvent.click(bonusToggle);
+    expect(bonusToggle.getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('radiogroup', { name: /Bonus Type/i })).toBeDefined();
+
     // Switch to 25% Refund
-    fireEvent.click(refundRadio);
-    expect(refundRadio.getAttribute('aria-checked')).toBe('true');
-    expect(doubleRadio.getAttribute('aria-checked')).toBe('false');
+    const refundRadioReopened = screen.getByRole('radio', { name: /25% Refund/i });
+    fireEvent.click(refundRadioReopened);
+    expect(refundRadioReopened.getAttribute('aria-checked')).toBe('true');
 
     // Switch to Raw mode -> Bonus controls must be hidden
     const rawBtn = screen.getByRole('button', { name: /Raw Shortages/i });
@@ -72,10 +75,11 @@ describe('Phase CRAFT-D3: Crafting Bonus Forecasting Planner Integration', () =>
     expect(screen.queryByRole('button', { name: /Include Crafting Bonuses/i })).toBeNull();
     expect(screen.queryByRole('radiogroup', { name: /Bonus Type/i })).toBeNull();
 
-    // Switch back to Crafting-Aware mode -> Bonus toggle reappears
+    // Switch back to Crafting-Aware mode -> Bonus toggle reappears and selection is preserved
     const awareBtn = screen.getByRole('button', { name: /Crafting-Aware/i });
     fireEvent.click(awareBtn);
     expect(screen.getByRole('button', { name: /Include Crafting Bonuses/i })).toBeDefined();
+    expect(screen.getByRole('radio', { name: /25% Refund/i }).getAttribute('aria-checked')).toBe('true');
   });
 
   it('2. Authoritative Hilichurl Mask Fixture: Guaranteed 10 shortage becomes likely covered under 10% Double & 25% Refund without claiming guaranteed allDone', () => {
@@ -236,7 +240,7 @@ describe('Phase CRAFT-D3: Crafting Bonus Forecasting Planner Integration', () =>
     });
 
     render(
-      <MemoryRouter initialEntries={['/planner']}>
+      <MemoryRouter initialEntries={['/planner?tab=common_enhancement']}>
         <Planner />
       </MemoryRouter>
     );
@@ -245,19 +249,23 @@ describe('Phase CRAFT-D3: Crafting Bonus Forecasting Planner Integration', () =>
     const viewChecklistBtn = screen.getByRole('button', { name: /View Full Checklist/i });
     fireEvent.click(viewChecklistBtn);
 
-    // Baseline: before bonus is enabled, shows standard "Craft X×"
-    expect(screen.queryByText(/Suggested 1st batch/i)).toBeNull();
-
-    // Enable Crafting Bonuses
-    const bonusToggle = screen.getByRole('button', { name: /Include Crafting Bonuses/i });
-    fireEvent.click(bonusToggle);
-
-    // Now checklist displays optimized steps with conservative first batch and baseline comparison
+    // In R5, bonuses default to enabled on mount, displaying optimized steps with conservative first batch
     expect(screen.getAllByText(/Suggested 1st batch:/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Guaranteed baseline:/i).length).toBeGreaterThan(0);
     expect(
       screen.getByText(/Check resulting materials after each batch/i)
     ).toBeDefined();
+
+    // Disable Crafting Bonuses
+    const bonusToggle = screen.getByRole('button', { name: /Include Crafting Bonuses/i });
+    fireEvent.click(bonusToggle);
+
+    // Baseline: when bonus is disabled, shows standard "Craft X×" without suggested 1st batch
+    expect(screen.queryByText(/Suggested 1st batch/i)).toBeNull();
+
+    // Re-enable Crafting Bonuses
+    fireEvent.click(bonusToggle);
+    expect(screen.getAllByText(/Suggested 1st batch:/i).length).toBeGreaterThan(0);
   });
 
   it('6. Phase CRAFT-D4-A.3: Tier rows synchronize Craft badge to approximate operations count when bonus active, exact when disabled', () => {
