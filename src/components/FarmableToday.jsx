@@ -11,6 +11,7 @@ import { resolveSpecificItem, getJsonData } from '../utils/resolver'
 import { getCharacterAvatar, getWeaponIcon, getMaterialIcon } from '../utils/assetHelper'
 import weeklyBossData from '../data/weekly_boss.json'
 import { computeCraftingPlan } from '../utils/craftingEngine'
+import PlannerInventoryQuantityInput from './Planner/PlannerInventoryQuantityInput'
 
 const REGION_ORDER = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya'];
 
@@ -163,17 +164,11 @@ function DomainCard({
                 </div>
 
                 {/* Have */}
-                <div
-                  className="flex flex-col items-center justify-center py-1 px-1.5 rounded bg-black/25 border border-white/5 min-w-0"
-                  title={`Have: ${(owned || 0).toLocaleString()}`}
-                >
-                  <span className="text-[10px] text-[var(--muted)] font-medium uppercase tracking-wider truncate w-full">
-                    Have<span className="sr-only">: </span>
-                  </span>
-                  <span className="font-bold text-[var(--text)] text-xs sm:text-sm truncate w-full">
-                    {formatPlannerQuantity(owned)}
-                  </span>
-                </div>
+                <PlannerInventoryQuantityInput
+                  materialId={tier.id}
+                  materialName={tier.name}
+                  currentQuantity={owned}
+                />
 
                 {/* To Farm */}
                 <div

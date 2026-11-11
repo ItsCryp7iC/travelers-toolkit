@@ -872,4 +872,171 @@ describe('PLANNER-UI-R1: Material Card Readability & Responsive Layout Suite', (
     const currentInv = useStore.getState().inventory;
     expect(currentInv).toEqual(initialInv);
   });
+
+  // ── 21. Noncraftable material with shortage displays Farming Required ──
+  it('21. Noncraftable material with shortage displays Farming required badge', async () => {
+    const familyObj = {
+      familyName: 'Valberry',
+      type: 'local_specialty',
+      familyData: {
+        familyId: 'Valberry',
+        tiers: [{ id: 'Valberry', name: 'Valberry', rarity: 1 }],
+      },
+      items: {
+        Valberry: { item: { name: 'Valberry', required: 60 } },
+      },
+      neededBy: [],
+    };
+
+    await renderCard({
+      domainName: 'Mondstadt',
+      familyObj,
+      accent: '#4ADE80',
+      globalCosts: { Valberry: 60 },
+      inventory: { Valberry: 5 },
+      craftingMode: 'crafting-aware',
+    });
+
+    expect(container.textContent).toContain('Farming required');
+    expect(container.textContent).toContain('🌾');
+  });
+
+  // ── 22. Craftable family with no crafting steps displays Farming Required ──
+  it('22. Craftable family with no crafting steps displays Farming required badge', async () => {
+    const familyObj = {
+      familyName: 'Humanoid Ruin Machine',
+      type: 'elite_mob',
+      familyData: {
+        familyId: 'Chaos',
+        tiers: [
+          { id: 'ChaosDevice', name: 'Chaos Device', rarity: 2 },
+          { id: 'ChaosCircuit', name: 'Chaos Circuit', rarity: 3 },
+          { id: 'ChaosCore', name: 'Chaos Core', rarity: 4 },
+        ],
+      },
+      items: {
+        ChaosDevice: { item: { name: 'ChaosDevice', required: 254 } },
+        ChaosCircuit: { item: { name: 'ChaosCircuit', required: 273 } },
+        ChaosCore: { item: { name: 'ChaosCore', required: 601 } },
+      },
+      neededBy: [],
+    };
+
+    const familyPlan = {
+      isCraftable: true,
+      requiresCrafting: false,
+      allCoveredByCrafting: false,
+      totalShortage: 1128,
+    };
+
+    await renderCard({
+      domainName: 'Overworld',
+      familyObj,
+      accent: '#F97316',
+      globalCosts: { ChaosDevice: 254, ChaosCircuit: 273, ChaosCore: 601 },
+      inventory: { ChaosDevice: 0, ChaosCircuit: 0, ChaosCore: 0 },
+      craftingMode: 'crafting-aware',
+      craftingPlan: { families: { Chaos: familyPlan } },
+    });
+
+    expect(container.textContent).toContain('Farming required');
+    expect(container.textContent).toContain('🌾');
+  });
+
+  // ── 23. Fully stocked non-craftable family displays Already Stocked ──
+  it('23. Fully stocked non-craftable family displays Already stocked badge', async () => {
+    const familyObj = {
+      familyName: 'Philanemo Mushroom',
+      type: 'local_specialty',
+      familyData: {
+        familyId: 'PhilanemoMushroom',
+        tiers: [{ id: 'PhilanemoMushroom', name: 'Philanemo Mushroom', rarity: 1 }],
+      },
+      items: {
+        PhilanemoMushroom: { item: { name: 'PhilanemoMushroom', required: 10 } },
+      },
+      neededBy: [],
+    };
+
+    await renderCard({
+      domainName: 'Mondstadt',
+      familyObj,
+      accent: '#4ADE80',
+      globalCosts: { PhilanemoMushroom: 10 },
+      inventory: { PhilanemoMushroom: 18 },
+      craftingMode: 'crafting-aware',
+    });
+
+    expect(container.textContent).toContain('Already stocked');
+    expect(container.textContent).toContain('✅');
+  });
+
+  // ── 24. Guaranteed crafting coverage displays Crafting Required ──
+  it('24. Guaranteed crafting coverage displays Crafting required — No additional farming badge', async () => {
+    const familyObj = {
+      familyName: 'Slime',
+      type: 'mob',
+      familyData: {
+        familyId: 'Slime',
+        tiers: [
+          { id: 'SlimeCondensate', name: 'Slime Condensate', rarity: 1 },
+          { id: 'SlimeSecretions', name: 'Slime Secretions', rarity: 2 },
+        ],
+      },
+      items: {
+        SlimeCondensate: { item: { name: 'SlimeCondensate', required: 0 } },
+        SlimeSecretions: { item: { name: 'SlimeSecretions', required: 20 } },
+      },
+      neededBy: [],
+    };
+
+    const familyPlan = {
+      isCraftable: true,
+      requiresCrafting: true,
+      allCoveredByCrafting: true,
+      totalShortage: 0,
+      steps: [{ outputItemId: 'SlimeSecretions', totalOutputProduced: 20 }],
+    };
+
+    await renderCard({
+      domainName: 'Overworld',
+      familyObj,
+      accent: '#4ADE80',
+      globalCosts: { SlimeCondensate: 0, SlimeSecretions: 20 },
+      inventory: { SlimeCondensate: 500, SlimeSecretions: 0 },
+      craftingMode: 'crafting-aware',
+      craftingPlan: { families: { Slime: familyPlan } },
+    });
+
+    expect(container.textContent).toContain('Crafting required — No additional farming');
+    expect(container.textContent).toContain('🔨');
+  });
+
+  // ── 25. Currency cards do not display farming badges ──
+  it('25. Currency cards omit farming status badge', async () => {
+    const familyObj = {
+      familyName: 'Mora',
+      type: 'currency',
+      familyData: {
+        familyId: 'Mora',
+        tiers: [{ id: 'Mora', name: 'Mora', rarity: 3 }],
+      },
+      items: {
+        Mora: { item: { name: 'Mora', required: 5000000 } },
+      },
+      neededBy: [],
+    };
+
+    await renderCard({
+      domainName: 'Ley Line Outcrop',
+      familyObj,
+      accent: '#EAB308',
+      globalCosts: { Mora: 5000000 },
+      inventory: { Mora: 1000000 },
+      craftingMode: 'crafting-aware',
+    });
+
+    expect(container.textContent).not.toContain('Farming required');
+    expect(container.textContent).not.toContain('Already stocked');
+  });
 });

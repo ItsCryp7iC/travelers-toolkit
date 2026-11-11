@@ -4,6 +4,8 @@ import { formatItemName } from '../utils/calculator'
 import { formatPlannerQuantity } from '../utils/plannerTabs'
 import { getFamilyForMaterial } from '../data/craftingRecipes'
 import useCraftingSessionStore from '../store/useCraftingSessionStore'
+import PlannerInventoryQuantityInput from './Planner/PlannerInventoryQuantityInput'
+import { computeFamilyStatus } from '../utils/plannerStatus'
 
 const RARITY_COLORS = {
   5: '#D87A34',
@@ -30,7 +32,7 @@ export default function DomainCard({
   const startSession = useCraftingSessionStore((s) => s.startSession);
   const openDrawer = useCraftingSessionStore((s) => s.openDrawer);
 
-  const { familyName, familyData, items, neededBy } = familyObj;
+  const { familyData, items, neededBy } = familyObj;
 
   const chars = neededBy?.filter(e => e.type === 'character') || [];
   const weaps = neededBy?.filter(e => e.type === 'weapon') || [];
@@ -69,46 +71,19 @@ export default function DomainCard({
     }
   };
 
-  // Compute family-level crafting status pill
-  let familyStatusPill = null;
-  if (craftingMode === 'crafting-aware' && familyPlan && familyPlan.isCraftable) {
-    if (familyPlan.allDirectlyStocked) {
-      familyStatusPill = {
-        label: 'Already stocked',
-        bg: 'rgba(74, 222, 128, 0.15)',
-        text: '#4ADE80',
-        border: 'rgba(74, 222, 128, 0.3)',
-        icon: '✅'
-      };
-    } else if (familyPlan.requiresCrafting && familyPlan.allCoveredByCrafting) {
-      familyStatusPill = {
-        label: 'Crafting required — No additional farming',
-        bg: 'rgba(78, 201, 176, 0.15)',
-        text: '#4EC9B0',
-        border: 'rgba(78, 201, 176, 0.3)',
-        icon: '🔨'
-      };
-    } else if (isBonusActive && familyForecast?.isLikelyCovered) {
-      const bonusName = craftingBonusOptions.bonusType === 'ingredient_refund' ? '25% Refund' : '10% Double';
-      familyStatusPill = {
-        label: `Likely covered with ${bonusName}`,
-        bg: 'rgba(96, 165, 250, 0.15)',
-        text: '#60A5FA',
-        border: 'rgba(96, 165, 250, 0.3)',
-        icon: '🎲'
-      };
-    } else if (familyPlan.requiresCrafting && !familyPlan.allCoveredByCrafting) {
-      familyStatusPill = {
-        label: isBonusActive && familyForecast && familyForecast.totalExpectedShortage < familyPlan.totalShortage
-          ? 'Farming reduced with bonus'
-          : 'Farming required',
-        bg: 'rgba(249, 115, 22, 0.15)',
-        text: '#F97316',
-        border: 'rgba(249, 115, 22, 0.3)',
-        icon: '🌾'
-      };
-    }
-  }
+  // Compute family-level coverage and crafting status pill
+  const familyStatusPill = computeFamilyStatus({
+    familyObj,
+    familyData,
+    items,
+    globalCosts,
+    inventory,
+    craftingMode,
+    familyPlan,
+    isBonusActive,
+    familyForecast,
+    craftingBonusOptions,
+  });
 
   return (
     <div className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--gold)] transition-colors overflow-hidden relative group">
@@ -189,7 +164,7 @@ export default function DomainCard({
       {/* Body: Tier List */}
       <div className="p-3 space-y-2.5 flex-1">
         {familyData.tiers.map(tier => {
-          const itemObj = items[tier.id]?.item;
+          const itemObj = items?.[tier.id]?.item;
           let required = globalCosts[tier.id] ?? 0;
           if (itemObj) {
             required = itemObj.required ?? globalCosts[tier.id] ?? 0;
@@ -291,17 +266,11 @@ export default function DomainCard({
                 </div>
 
                 {/* Have */}
-                <div
-                  className="flex flex-col items-center justify-center py-1 px-1.5 rounded bg-black/25 border border-white/5 min-w-0"
-                  title={`Have: ${(owned || 0).toLocaleString()}`}
-                >
-                  <span className="text-[10px] text-[var(--muted)] font-medium uppercase tracking-wider truncate w-full">
-                    Have<span className="sr-only">: </span>
-                  </span>
-                  <span className="font-bold text-[var(--text)] text-xs sm:text-sm truncate w-full">
-                    {formatPlannerQuantity(owned)}
-                  </span>
-                </div>
+                <PlannerInventoryQuantityInput
+                  materialId={tier.id}
+                  materialName={tier.name}
+                  currentQuantity={owned}
+                />
 
                 {/* To Farm */}
                 <div
