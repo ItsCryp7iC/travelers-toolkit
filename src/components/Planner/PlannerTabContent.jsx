@@ -225,7 +225,7 @@ export default function PlannerTabContent({
       )}
 
       {activeTab === 'currency_exp' && (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {buildCurrencyExpItems(toFarm, inventory).map(({ config, item }) => (
             <DomainCard
               key={config.id}
@@ -308,7 +308,7 @@ export default function PlannerTabContent({
       {activeTab === 'elite_enhancement' && (
         toFarm.eliteMob?.length > 0
           ? (
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {Object.values(groupedEliteEnemies)
                   .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                   .map(bossObj => (
@@ -340,7 +340,7 @@ export default function PlannerTabContent({
       {activeTab === 'common_enhancement' && (
         toFarm.mob?.length > 0
           ? (
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {Object.values(groupedCommonEnemies)
                   .sort((a, b) => a.bossSortOrder - b.bossSortOrder)
                   .map(enemyObj => (

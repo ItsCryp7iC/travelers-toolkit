@@ -63,15 +63,18 @@ function DomainCard({
       <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity pointer-events-none" style={{ background: accent }} />
       
       {/* Header */}
-      <div className="px-3 py-1.5 border-b border-[var(--border)] flex items-center gap-2" style={{ background: 'rgba(0,0,0,0.2)' }}>
-        <span className="text-xs">🏛️</span>
-        <span className="text-xs font-bold tracking-wider uppercase text-[var(--muted)] truncate">
+      <div className="px-3 py-2 border-b border-[var(--border)] flex items-start gap-2 min-w-0" style={{ background: 'rgba(0,0,0,0.2)' }}>
+        <span className="text-xs shrink-0 mt-0.5" aria-hidden="true">🏛️</span>
+        <span
+          className="text-xs font-bold tracking-wider uppercase text-[var(--muted)] leading-snug break-words flex-1 min-w-0"
+          title={`Domain: ${domainName}`}
+        >
           Domain: {domainName}
         </span>
       </div>
 
       {/* Body: Tier List */}
-      <div className="p-3 space-y-3 flex-1">
+      <div className="p-3 space-y-2.5 flex-1">
         {familyData.tiers.map(tier => {
           let required = globalCosts[tier.id] || 0;
           if (items[tier.id]) {
@@ -117,73 +120,117 @@ function DomainCard({
           const rarityColor = RARITY_COLORS[tier.rarity] || RARITY_COLORS[3];
 
           return (
-            <div key={tier.id} className="flex flex-col gap-1.5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
-                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: rarityColor }} />
-                  <img
-                    src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : 'Weapon Ascension Material')}
-                    alt={tier.name}
-                    className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-md shrink-0"
-                    onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
-                  />
-                  <span className="hidden text-xl shrink-0">📦</span>
-                  <span className="text-xs sm:text-sm text-[var(--text)] truncate font-semibold" style={{ color: rarityColor }} title={formatItemName(tier.name)}>
-                    {formatItemName(tier.name)}
+            <div
+              key={tier.id}
+              className="flex flex-col gap-2 p-2.5 rounded-lg bg-black/15 border border-white/5 hover:border-white/10 transition-colors"
+            >
+              {/* Row 1: Material Identity */}
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{ background: rarityColor }}
+                  aria-hidden="true"
+                />
+                <img
+                  src={getMaterialIcon(tier.name, familyObj.type === 'talent' ? 'Talent Material' : 'Weapon Ascension Material')}
+                  alt={tier.name}
+                  className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-md shrink-0"
+                  onError={(e) => { e.target.style.display = 'none'; if (e.target.nextSibling) e.target.nextSibling.style.display = 'block'; }}
+                />
+                <span className="hidden text-xl shrink-0" aria-hidden="true">📦</span>
+                <span
+                  className="text-xs sm:text-sm font-semibold leading-snug break-words flex-1 min-w-0"
+                  style={{ color: rarityColor }}
+                  title={formatItemName(tier.name)}
+                >
+                  {formatItemName(tier.name)}
+                </span>
+              </div>
+
+              {/* Row 2: 3-Column Statistics Grid */}
+              <div className="grid grid-cols-3 gap-1.5 text-center">
+                {/* Need */}
+                <div
+                  className="flex flex-col items-center justify-center py-1 px-1.5 rounded bg-black/25 border border-white/5 min-w-0"
+                  title={`Need: ${(required || 0).toLocaleString()}`}
+                >
+                  <span className="text-[10px] text-[var(--muted)] font-medium uppercase tracking-wider truncate w-full">
+                    Need<span className="sr-only">: </span>
+                  </span>
+                  <span className="font-bold text-[var(--text)] text-xs sm:text-sm truncate w-full">
+                    {formatPlannerQuantity(required)}
                   </span>
                 </div>
-                <div className="flex items-center gap-2.5 sm:gap-3 text-[11px] sm:text-xs shrink-0 self-end sm:self-auto pl-7 sm:pl-0 flex-wrap">
-                  <span className="text-[var(--muted)]" title={`Need: ${(required || 0).toLocaleString()}`}>Need: <span className="font-bold text-[var(--text)]">{formatPlannerQuantity(required)}</span></span>
-                  <span className="text-[var(--muted)]" title={`Have: ${(owned || 0).toLocaleString()}`}>Have: <span className="text-[var(--text)] font-bold">{formatPlannerQuantity(owned)}</span></span>
-                  {hasCrafting && (
-                    <span
-                      className="text-amber-400 font-semibold"
-                      title={
-                        isOptimized
-                          ? `Est. craft operations: ≈${displayCraftCount.toLocaleString()} (Guaranteed: ${craftQuantity.toLocaleString()}) | Est. output: ~${Math.round(expectedOutput).toLocaleString()}`
-                          : `Recommended craft: ${craftQuantity.toLocaleString()}`
-                      }
-                    >
-                      Craft:{' '}
-                      <span className="font-bold text-amber-300">
-                        {isOptimized
-                          ? `≈${formatPlannerQuantity(displayCraftCount)}`
-                          : `+${formatPlannerQuantity(craftQuantity)}`}
-                      </span>
-                    </span>
-                  )}
+
+                {/* Have */}
+                <div
+                  className="flex flex-col items-center justify-center py-1 px-1.5 rounded bg-black/25 border border-white/5 min-w-0"
+                  title={`Have: ${(owned || 0).toLocaleString()}`}
+                >
+                  <span className="text-[10px] text-[var(--muted)] font-medium uppercase tracking-wider truncate w-full">
+                    Have<span className="sr-only">: </span>
+                  </span>
+                  <span className="font-bold text-[var(--text)] text-xs sm:text-sm truncate w-full">
+                    {formatPlannerQuantity(owned)}
+                  </span>
+                </div>
+
+                {/* To Farm */}
+                <div
+                  className="flex flex-col items-center justify-center py-1 px-1.5 rounded bg-black/25 border border-white/5 min-w-0"
+                  title={
+                    isBonusActive && expectedShortage !== adjustedShortage
+                      ? `Est. To Farm: ${expectedShortage} (Guaranteed: ${adjustedShortage})`
+                      : `To Farm: ${(toFarm || 0).toLocaleString()}`
+                  }
+                >
+                  <span className="text-[10px] text-[var(--muted)] font-medium uppercase tracking-wider truncate w-full">
+                    To Farm<span className="sr-only">: </span>
+                  </span>
                   <span
-                    className="text-[var(--muted)]"
-                    title={
-                      isBonusActive && expectedShortage !== adjustedShortage
-                        ? `Est. To Farm: ${expectedShortage} (Guaranteed: ${adjustedShortage})`
-                        : `To Farm: ${(toFarm || 0).toLocaleString()}`
-                    }
+                    className="font-bold text-xs sm:text-sm truncate w-full"
+                    style={{
+                      color: isCovered
+                        ? 'var(--muted)'
+                        : isLikelyCovered
+                        ? '#60A5FA'
+                        : toFarm > 0
+                        ? accent
+                        : 'var(--muted)',
+                    }}
                   >
-                    To Farm:{' '}
-                    <span
-                      className="font-bold"
-                      style={{
-                        color: isCovered
-                          ? 'var(--muted)'
-                          : isLikelyCovered
-                          ? '#60A5FA'
-                          : toFarm > 0
-                          ? accent
-                          : 'var(--muted)',
-                      }}
-                    >
-                      {isLikelyCovered ? (
-                        <span title={`Guaranteed shortage: ${adjustedShortage}`}>🎲 ~0</span>
-                      ) : isBonusActive && expectedShortage !== adjustedShortage ? (
-                        <span title={`Guaranteed shortage: ${adjustedShortage}`}>~{formatPlannerQuantity(toFarm)}</span>
-                      ) : (
-                        formatPlannerQuantity(toFarm)
-                      )}
-                    </span>
+                    {isLikelyCovered ? (
+                      <span title={`Guaranteed shortage: ${adjustedShortage}`}>🎲 ~0</span>
+                    ) : isBonusActive && expectedShortage !== adjustedShortage ? (
+                      <span title={`Guaranteed shortage: ${adjustedShortage}`}>~{formatPlannerQuantity(toFarm)}</span>
+                    ) : (
+                      formatPlannerQuantity(toFarm)
+                    )}
                   </span>
                 </div>
               </div>
+
+              {/* Row 3: Crafting Indicator (when applicable) */}
+              {hasCrafting && (
+                <div
+                  className="flex items-center gap-1.5 text-xs text-amber-400 font-semibold bg-amber-500/10 px-2 py-1 rounded border border-amber-500/20"
+                  title={
+                    isOptimized
+                      ? `Est. craft operations: ≈${displayCraftCount.toLocaleString()} (Guaranteed: ${craftQuantity.toLocaleString()}) | Est. output: ~${Math.round(expectedOutput).toLocaleString()}`
+                      : `Recommended craft: ${craftQuantity.toLocaleString()}`
+                  }
+                >
+                  <span aria-hidden="true">🔨</span>
+                  <span>Craft: </span>
+                  <span className="font-bold text-amber-300">
+                    {isOptimized
+                      ? `≈${formatPlannerQuantity(displayCraftCount)}`
+                      : `+${formatPlannerQuantity(craftQuantity)}`}
+                  </span>
+                </div>
+              )}
+
+              {/* Row 4: Subtle Progress Indicator */}
               <div className="h-1 bg-[var(--elevated)] rounded-full overflow-hidden border border-[var(--border)] relative">
                 <div
                   className="absolute top-0 left-0 h-full rounded-full transition-all"
