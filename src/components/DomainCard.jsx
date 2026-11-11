@@ -221,8 +221,10 @@ export default function DomainCard({
           const rarityColor = RARITY_COLORS[tier.rarity] || RARITY_COLORS[3];
 
           const isCraftableFamily = Boolean(
-            (familyPlan && familyPlan.isCraftable) ||
-            (familyData?.tiers?.length > 1 && !['local_specialty', 'world_boss', 'weekly_boss', 'forging_materials', 'currency'].includes(familyObj.type))
+            typeof familyPlan?.isCraftable === 'boolean'
+              ? familyPlan.isCraftable
+              : (getFamilyForMaterial(tier.id)?.isCraftable ??
+                 (familyData?.tiers?.length > 1 && !['local_specialty', 'world_boss', 'weekly_boss', 'forging_materials', 'currency', 'gem'].includes(familyObj.type)))
           );
 
           const thirdCell = getThirdCellPresentation({

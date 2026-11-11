@@ -1168,4 +1168,62 @@ describe('PLANNER-UI-R3: Extra Materials & Crafting-Aware Surplus Suite', () => 
     expect(extraStat.textContent).toContain('Extra: +8');
     expect(screen.queryByTestId('material-to-farm-Philanemo Mushroom')).not.toBeInTheDocument();
   });
+
+  // ── 25. Noncraftable Multi-Tier Family Integrity (Brilliant Diamond) ──
+  it('25. Brilliant Diamond surplus does not show craftable-only tooltip or craft actions', () => {
+    const diamondFamilyObj = {
+      familyName: 'Brilliant Diamond',
+      type: 'gem',
+      familyData: {
+        familyId: 'BrilliantDiamond',
+        tiers: [
+          { id: 'BrilliantDiamondSliver', name: 'Brilliant Diamond Sliver', rarity: 2 },
+          { id: 'BrilliantDiamondFragment', name: 'Brilliant Diamond Fragment', rarity: 3 },
+          { id: 'BrilliantDiamondChunk', name: 'Brilliant Diamond Chunk', rarity: 4 },
+          { id: 'BrilliantDiamondGemstone', name: 'Brilliant Diamond Gemstone', rarity: 5 },
+        ],
+      },
+      items: {
+        BrilliantDiamondSliver: { item: { name: 'BrilliantDiamondSliver', required: 0, owned: 0, toFarm: 0 } },
+        BrilliantDiamondFragment: { item: { name: 'BrilliantDiamondFragment', required: 0, owned: 0, toFarm: 0 } },
+        BrilliantDiamondChunk: { item: { name: 'BrilliantDiamondChunk', required: 2, owned: 6, toFarm: 0 } },
+        BrilliantDiamondGemstone: { item: { name: 'BrilliantDiamondGemstone', required: 6, owned: 0, toFarm: 6 } },
+      },
+      craftingPlan: {
+        familyId: 'BrilliantDiamond',
+        isCraftable: false,
+        steps: [],
+      },
+      neededBy: [{ name: 'Traveler', type: 'character' }],
+    };
+
+    useStore.setState({
+      inventory: { BrilliantDiamondChunk: 6, BrilliantDiamondGemstone: 0 },
+    });
+
+    render(
+      <DomainCard
+        domainName="CHARACTER ASCENSION MATERIAL"
+        familyObj={diamondFamilyObj}
+        accent="#4ADE80"
+        globalCosts={{ BrilliantDiamondChunk: 2, BrilliantDiamondGemstone: 6 }}
+        inventory={{ BrilliantDiamondChunk: 6, BrilliantDiamondGemstone: 0 }}
+        craftingMode="crafting-aware"
+      />
+    );
+
+    // BrilliantDiamondChunk has surplus (+4)
+    const chunkExtra = screen.getByTestId('material-extra-BrilliantDiamondChunk');
+    expect(chunkExtra).toBeInTheDocument();
+    expect(chunkExtra.textContent).toContain('+4');
+
+    // Title must NOT contain "Extra before crafting"
+    const titleAttr = chunkExtra.getAttribute('title');
+    expect(titleAttr).toBe('Materials owned beyond current progression requirements.');
+    expect(titleAttr).not.toContain('Extra before crafting');
+
+    // Must not render any craft buttons for noncraftable diamond
+    expect(screen.queryByText(/Crafting Session/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Craft with Session/i)).not.toBeInTheDocument();
+  });
 });
