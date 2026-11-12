@@ -591,8 +591,8 @@ export default function Characters() {
                 selectedNames={selectedNames}
                 setSelectedNames={setSelectedNames}
                 setEditingChar={setEditingChar}
-                updateCharacter={updateCharacter}
-                removeCharacter={removeCharacter}
+                updateCharacter={(name, patch) => updateCharacter(name, patch, 'characters_table')}
+                removeCharacter={(name) => removeCharacter(name, 'characters_table')}
               />
             </div>
           )}

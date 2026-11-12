@@ -201,7 +201,11 @@ export default function Achievements() {
       checked,
       new Date().toISOString()
     );
-    setAchievementProgress(nextProgress, { mode: 'replace' });
+    setAchievementProgress(nextProgress, {
+      mode: 'replace',
+      source: 'achievements_page',
+      trigger: { targetId: id, checked },
+    });
   };
 
   return (

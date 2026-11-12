@@ -106,7 +106,7 @@ export default function Dashboard() {
 
  if (!window.confirm(`Are you sure you want to add all ${missing.length} missing characters to your roster?`)) return
 
- batchAddCharacters(missing.map((c) => c.name))
+ batchAddCharacters(missing.map((c) => c.name), 'dashboard_quick_add')
  notify.success(`Successfully added ${missing.length} missing characters!`)
  }
 

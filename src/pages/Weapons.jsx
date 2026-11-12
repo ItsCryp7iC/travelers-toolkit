@@ -148,9 +148,9 @@ export default function Weapons() {
         selectedIds={selectedIds}
         onSave={(payloads) => {
           if (Array.isArray(payloads)) {
-            bulkUpdateWeapons(payloads);
+            bulkUpdateWeapons(payloads, 'weapons_bulk_edit');
           } else {
-            bulkUpdateWeapons(selectedIds, payloads);
+            bulkUpdateWeapons(selectedIds, payloads, 'weapons_bulk_edit');
           }
           setBulkModalOpen(false);
           setSelectedIds([]);
@@ -199,7 +199,7 @@ export default function Weapons() {
                   <button
                     onClick={() => {
                       if (window.confirm(`Are you sure you want to delete these ${selectedIds.length} weapons?`)) {
-                        batchRemoveWeapons(selectedIds);
+                        batchRemoveWeapons(selectedIds, 'weapons_table');
                         setSelectedIds([]);
                       }
                     }}
@@ -533,10 +533,10 @@ export default function Weapons() {
                     selectedIds={selectedIds}
                     setSelectedIds={setSelectedIds}
                     setEditingWeapon={setEditingWeapon}
-                    updateWeapon={updateTrackedWeapon}
+                    updateWeapon={(id, patch) => updateTrackedWeapon(id, patch, 'weapons_table')}
                     removeWeapon={(id) => {
                       if (window.confirm('Are you sure you want to delete this weapon?')) {
-                        removeTrackedWeapon(id);
+                        removeTrackedWeapon(id, 'weapons_table');
                       }
                     }}
                   />

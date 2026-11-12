@@ -85,7 +85,7 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
   const roster = useStore((s) => s.roster)
   const trackedWeapons = useStore((s) => s.trackedWeapons)
   const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
-  const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
+  const batchAddWeapons = useStore((s) => s.batchAddWeapons)
 
   const globallyAssignedCharacterIds = useMemo(() => {
     return new Set(trackedWeapons.map(w => w.assignedTo).filter(Boolean));
@@ -202,18 +202,30 @@ export default function BatchAddWeaponModal({ isOpen, onClose }) {
   const handleConfirm = () => {
     if (totalSelectedCount === 0) return
 
-    expandedSelectedWeapons.forEach((weapon) => {
+    const items = expandedSelectedWeapons.map((weapon) => {
       const charAssigned = assignments[weapon.uniqueId] || null
-      const newId = addTrackedWeapon(weapon.name, charAssigned)
-      if (newId) {
-        updateTrackedWeapon(newId, {
-          level,
-          ascension,
+      return {
+        weaponName: weapon.name,
+        assignedTo: charAssigned,
+        config: {
+          currentLevel: level,
+          currentAscension: ascension,
           targetLevel,
-          targetAscension
-        })
+          targetAscension,
+        },
       }
     })
+
+    if (typeof batchAddWeapons === 'function') {
+      batchAddWeapons(items, 'armory_modal')
+    } else {
+      items.forEach((item) => {
+        addTrackedWeapon(item.weaponName, item.assignedTo, item.config, {
+          source: 'armory_modal',
+          batchGroup: true,
+        })
+      })
+    }
 
     onClose()
   }

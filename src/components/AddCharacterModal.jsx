@@ -9,6 +9,7 @@ import GenshinImage from './GenshinImage'
 import CustomSelect from './CustomSelect'
 import { getCharacterAvatar, getWeaponIcon } from '../utils/assetHelper'
 import { clampLevel, getLevelRange, ASCENSION_CAPS } from '../utils/calculator'
+import { recordActivity } from '../activity'
 
 function AscensionSelector({ value, onChange, label, elementColor, minValid = 0 }) {
   const getPhaseMax = (a) => a === 6 ? 90 : ASCENSION_CAPS[a];
@@ -183,23 +184,132 @@ export default function AddCharacterModal({ onClose }) {
   const handleConfirm = () => {
     if (selectedCharacters.length === 0) return
     const names = selectedCharacters.map(c => c.name)
-    batchAddCharacters(names)
-    bulkUpdateCharacters(names, {
+    const progressionConfig = {
       level,
       ascension,
       targetLevel,
       targetAscension,
       talents,
-      targetTalents
+      targetTalents,
+      source: 'character_modal',
+      batchGroup: true,
+    }
+
+    const getState = () => (typeof useStore.getState === 'function' ? useStore.getState() || {} : {})
+    const prevRoster = getState()?.roster || roster || {}
+
+    // 1. Add characters with batchGroup: true
+    batchAddCharacters(names, progressionConfig, {
+      source: 'character_modal',
+      batchGroup: true,
     })
-    
+
+    // 2. Progression overrides with batchGroup: true
+    bulkUpdateCharacters(
+      names,
+      {
+        level,
+        ascension,
+        targetLevel,
+        targetAscension,
+        talents,
+        targetTalents,
+      },
+      { source: 'character_modal', batchGroup: true }
+    )
+
+    // 3. Create assigned weapons with batchGroup: true
+    const createdWeaponAssignments = []
     names.forEach(charName => {
-      const wName = weaponAssignments[charName];
+      const wName = weaponAssignments[charName]
       if (wName) {
-        addTrackedWeapon(wName, charName);
+        const newId = addTrackedWeapon(
+          wName,
+          charName,
+          {},
+          { source: 'character_modal', batchGroup: true }
+        )
+        if (newId) {
+          const stateWeapons = getState()?.trackedWeapons || []
+          const finalWeapon = stateWeapons.find(w => w.id === newId)
+          createdWeaponAssignments.push({
+            weaponId: newId,
+            weaponName: finalWeapon?.weaponName || wName,
+            assignedTo: finalWeapon?.assignedTo || charName,
+          })
+        }
       }
     })
-    
+
+    // 4. Read authoritative final state
+    const currentRoster = getState()?.roster || {}
+    const addedCharacters = names.filter(
+      name => !prevRoster[name] && Boolean(currentRoster[name])
+    )
+    const skippedCharacters = names.filter(
+      name => !addedCharacters.includes(name)
+    )
+
+    // 5. Emit one grouped Activity History event if any mutations succeeded
+    if (addedCharacters.length > 0 || createdWeaponAssignments.length > 0) {
+      try {
+        let summary = ''
+        let action = 'characters_batch_added'
+        let entityId = 'batch_characters'
+        let entityName = undefined
+
+        if (addedCharacters.length === 1 && createdWeaponAssignments.length === 0) {
+          action = 'character_added'
+          entityId = addedCharacters[0]
+          entityName = addedCharacters[0]
+          summary = `Added ${addedCharacters[0]} to the character roster.`
+        } else if (addedCharacters.length === 1 && createdWeaponAssignments.length === 1) {
+          action = 'characters_batch_added'
+          entityId = addedCharacters[0]
+          entityName = addedCharacters[0]
+          summary = `Added ${addedCharacters[0]} and assigned ${createdWeaponAssignments[0].weaponName}.`
+        } else if (addedCharacters.length > 1 && createdWeaponAssignments.length === 0) {
+          action = 'characters_batch_added'
+          entityId = 'batch_characters'
+          summary = `Added ${addedCharacters.length} characters to the roster.`
+        } else if (addedCharacters.length > 1 && createdWeaponAssignments.length > 0) {
+          action = 'characters_batch_added'
+          entityId = 'batch_characters'
+          summary = `Added ${addedCharacters.length} characters and assigned ${createdWeaponAssignments.length} weapon${createdWeaponAssignments.length === 1 ? '' : 's'}.`
+        } else {
+          action = 'weapons_batch_added'
+          entityId = 'batch_weapons'
+          summary = `Assigned ${createdWeaponAssignments.length} weapon${createdWeaponAssignments.length === 1 ? '' : 's'}.`
+        }
+
+        recordActivity({
+          category: 'characters',
+          action,
+          source: 'character_modal',
+          entityType: 'character',
+          entityId,
+          ...(entityName ? { entityName } : {}),
+          summary,
+          changes: [],
+          metadata: {
+            charactersAdded: addedCharacters.length,
+            weaponsCreated: createdWeaponAssignments.length,
+            characterNames: addedCharacters,
+            weaponAssignments: createdWeaponAssignments,
+            initialLevel: level,
+            initialAscension: ascension,
+            targetLevel,
+            targetAscension,
+            talents,
+            targetTalents,
+            ...(skippedCharacters.length > 0 ? { skippedCharacters } : {}),
+          },
+        })
+      } catch (err) {
+        console.error('[AddCharacterModal] Failed to log activity:', err)
+      }
+    }
+
     // Clear state and close
     setSelectedCharacters([])
     setWeaponAssignments({})

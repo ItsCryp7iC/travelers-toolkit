@@ -167,7 +167,7 @@ export default function BulkEditCharacterModal({ isOpen, onClose, selectedIds, o
       if (onSave) {
         onSave(payloads)
       } else {
-        bulkUpdateCharacters(payloads, patch)
+        bulkUpdateCharacters(payloads, patch, 'character_bulk_edit')
         onClose()
       }
     } catch (error) {

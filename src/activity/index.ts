@@ -8,3 +8,4 @@ export * from './activityValidation';
 export * from './activityStore';
 export * from './activityLogger';
 export * from './activityInterchange';
+export * from './activityDiffHelpers';

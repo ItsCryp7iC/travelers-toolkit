@@ -209,7 +209,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         targetRefinement: planningToForge ? Math.max(1, targetRefinement) : targetRefinement,
         hasEventBonus,
         assignedTo: assignedTo || null
-      })
+      }, 'armory_modal')
     } else {
       const newId = addTrackedWeapon(selectedWeapon.name, assignedTo || null, {
         currentLevel: planningToForge ? 1 : level,
@@ -219,7 +219,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
         currentRefinement: planningToForge ? 0 : currentRefinement,
         targetRefinement: planningToForge ? Math.max(1, targetRefinement) : targetRefinement,
         hasEventBonus,
-      })
+      }, 'armory_modal')
     }
     onClose()
   }

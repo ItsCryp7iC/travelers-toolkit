@@ -70,6 +70,7 @@ export type ActivityAction =
   | 'weapon_added'
   | 'weapon_removed'
   | 'weapon_updated'
+  | 'weapons_batch_added'
   | 'weapons_batch_removed'
   | 'weapons_bulk_updated'
   | 'weapon_assigned'
