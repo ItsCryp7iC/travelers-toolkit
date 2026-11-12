@@ -1,0 +1,142 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import {
+  useActivityStore,
+  getActivityEvents,
+  clearActivityHistory,
+  attachStorageListener,
+  detachStorageListener,
+} from './activityStore';
+import { ActivityEvent, ACTIVITY_STORAGE_KEY } from './activityTypes';
+
+function makeEvent(
+  idSuffix: string,
+  timestamp: string,
+  summary: string
+): ActivityEvent {
+  const hex = idSuffix.padStart(12, '0');
+  return {
+    id: `00000000-0000-4000-8000-${hex}`,
+    schemaVersion: 1,
+    timestamp,
+    category: 'inventory',
+    action: 'inventory_updated',
+    source: 'inventory_page',
+    summary,
+  };
+}
+
+describe('Activity History — Cross-Tab Synchronization & Concurrency', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    clearActivityHistory();
+    attachStorageListener();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    detachStorageListener();
+    window.localStorage.clear();
+  });
+
+  it('reconciles in-memory store when another tab writes to localStorage via storage event', () => {
+    const peerEvent = makeEvent(
+      '1',
+      '2026-11-12T10:00:00.000Z',
+      'Peer Tab Event'
+    );
+
+    // Simulate another tab writing directly to localStorage
+    const peerEnvelope = {
+      schemaVersion: 1,
+      lastUpdated: new Date().toISOString(),
+      events: [peerEvent],
+    };
+    window.localStorage.setItem(
+      ACTIVITY_STORAGE_KEY,
+      JSON.stringify(peerEnvelope)
+    );
+
+    // Fire simulated browser storage event
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: ACTIVITY_STORAGE_KEY,
+        newValue: JSON.stringify(peerEnvelope),
+      })
+    );
+
+    // Current tab should now have peerEvent in memory
+    const events = getActivityEvents();
+    expect(events).toHaveLength(1);
+    expect(events[0].id).toBe(peerEvent.id);
+    expect(events[0].summary).toBe('Peer Tab Event');
+  });
+
+  it('re-reads disk before writing so concurrent tab entries are not overwritten', () => {
+    // 1. Initial event in Tab A
+    const e1 = makeEvent('1', '2026-11-12T10:00:00.000Z', 'Tab A First Event');
+    useActivityStore.getState().appendEvent(e1);
+    expect(getActivityEvents()).toHaveLength(1);
+
+    // 2. Tab B writes e2 directly to localStorage while Tab A is unaware (listener detached temporarily)
+    detachStorageListener();
+    const e2 = makeEvent(
+      '2',
+      '2026-11-12T10:01:00.000Z',
+      'Tab B Concurrent Event'
+    );
+    const diskEnvelope = {
+      schemaVersion: 1,
+      lastUpdated: new Date().toISOString(),
+      events: [e1, e2],
+    };
+    window.localStorage.setItem(
+      ACTIVITY_STORAGE_KEY,
+      JSON.stringify(diskEnvelope)
+    );
+
+    // 3. Tab A appends e3 without having received a storage event.
+    // Thanks to the Read-Merge-Prune-Write cycle, Tab A reads disk first, preserving e2!
+    const e3 = makeEvent('3', '2026-11-12T10:02:00.000Z', 'Tab A Second Event');
+    useActivityStore.getState().appendEvent(e3);
+
+    const finalEvents = getActivityEvents();
+    expect(finalEvents).toHaveLength(3);
+    expect(finalEvents.map((e) => e.id)).toEqual([e1.id, e2.id, e3.id]);
+  });
+
+  it('deduplicates identical event IDs written concurrently across tabs', () => {
+    const sharedEvent = makeEvent(
+      '1',
+      '2026-11-12T10:00:00.000Z',
+      'Shared Event'
+    );
+
+    // Tab A writes sharedEvent
+    useActivityStore.getState().appendEvent(sharedEvent);
+
+    // Tab B simulates writing the exact same event
+    const envelope = {
+      schemaVersion: 1,
+      lastUpdated: new Date().toISOString(),
+      events: [sharedEvent],
+    };
+    window.localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(envelope));
+
+    // Tab A appends again
+    const res = useActivityStore.getState().appendEvent(sharedEvent);
+    expect(res.status).toBe('duplicate_ignored');
+
+    expect(getActivityEvents()).toHaveLength(1);
+  });
+
+  it('passive read and rehydration operations do not write to storage', () => {
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+
+    // Passive reads
+    getActivityEvents();
+    useActivityStore.getState().getEventById('any');
+    useActivityStore.getState().reconcileFromDisk();
+
+    expect(setItemSpy).not.toHaveBeenCalled();
+  });
+});
