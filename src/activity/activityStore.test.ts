@@ -253,7 +253,9 @@ describe('Activity History — Persistent Storage & Retention Engine', () => {
     // Invariant 2: Failed event is NOT added to in-memory events or accessible by ID
     expect(getActivityEvents()).toHaveLength(2);
     expect(getActivityEventById(failedEvent.id)).toBeUndefined();
-    expect(getActivityEvents().some((e) => e.id === failedEvent.id)).toBe(false);
+    expect(getActivityEvents().some((e) => e.id === failedEvent.id)).toBe(
+      false
+    );
 
     // Invariant 3: Simulating a page reload (reconcileFromDisk) confirms disk never fabricated persistence
     useActivityStore.getState().reconcileFromDisk();

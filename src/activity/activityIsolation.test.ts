@@ -71,7 +71,8 @@ describe('Activity History — Critical Isolation Invariant Tests', () => {
       useCraftingSessionStore.getState().session
     );
 
-    // 2. Record 10 activity events across various categories
+    // 2. Clear activity log from domain setup and record 10 activity events across various categories
+    clearActivityHistory();
     for (let i = 1; i <= 10; i++) {
       recordActivity({
         category: 'achievements',

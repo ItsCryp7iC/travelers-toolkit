@@ -89,7 +89,7 @@ export default function PlannerInventoryQuantityInput({
     if (typeof onSave === 'function') {
       onSave(id, qty);
     } else {
-      useStore.getState().setInventory(id, qty);
+      useStore.getState().setInventory(id, qty, 'planner_inline');
     }
   };
 

@@ -28,6 +28,7 @@ export const VALID_CATEGORIES: ReadonlySet<ActivityCategory> = new Set([
 
 export const VALID_SOURCES: ReadonlySet<ActivitySource> = new Set([
   'inventory_page',
+  'inventory_stepper',
   'planner_inline',
   'character_modal',
   'characters_table',

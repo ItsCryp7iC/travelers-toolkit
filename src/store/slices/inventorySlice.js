@@ -5,6 +5,7 @@ import {
 import { compareCraftingSessionSource } from '../../utils/craftingSession';
 import { calculateAuthoritativeGrossRequirements } from '../../utils/aggregator';
 import { partializeStore } from '../persistence';
+import { recordActivity, VALID_SOURCES } from '../../activity';
 
 /**
  * Checks equality of two inventory records, treating missing keys and 0 as equivalent.
@@ -52,18 +53,152 @@ export const createInventorySlice = (set, get) => ({
   inventory: {},
   appliedCraftingTransactions: [],
 
-  setInventory: (materialName, qty) =>
-    set((state) => ({
-      inventory: { ...state.inventory, [materialName]: Math.max(0, qty) },
-    })),
+  setInventory: (materialName, qty, source = 'system') => {
+    if (typeof materialName !== 'string' || !materialName.trim()) {
+      return;
+    }
+    const num = Number(qty);
+    if (!Number.isFinite(num) || isNaN(num)) {
+      return;
+    }
+    const nextQty = Math.max(0, Math.floor(num));
 
-  incrementInventory: (materialName, amount = 1) =>
+    const currentInventory = get().inventory || {};
+    const hasExistingKey = Object.prototype.hasOwnProperty.call(
+      currentInventory,
+      materialName
+    );
+    const prevQty = currentInventory[materialName] ?? 0;
+
+    // Suppress no-op if the key already exists and has the exact same quantity
+    if (hasExistingKey && prevQty === nextQty) {
+      return;
+    }
+
+    // 1. Commit domain mutation atomically
+    set((state) => ({
+      inventory: { ...state.inventory, [materialName]: nextQty },
+    }));
+
+    // Suppress logging if effective quantity did not change (e.g. missing key initialized to 0)
+    if (prevQty === nextQty) {
+      return;
+    }
+
+    // 2. Activity logging (strictly outside state updater)
+    try {
+      const validSource =
+        typeof source === 'string' && VALID_SOURCES.has(source)
+          ? source
+          : 'system';
+      const deltaVal = nextQty - prevQty;
+      const deltaStr =
+        deltaVal > 0 ? `+${deltaVal.toLocaleString()}` : deltaVal.toLocaleString();
+      const action =
+        validSource === 'inventory_stepper'
+          ? deltaVal > 0
+            ? 'inventory_incremented'
+            : 'inventory_decremented'
+          : 'inventory_updated';
+
+      recordActivity({
+        category: 'inventory',
+        action,
+        source: validSource,
+        entityType: 'material',
+        entityId: materialName,
+        entityName: materialName,
+        summary: `${materialName} changed from ${prevQty.toLocaleString()} to ${nextQty.toLocaleString()}.`,
+        changes: [
+          {
+            field: 'quantity',
+            before: prevQty,
+            after: nextQty,
+            delta: deltaStr,
+          },
+        ],
+        metadata: {
+          materialKey: materialName,
+        },
+      });
+    } catch (logErr) {
+      console.error('[Inventory] Failed to log activity event:', logErr);
+    }
+  },
+
+  incrementInventory: (materialName, amount = 1, source = 'system') => {
+    if (typeof materialName !== 'string' || !materialName.trim()) {
+      return;
+    }
+    const deltaNum = Number(amount);
+    if (!Number.isFinite(deltaNum) || isNaN(deltaNum) || deltaNum === 0) {
+      return;
+    }
+
+    const currentInventory = get().inventory || {};
+    const hasExistingKey = Object.prototype.hasOwnProperty.call(
+      currentInventory,
+      materialName
+    );
+    const prevQty = currentInventory[materialName] ?? 0;
+    const nextQty = Math.max(0, Math.floor(prevQty + deltaNum));
+
+    // Suppress no-op (e.g. decrementing already-zero quantity to zero when key already exists)
+    if (hasExistingKey && prevQty === nextQty) {
+      return;
+    }
+
+    // 1. Commit domain mutation atomically
     set((state) => ({
       inventory: {
         ...state.inventory,
-        [materialName]: (state.inventory[materialName] || 0) + amount,
+        [materialName]: nextQty,
       },
-    })),
+    }));
+
+    // Suppress logging if effective quantity did not change (e.g. decrementing missing key from 0 to 0)
+    if (prevQty === nextQty) {
+      return;
+    }
+
+    // 2. Activity logging (strictly outside state updater)
+    try {
+      const validSource =
+        typeof source === 'string' && VALID_SOURCES.has(source)
+          ? source
+          : 'system';
+      const effectiveDelta = nextQty - prevQty;
+      const deltaStr =
+        effectiveDelta > 0
+          ? `+${effectiveDelta.toLocaleString()}`
+          : effectiveDelta.toLocaleString();
+      const action =
+        effectiveDelta > 0 ? 'inventory_incremented' : 'inventory_decremented';
+
+      recordActivity({
+        category: 'inventory',
+        action,
+        source: validSource,
+        entityType: 'material',
+        entityId: materialName,
+        entityName: materialName,
+        summary: `${materialName} changed from ${prevQty.toLocaleString()} to ${nextQty.toLocaleString()}.`,
+        changes: [
+          {
+            field: 'quantity',
+            before: prevQty,
+            after: nextQty,
+            delta: deltaStr,
+          },
+        ],
+        metadata: {
+          materialKey: materialName,
+        },
+      });
+    } catch (logErr) {
+      console.error('[Inventory] Failed to log activity event:', logErr);
+    }
+  },
 
   /**
    * Applies an authorized, confirmed crafting inventory transaction to persistent inventory.
@@ -555,6 +690,24 @@ export const createInventorySlice = (set, get) => ({
     }
 
     if (persistenceFailed) {
+      try {
+        recordActivity({
+          category: 'crafting',
+          action: 'crafting_transaction_uncertain',
+          source: 'crafting_results_modal',
+          entityType: 'crafting_transaction',
+          entityId: preparedTransaction.transactionId,
+          transactionId: preparedTransaction.transactionId,
+          summary: `Crafting transaction persistence could not be verified: ${persistenceErrorMessage}`,
+          metadata: {
+            transactionId: preparedTransaction.transactionId,
+            reason: persistenceErrorMessage,
+          },
+        });
+      } catch (logErr) {
+        console.error('[Crafting] Failed to log diagnostic uncertain event:', logErr);
+      }
+
       return {
         success: false,
         status: 'uncertain',
@@ -562,6 +715,43 @@ export const createInventorySlice = (set, get) => ({
         message: `Inventory was applied in memory, but persistent storage failed: ${persistenceErrorMessage}`,
         transactionId: preparedTransaction.transactionId,
       };
+    }
+
+    try {
+      const bonusType = session?.snapshot?.bonusType || null;
+      const changes = Object.entries(canonicalTx.deltas || {}).map(([key, delta]) => {
+        const before = canonicalTx.startingBalances?.[key] ?? 0;
+        const after = canonicalTx.endingBalances?.[key] ?? (before + delta);
+        const deltaStr = delta > 0 ? `+${delta.toLocaleString()}` : delta.toLocaleString();
+        return {
+          field: key,
+          before,
+          after,
+          delta: deltaStr,
+        };
+      });
+
+      recordActivity({
+        category: 'crafting',
+        action: 'crafting_transaction_applied',
+        source: 'crafting_results_modal',
+        entityType: 'crafting_transaction',
+        entityId: canonicalTx.transactionId,
+        entityName: canonicalTx.familyName || canonicalTx.familyId,
+        transactionId: canonicalTx.transactionId,
+        summary: `Applied crafting transaction for ${canonicalTx.familyName || canonicalTx.familyId}: ${canonicalTx.totalBatches} batch${canonicalTx.totalBatches === 1 ? '' : 'es'} (${canonicalTx.totalOperations} operation${canonicalTx.totalOperations === 1 ? '' : 's'}).`,
+        changes,
+        metadata: {
+          familyId: canonicalTx.familyId,
+          familyName: canonicalTx.familyName || canonicalTx.familyId,
+          totalBatches: canonicalTx.totalBatches,
+          totalOperations: canonicalTx.totalOperations,
+          totalMoraSpent: canonicalTx.totalMoraSpent,
+          bonusType,
+        },
+      });
+    } catch (logErr) {
+      console.error('[Crafting] Failed to log crafting applied event:', logErr);
     }
 
     return {

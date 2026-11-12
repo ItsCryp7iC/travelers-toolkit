@@ -33,6 +33,7 @@ export type ActivityEntityType =
 
 export type ActivitySource =
   | 'inventory_page'
+  | 'inventory_stepper'
   | 'planner_inline'
   | 'character_modal'
   | 'characters_table'

@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useStore from '../store/useStore';
+import notify from '../utils/notify';
 import { getPrimaryInventoryList } from '../utils/dataManager';
 import { getRarityBg } from '../utils/gameData';
 import { getMaterialIcon } from '../utils/assetHelper';
@@ -9,6 +10,7 @@ import { getInventoryTabId, filterMaterialsByTab, INVENTORY_TABS, formatInventor
 import SortDirectionButton from '../components/SortDirectionButton';
 import { compareNullableNumber, compareNullableString } from '../utils/sortUtils';
 import StickyHeaderTabShell from '../components/StickyHeaderTabShell';
+import { validateQuantityInput } from '../components/Planner/PlannerInventoryQuantityInput';
 
 const getCardOuterBg = (rarity) => {
   const r = parseInt(rarity, 10);
@@ -24,15 +26,137 @@ const getCardOuterBg = (rarity) => {
 
 // ─── Stepper Card — Portrait Layout ───────────────────────────────────────
 function MaterialCard({ matKey, label, accent, sublabel, iconCategory, rarity }) {
-  const qty          = useStore((s) => s.inventory[matKey] || 0);
+  const qty          = useStore((s) => s.inventory?.[matKey] || 0);
   const setInventory = useStore((s) => s.setInventory);
 
-  const handleChange = (v) => {
-    const n = parseInt(v, 10);
-    if (!isNaN(n) && n >= 0) setInventory(matKey, n);
+  const [draft, setDraft] = useState(String(qty));
+  const [isEditing, setIsEditing] = useState(false);
+  const [conflictWarning, setConflictWarning] = useState(null);
+  const initialValueRef = useRef(qty);
+  const isCommittedRef = useRef(false);
+  const isStepperActionRef = useRef(false);
+  const inputRef = useRef(null);
+
+  // Sync draft when store qty changes externally while not actively editing
+  useEffect(() => {
+    if (!isEditing) {
+      setDraft(String(qty));
+      initialValueRef.current = qty;
+      if (inputRef.current) {
+        inputRef.current.value = String(qty);
+      }
+    }
+  }, [qty, isEditing]);
+
+  const commitEdit = (rawVal) => {
+    if (isStepperActionRef.current) return;
+    if (isCommittedRef.current) return;
+    isCommittedRef.current = true;
+    setIsEditing(false);
+
+    const valToValidate =
+      rawVal !== undefined
+        ? String(rawVal)
+        : inputRef.current
+        ? inputRef.current.value
+        : draft;
+
+    const validation = validateQuantityInput(valToValidate);
+    if (!validation.isValid) {
+      // Invalid text: restore previous valid quantity
+      setDraft(String(qty));
+      if (inputRef.current) inputRef.current.value = String(qty);
+      return;
+    }
+
+    const newQty = validation.value;
+    const liveStoredQty = useStore.getState?.()?.inventory?.[matKey] ?? qty;
+
+    // Unchanged value: no write, no event
+    if (newQty === liveStoredQty) {
+      setDraft(String(newQty));
+      if (inputRef.current) inputRef.current.value = String(newQty);
+      return;
+    }
+
+    // External store update conflict check:
+    // If live store changed from when editing started AND differs from user's intended value:
+    if (initialValueRef.current !== null && liveStoredQty !== initialValueRef.current) {
+      const msg = "Inventory changed elsewhere. Your edit wasn't saved.";
+      setConflictWarning(msg);
+      notify.warning(msg);
+      setDraft(String(liveStoredQty));
+      if (inputRef.current) inputRef.current.value = String(liveStoredQty);
+      return;
+    }
+
+    setInventory(matKey, newQty, 'inventory_page');
+    setDraft(String(newQty));
+    if (inputRef.current) inputRef.current.value = String(newQty);
   };
 
-  const step = (delta) => setInventory(matKey, Math.max(0, qty + delta));
+  const handleFocus = (e) => {
+    if (conflictWarning) setConflictWarning(null);
+    setIsEditing(true);
+    initialValueRef.current = qty;
+    isCommittedRef.current = false;
+    setDraft(String(qty));
+    e.target?.select?.();
+  };
+
+  const handleChange = (e) => {
+    if (conflictWarning) setConflictWarning(null);
+    setIsEditing(true);
+    isCommittedRef.current = false;
+    setDraft(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitEdit();
+      e.target.blur();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      isCommittedRef.current = true;
+      setIsEditing(false);
+      setDraft(String(qty));
+      if (inputRef.current) inputRef.current.value = String(qty);
+      e.target.blur();
+    }
+  };
+
+  const handleBlur = () => {
+    if (isStepperActionRef.current) {
+      // Pointer down on stepper detected: cancel unfinished draft without saving
+      isStepperActionRef.current = false;
+      isCommittedRef.current = true;
+      setIsEditing(false);
+      const liveStoredQty = useStore.getState?.()?.inventory?.[matKey] ?? qty;
+      setDraft(String(liveStoredQty));
+      if (inputRef.current) inputRef.current.value = String(liveStoredQty);
+      return;
+    }
+    commitEdit();
+  };
+
+  const handleStepperPointerDown = () => {
+    isStepperActionRef.current = true;
+  };
+
+  const step = (delta) => {
+    // Stepper action cancels any pending active draft edit and clears prior conflict warnings
+    isStepperActionRef.current = false;
+    isCommittedRef.current = true;
+    setIsEditing(false);
+    if (conflictWarning) setConflictWarning(null);
+
+    const current = useStore.getState?.()?.inventory?.[matKey] ?? qty;
+    const next = Math.max(0, current + delta);
+    setInventory(matKey, next, 'inventory_stepper');
+    setDraft(String(next));
+    if (inputRef.current) inputRef.current.value = String(next);
+  };
 
   const accentColor = accent || '#C8A96E';
   const rarityBgClass = getRarityBg(rarity || 0);
@@ -91,25 +215,48 @@ function MaterialCard({ matKey, label, accent, sublabel, iconCategory, rarity })
         <div className="flex items-center bg-gray-950/80 border border-gray-600/50 rounded-full p-1 sm:p-1.5 shadow-sm w-full min-h-[34px] sm:min-h-[36px] gap-1">
           <button
             type="button"
+            onPointerDown={handleStepperPointerDown}
+            onMouseDown={handleStepperPointerDown}
+            onTouchStart={handleStepperPointerDown}
             onClick={() => step(-1)}
             className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 flex items-center justify-center font-bold text-gray-400 hover:text-white hover:bg-gray-800 rounded-full active:scale-95 transition-all text-sm sm:text-base cursor-pointer select-none"
             aria-label={`Decrease ${label}`}
           >−</button>
           <input
+            ref={inputRef}
             type="number"
             min={0}
-            value={qty}
-            onChange={(e) => handleChange(e.target.value)}
+            defaultValue={qty}
+            onFocus={handleFocus}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
+            aria-invalid={Boolean(conflictWarning)}
+            aria-errormessage={conflictWarning ? `inv-conflict-${matKey}` : undefined}
             className="flex-1 min-w-0 text-center bg-transparent text-white font-semibold text-xs sm:text-sm outline-none focus:ring-1 focus:ring-[var(--mat-accent)] rounded py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             aria-label={`${label} quantity`}
           />
           <button
             type="button"
+            onPointerDown={handleStepperPointerDown}
+            onMouseDown={handleStepperPointerDown}
+            onTouchStart={handleStepperPointerDown}
             onClick={() => step(1)}
             className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 flex items-center justify-center font-bold text-gray-400 hover:text-white hover:bg-gray-800 rounded-full active:scale-95 transition-all text-sm sm:text-base cursor-pointer select-none"
             aria-label={`Increase ${label}`}
           >+</button>
         </div>
+        {conflictWarning && (
+          <p
+            id={`inv-conflict-${matKey}`}
+            role="alert"
+            aria-live="polite"
+            className="text-[10px] text-amber-400 font-medium text-center px-1 mt-1 leading-tight animate-fade-in"
+            data-testid="conflict-warning"
+          >
+            {conflictWarning}
+          </p>
+        )}
       </div>
     </div>
   );

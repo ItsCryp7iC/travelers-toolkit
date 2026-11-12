@@ -371,13 +371,21 @@ describe('Inventory Page Responsive Architecture (R3)', () => {
     await act(async () => {
       increaseBtn.click();
     });
-    expect(mockState.setInventory).toHaveBeenCalledWith('Mora', 1500001);
+    expect(mockState.setInventory).toHaveBeenCalledWith(
+      'Mora',
+      1500001,
+      'inventory_stepper'
+    );
 
     // Decrement
     await act(async () => {
       decreaseBtn.click();
     });
-    expect(mockState.setInventory).toHaveBeenCalledWith('Mora', 1499999);
+    expect(mockState.setInventory).toHaveBeenLastCalledWith(
+      'Mora',
+      1500000,
+      'inventory_stepper'
+    );
   });
 
   it('12. stepper decrement cannot reduce quantity below zero', async () => {
@@ -385,13 +393,19 @@ describe('Inventory Page Responsive Architecture (R3)', () => {
     await renderComponent('/inventory?tab=currency_exp');
 
     const moraCard = container.querySelector('#inv-mora');
-    const decreaseBtn = moraCard.querySelector('button[aria-label="Decrease Mora"]');
+    const decreaseBtn = moraCard.querySelector(
+      'button[aria-label="Decrease Mora"]'
+    );
 
     await act(async () => {
       decreaseBtn.click();
     });
 
-    expect(mockState.setInventory).toHaveBeenCalledWith('Mora', 0);
+    expect(mockState.setInventory).toHaveBeenCalledWith(
+      'Mora',
+      0,
+      'inventory_stepper'
+    );
   });
 
   it('13. direct number input updates inventory quantity', async () => {
@@ -402,15 +416,21 @@ describe('Inventory Page Responsive Architecture (R3)', () => {
     expect(input).toBeTruthy();
 
     await act(async () => {
+      input.focus();
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
         'value'
       ).set;
       setter.call(input, '2000000');
       input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.blur();
     });
 
-    expect(mockState.setInventory).toHaveBeenCalledWith('Mora', 2000000);
+    expect(mockState.setInventory).toHaveBeenCalledWith(
+      'Mora',
+      2000000,
+      'inventory_page'
+    );
   });
 
   // ── Section 8: Sorting ──
@@ -534,13 +554,19 @@ describe('Inventory Page Responsive Architecture (R3)', () => {
 
     // Editing still updates the store with exact integer value
     await act(async () => {
+      input.focus();
       const setter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
         'value'
       ).set;
       setter.call(input, '42590005');
       input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.blur();
     });
-    expect(mockState.setInventory).toHaveBeenCalledWith('Mora', 42590005);
+    expect(mockState.setInventory).toHaveBeenCalledWith(
+      'Mora',
+      42590005,
+      'inventory_page'
+    );
   });
 });
