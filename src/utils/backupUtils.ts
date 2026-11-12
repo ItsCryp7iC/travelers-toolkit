@@ -116,11 +116,16 @@ export function normalizeBackupForImport(raw: unknown): NormalizedBackupData {
   };
 }
 
-export const restoreLatestRecoveryBackup = async (importData: (data: NormalizedBackupData) => void): Promise<boolean> => {
+export const restoreLatestRecoveryBackup = async (
+  importData: (data: NormalizedBackupData, context?: unknown) => void
+): Promise<boolean> => {
   try {
     const raw = await downloadRecoveryBackupFromDrive();
     const normalized = normalizeBackupForImport(raw);
-    importData(normalized);
+    importData(normalized, {
+      source: 'system',
+      origin: 'automatic_cloud_recovery',
+    });
     return true;
   } catch (err: unknown) {
     if (

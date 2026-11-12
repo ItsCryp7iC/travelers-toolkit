@@ -10,8 +10,103 @@ import ProgressionDataHealth from '../components/Settings/ProgressionDataHealth'
 import HoyoLoginModal from '../components/hoyolab/HoyoLoginModal';
 import { buildTimeZoneOptions, getTimeZoneDisplayLabel } from '../utils/timeZoneUtils';
 import notify from '../utils/notify';
+import { recordActivity, clearActivityHistory } from '../activity';
 
 const timeZoneOptions = buildTimeZoneOptions();
+
+export function classifyCloudError(error) {
+  const status = error?.status || error?.code || error?.response?.status;
+  const msg = String(error?.message || error || '').toLowerCase();
+
+  if (
+    status === 401 ||
+    msg.includes('401') ||
+    msg.includes('unauthorized') ||
+    msg.includes('unauthenticated') ||
+    msg.includes('token')
+  ) {
+    return 'authentication_error';
+  }
+  if (
+    status === 403 ||
+    msg.includes('403') ||
+    msg.includes('permission') ||
+    msg.includes('forbidden') ||
+    msg.includes('access denied')
+  ) {
+    return 'permission_error';
+  }
+  if (
+    status === 429 ||
+    status === 507 ||
+    msg.includes('quota') ||
+    msg.includes('rate limit') ||
+    msg.includes('storage full')
+  ) {
+    return 'quota_error';
+  }
+  if (
+    msg.includes('network') ||
+    msg.includes('offline') ||
+    msg.includes('timeout') ||
+    msg.includes('fetch') ||
+    msg.includes('abort') ||
+    msg.includes('connection')
+  ) {
+    return 'network_error';
+  }
+  return 'unknown_error';
+}
+
+export async function performCloudBackup({
+  uploadFn = uploadBackupToDrive,
+  getState = useStore.getState,
+} = {}) {
+  try {
+    const dataToExport = getBackupPayload(getState());
+    const backupResult = await uploadFn(dataToExport);
+
+    try {
+      recordActivity({
+        category: 'import_sync',
+        action: 'cloud_backup_created',
+        source: 'settings_cloud_sync',
+        entityType: 'backup',
+        entityId: 'cloud_backup',
+        summary: 'Successfully created Google Drive cloud backup.',
+        changes: [],
+        metadata: {
+          operationType: 'manual_backup',
+          backupFileName: backupResult?.name || 'travelers-toolkit-backup.json',
+          timestamp: new Date().toISOString(),
+        },
+      });
+    } catch (logErr) {
+      console.error('[Settings] Failed to log cloud backup created:', logErr);
+    }
+    return { success: true, result: backupResult };
+  } catch (error) {
+    try {
+      recordActivity({
+        category: 'import_sync',
+        action: 'cloud_backup_failed',
+        source: 'settings_cloud_sync',
+        entityType: 'backup',
+        entityId: 'cloud_backup',
+        summary: 'Failed to create Google Drive cloud backup.',
+        changes: [],
+        metadata: {
+          operationType: 'manual_backup',
+          failureClassification: classifyCloudError(error),
+          timestamp: new Date().toISOString(),
+        },
+      });
+    } catch (logErr) {
+      console.error('[Settings] Failed to log cloud backup failure:', logErr);
+    }
+    return { success: false, error };
+  }
+}
 
 export default function Settings() {
   const serverRegion = useStore((s) => s.serverRegion);
@@ -30,6 +125,7 @@ export default function Settings() {
   const goodFileInputRef = useRef(null);
 
   const [pendingImportData, setPendingImportData] = useState(null);
+  const [clearHistoryOnReset, setClearHistoryOnReset] = useState(true);
 
   // Cloud Sync State
   const [isSyncing, setIsSyncing] = useState(false);
@@ -110,16 +206,21 @@ export default function Settings() {
   const handleCloudBackup = async () => {
     try {
       setIsSyncing(true);
-      const dataToExport = getBackupPayload(useStore.getState());
-      await uploadBackupToDrive(dataToExport);
-      setLastSyncedTime(new Date().toLocaleString());
-      notify.success('Cloud sync successful!');
-    } catch (error) {
-      console.error(error);
-      if (error.status === 401) {
-        disconnectGoogleSession();
+      const res = await performCloudBackup({
+        uploadFn: uploadBackupToDrive,
+        getState: useStore.getState,
+      });
+
+      if (res.success) {
+        setLastSyncedTime(new Date().toLocaleString());
+        notify.success('Cloud sync successful!');
+      } else {
+        console.error(res.error);
+        if (res.error?.status === 401) {
+          disconnectGoogleSession();
+        }
+        notify.error('Failed to sync to Google Drive.');
       }
-      notify.error('Failed to sync to Google Drive.');
     } finally {
       setIsSyncing(false);
     }
@@ -136,7 +237,11 @@ export default function Settings() {
       const data = await downloadBackupFromDrive(fileId);
       if (data) {
         const normalized = normalizeBackupForImport(data);
-        importData(normalized);
+        importData(normalized, {
+          source: 'settings_cloud_sync',
+          origin: 'manual_cloud_restore',
+          fileId,
+        });
         notify.success('Cloud restore successful!');
       } else {
         notify.warning('No backup found in Google Drive.');
@@ -179,7 +284,11 @@ export default function Settings() {
         const parsedData = JSON.parse(event.target.result);
         if (parsedData) {
           const normalized = normalizeBackupForImport(parsedData);
-          importData(normalized);
+          importData(normalized, {
+            source: 'settings_backup',
+            origin: 'manual_file',
+            fileName: file.name,
+          });
           notify.success('Data imported successfully!');
         }
       } catch (error) {
@@ -254,6 +363,27 @@ export default function Settings() {
         console.error("Failed to disconnect from HoYoLAB during reset", error);
       } finally {
         resetStore();
+        if (clearHistoryOnReset) {
+          clearActivityHistory();
+        }
+        try {
+          recordActivity({
+            category: 'settings_system',
+            action: 'factory_reset_performed',
+            source: 'settings_preferences',
+            entityType: 'setting',
+            entityId: 'factory_reset',
+            summary: clearHistoryOnReset
+              ? 'Performed factory reset and cleared activity history.'
+              : 'Performed factory reset (activity history retained).',
+            changes: [],
+            metadata: {
+              historyCleared: clearHistoryOnReset,
+            },
+          });
+        } catch (err) {
+          console.error('[Settings] Failed to record factory reset activity:', err);
+        }
         notify.success('Data reset successfully.');
       }
     }
@@ -293,7 +423,7 @@ export default function Settings() {
                 type="checkbox"
                 className="sr-only peer"
                 checked={autoBackupEnabled}
-                onChange={(e) => setAutoBackupEnabled(e.target.checked)}
+                onChange={(e) => setAutoBackupEnabled(e.target.checked, 'settings_preferences')}
                 aria-label="Toggle auto-backup"
               />
               <div className="w-11 h-6 bg-[var(--elevated)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary border border-[var(--border)]"></div>
@@ -425,6 +555,19 @@ export default function Settings() {
             <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
               Permanently resets all stored data and returns Traveler's Toolkit to its initial state.
             </p>
+            <div className="flex items-center gap-2 mt-1">
+              <input
+                id="clear-activity-history-checkbox"
+                type="checkbox"
+                checked={clearHistoryOnReset}
+                onChange={(e) => setClearHistoryOnReset(e.target.checked)}
+                className="rounded border-[var(--border)] text-primary focus:ring-primary cursor-pointer"
+                aria-label="Also clear Activity History"
+              />
+              <label htmlFor="clear-activity-history-checkbox" className="text-xs text-[var(--color-text-muted)] cursor-pointer select-none">
+                Also clear Activity History
+              </label>
+            </div>
             <button
               id="factory-reset-btn"
               className="genshin-btn-ghost w-full flex justify-center items-center gap-2 text-red-400 hover:text-red-300 border-red-500/30 hover:border-red-400 bg-red-950/10 hover:bg-red-950/20 transition-all min-h-[40px] font-semibold text-xs sm:text-sm mt-0.5"
@@ -510,7 +653,7 @@ export default function Settings() {
               id="server-region-select"
               className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-xs sm:text-sm text-[var(--color-text-main)] outline-none focus:border-primary min-h-[40px] cursor-pointer"
               value={serverRegion}
-              onChange={(e) => setServerRegion(e.target.value)}
+              onChange={(e) => setServerRegion(e.target.value, 'settings_preferences')}
               aria-label="Select server region"
             >
               <option value="Asia">Asia</option>
@@ -531,7 +674,7 @@ export default function Settings() {
               id="display-timezone-select"
               className="w-full bg-[var(--elevated)] border border-[var(--border)] rounded-md px-3 py-2 text-xs sm:text-sm text-[var(--color-text-main)] outline-none focus:border-primary min-h-[40px] cursor-pointer"
               value={displayTimeZone}
-              onChange={(e) => setDisplayTimeZone(e.target.value)}
+              onChange={(e) => setDisplayTimeZone(e.target.value, 'settings_preferences')}
               aria-label="Select display time zone"
             >
               <option value="auto">Auto — Device time zone</option>
@@ -569,7 +712,7 @@ export default function Settings() {
                 type="checkbox"
                 className="sr-only peer"
                 checked={showDbBuilder}
-                onChange={(e) => setShowDbBuilder(e.target.checked)}
+                onChange={(e) => setShowDbBuilder(e.target.checked, 'settings_preferences')}
                 aria-label="Toggle database builder in sidebar"
               />
               <div className="w-11 h-6 bg-[var(--elevated)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary border border-[var(--border)]"></div>

@@ -101,6 +101,7 @@ export type ActivityAction =
   | 'factory_reset_performed'
   // Goals
   | 'goal_added'
+  | 'goal_updated'
   | 'goal_removed';
 
 export interface FieldChange {

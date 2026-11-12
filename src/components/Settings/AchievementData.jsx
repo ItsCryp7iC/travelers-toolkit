@@ -2,6 +2,65 @@ import React, { useState, useRef } from 'react';
 import useStore from '../../store/useStore';
 import { parseAchievementImport, mergeNativeAchievementProgress } from '../../utils/achievementImport';
 import { exportAchievementData, exportNativeAchievementData } from '../../utils/achievementExport';
+import { recordActivity } from '../../activity';
+
+export function applyAchievementImport({
+  actionType = 'replace',
+  result,
+  achievementProgress = {},
+  setAchievementProgress,
+}) {
+  const prevProgress = achievementProgress || {};
+  let nextProgress = {};
+
+  if (actionType === 'merge' && result.format === 'NATIVE') {
+    nextProgress = mergeNativeAchievementProgress(prevProgress, result.progress);
+    setAchievementProgress(nextProgress, { mode: 'replace' });
+  } else {
+    nextProgress = result.progress || {};
+    setAchievementProgress(nextProgress, { mode: 'replace' });
+  }
+
+  try {
+    const prevCompleted = Object.keys(prevProgress).filter((k) => prevProgress[k]?.completed);
+    const prevCompletedSet = new Set(prevCompleted);
+    const nextCompleted = Object.keys(nextProgress).filter((k) => nextProgress[k]?.completed);
+    const nextCompletedSet = new Set(nextCompleted);
+
+    const newlyCompleted = nextCompleted.filter((id) => !prevCompletedSet.has(id));
+    const cleared = prevCompleted.filter((id) => !nextCompletedSet.has(id));
+
+    if (newlyCompleted.length > 0 || cleared.length > 0) {
+      const isMerge = actionType === 'merge';
+      const action = isMerge ? 'achievements_imported_merge' : 'achievements_imported_replace';
+      const summary = isMerge
+        ? `Merged achievement import: ${newlyCompleted.length} newly completed achievements.`
+        : `Imported achievement progress: ${nextCompleted.length} completed (${newlyCompleted.length} added, ${cleared.length} cleared).`;
+
+      recordActivity({
+        category: 'achievements',
+        action,
+        source: 'achievements_settings',
+        entityType: 'achievement',
+        entityId: 'achievements_import',
+        summary,
+        changes: [],
+        metadata: {
+          mode: actionType,
+          format: result.format,
+          newlyCompletedCount: newlyCompleted.length,
+          clearedCount: cleared.length,
+          finalCompletedCount: nextCompleted.length,
+          unknownSkippedCount: result.unknownIds?.length || 0,
+        },
+      });
+    }
+  } catch (err) {
+    console.error('[AchievementData] Failed to record activity event:', err);
+  }
+
+  return nextProgress;
+}
 
 export default function AchievementData() {
   const setAchievementProgress = useStore((s) => s.setAchievementProgress);
@@ -47,18 +106,20 @@ export default function AchievementData() {
     if (importStatus?.type !== 'preview') return;
     const { result } = importStatus;
 
-    if (actionType === 'merge' && result.format === 'NATIVE') {
-      const merged = mergeNativeAchievementProgress(achievementProgress, result.progress);
-      setAchievementProgress(merged, { mode: 'replace' });
+    applyAchievementImport({
+      actionType,
+      result,
+      achievementProgress,
+      setAchievementProgress,
+    });
 
+    if (actionType === 'merge' && result.format === 'NATIVE') {
       let msg = `Merged native achievements successfully.`;
       if (result.unknownIds.length > 0) {
         msg += ` ${result.unknownIds.length.toLocaleString()} unknown IDs were skipped.`;
       }
       setImportStatus({ type: 'success', message: msg });
     } else {
-      setAchievementProgress(result.progress, { mode: 'replace' });
-
       if (result.validIds.length === 0) {
         setImportStatus({ type: 'success', message: 'Achievement progress cleared.' });
       } else {

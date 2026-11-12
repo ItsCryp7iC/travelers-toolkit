@@ -89,6 +89,7 @@ export const VALID_ACTIONS: ReadonlySet<ActivityAction> = new Set([
   'db_builder_toggled',
   'factory_reset_performed',
   'goal_added',
+  'goal_updated',
   'goal_removed',
 ]);
 

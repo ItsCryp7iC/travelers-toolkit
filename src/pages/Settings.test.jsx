@@ -230,7 +230,7 @@ describe('Settings Actions & Alert Replacement', () => {
         regionSelect.value = 'NA';
         regionSelect.dispatchEvent(new Event('change', { bubbles: true }));
       });
-      expect(storeState.setServerRegion).toHaveBeenCalledWith('NA');
+      expect(storeState.setServerRegion).toHaveBeenCalledWith('NA', 'settings_preferences');
 
       const timezoneSelect = container.querySelector('#display-timezone-select');
       expect(timezoneSelect).not.toBeNull();
@@ -241,7 +241,10 @@ describe('Settings Actions & Alert Replacement', () => {
         timezoneSelect.value = targetOptionValue;
         timezoneSelect.dispatchEvent(new Event('change', { bubbles: true }));
       });
-      expect(storeState.setDisplayTimeZone).toHaveBeenCalledWith(targetOptionValue);
+      expect(storeState.setDisplayTimeZone).toHaveBeenCalledWith(
+        targetOptionValue,
+        'settings_preferences'
+      );
     });
 
     it('renders developer tools toggle with accessible label and responds to changes', async () => {
@@ -255,7 +258,7 @@ describe('Settings Actions & Alert Replacement', () => {
       act(() => {
         dbToggle.click();
       });
-      expect(storeState.setShowDbBuilder).toHaveBeenCalledWith(true);
+      expect(storeState.setShowDbBuilder).toHaveBeenCalledWith(true, 'settings_preferences');
     });
 
     it('renders connected HoYoLAB account with wrapped uid info', async () => {
