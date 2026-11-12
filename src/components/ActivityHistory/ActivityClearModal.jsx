@@ -8,13 +8,44 @@ export default function ActivityClearModal({
 }) {
   const modalRef = useRef(null);
   const cancelBtnRef = useRef(null);
+  const prevActiveElementRef = useRef(null);
 
   useEffect(() => {
+    prevActiveElementRef.current = document.activeElement;
     const releaseScrollLock = acquireBodyScrollLock();
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isClearing) {
         onCancel();
+        return;
+      }
+
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstEl = focusableElements[0];
+        const lastEl = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (
+            document.activeElement === firstEl ||
+            !modalRef.current.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            lastEl.focus();
+          }
+        } else {
+          if (
+            document.activeElement === lastEl ||
+            !modalRef.current.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            firstEl.focus();
+          }
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -27,6 +58,12 @@ export default function ActivityClearModal({
     return () => {
       releaseScrollLock();
       window.removeEventListener('keydown', handleKeyDown);
+      if (
+        prevActiveElementRef.current &&
+        typeof prevActiveElementRef.current.focus === 'function'
+      ) {
+        prevActiveElementRef.current.focus();
+      }
     };
   }, [onCancel, isClearing]);
 
@@ -35,6 +72,7 @@ export default function ActivityClearModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="clear-modal-title"
+      aria-describedby="clear-modal-description"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn"
     >
       <div
@@ -64,7 +102,10 @@ export default function ActivityClearModal({
           </button>
         </div>
 
-        <div className="space-y-3 text-sm text-slate-300 leading-relaxed">
+        <div
+          id="clear-modal-description"
+          className="space-y-3 text-sm text-slate-300 leading-relaxed"
+        >
           <p>
             This permanently removes recorded activity from this browser. Your
             inventory, characters, weapons, achievements, and other saved data
@@ -99,4 +140,3 @@ export default function ActivityClearModal({
     </div>
   );
 }
-

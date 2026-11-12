@@ -5,7 +5,6 @@ import {
   attachStorageListener,
   createActivityExportPayload,
   validateActivityImportPayload,
-  recordActivity,
 } from '../activity';
 import {
   CATEGORY_OPTIONS,
@@ -46,6 +45,7 @@ export default function ActivityHistory() {
   const [isClearing, setIsClearing] = useState(false);
 
   const fileInputRef = useRef(null);
+  const categoryTabsRef = useRef([]);
 
   // Cross-tab storage synchronization listener
   useEffect(() => {
@@ -95,6 +95,31 @@ export default function ActivityHistory() {
     setSelectedCategory('all');
     setSelectedDateRange('all');
     setSelectedSort('newest');
+  };
+
+  // Keyboard navigation for category filter tabs (WAI-ARIA roving tabindex)
+  const handleCategoryKeyDown = (e, index) => {
+    let nextIndex = null;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      nextIndex = (index + 1) % CATEGORY_OPTIONS.length;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      nextIndex =
+        (index - 1 + CATEGORY_OPTIONS.length) % CATEGORY_OPTIONS.length;
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      nextIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      nextIndex = CATEGORY_OPTIONS.length - 1;
+    }
+
+    if (nextIndex !== null) {
+      const targetCategory = CATEGORY_OPTIONS[nextIndex];
+      setSelectedCategory(targetCategory.id);
+      categoryTabsRef.current[nextIndex]?.focus();
+    }
   };
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -155,16 +180,23 @@ export default function ActivityHistory() {
         return;
       }
 
-      // Compute duplicate count against existing events
+      // Compute duplicates within file, existing ledger duplicates, and candidate unique events
       const existingIds = new Set(events.map((ev) => ev.id));
-      let duplicateCount = 0;
-      let newCount = 0;
+      const seenInFileIds = new Set();
+      let fileDuplicatesCount = 0;
+      let existingDuplicatesCount = 0;
+      let newCandidateCount = 0;
 
       for (const validEv of validation.events) {
-        if (existingIds.has(validEv.id)) {
-          duplicateCount++;
+        if (seenInFileIds.has(validEv.id)) {
+          fileDuplicatesCount++;
         } else {
-          newCount++;
+          seenInFileIds.add(validEv.id);
+          if (existingIds.has(validEv.id)) {
+            existingDuplicatesCount++;
+          } else {
+            newCandidateCount++;
+          }
         }
       }
 
@@ -176,8 +208,11 @@ export default function ActivityHistory() {
             : (parsed.events || []).length,
         validCount: validation.events.length,
         invalidCount: validation.skippedCount,
-        duplicateCount,
-        newCount,
+        fileDuplicatesCount,
+        existingDuplicatesCount,
+        newCandidateCount,
+        duplicateCount: existingDuplicatesCount,
+        newCount: newCandidateCount,
         validEvents: validation.events,
       });
     } catch (err) {
@@ -193,36 +228,31 @@ export default function ActivityHistory() {
 
     setIsImporting(true);
     try {
-      const result = setEventsFromImport(pendingImport.validEvents);
+      const fileInvalidCount = pendingImport.invalidCount || 0;
+      const fileDups = pendingImport.fileDuplicatesCount || 0;
+      const existingDups = pendingImport.existingDuplicatesCount || 0;
 
-      if (!result.success) {
-        notify.error('Failed to persist imported activity history to storage.');
-        return;
-      }
-
-      // Record informational activity event
-      try {
-        recordActivity({
+      const result = setEventsFromImport(pendingImport.validEvents, {
+        informationalEvent: {
           category: 'import_sync',
           action: 'activity_history_imported',
           source: 'activity_history_import',
           entityType: 'backup',
           entityId: 'activity_history_import',
-          summary: `Imported Activity History: ${result.imported} event(s) added (${result.deduplicatedCount || 0} deduplicated, ${result.invalidCount || 0} skipped).`,
+          summary: 'Imported Activity History',
           changes: [],
           metadata: {
-            importedCount: result.imported,
-            deduplicatedCount: result.deduplicatedCount || 0,
-            invalidCount: result.invalidCount || 0,
-            prunedCount: result.prunedCount || 0,
             fileName: pendingImport.fileName,
+            fileDuplicatesCount: fileDups,
+            existingDuplicatesCount: existingDups,
+            fileInvalidCount,
           },
-        });
-      } catch (logErr) {
-        console.error(
-          '[ActivityHistory] Failed to record import activity event:',
-          logErr
-        );
+        },
+      });
+
+      if (!result.success) {
+        notify.error('Failed to persist imported activity history to storage.');
+        return;
       }
 
       let msg = `Import complete: ${result.imported} new event(s) added.`;
@@ -418,15 +448,20 @@ export default function ActivityHistory() {
             aria-label="Filter activities by category"
             className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-thin"
           >
-            {CATEGORY_OPTIONS.map((cat) => {
+            {CATEGORY_OPTIONS.map((cat, idx) => {
               const isSelected = selectedCategory === cat.id;
               return (
                 <button
                   key={cat.id}
+                  ref={(el) => {
+                    categoryTabsRef.current[idx] = el;
+                  }}
                   type="button"
                   role="tab"
+                  tabIndex={isSelected ? 0 : -1}
                   aria-selected={isSelected}
                   onClick={() => setSelectedCategory(cat.id)}
+                  onKeyDown={(e) => handleCategoryKeyDown(e, idx)}
                   className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
                     isSelected
                       ? 'bg-[#C8A96E] text-black border-[#C8A96E] shadow-sm font-semibold'
@@ -529,7 +564,7 @@ export default function ActivityHistory() {
         )}
       </section>
 
-      {/* Import Preview Modal */}
+      {/* Import Modal */}
       {pendingImport && (
         <ActivityImportModal
           importData={pendingImport}
@@ -539,7 +574,7 @@ export default function ActivityHistory() {
         />
       )}
 
-      {/* Clear History Confirmation Modal */}
+      {/* Clear Confirmation Modal */}
       {isClearModalOpen && (
         <ActivityClearModal
           onConfirm={handleConfirmClear}
@@ -550,4 +585,3 @@ export default function ActivityHistory() {
     </div>
   );
 }
-

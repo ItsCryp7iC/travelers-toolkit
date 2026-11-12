@@ -180,6 +180,10 @@ export interface RecordActivityResult {
   error?: unknown;
 }
 
+export interface SetEventsFromImportOptions {
+  informationalEvent?: ActivityEventInput | ActivityEvent;
+}
+
 export interface SetEventsFromImportResult {
   success: boolean;
   imported: number;
@@ -189,6 +193,10 @@ export interface SetEventsFromImportResult {
   invalidCount: number;
   prunedCount: number;
   retainedCount: number;
+  acceptedCount?: number;
+  retainedImportedCount?: number;
+  prunedImportedCount?: number;
+  informationalEvent?: ActivityEvent;
   error?: unknown;
 }
 

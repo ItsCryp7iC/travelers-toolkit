@@ -298,4 +298,3 @@ export default function ActivityEventCard({ event, timeZone = 'auto' }) {
     </article>
   );
 }
-

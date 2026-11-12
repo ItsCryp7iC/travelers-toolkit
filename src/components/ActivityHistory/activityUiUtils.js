@@ -234,4 +234,3 @@ export function sortActivityEvents(events, sortOrder = 'newest') {
     return a.id.localeCompare(b.id);
   });
 }
-

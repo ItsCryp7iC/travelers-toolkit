@@ -138,4 +138,3 @@ export const SORT_OPTIONS = [
 ];
 
 export const PAGE_SIZE = 50;
-

@@ -29,6 +29,7 @@ import {
   ActivityStorageStatus,
   RecordActivityResult,
   SetEventsFromImportResult,
+  SetEventsFromImportOptions,
   ACTIVITY_STORAGE_KEY,
   ACTIVITY_SCHEMA_VERSION,
   MAX_ACTIVITY_EVENT_COUNT,
@@ -235,7 +236,8 @@ export interface ActivityStoreState {
   getEventById: (id: string) => ActivityEvent | undefined;
   reconcileFromDisk: () => void;
   setEventsFromImport: (
-    importedEvents: ActivityEvent[]
+    importedEvents: ActivityEvent[],
+    options?: SetEventsFromImportOptions
   ) => SetEventsFromImportResult;
 }
 
@@ -487,7 +489,8 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
   },
 
   setEventsFromImport: (
-    importedEvents: ActivityEvent[]
+    importedEvents: ActivityEvent[],
+    options?: SetEventsFromImportOptions
   ): SetEventsFromImportResult => {
     const diskResult = readEnvelopeFromDisk();
     if (diskResult.unsupportedSchema) {
@@ -509,6 +512,7 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
     let importedCount = 0;
     let deduplicatedCount = 0;
     let invalidCount = 0;
+    const acceptedImportedIds = new Set<string>();
 
     for (const raw of importedEvents) {
       const validation = validateActivityEvent(raw);
@@ -521,7 +525,45 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
         continue;
       }
       currentMap.set(validation.event.id, validation.event);
+      acceptedImportedIds.add(validation.event.id);
       importedCount++;
+    }
+
+    // Include the informational import event if requested, ensuring all retention
+    // bounds (count & size limits) account for it atomically without post-import pruning drift
+    let infoEvent: ActivityEvent | null = null;
+    if (options?.informationalEvent) {
+      const infoInput = options.informationalEvent;
+      const infoId =
+        infoInput.id ||
+        (typeof crypto !== 'undefined' &&
+        typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+              const r = (Math.random() * 16) | 0;
+              const v = c === 'x' ? r : (r & 0x3) | 0x8;
+              return v.toString(16);
+            }));
+      const infoTimestamp = infoInput.timestamp || new Date().toISOString();
+      const rawCandidate: ActivityEvent = {
+        id: infoId,
+        schemaVersion: ACTIVITY_SCHEMA_VERSION,
+        timestamp: infoTimestamp,
+        category: infoInput.category,
+        action: infoInput.action,
+        source: infoInput.source,
+        summary: infoInput.summary || 'Imported Activity History',
+        ...(infoInput.entityType ? { entityType: infoInput.entityType } : {}),
+        ...(infoInput.entityId ? { entityId: infoInput.entityId } : {}),
+        ...(infoInput.entityName ? { entityName: infoInput.entityName } : {}),
+        ...(infoInput.changes ? { changes: infoInput.changes } : {}),
+        metadata: { ...(infoInput.metadata || {}) },
+      };
+      const validation = validateActivityEvent(rawCandidate);
+      if (validation.isValid && validation.event) {
+        infoEvent = truncateEventPayload(validation.event);
+        currentMap.set(infoEvent.id, infoEvent);
+      }
     }
 
     const merged = Array.from(currentMap.values());
@@ -529,6 +571,44 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
 
     const { prunedEvents, wasPruned } = applyDualRetentionPruning(merged);
     const prunedCount = merged.length - prunedEvents.length;
+
+    // Distinguish accepted events vs events actually retained in storage
+    const retainedIds = new Set(prunedEvents.map((e) => e.id));
+    let retainedImportedCount = 0;
+    for (const id of acceptedImportedIds) {
+      if (retainedIds.has(id)) {
+        retainedImportedCount++;
+      }
+    }
+    const prunedImportedCount = acceptedImportedIds.size - retainedImportedCount;
+
+    // If an informational event was included and retained, update its summary and metadata
+    // with truthful post-retention counts before saving
+    if (infoEvent && retainedIds.has(infoEvent.id)) {
+      const fileInvalidCount =
+        typeof infoEvent.metadata?.fileInvalidCount === 'number'
+          ? (infoEvent.metadata.fileInvalidCount as number)
+          : 0;
+      const totalInvalidCount = fileInvalidCount + invalidCount;
+      const fileDups =
+        typeof infoEvent.metadata?.fileDuplicatesCount === 'number'
+          ? (infoEvent.metadata.fileDuplicatesCount as number)
+          : 0;
+      const totalDeduplicatedCount = deduplicatedCount + fileDups;
+
+      infoEvent.summary = `Imported Activity History: ${retainedImportedCount} event(s) retained (${totalDeduplicatedCount} deduplicated, ${totalInvalidCount} skipped${prunedCount > 0 ? `, ${prunedCount} pruned for retention` : ''}).`;
+      infoEvent.metadata = {
+        ...infoEvent.metadata,
+        importedCount: retainedImportedCount,
+        acceptedCount: importedCount,
+        retainedImportedCount,
+        prunedImportedCount,
+        retainedCount: prunedEvents.length,
+        deduplicatedCount: totalDeduplicatedCount,
+        invalidCount: totalInvalidCount,
+        prunedCount,
+      };
+    }
 
     const envelope: ActivityStorageEnvelope = {
       schemaVersion: ACTIVITY_SCHEMA_VERSION,
@@ -568,6 +648,9 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
         imported: 0,
         skipped: deduplicatedCount + invalidCount,
         addedCount: 0,
+        acceptedCount: 0,
+        retainedImportedCount: 0,
+        prunedImportedCount: 0,
         deduplicatedCount,
         invalidCount,
         prunedCount: 0,
@@ -590,13 +673,17 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
 
     return {
       success: true,
-      imported: importedCount,
+      imported: retainedImportedCount,
       skipped: deduplicatedCount + invalidCount,
-      addedCount: importedCount,
+      addedCount: retainedImportedCount,
+      acceptedCount: importedCount,
+      retainedImportedCount,
+      prunedImportedCount,
       deduplicatedCount,
       invalidCount,
       prunedCount,
       retainedCount: envelope.events.length,
+      informationalEvent: infoEvent || undefined,
     };
   },
 }));

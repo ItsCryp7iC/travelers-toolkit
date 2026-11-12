@@ -9,25 +9,62 @@ export default function ActivityImportModal({
 }) {
   const modalRef = useRef(null);
   const confirmBtnRef = useRef(null);
+  const prevActiveElementRef = useRef(null);
 
   useEffect(() => {
+    prevActiveElementRef.current = document.activeElement;
     const releaseScrollLock = acquireBodyScrollLock();
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isImporting) {
         onCancel();
+        return;
+      }
+
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstEl = focusableElements[0];
+        const lastEl = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (
+            document.activeElement === firstEl ||
+            !modalRef.current.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            lastEl.focus();
+          }
+        } else {
+          if (
+            document.activeElement === lastEl ||
+            !modalRef.current.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            firstEl.focus();
+          }
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
 
     // Initial focus on confirm button
-    if (confirmBtnRef.current) {
+    if (confirmBtnRef.current && !confirmBtnRef.current.disabled) {
       confirmBtnRef.current.focus();
     }
 
     return () => {
       releaseScrollLock();
       window.removeEventListener('keydown', handleKeyDown);
+      if (
+        prevActiveElementRef.current &&
+        typeof prevActiveElementRef.current.focus === 'function'
+      ) {
+        prevActiveElementRef.current.focus();
+      }
     };
   }, [onCancel, isImporting]);
 
@@ -40,6 +77,9 @@ export default function ActivityImportModal({
     invalidCount,
     duplicateCount,
     newCount,
+    fileDuplicatesCount = 0,
+    existingDuplicatesCount = duplicateCount ?? 0,
+    newCandidateCount = newCount ?? 0,
   } = importData;
 
   return (
@@ -47,6 +87,7 @@ export default function ActivityImportModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="import-modal-title"
+      aria-describedby="import-modal-description"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn"
     >
       <div
@@ -78,7 +119,7 @@ export default function ActivityImportModal({
 
         {/* File Details & Summary Stats */}
         <div className="space-y-3 text-sm">
-          <p className="text-slate-300 leading-relaxed">
+          <p id="import-modal-description" className="text-slate-300 leading-relaxed">
             Preview of historical activity events found in{' '}
             <strong className="text-white font-mono break-all">
               {fileName || 'selected file'}
@@ -102,15 +143,23 @@ export default function ActivityImportModal({
             <div>
               <span className="text-slate-400 block">New to Add</span>
               <span className="text-base font-semibold text-[#C8A96E]">
-                {newCount}
+                {newCandidateCount}
               </span>
             </div>
             <div>
               <span className="text-slate-400 block">Existing Duplicates</span>
               <span className="text-base font-semibold text-slate-400">
-                {duplicateCount}
+                {existingDuplicatesCount}
               </span>
             </div>
+            {fileDuplicatesCount > 0 && (
+              <div className="col-span-2 pt-1 border-t border-white/5 flex items-center justify-between text-slate-400">
+                <span>Duplicate Records in File</span>
+                <span className="font-semibold text-slate-300">
+                  {fileDuplicatesCount}
+                </span>
+              </div>
+            )}
             {invalidCount > 0 && (
               <div className="col-span-2 pt-1 border-t border-white/5">
                 <span className="text-amber-400 block">
@@ -162,4 +211,3 @@ export default function ActivityImportModal({
     </div>
   );
 }
-

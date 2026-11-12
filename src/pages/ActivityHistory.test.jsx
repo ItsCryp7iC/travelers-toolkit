@@ -1142,4 +1142,3 @@ describe('ACTIVITY-HISTORY-A6: User Interface, Navigation & Interchange', () => 
     expect(screen.queryByText(/restore this state/i)).toBeNull();
   });
 });
-
