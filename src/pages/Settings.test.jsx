@@ -5,6 +5,26 @@ import Settings from './Settings';
 import useStore from '../store/useStore';
 import * as driveSync from '../utils/driveSync';
 import notify from '../utils/notify';
+import { useActivityStore, clearActivityHistory } from '../activity';
+
+function makeSettingsTestEvent(overrides = {}) {
+  const hex = Math.random().toString(16).slice(2, 14).padEnd(12, '0');
+  return {
+    id: `00000000-0000-4000-8000-${hex}`,
+    schemaVersion: 1,
+    timestamp: new Date().toISOString(),
+    category: 'inventory',
+    action: 'inventory_updated',
+    source: 'inventory_page',
+    summary: 'Test event',
+    entityType: 'material',
+    entityId: 'test_mat',
+    entityName: 'Test Mat',
+    changes: [],
+    metadata: {},
+    ...overrides,
+  };
+}
 
 vi.mock('../store/useStore');
 vi.mock('../utils/driveSync', () => ({
@@ -144,6 +164,187 @@ describe('Settings Actions & Alert Replacement', () => {
 
     expect(storeState.resetStore).toHaveBeenCalled();
     expect(notifySpy).toHaveBeenCalledWith('Data reset successfully.');
+  });
+
+  describe('Settings Factory Reset & Activity History Storage Integration (A6.1)', () => {
+    let confirmSpy;
+    let notifySuccessSpy;
+    let notifyWarningSpy;
+
+    beforeEach(() => {
+      confirmSpy = vi.spyOn(window, 'confirm');
+      notifySuccessSpy = vi.spyOn(notify, 'success');
+      notifyWarningSpy = vi.spyOn(notify, 'warning');
+      window.localStorage.clear();
+      clearActivityHistory();
+    });
+
+    afterEach(() => {
+      confirmSpy.mockRestore();
+      notifySuccessSpy.mockRestore();
+      notifyWarningSpy.mockRestore();
+      window.localStorage.clear();
+      clearActivityHistory();
+    });
+
+    it('1. Settings factory reset with history clearing successfully persisted', async () => {
+      useActivityStore
+        .getState()
+        .appendEvent(makeSettingsTestEvent({ summary: 'Pre-existing event' }));
+      expect(useActivityStore.getState().events).toHaveLength(1);
+
+      confirmSpy.mockReturnValueOnce(true);
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const resetBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+        b.textContent.includes('Factory Reset')
+      );
+      await act(async () => {
+        resetBtn.click();
+      });
+
+      // Domain reset called
+      expect(storeState.resetStore).toHaveBeenCalled();
+      // Success notification shown
+      expect(notifySuccessSpy).toHaveBeenCalledWith('Data reset successfully.');
+      expect(notifyWarningSpy).not.toHaveBeenCalled();
+
+      // Only the new factory_reset_performed event exists (prior history cleared)
+      const events = useActivityStore.getState().events;
+      expect(events).toHaveLength(1);
+      expect(events[0].action).toBe('factory_reset_performed');
+      expect(events[0].metadata.historyCleared).toBe(true);
+      expect(events[0].summary).toBe('Performed factory reset and cleared activity history.');
+    });
+
+    it('2 & 3 & 4 & 5. Factory reset with history clearing rejected by localStorage preserves domain reset and history without false success', async () => {
+      const initialEvent = makeSettingsTestEvent({ summary: 'Protected pre-existing event' });
+      useActivityStore.getState().appendEvent(initialEvent);
+      expect(useActivityStore.getState().events).toHaveLength(1);
+
+      confirmSpy.mockReturnValueOnce(true);
+
+      // Mock clearHistory to fail
+      const clearSpy = vi.spyOn(useActivityStore.getState(), 'clearHistory').mockReturnValue(false);
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const resetBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+        b.textContent.includes('Factory Reset')
+      );
+      await act(async () => {
+        resetBtn.click();
+      });
+
+      // 5. Domain reset still succeeds
+      expect(storeState.resetStore).toHaveBeenCalled();
+
+      // 4. Failed clearing does not falsely notify success
+      expect(notifySuccessSpy).not.toHaveBeenCalled();
+      expect(notifyWarningSpy).toHaveBeenCalledWith('Data reset successfully, but failed to clear activity history.');
+
+      // Previously retained Activity History remains available
+      const events = useActivityStore.getState().events;
+      expect(events.length).toBeGreaterThanOrEqual(1);
+      expect(events.some((e) => e.id === initialEvent.id)).toBe(true);
+
+      // 3. Failed clearing does not produce historyCleared: true
+      const resetEvent = events.find((e) => e.action === 'factory_reset_performed');
+      expect(resetEvent).toBeDefined();
+      expect(resetEvent.metadata.historyCleared).toBe(false);
+      expect(resetEvent.summary).toBe('Performed factory reset (activity history clear failed).');
+
+      clearSpy.mockRestore();
+    });
+
+    it('6. History-retention choice preserves existing events', async () => {
+      const initialEvent = makeSettingsTestEvent({ summary: 'Kept history item' });
+      useActivityStore.getState().appendEvent(initialEvent);
+      expect(useActivityStore.getState().events).toHaveLength(1);
+
+      confirmSpy.mockReturnValueOnce(true);
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      // Uncheck "Also clear Activity History"
+      const checkbox = container.querySelector('#clear-activity-history-checkbox');
+      expect(checkbox.checked).toBe(true);
+      await act(async () => {
+        checkbox.click();
+      });
+      expect(checkbox.checked).toBe(false);
+
+      const resetBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+        b.textContent.includes('Factory Reset')
+      );
+      await act(async () => {
+        resetBtn.click();
+      });
+
+      expect(storeState.resetStore).toHaveBeenCalled();
+      expect(notifySuccessSpy).toHaveBeenCalledWith('Data reset successfully.');
+
+      const events = useActivityStore.getState().events;
+      expect(events).toHaveLength(2);
+      expect(events.some((e) => e.id === initialEvent.id)).toBe(true);
+      const resetEvent = events.find((e) => e.action === 'factory_reset_performed');
+      expect(resetEvent.metadata.historyCleared).toBe(false);
+      expect(resetEvent.summary).toBe('Performed factory reset (activity history retained).');
+    });
+
+    it('7. Cancelled factory reset changes neither domain data nor history', async () => {
+      const initialEvent = makeSettingsTestEvent({ summary: 'Untouched history' });
+      useActivityStore.getState().appendEvent(initialEvent);
+      expect(useActivityStore.getState().events).toHaveLength(1);
+
+      confirmSpy.mockReturnValueOnce(false);
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const resetBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+        b.textContent.includes('Factory Reset')
+      );
+      await act(async () => {
+        resetBtn.click();
+      });
+
+      expect(storeState.resetStore).not.toHaveBeenCalled();
+      expect(notifySuccessSpy).not.toHaveBeenCalled();
+      expect(notifyWarningSpy).not.toHaveBeenCalled();
+
+      const events = useActivityStore.getState().events;
+      expect(events).toHaveLength(1);
+      expect(events[0].id).toBe(initialEvent.id);
+    });
+
+    it('8. No duplicate reset events occur during a single factory reset', async () => {
+      confirmSpy.mockReturnValueOnce(true);
+
+      await act(async () => {
+        root.render(<Settings />);
+      });
+
+      const resetBtn = Array.from(container.querySelectorAll('button')).find((b) =>
+        b.textContent.includes('Factory Reset')
+      );
+      await act(async () => {
+        resetBtn.click();
+      });
+
+      const resetEvents = useActivityStore
+        .getState()
+        .events.filter((e) => e.action === 'factory_reset_performed');
+      expect(resetEvents).toHaveLength(1);
+    });
   });
 
   describe('Settings Responsive Architecture & Controls (R5C)', () => {

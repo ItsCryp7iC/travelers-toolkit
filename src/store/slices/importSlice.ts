@@ -376,33 +376,45 @@ export const createImportSlice = (
         achievementProgress: {},
       });
 
+      let historyCleared = false;
+      let clearFailed = false;
+
       if (context?.logActivity) {
         if (context.clearHistory) {
           try {
-            clearActivityHistory();
+            historyCleared = clearActivityHistory() === true;
+            clearFailed = !historyCleared;
           } catch (err) {
             console.error('[ImportSlice] Failed to clear activity history:', err);
+            historyCleared = false;
+            clearFailed = true;
           }
         }
         try {
+          const summary = context.clearHistory
+            ? historyCleared
+              ? 'Performed factory reset and cleared activity history.'
+              : 'Performed factory reset (activity history clear failed).'
+            : 'Performed factory reset (activity history retained).';
+
           recordActivity({
             category: 'settings_system',
             action: 'factory_reset_performed',
             source: 'settings_preferences',
             entityType: 'setting',
             entityId: 'factory_reset',
-            summary: context.clearHistory
-              ? 'Performed factory reset and cleared activity history.'
-              : 'Performed factory reset (activity history retained).',
+            summary,
             changes: [],
             metadata: {
-              historyCleared: Boolean(context.clearHistory),
+              historyCleared,
             },
           });
         } catch (err) {
           console.error('[ImportSlice] Failed to record reset activity:', err);
         }
       }
+
+      return { domainReset: true, historyCleared, clearFailed };
     },
   };
 };

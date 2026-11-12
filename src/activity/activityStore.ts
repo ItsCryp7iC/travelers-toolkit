@@ -28,6 +28,7 @@ import {
   ActivityStorageEnvelope,
   ActivityStorageStatus,
   RecordActivityResult,
+  SetEventsFromImportResult,
   ACTIVITY_STORAGE_KEY,
   ACTIVITY_SCHEMA_VERSION,
   MAX_ACTIVITY_EVENT_COUNT,
@@ -229,14 +230,13 @@ export interface ActivityStoreState {
   events: ActivityEvent[];
   storageStatus: ActivityStorageStatus;
   appendEvent: (event: ActivityEvent) => RecordActivityResult;
-  clearHistory: () => void;
+  clearHistory: () => boolean;
   getEvents: () => ActivityEvent[];
   getEventById: (id: string) => ActivityEvent | undefined;
   reconcileFromDisk: () => void;
-  setEventsFromImport: (importedEvents: ActivityEvent[]) => {
-    imported: number;
-    skipped: number;
-  };
+  setEventsFromImport: (
+    importedEvents: ActivityEvent[]
+  ) => SetEventsFromImportResult;
 }
 
 // Initial state reading from disk safely
@@ -262,7 +262,7 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
 
   getEventById: (id: string) => get().events.find((e) => e.id === id),
 
-  clearHistory: () => {
+  clearHistory: (): boolean => {
     const emptyEnvelope: ActivityStorageEnvelope = {
       schemaVersion: ACTIVITY_SCHEMA_VERSION,
       lastUpdated: new Date().toISOString(),
@@ -280,7 +280,16 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
           '[ActivityStore] Failed to clear persistent storage:',
           err
         );
+        set((state) => ({
+          storageStatus: {
+            ...state.storageStatus,
+            persistenceErrorCount: state.storageStatus.persistenceErrorCount + 1,
+          },
+        }));
+        return false;
       }
+    } else {
+      return false;
     }
 
     set((state) => ({
@@ -294,6 +303,7 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
         lastPruneTimestamp: null,
       },
     }));
+    return true;
   },
 
   reconcileFromDisk: () => {
@@ -476,26 +486,38 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
     };
   },
 
-  setEventsFromImport: (importedEvents: ActivityEvent[]) => {
+  setEventsFromImport: (
+    importedEvents: ActivityEvent[]
+  ): SetEventsFromImportResult => {
     const diskResult = readEnvelopeFromDisk();
     if (diskResult.unsupportedSchema) {
-      return { imported: 0, skipped: importedEvents.length };
+      return {
+        success: false,
+        imported: 0,
+        skipped: importedEvents.length,
+        addedCount: 0,
+        deduplicatedCount: 0,
+        invalidCount: importedEvents.length,
+        prunedCount: 0,
+        retainedCount: diskResult.envelope.events.length,
+      };
     }
 
     const currentMap = new Map<string, ActivityEvent>();
     diskResult.envelope.events.forEach((e) => currentMap.set(e.id, e));
 
     let importedCount = 0;
-    let skippedCount = 0;
+    let deduplicatedCount = 0;
+    let invalidCount = 0;
 
     for (const raw of importedEvents) {
       const validation = validateActivityEvent(raw);
       if (!validation.isValid || !validation.event) {
-        skippedCount++;
+        invalidCount++;
         continue;
       }
       if (currentMap.has(validation.event.id)) {
-        skippedCount++; // Deduplicate
+        deduplicatedCount++; // Deduplicate
         continue;
       }
       currentMap.set(validation.event.id, validation.event);
@@ -506,6 +528,7 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
     merged.sort(compareEventsChronologically);
 
     const { prunedEvents, wasPruned } = applyDualRetentionPruning(merged);
+    const prunedCount = merged.length - prunedEvents.length;
 
     const envelope: ActivityStorageEnvelope = {
       schemaVersion: ACTIVITY_SCHEMA_VERSION,
@@ -513,6 +536,8 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
       events: prunedEvents,
     };
 
+    let writeSuccess = true;
+    let writeError: unknown = undefined;
     if (isStorageAvailable()) {
       try {
         window.localStorage.setItem(
@@ -520,11 +545,35 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
           JSON.stringify(envelope)
         );
       } catch (err) {
+        writeSuccess = false;
+        writeError = err;
         console.error(
           '[ActivityStore] Failed to write imported events to storage:',
           err
         );
       }
+    } else {
+      writeSuccess = false;
+    }
+
+    if (!writeSuccess) {
+      set((state) => ({
+        storageStatus: {
+          ...state.storageStatus,
+          persistenceErrorCount: state.storageStatus.persistenceErrorCount + 1,
+        },
+      }));
+      return {
+        success: false,
+        imported: 0,
+        skipped: deduplicatedCount + invalidCount,
+        addedCount: 0,
+        deduplicatedCount,
+        invalidCount,
+        prunedCount: 0,
+        retainedCount: get().events.length,
+        error: writeError,
+      };
     }
 
     set((state) => ({
@@ -539,7 +588,16 @@ export const useActivityStore = create<ActivityStoreState>((set, get) => ({
       },
     }));
 
-    return { imported: importedCount, skipped: skippedCount };
+    return {
+      success: true,
+      imported: importedCount,
+      skipped: deduplicatedCount + invalidCount,
+      addedCount: importedCount,
+      deduplicatedCount,
+      invalidCount,
+      prunedCount,
+      retainedCount: envelope.events.length,
+    };
   },
 }));
 
@@ -594,6 +652,6 @@ export function subscribeToActivity(
   return useActivityStore.subscribe((state) => listener(state.events));
 }
 
-export function clearActivityHistory(): void {
-  useActivityStore.getState().clearHistory();
+export function clearActivityHistory(): boolean {
+  return useActivityStore.getState().clearHistory();
 }

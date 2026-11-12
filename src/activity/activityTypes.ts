@@ -180,6 +180,18 @@ export interface RecordActivityResult {
   error?: unknown;
 }
 
+export interface SetEventsFromImportResult {
+  success: boolean;
+  imported: number;
+  skipped: number;
+  addedCount: number;
+  deduplicatedCount: number;
+  invalidCount: number;
+  prunedCount: number;
+  retainedCount: number;
+  error?: unknown;
+}
+
 export interface ActivityStorageStatus {
   eventCount: number;
   serializedBytes: number;

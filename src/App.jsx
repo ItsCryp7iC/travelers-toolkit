@@ -10,6 +10,7 @@ const Inventory = lazy(() => import('./pages/Inventory'))
 const Characters = lazy(() => import('./pages/Characters'))
 const Weapons = lazy(() => import('./pages/Weapons'))
 const Achievements = lazy(() => import('./pages/Achievements'))
+const ActivityHistory = lazy(() => import('./pages/ActivityHistory'))
 const Settings = lazy(() => import('./pages/Settings'))
 const DevBuilder = lazy(() => import('./pages/DevBuilder'))
 const Changelog = lazy(() => import('./pages/Changelog'))
@@ -70,6 +71,7 @@ export default function App() {
           <Route path="planner"   element={withSuspense(Planner)} />
           <Route path="inventory" element={withSuspense(Inventory)} />
           <Route path="achievements" element={withSuspense(Achievements)} />
+          <Route path="activity" element={withSuspense(ActivityHistory)} />
           <Route path="changelog" element={withSuspense(Changelog)} />
           <Route path="settings" element={withSuspense(Settings)} />
           <Route path="privacy" element={withSuspense(PrivacyPolicy)} />

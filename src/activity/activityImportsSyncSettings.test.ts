@@ -997,8 +997,20 @@ describe('ACTIVITY-HISTORY-A5: Imports, Sync, Settings & System Events', () => {
     expect(store.getState().roster.Raiden).toBeDefined();
 
     // Domain reset completes cleanly despite clear failure
-    store.getState().resetStore({ logActivity: true, clearHistory: true });
+    const resetResult = store
+      .getState()
+      .resetStore({ logActivity: true, clearHistory: true });
     expect(store.getState().roster).toEqual({});
+    expect(resetResult.domainReset).toBe(true);
+    expect(resetResult.historyCleared).toBe(false);
+
+    // Verify recorded event describes actual outcome
+    const resetEvent = useActivityStore
+      .getState()
+      .events.find((e) => e.action === 'factory_reset_performed');
+    expect(resetEvent).toBeDefined();
+    expect(resetEvent?.metadata?.historyCleared).toBe(false);
+    expect(resetEvent?.summary).toContain('activity history clear failed');
 
     clearSpy.mockRestore();
   });

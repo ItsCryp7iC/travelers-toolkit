@@ -363,28 +363,49 @@ export default function Settings() {
         console.error("Failed to disconnect from HoYoLAB during reset", error);
       } finally {
         resetStore();
+        let historyCleared = false;
+        let clearFailed = false;
+
         if (clearHistoryOnReset) {
-          clearActivityHistory();
+          try {
+            const clearResult = clearActivityHistory();
+            historyCleared = clearResult === true;
+            clearFailed = !historyCleared;
+          } catch (err) {
+            console.error('[Settings] Failed to clear activity history:', err);
+            historyCleared = false;
+            clearFailed = true;
+          }
         }
+
         try {
+          const summary = clearHistoryOnReset
+            ? historyCleared
+              ? 'Performed factory reset and cleared activity history.'
+              : 'Performed factory reset (activity history clear failed).'
+            : 'Performed factory reset (activity history retained).';
+
           recordActivity({
             category: 'settings_system',
             action: 'factory_reset_performed',
             source: 'settings_preferences',
             entityType: 'setting',
             entityId: 'factory_reset',
-            summary: clearHistoryOnReset
-              ? 'Performed factory reset and cleared activity history.'
-              : 'Performed factory reset (activity history retained).',
+            summary,
             changes: [],
             metadata: {
-              historyCleared: clearHistoryOnReset,
+              historyCleared,
             },
           });
         } catch (err) {
           console.error('[Settings] Failed to record factory reset activity:', err);
         }
-        notify.success('Data reset successfully.');
+
+        if (clearFailed) {
+          notify.warning('Data reset successfully, but failed to clear activity history.');
+        } else {
+          notify.success('Data reset successfully.');
+        }
       }
     }
   };

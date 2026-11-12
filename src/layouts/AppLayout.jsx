@@ -28,6 +28,7 @@ const navSections = [
     label: 'Records',
     items: [
       { to: '/achievements', label: 'Achievements', icon: 'https://raw.githubusercontent.com/ItsCryp7iC/travelers-toolkit-image-resources/refs/heads/main/achievements/achievements.png', id: 'nav-achievements' },
+      { to: '/activity', label: 'Activity History', icon: '⏱️', id: 'nav-activity' },
     ],
   },
   {
