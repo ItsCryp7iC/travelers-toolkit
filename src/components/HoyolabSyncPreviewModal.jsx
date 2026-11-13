@@ -10,7 +10,7 @@ import { acquireBodyScrollLock } from '../utils/scrollLock';
 
 export const isCharacterActionable = (char) => {
   if (!char) return false;
-  if (['new', 'update'].includes(char.status)) return true;
+  if (['new', 'update', 'weapon-update'].includes(char.status)) return true;
   if (Object.values(char.changes || {}).some(x => x && x.direction === 'local-ahead')) return true;
 
   const wStatus = char.weaponReconciliation?.status;
@@ -122,9 +122,10 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
         if (c.status === 'ignored' || c.status === 'unmapped' || c.status === 'conflict') return;
 
         // An equipment-mismatch or ambiguous weapon row requires user decision;
-        // do not auto-select it.
+        // do not auto-select it. An unmapped weapon also requires review.
         const wStatus = c.weaponReconciliation?.status;
         if (['equipment-mismatch', 'ambiguous', 'ambiguous-existing-match'].includes(wStatus)) return;
+        if (wStatus === 'unmapped' && Boolean(c.hoyolab?.weapon)) return;
 
         // For existing-tracked-match assigned to another character, only auto-select if part of a safe cycle!
         if (wStatus === 'existing-tracked-match' || wStatus === 'suggested-instance') {
@@ -190,6 +191,9 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       if (['equipment-mismatch', 'ambiguous', 'ambiguous-existing-match'].includes(wStatus) && !wChoice) {
         return;
       }
+      if (wStatus === 'unmapped' && Boolean(c.hoyolab?.weapon) && !wChoice) {
+        return;
+      }
 
       if (wStatus === 'existing-tracked-match' || wStatus === 'suggested-instance') {
         const cand = c.weaponReconciliation?.candidateInstance || c.weaponReconciliation?.candidates?.[0];
@@ -198,7 +202,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
         }
       }
 
-      if (['new', 'update', 'unchanged'].includes(c.status)) {
+      if (['new', 'update', 'unchanged', 'weapon-update'].includes(c.status)) {
         newSelected[c.hoyolabId] = true;
       }
     });
@@ -245,7 +249,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
     plan.characters.forEach(c => {
       if (c.isNew) newCount++;
-      else updateCount++;
+      else if (Object.keys(c.fields || {}).length > 0) updateCount++;
 
       if (c.weapon) {
         if (c.weapon.action === 'create') weaponCreatedCount++;
@@ -282,7 +286,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
     if (reconciliationResult) {
       const travelerChar = reconciliationResult.characters.find(c => c.rosterKey?.startsWith('Traveler '));
-      if (travelerChar && ['new', 'update', 'unchanged'].includes(travelerChar.status)) {
+      if (travelerChar && ['new', 'update', 'unchanged', 'weapon-update'].includes(travelerChar.status)) {
         activeTraveler = travelerChar;
         activeTravelerElement = travelerChar.rosterKey.replace('Traveler ', '');
         travelerVariants = ALL_TRAVELER_ELEMENTS.map(e => {
@@ -318,6 +322,36 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
 
   const isTravelerVisible = useMemo(() => {
     if (!activeTraveler) return false;
+
+    if (filter === 'New') {
+      const isNewActive = activeTraveler.status === 'new';
+      const hasMissingVariants = travelerVariants.some(tv => tv.status === 'missing');
+      if (!isNewActive && !hasMissingVariants) return false;
+    } else if (filter === 'Updates') {
+      if (activeTraveler.status !== 'update') return false;
+    } else if (filter === 'Unchanged') {
+      if (activeTraveler.status !== 'unchanged') return false;
+    } else if (filter === 'Needs Attention') {
+      const hasCharLocalAhead = activeTraveler.changes && (
+        Object.values(activeTraveler.changes).some(x => x && x.direction === 'local-ahead') ||
+        (activeTraveler.changes.talents && Object.values(activeTraveler.changes.talents).some(x => x && x.direction === 'local-ahead'))
+      );
+      const hasWeaponLocalAhead = activeTraveler.weaponReconciliation?.changes &&
+        Object.values(activeTraveler.weaponReconciliation.changes).some(x => x && x.direction === 'local-ahead');
+
+      const isNeedsAttention =
+        ['conflict', 'unmapped'].includes(activeTraveler.status) ||
+        (Boolean(activeTraveler.hoyolab?.weapon) && activeTraveler.weaponReconciliation?.status === 'unmapped') ||
+        activeTraveler.weaponReconciliation?.status === 'equipment-mismatch' ||
+        activeTraveler.weaponReconciliation?.status === 'ambiguous' ||
+        activeTraveler.needsAttention ||
+        (activeTraveler.local && activeTraveler.weaponDiff) ||
+        hasCharLocalAhead ||
+        hasWeaponLocalAhead;
+
+      if (!isNeedsAttention) return false;
+    }
+
     const query = searchQuery.trim().toLowerCase();
     if (!query) return true;
 
@@ -337,7 +371,7 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
     }
 
     return travelerVariants.some(tv => tv.element.toLowerCase().includes(query));
-  }, [activeTraveler, searchQuery, activeTravelerElement, trackedWeaponsMap, travelerVariants]);
+  }, [activeTraveler, searchQuery, filter, activeTravelerElement, trackedWeaponsMap, travelerVariants]);
 
   const filteredChars = useMemo(() => {
     if (!reconciliationResult) return [];
@@ -349,11 +383,22 @@ export default function HoyolabSyncPreviewModal({ isOpen, onClose }) {
       if (filter === 'Updates' && c.status !== 'update') return false;
       if (filter === 'Unchanged' && c.status !== 'unchanged') return false;
       if (filter === 'Needs Attention') {
-        const isNeedsAttention = ['conflict', 'unmapped'].includes(c.status) ||
-          c.needsAttention ||
+        const hasCharLocalAhead = c.changes && (
+          Object.values(c.changes).some(x => x && x.direction === 'local-ahead') ||
+          (c.changes.talents && Object.values(c.changes.talents).some(x => x && x.direction === 'local-ahead'))
+        );
+        const hasWeaponLocalAhead = c.weaponReconciliation?.changes &&
+          Object.values(c.weaponReconciliation.changes).some(x => x && x.direction === 'local-ahead');
+
+        const isNeedsAttention =
+          ['conflict', 'unmapped'].includes(c.status) ||
+          (Boolean(c.hoyolab?.weapon) && c.weaponReconciliation?.status === 'unmapped') ||
           c.weaponReconciliation?.status === 'equipment-mismatch' ||
           c.weaponReconciliation?.status === 'ambiguous' ||
-          Object.values(c.changes || {}).some(x => x && x.direction === 'local-ahead');
+          c.needsAttention ||
+          (c.local && c.weaponDiff) ||
+          hasCharLocalAhead ||
+          hasWeaponLocalAhead;
         if (!isNeedsAttention) return false;
       }
 

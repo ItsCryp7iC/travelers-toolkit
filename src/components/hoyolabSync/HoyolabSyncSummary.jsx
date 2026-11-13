@@ -19,6 +19,11 @@ export default function HoyolabSyncSummary({ summary }) {
         <div className="bg-[var(--surface)] border border-blue-500/20 p-3 sm:p-4 rounded-xl text-center">
           <div className="text-xl sm:text-2xl font-bold text-blue-400">{summary.charactersWithUpdates}</div>
           <div className="text-[var(--muted)] text-[11px] sm:text-xs uppercase tracking-wide">Updates</div>
+          {summary.charactersWithWeaponChanges > 0 && (
+            <div className="text-[var(--muted)] text-[10px] mt-1 opacity-80 break-words">
+              {summary.charactersWithWeaponChanges} weapon {summary.charactersWithWeaponChanges === 1 ? 'change' : 'changes'}
+            </div>
+          )}
         </div>
         <div className="bg-[var(--surface)] border border-[var(--border)] p-3 sm:p-4 rounded-xl text-center">
           <div className="text-xl sm:text-2xl font-bold text-[var(--text)]">{summary.unchangedCharacters}</div>

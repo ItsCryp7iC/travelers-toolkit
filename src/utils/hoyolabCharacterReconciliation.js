@@ -69,6 +69,8 @@ export function reconcileCharacters(syncArray, roster, trackedWeapons) {
       existingCharacters: 0,
       unchangedCharacters: 0,
       charactersWithUpdates: 0,
+      charactersWithWeaponChanges: 0,
+      weaponOnlyUpdates: 0,
       charactersWithConflicts: 0,
       localAheadCharacters: 0,
       weaponMatched: 0,
@@ -299,7 +301,6 @@ export function reconcileCharacters(syncArray, roster, trackedWeapons) {
     const isDifferentEquipped = !!(localChar && ['existing-tracked-match', 'equipment-mismatch', 'suggested-instance', 'ambiguous', 'ambiguous-existing-match', 'would-create'].includes(weaponReconciliation?.status));
     const isMatchedWeaponUpdate = !!(weaponReconciliation?.status === 'matched-instance' && weaponReconciliation?.hasWeaponUpdate);
     const weaponDiff = isDifferentEquipped || isMatchedWeaponUpdate;
-    const hasAnyUpdate = characterDiff || weaponDiff;
 
     let status;
     if (!isProgressionValid) {
@@ -310,23 +311,35 @@ export function reconcileCharacters(syncArray, roster, trackedWeapons) {
       result.summary.newCharacters++;
     } else {
       result.summary.existingCharacters++;
-      if (hasAnyUpdate) {
+      if (weaponDiff) {
+        result.summary.charactersWithWeaponChanges++;
+      }
+      if (characterDiff) {
         status = "update";
         result.summary.charactersWithUpdates++;
+      } else if (weaponDiff) {
+        status = "weapon-update";
+        result.summary.weaponOnlyUpdates++;
+      } else if (syncChar.weapon && weaponReconciliation?.status === 'unmapped') {
+        status = "conflict";
+        result.summary.charactersWithConflicts++;
+      } else {
+        status = "unchanged";
+        result.summary.unchangedCharacters++;
+      }
+
+      if (characterDiff || weaponDiff) {
         const hasWeaponLocalAhead = weaponReconciliation?.changes &&
           Object.values(weaponReconciliation.changes).some(c => c.direction === 'local-ahead');
         if (hasLocalAhead || hasWeaponLocalAhead) {
           result.summary.localAheadCharacters++;
         }
-      } else {
-        status = "unchanged";
-        result.summary.unchangedCharacters++;
       }
     }
 
     const needsAttention = status === 'conflict' ||
       status === 'unmapped' ||
-      weaponReconciliation?.status === 'unmapped' ||
+      (Boolean(syncChar.weapon) && weaponReconciliation?.status === 'unmapped') ||
       weaponReconciliation?.status === 'equipment-mismatch' ||
       weaponReconciliation?.status === 'ambiguous' ||
       weaponReconciliation?.status === 'ambiguous-existing-match' ||

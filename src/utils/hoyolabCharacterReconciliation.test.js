@@ -366,7 +366,7 @@ describe('hoyolabCharacterReconciliation', () => {
   });
 
   describe('STAGE C1: WEAPON RECONCILIATION & CLASSIFICATION', () => {
-    it('exact Ayaka scenario: weapon-only level change classifies as UPDATE', () => {
+    it('exact Ayaka scenario: weapon-only level change classifies as WEAPON-UPDATE', () => {
       const syncArray = [{
         id: 10000002, // Kamisato Ayaka
         level: 90,
@@ -397,7 +397,7 @@ describe('hoyolabCharacterReconciliation', () => {
       const res = reconcileCharacters(syncArray, roster, trackedWeapons);
       const ayaka = res.characters[0];
 
-      expect(ayaka.status).toBe('update');
+      expect(ayaka.status).toBe('weapon-update');
       expect(ayaka.characterDiff).toBe(false);
       expect(ayaka.weaponDiff).toBe(true);
       expect(ayaka.weaponResolution).toBe('update-existing');
@@ -407,11 +407,13 @@ describe('hoyolabCharacterReconciliation', () => {
       expect(ayaka.weaponReconciliation.changes.level.local).toBe(80);
       expect(ayaka.weaponReconciliation.changes.level.remote).toBe(90);
 
-      expect(res.summary.charactersWithUpdates).toBe(1);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(1);
+      expect(res.summary.weaponOnlyUpdates).toBe(1);
       expect(res.summary.unchangedCharacters).toBe(0);
     });
 
-    it('same weapon refinement-only change classifies as UPDATE', () => {
+    it('same weapon refinement-only change classifies as WEAPON-UPDATE', () => {
       const syncArray = [{
         id: 10000002,
         level: 90,
@@ -440,13 +442,15 @@ describe('hoyolabCharacterReconciliation', () => {
       const res = reconcileCharacters(syncArray, roster, trackedWeapons);
       const ayaka = res.characters[0];
 
-      expect(ayaka.status).toBe('update');
+      expect(ayaka.status).toBe('weapon-update');
       expect(ayaka.characterDiff).toBe(false);
       expect(ayaka.weaponDiff).toBe(true);
       expect(ayaka.weaponReconciliation.changes.refinement.direction).toBe('remote-ahead');
       expect(ayaka.weaponReconciliation.changes.refinement.local).toBe(3);
       expect(ayaka.weaponReconciliation.changes.refinement.remote).toBe(5);
-      expect(res.summary.charactersWithUpdates).toBe(1);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(1);
+      expect(res.summary.weaponOnlyUpdates).toBe(1);
     });
 
     it('combined character and weapon change is single UPDATE row without double-counting', () => {
@@ -550,8 +554,8 @@ describe('hoyolabCharacterReconciliation', () => {
       expect(ayaka.weaponReconciliation.changes.level.remote).toBe(90);
     });
 
-    it('synthetic dataset invariant: 2 new, 10 char updates, 17 weapon updates, 68 unchanged = 97 syncable, 27 updates', () => {
-      // Test that reconcileCharacters correctly sums charactersWithUpdates when charDiff or weaponDiff is true
+    it('synthetic dataset invariant: 2 new, 1 char update, 1 weapon-only update, 1 unchanged = 5 syncable', () => {
+      // Test that reconcileCharacters correctly separates charactersWithUpdates from weapon changes
       const mockSync = [
         { id: 10000030, level: 80, ascension: 5 }, // new 1
         { id: 10000031, level: 80, ascension: 5 }, // new 2
@@ -576,10 +580,12 @@ describe('hoyolabCharacterReconciliation', () => {
 
       const res = reconcileCharacters(mockSync, mockRoster, mockWeapons);
       expect(res.summary.newCharacters).toBe(2);
-      expect(res.summary.charactersWithUpdates).toBe(2); // Hu Tao (char) + Ayaka (weapon)
+      expect(res.summary.charactersWithUpdates).toBe(1); // Hu Tao (char)
+      expect(res.summary.charactersWithWeaponChanges).toBe(1); // Ayaka (weapon)
+      expect(res.summary.weaponOnlyUpdates).toBe(1); // Ayaka (weapon-only)
       expect(res.summary.unchangedCharacters).toBe(1); // Jean
       expect(res.summary.syncRelevant).toBe(5);
-      expect(res.summary.newCharacters + res.summary.charactersWithUpdates + res.summary.unchangedCharacters).toBe(5);
+      expect(res.summary.newCharacters + res.summary.charactersWithUpdates + res.summary.weaponOnlyUpdates + res.summary.unchangedCharacters).toBe(5);
     });
   });
 
@@ -602,7 +608,9 @@ describe('hoyolabCharacterReconciliation', () => {
       const res = reconcileCharacters(syncArray, roster, trackedWeapons);
       const ayaka = res.characters[0];
 
-      expect(ayaka.status).toBe('update');
+      expect(ayaka.status).toBe('weapon-update');
+      expect(ayaka.characterDiff).toBe(false);
+      expect(ayaka.weaponDiff).toBe(true);
       expect(ayaka.weaponReconciliation.status).toBe('existing-tracked-match');
       expect(ayaka.weaponReconciliation.candidateInstanceId).toBe('w-amenoma');
       expect(ayaka.weaponReconciliation.candidateAssignedTo).toBeNull();
@@ -736,6 +744,406 @@ describe('hoyolabCharacterReconciliation', () => {
 
       expect(ayaka.weaponReconciliation.status).toBe('equipment-mismatch');
       expect(ayaka.needsAttention).toBe(true);
+    });
+  });
+
+  describe('Classification and Regression Requirements (Section 12)', () => {
+    const baseHuTaoLocal = {
+      level: 80,
+      ascension: 5,
+      talents: { normal: 8, skill: 8, burst: 8 },
+      equippedWeaponId: 'w-homa'
+    };
+    const baseHomaTracked = {
+      id: 'w-homa',
+      weapon_id: 'staffofhoma',
+      weaponName: 'Staff of Homa',
+      level: 80,
+      ascension: 5,
+      currentRefinement: 1,
+      assignedTo: 'Hu Tao'
+    };
+
+    it('1. Character level-only difference -> Updates', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 90,
+        ascension: 6,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 80, ascension: 5, refinement: 1 }
+      }];
+      const localHuTao = { ...baseHuTaoLocal, level: 80, ascension: 6 };
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': localHuTao }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('update');
+      expect(char.characterDiff).toBe(true);
+      expect(char.weaponDiff).toBe(false);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+      expect(res.summary.charactersWithWeaponChanges).toBe(0);
+      expect(res.summary.weaponOnlyUpdates).toBe(0);
+    });
+
+    it('2. Character ascension-only difference -> Updates', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 6,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 80, ascension: 5, refinement: 1 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('update');
+      expect(char.characterDiff).toBe(true);
+      expect(char.weaponDiff).toBe(false);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+    });
+
+    it('3. Normal Attack talent difference -> Updates', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 10, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 80, ascension: 5, refinement: 1 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('update');
+      expect(char.characterDiff).toBe(true);
+      expect(char.weaponDiff).toBe(false);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+    });
+
+    it('4. Elemental Skill talent difference -> Updates', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 10, burst: 8 },
+        weapon: { id: 13501, level: 80, ascension: 5, refinement: 1 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('update');
+      expect(char.characterDiff).toBe(true);
+      expect(char.weaponDiff).toBe(false);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+    });
+
+    it('5. Elemental Burst talent difference -> Updates', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 10 },
+        weapon: { id: 13501, level: 80, ascension: 5, refinement: 1 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('update');
+      expect(char.characterDiff).toBe(true);
+      expect(char.weaponDiff).toBe(false);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+    });
+
+    it('6. Weapon level-only difference -> weapon-update, not update', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 90, ascension: 5, refinement: 1 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('weapon-update');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(true);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(1);
+      expect(res.summary.weaponOnlyUpdates).toBe(1);
+    });
+
+    it('7. Weapon ascension-only difference -> weapon-update, not update', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 80, ascension: 6, refinement: 1 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('weapon-update');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(true);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(1);
+      expect(res.summary.weaponOnlyUpdates).toBe(1);
+    });
+
+    it('8. Weapon refinement-only difference -> weapon-update, not update', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 80, ascension: 5, refinement: 3 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('weapon-update');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(true);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(1);
+      expect(res.summary.weaponOnlyUpdates).toBe(1);
+    });
+
+    it('9. Weapon mismatch -> weapon-update with equipment-mismatch status', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 11414, level: 80 } // Amenoma (sword)
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('weapon-update');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(true);
+      expect(char.weaponReconciliation.status).toBe('equipment-mismatch');
+      expect(char.needsAttention).toBe(true);
+    });
+
+    it('10. Reassignment to another tracked weapon -> weapon-update with existing-tracked-match', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 90, refinement: 2 } // Staff of Homa
+      }];
+      const roster = {
+        'Hu Tao': { level: 80, ascension: 5, talents: { normal: 8, skill: 8, burst: 8 }, equippedWeaponId: 'w-dragonsbane' },
+        'Zhongli': { level: 90, equippedWeaponId: 'w-homa-assigned' }
+      };
+      const trackedWeapons = [
+        { id: 'w-dragonsbane', weapon_id: 'dragonsbane', assignedTo: 'Hu Tao' },
+        { id: 'w-homa-assigned', weapon_id: 'staffofhoma', level: 90, currentRefinement: 2, assignedTo: 'Zhongli' }
+      ];
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const char = res.characters[0];
+      expect(char.status).toBe('weapon-update');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(true);
+      expect(char.weaponReconciliation.status).toBe('existing-tracked-match');
+      expect(char.needsAttention).toBe(true);
+    });
+
+    it('11. Ambiguous weapon instance -> weapon-update with ambiguous status', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 90 }
+      }];
+      const roster = {
+        'Hu Tao': { level: 80, ascension: 5, talents: { normal: 8, skill: 8, burst: 8 }, equippedWeaponId: 'w-dragonsbane' }
+      };
+      const trackedWeapons = [
+        { id: 'w-dragonsbane', weapon_id: 'dragonsbane', assignedTo: 'Hu Tao' },
+        { id: 'w-homa-1', weapon_id: 'staffofhoma', assignedTo: null },
+        { id: 'w-homa-2', weapon_id: 'staffofhoma', assignedTo: null }
+      ];
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const char = res.characters[0];
+      expect(char.status).toBe('weapon-update');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(true);
+      expect(char.weaponReconciliation.status).toBe('ambiguous-existing-match');
+      expect(char.needsAttention).toBe(true);
+    });
+
+    it('12. Weapon creation required for an existing character -> weapon-update with would-create', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 90 }
+      }];
+      const roster = {
+        'Hu Tao': { level: 80, ascension: 5, talents: { normal: 8, skill: 8, burst: 8 }, equippedWeaponId: null }
+      };
+      const res = reconcileCharacters(syncArray, roster, []);
+      const char = res.characters[0];
+      expect(char.status).toBe('weapon-update');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(true);
+      expect(char.weaponReconciliation.status).toBe('would-create');
+    });
+
+    it('13. Character and weapon changes together -> update status, charDiff and weaponDiff true', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 90,
+        ascension: 6,
+        talents: { normal: 10, skill: 10, burst: 10 },
+        weapon: { id: 13501, level: 90, ascension: 6, refinement: 2 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('update');
+      expect(char.characterDiff).toBe(true);
+      expect(char.weaponDiff).toBe(true);
+      expect(res.summary.charactersWithUpdates).toBe(1);
+      expect(res.summary.charactersWithWeaponChanges).toBe(1);
+      expect(res.summary.weaponOnlyUpdates).toBe(0);
+    });
+
+    it('14. Fully matched character and weapon -> unchanged status, charDiff and weaponDiff false', () => {
+      const syncArray = [{
+        id: 10000046,
+        level: 80,
+        ascension: 5,
+        talents: { normal: 8, skill: 8, burst: 8 },
+        weapon: { id: 13501, level: 80, ascension: 5, refinement: 1 }
+      }];
+      const res = reconcileCharacters(syncArray, { 'Hu Tao': { ...baseHuTaoLocal } }, [{ ...baseHomaTracked }]);
+      const char = res.characters[0];
+      expect(char.status).toBe('unchanged');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(false);
+      expect(res.summary.unchangedCharacters).toBe(1);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(0);
+    });
+
+    it('15. New character with equipment -> new status, weaponDiff is false', () => {
+      const syncArray = [{
+        id: 10000030, // Zhongli
+        level: 90,
+        ascension: 6,
+        weapon: { id: 13501, level: 90 }
+      }];
+      const res = reconcileCharacters(syncArray, {}, []);
+      const char = res.characters[0];
+      expect(char.status).toBe('new');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(false);
+      expect(char.weaponReconciliation.status).toBe('would-create');
+      expect(res.summary.newCharacters).toBe(1);
+      expect(res.summary.charactersWithWeaponChanges).toBe(0);
+      expect(res.summary.weaponOnlyUpdates).toBe(0);
+    });
+
+    it('26. Active Traveler weapon-only change classifies as weapon-update', () => {
+      const syncArray = [{
+        id: 10000007,
+        element: 'Anemo',
+        level: 90,
+        ascension: 6,
+        talents: { normal: 10, skill: 10, burst: 10 },
+        weapon: { id: 11401, level: 90 } // Favonius Sword
+      }];
+      const roster = {
+        'Traveler Anemo': {
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: 'w-dull-blade'
+        }
+      };
+      const trackedWeapons = [
+        { id: 'w-dull-blade', weapon_id: 'dullblade', weaponName: 'Dull Blade', level: 20, assignedTo: 'Traveler Anemo' }
+      ];
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const traveler = res.characters[0];
+      expect(traveler.status).toBe('weapon-update');
+      expect(traveler.characterDiff).toBe(false);
+      expect(traveler.weaponDiff).toBe(true);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(1);
+      expect(res.summary.weaponOnlyUpdates).toBe(1);
+    });
+
+    it('28. Summary statistics remain consistent across mixed dataset', () => {
+      const syncArray = [
+        { id: 10000030, level: 90, weapon: { id: 13501, level: 90 } }, // New Zhongli
+        { id: 10000046, level: 90, ascension: 6, weapon: { id: 13501, level: 90 } }, // Hu Tao: char + weapon update
+        { id: 10000002, level: 90, ascension: 6, weapon: { id: 11414, level: 90 } }, // Ayaka: weapon-only update
+        { id: 10000022, level: 90, ascension: 6, weapon: { id: 11501, level: 80 } }, // Venti: char-only update
+        { id: 10000003, level: 80, ascension: 5, weapon: { id: 11501, level: 80 } }  // Jean: unchanged
+      ];
+      const roster = {
+        'Hu Tao': { level: 80, ascension: 5, equippedWeaponId: 'w-homa' },
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w-amenoma' },
+        'Venti': { level: 80, ascension: 5, equippedWeaponId: 'w-fav' },
+        'Jean': { level: 80, ascension: 5, equippedWeaponId: 'w-fav' }
+      };
+      const trackedWeapons = [
+        { id: 'w-homa', weapon_id: 'staffofhoma', level: 80, assignedTo: 'Hu Tao' },
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', level: 80, assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-fav', weapon_id: 'aquilafavonia', level: 80, assignedTo: 'Jean' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      expect(res.summary.totalRemote).toBe(5);
+      expect(res.summary.newCharacters).toBe(1); // Zhongli
+      expect(res.summary.charactersWithUpdates).toBe(2); // Hu Tao + Venti
+      expect(res.summary.charactersWithWeaponChanges).toBe(2); // Hu Tao + Ayaka
+      expect(res.summary.weaponOnlyUpdates).toBe(1); // Ayaka only
+      expect(res.summary.unchangedCharacters).toBe(1); // Jean
+      // Total sum invariant
+      expect(
+        res.summary.newCharacters +
+        res.summary.charactersWithUpdates +
+        res.summary.weaponOnlyUpdates +
+        res.summary.unchangedCharacters
+      ).toBe(5);
+    });
+
+    it('29. Existing character matching progression but with unmapped remote weapon is classified as conflict, visible in needsAttention, not unchanged', () => {
+      const syncArray = [
+        {
+          id: 10000002, // Ayaka
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          weapon: { id: 99999999, level: 90 } // Unmapped weapon ID
+        }
+      ];
+      const roster = {
+        'Kamisato Ayaka': {
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: 'w-amenoma'
+        }
+      };
+      const trackedWeapons = [
+        { id: 'w-amenoma', weapon_id: 'amenomakageuchi', level: 90, assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      const res = reconcileCharacters(syncArray, roster, trackedWeapons);
+      const char = res.characters[0];
+
+      expect(char.status).toBe('conflict');
+      expect(char.characterDiff).toBe(false);
+      expect(char.weaponDiff).toBe(false);
+      expect(char.weaponReconciliation.status).toBe('unmapped');
+      expect(char.needsAttention).toBe(true);
+
+      // Summary counts
+      expect(res.summary.charactersWithConflicts).toBe(1);
+      expect(res.summary.unchangedCharacters).toBe(0);
+      expect(res.summary.charactersWithUpdates).toBe(0);
+      expect(res.summary.weaponOnlyUpdates).toBe(0);
+      expect(res.summary.charactersWithWeaponChanges).toBe(0);
     });
   });
 });

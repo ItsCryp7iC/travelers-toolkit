@@ -487,7 +487,7 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
   });
 
   describe('Phase C1: Weapon Reconciliation and Modal UX', () => {
-    it('Ayaka Lv80 -> Lv90 weapon-only update is classified as Update, safe default, and shows diff', async () => {
+    it('Ayaka Lv80 -> Lv90 weapon-only update is classified as Weapon Update, safe default, and shows diff in Needs Attention', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
@@ -525,11 +525,13 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
 
       await renderAndFetch();
 
-      // Summary shows Updates 1, Up to Date 0
-      expect(container.textContent).toContain('1Updates');
+      // Summary shows Updates 0 with 1 weapon change subtext, Up to Date 0
+      expect(container.textContent).toContain('0Updates');
+      expect(container.textContent).toContain('1 weapon change');
       expect(container.textContent).toContain('0Up to date');
 
-      // Card shows weapon diff
+      // Card shows badge and weapon diff
+      expect(container.textContent).toContain('Weapon Update');
       expect(container.textContent).toContain('Amenoma Kageuchi');
       expect(container.textContent).toContain('Lv 80 → Lv 90');
 
@@ -543,11 +545,16 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
       expect(updateExistingRadio).toBeDefined();
       expect(updateExistingRadio.checked).toBe(true);
 
-      // Tab filtering: Updates tab includes Ayaka, Unchanged tab excludes Ayaka
+      // Tab filtering: Updates tab excludes Ayaka, Needs Attention includes Ayaka, Unchanged excludes Ayaka
       const updatesTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Updates'));
+      const needsAttentionTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Needs Attention'));
       const unchangedTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Unchanged'));
 
       act(() => { updatesTab.click(); });
+      expect(container.textContent).not.toContain('Kamisato Ayaka');
+      expect(container.textContent).toContain('No characters match this filter.');
+
+      act(() => { needsAttentionTab.click(); });
       expect(container.textContent).toContain('Kamisato Ayaka');
 
       act(() => { unchangedTab.click(); });
@@ -916,6 +923,357 @@ describe('HoyolabSyncPreviewModal UI Apply Flow', () => {
 
       // Conflict is resolved!
       expect(getApplyBtn().disabled).toBe(false);
+    });
+  });
+
+  describe('Filtering and Selection Regression Requirements (Section 12)', () => {
+    it('Wanderer, Nahida weapon-only changes appear in Needs Attention and not Updates; Venti mixed appears in both', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            // Wanderer: char unchanged, weapon changed
+            {
+              id: 10000075,
+              level: 90,
+              ascension: 6,
+              talents: { normal: 10, skill: 10, burst: 10 },
+              weapon: { id: 14415, level: 90, refinement: 1 } // Fruit of Fulfillment
+            },
+            // Nahida: char unchanged, weapon refinement differs (R5 vs R1)
+            {
+              id: 10000073,
+              level: 90,
+              ascension: 6,
+              talents: { normal: 10, skill: 10, burst: 10 },
+              weapon: { id: 14403, level: 90, refinement: 5 } // Sacrificial Fragments R5
+            },
+            // Venti: char level differs (80 -> 90) AND weapon level differs (80 -> 90)
+            {
+              id: 10000022,
+              level: 90,
+              ascension: 6,
+              talents: { normal: 8, skill: 8, burst: 8 },
+              weapon: { id: 15403, level: 90, refinement: 1 } // Favonius Warbow Lv 90
+            }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Wanderer': {
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: 'w-widsith'
+        },
+        'Nahida': {
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: 'w-sac-frag'
+        },
+        'Venti': {
+          level: 80,
+          ascension: 5,
+          talents: { normal: 8, skill: 8, burst: 8 },
+          equippedWeaponId: 'w-fav-bow'
+        }
+      };
+
+      mockState.trackedWeapons = [
+        { id: 'w-widsith', weapon_id: 'thewidsith', weaponName: 'The Widsith', level: 90, assignedTo: 'Wanderer' },
+        { id: 'w-sac-frag', weapon_id: 'sacrificialfragments', weaponName: 'Sacrificial Fragments', level: 90, currentRefinement: 1, assignedTo: 'Nahida' },
+        { id: 'w-fav-bow', weapon_id: 'favoniuswarbow', weaponName: 'Favonius Warbow', level: 80, currentRefinement: 1, assignedTo: 'Venti' }
+      ];
+
+      await renderAndFetch();
+
+      const updatesTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Updates'));
+      const needsAttentionTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Needs Attention'));
+      const unchangedTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Unchanged'));
+
+      // Check Updates Tab
+      act(() => { updatesTab.click(); });
+      expect(container.textContent).toContain('Venti');
+      expect(container.textContent).not.toContain('Wanderer');
+      expect(container.textContent).not.toContain('Nahida');
+
+      // Check Needs Attention Tab
+      act(() => { needsAttentionTab.click(); });
+      expect(container.textContent).toContain('Wanderer');
+      expect(container.textContent).toContain('Nahida');
+      expect(container.textContent).toContain('Venti');
+
+      // Check Unchanged Tab
+      act(() => { unchangedTab.click(); });
+      expect(container.textContent).not.toContain('Wanderer');
+      expect(container.textContent).not.toContain('Nahida');
+      expect(container.textContent).not.toContain('Venti');
+    });
+
+    it('Hu Tao mixed character and weapon change retains single selection across tab switches', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            {
+              id: 10000046,
+              level: 90,
+              ascension: 6,
+              talents: { normal: 10, skill: 10, burst: 10 },
+              weapon: { id: 13501, level: 90, refinement: 1 }
+            }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Hu Tao': {
+          level: 80,
+          ascension: 5,
+          talents: { normal: 8, skill: 8, burst: 8 },
+          equippedWeaponId: 'w-homa'
+        }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-homa', weapon_id: 'staffofhoma', weaponName: 'Staff of Homa', level: 80, currentRefinement: 1, assignedTo: 'Hu Tao' }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      const updatesTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Updates'));
+      const needsAttentionTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Needs Attention'));
+      const allTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('All'));
+
+      // Default selected (1)
+      expect(getApplyBtn().textContent).toContain('(1)');
+
+      // In Updates tab, uncheck Hu Tao
+      act(() => { updatesTab.click(); });
+      expect(container.textContent).toContain('Hu Tao');
+      const checkbox1 = container.querySelector('input[type="checkbox"]');
+      expect(checkbox1.checked).toBe(true);
+      act(() => { checkbox1.click(); });
+      expect(getApplyBtn().textContent).toContain('(0)');
+
+      // Switch to Needs Attention tab: still unchecked, still (0)
+      act(() => { needsAttentionTab.click(); });
+      expect(container.textContent).toContain('Hu Tao');
+      const checkbox2 = container.querySelector('input[type="checkbox"]');
+      expect(checkbox2.checked).toBe(false);
+
+      // Re-check in Needs Attention tab
+      act(() => { checkbox2.click(); });
+      expect(getApplyBtn().textContent).toContain('(1)');
+
+      // Switch to All tab: still checked, still (1)
+      act(() => { allTab.click(); });
+      expect(container.textContent).toContain('Hu Tao');
+      const checkbox3 = container.querySelector('input[type="checkbox"]');
+      expect(checkbox3.checked).toBe(true);
+      expect(getApplyBtn().textContent).toContain('(1)');
+    });
+
+    it('Active Traveler weapon-only change: hidden under Updates, visible under Needs Attention, selectable', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            {
+              id: 10000007,
+              element: 'Anemo',
+              level: 90,
+              ascension: 6,
+              talents: { normal: 10, skill: 10, burst: 10 },
+              weapon: { id: 11401, level: 90, refinement: 1 } // Favonius Sword Lv 90
+            }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Traveler Anemo': {
+          level: 90,
+          ascension: 6,
+          talents: { normal: 10, skill: 10, burst: 10 },
+          equippedWeaponId: 'w-fav'
+        }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-fav', weapon_id: 'favoniussword', weaponName: 'Favonius Sword', level: 80, assignedTo: 'Traveler Anemo' }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      const updatesTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Updates'));
+      const needsAttentionTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Needs Attention'));
+      const unchangedTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Unchanged'));
+
+      // In All tab, Traveler is actionable (status: weapon-update) and default selected (1)
+      expect(getApplyBtn().textContent).toContain('(1)');
+      expect(container.textContent).toContain('Traveler');
+      expect(container.textContent).toContain('Weapon Update');
+
+      // Updates tab: active Traveler weapon-only is NOT visible
+      act(() => { updatesTab.click(); });
+      expect(container.textContent).not.toContain('Traveler');
+
+      // Needs Attention tab: active Traveler weapon-only IS visible
+      act(() => { needsAttentionTab.click(); });
+      expect(container.textContent).toContain('Traveler');
+      expect(container.textContent).toContain('Weapon Update');
+
+      // Unchanged tab: active Traveler is NOT visible
+      act(() => { unchangedTab.click(); });
+      expect(container.textContent).not.toContain('Traveler');
+    });
+
+    it('Select All Safe selects safe weapon-only update rows and ignores unresolved mismatches', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            // Ayaka: safe weapon-only update
+            { id: 10000002, level: 90, weapon: { id: 11414, level: 90 } },
+            // Hu Tao: char update only
+            { id: 10000046, level: 90, weapon: { id: 13501, level: 80 } },
+            // Odette: equipment mismatch (unresolved)
+            { id: 10000150, level: 90, weapon: { id: 11518, level: 90 } }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, equippedWeaponId: 'w-ayaka' },
+        'Hu Tao': { level: 80, equippedWeaponId: 'w-homa' },
+        'Odette': { level: 90, equippedWeaponId: 'w-finale' }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-ayaka', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 80, assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-homa', weapon_id: 'staffofhoma', weaponName: 'Staff of Homa', level: 80, assignedTo: 'Hu Tao' },
+        { id: 'w-finale', weapon_id: 'finaleofthedeep', weaponName: 'Finale of the Deep', level: 80, assignedTo: 'Odette' }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      const clearBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'Clear All');
+      const selectSafeBtn = Array.from(container.querySelectorAll('button')).find(b => b.textContent === 'Select All Safe');
+
+      // Default safe: Ayaka (weapon-update) + Hu Tao (update) = (2). Odette is excluded.
+      expect(getApplyBtn().textContent).toContain('(2)');
+
+      // Clear all
+      act(() => { clearBtn.click(); });
+      expect(getApplyBtn().textContent).toContain('(0)');
+
+      // Select all safe: re-selects Ayaka and Hu Tao, excludes Odette
+      act(() => { selectSafeBtn.click(); });
+      expect(getApplyBtn().textContent).toContain('(2)');
+      expect(getApplyBtn().disabled).toBe(false);
+    });
+
+    it('Existing character matching progression with unmapped weapon is classified as conflict, visible in Needs Attention only, and blocks apply if manually selected', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            {
+              id: 10000002, // Ayaka
+              level: 90,
+              ascension: 6,
+              weapon: { id: 99999999, level: 90 } // Unmapped weapon
+            }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w-ayaka' }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-ayaka', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 90, assignedTo: 'Kamisato Ayaka' }
+      ];
+
+      await renderAndFetch();
+
+      const updatesTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Updates'));
+      const needsAttentionTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Needs Attention'));
+      const unchangedTab = Array.from(container.querySelectorAll('button')).find(b => b.textContent.startsWith('Unchanged'));
+
+      // 1. Updates tab: Ayaka is NOT visible (no char progression update)
+      act(() => { updatesTab.click(); });
+      expect(container.textContent).not.toContain('Kamisato Ayaka');
+
+      // 2. Unchanged tab: Ayaka is NOT visible (unmapped weapon requires attention)
+      act(() => { unchangedTab.click(); });
+      expect(container.textContent).not.toContain('Kamisato Ayaka');
+
+      // 3. Needs Attention tab: Ayaka IS visible with Conflict badge and Unmapped weapon info
+      act(() => { needsAttentionTab.click(); });
+      expect(container.textContent).toContain('Kamisato Ayaka');
+      expect(container.textContent).toContain('Conflict');
+      expect(container.textContent).toContain('Unmapped (99999999)');
+
+      // 4. Ayaka is NOT auto-selected
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      expect(getApplyBtn().textContent).toContain('(0)');
+      expect(getApplyBtn().disabled).toBe(true);
+
+      // 5. If user manually selects Ayaka, apply is blocked by conflict validation
+      const checkbox = container.querySelector('input[type="checkbox"]');
+      expect(checkbox).not.toBeNull();
+      act(() => { checkbox.click(); });
+      expect(getApplyBtn().textContent).toContain('(1)');
+      expect(getApplyBtn().disabled).toBe(true);
+      expect(container.textContent).toContain('Conflict in: Kamisato Ayaka');
+    });
+
+    it('prepareApply correctly separates weapon-only updates from character progression updates', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          characters: [
+            // Ayaka: weapon-only update (char lv 90 same, weapon lv 80 -> 90)
+            { id: 10000002, level: 90, ascension: 6, weapon: { id: 11414, level: 90 } },
+            // Hu Tao: mixed update (char lv 80 -> 90, weapon lv 80 -> 90)
+            { id: 10000046, level: 90, ascension: 6, weapon: { id: 13501, level: 90 } }
+          ]
+        })
+      });
+
+      mockState.roster = {
+        'Kamisato Ayaka': { level: 90, ascension: 6, equippedWeaponId: 'w-ayaka' },
+        'Hu Tao': { level: 80, ascension: 5, equippedWeaponId: 'w-homa' }
+      };
+      mockState.trackedWeapons = [
+        { id: 'w-ayaka', weapon_id: 'amenomakageuchi', weaponName: 'Amenoma Kageuchi', level: 80, assignedTo: 'Kamisato Ayaka' },
+        { id: 'w-homa', weapon_id: 'staffofhoma', weaponName: 'Staff of Homa', level: 80, assignedTo: 'Hu Tao' }
+      ];
+
+      await renderAndFetch();
+
+      const getApplyBtn = () => Array.from(container.querySelectorAll('button')).find(b => b.textContent.includes('Apply Selected'));
+      // Both are safe to apply, so auto-selected
+      expect(getApplyBtn().textContent).toContain('(2)');
+      expect(getApplyBtn().disabled).toBe(false);
+
+      // Click Apply Selected to trigger prepareApply and open confirmation dialog
+      act(() => { getApplyBtn().click(); });
+
+      // Confirmation dialog should be open
+      expect(container.textContent).toContain('Apply HoYoLAB Sync?');
+
+      // Verify counts in confirmation modal:
+      // Characters to Update: 1 (Hu Tao only, Ayaka weapon-only update does not increment updateCount)
+      const confirmDialog = container.querySelector('[aria-labelledby="sync-confirm-title"]');
+      expect(confirmDialog).not.toBeNull();
+      expect(confirmDialog.textContent).toContain('Characters to Add0');
+      expect(confirmDialog.textContent).toContain('Characters to Update1');
+      expect(confirmDialog.textContent).toContain('Existing Weapons to Reassign/Update2');
     });
   });
 });
