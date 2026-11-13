@@ -2868,6 +2868,18 @@
     "release_order": 5.42
   },
   {
+    "id": "StarsealedEdict",
+    "name": "Starsealed Edict",
+    "rarity": "★★★★★",
+    "type": "Catalyst",
+    "materials": {
+      "ascension_material_family_id": "TheFrostEmperor",
+      "enhancement_material_family_id": "MindlessIceborn",
+      "enemy_material_family_id": "SnowlandFae"
+    },
+    "release_order": 5.421
+  },
+  {
     "id": "SkywardHarp",
     "name": "Skyward Harp",
     "rarity": "★★★★★",

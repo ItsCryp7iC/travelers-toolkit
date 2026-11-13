@@ -724,5 +724,27 @@
         "sortOrder": 6.099
       }
     }
+  },
+  {
+    "id": "MindlessIceborn",
+    "name": "Mindless Iceborn",
+    "type": "elite_enemy",
+    "tiers": {
+      "4_star": {
+        "id": "SnowbornHeartOfIgnorance",
+        "name": "Snowborn Heart of Ignorance",
+        "sortOrder": 6.1
+      },
+      "3_star": {
+        "id": "SnowbornMirrorheart",
+        "name": "Snowborn Mirrorheart",
+        "sortOrder": 6.101
+      },
+      "2_star": {
+        "id": "SnowbornHeartshard",
+        "name": "Snowborn Heartshard",
+        "sortOrder": 6.102
+      }
+    }
   }
 ]

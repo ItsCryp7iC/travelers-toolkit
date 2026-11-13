@@ -382,5 +382,13 @@
     "boss_name": "Guardian Blade of Drifting Snow",
     "region": "Snezhnaya",
     "sortOrder": 2.048
+  },
+  {
+    "id": "ShatteredStabilityAnchor",
+    "name": "Shattered Stability Anchor",
+    "type": "normal_boss",
+    "boss_name": "Wavebinder",
+    "region": "Snezhnaya",
+    "sortOrder": 2.049
   }
 ]

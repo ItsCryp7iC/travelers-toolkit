@@ -1918,5 +1918,37 @@
       "gem_family_id": "VarunadaLazurite"
     },
     "release_order": 120
+  },
+  {
+    "id": "Valeriy",
+    "name": "Valeriy",
+    "rarity": "★★★★",
+    "weapon_type": "Sword",
+    "element": "Electro",
+    "materials": {
+      "world_boss_material_id": "SeveredTailOfTheSkyRoamer",
+      "weekly_boss_material_id": "CounterfeitResin",
+      "talent_material_family_id": "Glory",
+      "enemy_material_family_id": "SnowlandFae",
+      "local_specialty_id": "FrostfairyFlower",
+      "gem_family_id": "VajradaAmethyst"
+    },
+    "release_order": 121
+  },
+  {
+    "id": "Mitya",
+    "name": "Mitya",
+    "rarity": "★★★★★",
+    "weapon_type": "Catalyst",
+    "element": "Electro",
+    "materials": {
+      "world_boss_material_id": "ShatteredStabilityAnchor",
+      "weekly_boss_material_id": "MaskOfTheVirtuousDoctor",
+      "talent_material_family_id": "Charity",
+      "enemy_material_family_id": "AberrantChimericMonsters",
+      "local_specialty_id": "Kristallfold",
+      "gem_family_id": "VajradaAmethyst"
+    },
+    "release_order": 122
   }
 ]

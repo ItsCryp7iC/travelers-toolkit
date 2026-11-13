@@ -48,6 +48,12 @@
     "sortOrder": 8.008
   },
   {
+    "id": "EtherwingMoth",
+    "name": "Etherwing Moth",
+    "region": "Mondstadt",
+    "sortOrder": 8.0085
+  },
+  {
     "id": "JueyunChili",
     "name": "Jueyun Chili",
     "region": "Liyue",
@@ -336,12 +342,6 @@
     "sortOrder": 8.056
   },
   {
-    "id": "EtherwingMoth",
-    "name": "Etherwing Moth",
-    "region": "Mondstadt",
-    "sortOrder": 8.0085
-  },
-  {
     "id": "TeardropOfTheMoon",
     "name": "Teardrop of the Moon",
     "region": "Nod-Krai",
@@ -364,5 +364,17 @@
     "name": "Golden Fern",
     "region": "Snezhnaya",
     "sortOrder": 8.061
+  },
+  {
+    "id": "FairyWormwood",
+    "name": "Fairy Wormwood",
+    "region": "Snezhnaya",
+    "sortOrder": 8.062
+  },
+  {
+    "id": "Kristallfold",
+    "name": "Kristallfold",
+    "region": "Snezhnaya",
+    "sortOrder": 8.063
   }
 ]
