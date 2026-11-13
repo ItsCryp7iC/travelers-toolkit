@@ -38,7 +38,7 @@ describe('Canonical Data Integrity', () => {
         normalizedNames.set(norm, c.name);
       });
 
-      expect(allCharacters.length).toBe(127);
+      expect(allCharacters.length).toBe(129);
     });
 
     it('all character material references resolve to canonical datasets', () => {
@@ -118,7 +118,7 @@ describe('Canonical Data Integrity', () => {
         normalizedNames.set(norm, w.name);
       });
 
-      expect(weapons.length).toBe(251);
+      expect(weapons.length).toBe(252);
     });
 
     it('all weapon material references resolve 100% to canonical datasets', () => {

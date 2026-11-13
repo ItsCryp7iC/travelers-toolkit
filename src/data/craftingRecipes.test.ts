@@ -42,7 +42,7 @@ describe('Canonical Crafting Recipe Registry Integrity (Section 4)', () => {
       expect(seenIds.has(recipe.id), `Duplicate recipe ID: ${recipe.id}`).toBe(false);
       seenIds.add(recipe.id);
     });
-    expect(CRAFTING_RECIPES.length).toBe(245);
+    expect(CRAFTING_RECIPES.length).toBe(247);
   });
 
   it('4. every family has a unique ID', () => {
@@ -53,7 +53,7 @@ describe('Canonical Crafting Recipe Registry Integrity (Section 4)', () => {
       );
       seenFamilyIds.add(family.familyId);
     });
-    expect(CRAFTING_FAMILIES.length).toBe(108);
+    expect(CRAFTING_FAMILIES.length).toBe(109);
   });
 
   it('5. no material belongs to conflicting crafting families', () => {
@@ -203,7 +203,7 @@ describe('Canonical Crafting Recipe Registry Integrity (Section 4)', () => {
 
   it('15. three-tier families contain exactly 2 adjacent conversions', () => {
     const threeTierFamilies = CRAFTING_FAMILIES.filter((f) => f.tiers.length === 3);
-    expect(threeTierFamilies.length).toBe(76); // 19 common + 33 elite + 24 talent
+    expect(threeTierFamilies.length).toBe(77); // 19 common + 34 elite + 24 talent
     threeTierFamilies.forEach((f) => {
       expect(f.recipes.length).toBe(2);
       expect(f.recipes[0].inputItemId).toBe(f.tiers[0].id);
@@ -215,13 +215,13 @@ describe('Canonical Crafting Recipe Registry Integrity (Section 4)', () => {
 
   it('16. every supported eligible material family in repo catalog is accounted for', () => {
     const allFamilies = getAllCraftingFamilies();
-    expect(allFamilies.length).toBe(108);
+    expect(allFamilies.length).toBe(109);
 
     const commonFamilies = allFamilies.filter((f) => f.category === 'common_enemy');
     expect(commonFamilies.length).toBe(19);
 
     const eliteFamilies = allFamilies.filter((f) => f.category === 'elite_enemy');
-    expect(eliteFamilies.length).toBe(33);
+    expect(eliteFamilies.length).toBe(34);
 
     const talentFamilies = allFamilies.filter((f) => f.category === 'talent_materials');
     expect(talentFamilies.length).toBe(24);
@@ -233,7 +233,7 @@ describe('Canonical Crafting Recipe Registry Integrity (Section 4)', () => {
     expect(gemFamilies.length).toBe(8);
 
     const allRecipes = getAllCraftingRecipes();
-    expect(allRecipes.length).toBe(245);
+    expect(allRecipes.length).toBe(247);
   });
 
   it('17. recipe exceptions remain explicitly represented', () => {
