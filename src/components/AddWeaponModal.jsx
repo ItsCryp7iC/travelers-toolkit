@@ -90,9 +90,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
   const addTrackedWeapon = useStore((s) => s.addTrackedWeapon)
   const updateTrackedWeapon = useStore((s) => s.updateTrackedWeapon)
 
-  const globallyAssignedCharacterIds = useMemo(() => {
-    return new Set(trackedWeapons.map(w => w.assignedTo).filter(Boolean));
-  }, [trackedWeapons]);
+  const isEditMode = Boolean(existingWeapon?.id)
 
   const modalRef = useRef(null)
 
@@ -172,12 +170,8 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
     if (!selectedWeapon) return []
     return Object.keys(roster)
       .map((name) => charactersData.find((c) => c.name === name))
-      .filter((c) => {
-        if (!c || c.weapon_type !== selectedWeapon.type) return false;
-        if (globallyAssignedCharacterIds.has(c.name) && c.name !== existingWeapon?.assignedTo) return false;
-        return true;
-      })
-  }, [roster, selectedWeapon, globallyAssignedCharacterIds, existingWeapon])
+      .filter((c) => c && c.weapon_type === selectedWeapon.type)
+  }, [roster, selectedWeapon])
 
   const handleSelectWeapon = (weapon) => {
     setSelectedWeapon(weapon)
@@ -199,7 +193,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
       if (!confirmed) return
     }
 
-    if (existingWeapon) {
+    if (isEditMode) {
       updateTrackedWeapon(existingWeapon.id, {
         level: planningToForge ? 1 : level,
         ascension: planningToForge ? 0 : ascension,
@@ -294,7 +288,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                         <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-black/30 rounded-full text-yellow-400 text-xs sm:text-sm tracking-widest shadow-inner flex items-center justify-center">
                           {getStars(selectedWeapon.rarity) || '★'}
                         </span>
-                        {existingWeapon && (
+                        {isEditMode && (
                           <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-green-900/50 rounded-full text-green-300 backdrop-blur-sm shadow-sm font-bold text-xs sm:text-sm">✓ In Armory</span>
                         )}
                       </div>
@@ -524,7 +518,9 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
 
               {/* Assign to character */}
               <div>
-                <h3 className="text-xs uppercase tracking-widest text-[var(--muted)] font-semibold mb-2">Assign to Character (optional)</h3>
+                <h3 className="text-xs uppercase tracking-widest text-[var(--muted)] font-semibold mb-2">
+                  {isEditMode ? 'Equipped By (optional)' : 'Assign to Character (optional)'}
+                </h3>
                 {compatibleChars.length === 0 ? (
                   <p className="text-sm text-[var(--muted)] italic">No rostered characters use {selectedWeapon.type}s.</p>
                 ) : (
@@ -536,16 +532,31 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                       { id: '', name: '— Unassigned (Standalone) —', icon: null, rarity: 0 },
                       ...compatibleChars.map((c) => {
                         const entry = roster[c.name]
-                        const hasWeapon = getTravelerAwareWeaponId(c.name, entry, trackedWeapons)
-                        const equippedWeaponName = hasWeapon ? trackedWeapons.find(w => w.id === hasWeapon)?.weaponName : null
-                        const charData = charactersData.find(cd => cd.name === c.name)
+                        const hasWeaponId = getTravelerAwareWeaponId(c.name, entry, trackedWeapons)
+                        const equippedWeapon = hasWeaponId ? trackedWeapons.find((w) => w.id === hasWeaponId) : null
+                        const equippedWeaponName = equippedWeapon ? equippedWeapon.weaponName : null
+                        const charData = charactersData.find((cd) => cd.name === c.name)
+
+                        let subtitle = ''
+                        let secondaryIcon = null
+
+                        if (hasWeaponId) {
+                          if (isEditMode && hasWeaponId === existingWeapon?.id) {
+                            subtitle = 'Currently Equipped'
+                            secondaryIcon = null
+                          } else {
+                            subtitle = equippedWeaponName ? `⚠️ Equipped: ${formatName(equippedWeaponName)}` : '⚠️ Equipped: Another weapon'
+                            secondaryIcon = equippedWeaponName ? getWeaponIcon(equippedWeaponName) : null
+                          }
+                        }
+
                         return {
                           id: c.name,
                           name: formatName(c.name),
-                          subtitle: equippedWeaponName ? `⚠️ (has ${formatName(equippedWeaponName)})` : '',
+                          subtitle,
                           icon: getCharacterAvatar(c.name),
                           rarity: charData ? charData.rarity : 0,
-                          secondaryIcon: equippedWeaponName ? getWeaponIcon(equippedWeaponName) : null
+                          secondaryIcon
                         }
                       })
                     ]}
@@ -580,7 +591,7 @@ export default function AddWeaponModal({ onClose, existingWeapon = null, initial
                 onClick={handleConfirm}
                 className="px-5 py-2.5 sm:py-2 rounded-xl text-sm font-bold bg-[var(--gold)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-md min-h-[42px] sm:min-h-0 w-full sm:w-auto"
               >
-                Add to Armory
+                {isEditMode ? 'Save Progress' : 'Add to Armory'}
               </button>
             </div>
           </>
