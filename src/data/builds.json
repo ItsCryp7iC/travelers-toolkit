@@ -4,16 +4,22 @@
   "sourceAttribution": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds",
   "sourceCommitSha": "be542cba19de28f31e4a352f8711ffaff9d2c838",
   "normalizerVersion": "1.0.0",
-  "mappingFingerprint": "41f5f7a1c7e287b9a1dd70da376d221a3f53f4195c8623778f5cd9a417e720b5",
-  "generatedAt": "2026-11-14T18:43:46.579Z",
+  "mappingFingerprint": "6fed9b7156707595bce691f7963fbe5431dfcd9af4409fcad60da14105c3fadc",
+  "isReproducible": true,
+  "isDirtySource": false,
+  "generatedAt": "2026-11-14T20:37:29.852Z",
   "characters": [
     {
       "characterId": "Aino",
+      "toolkitCharacterId": "Aino",
+      "isToolkitCharacter": true,
       "characterSlug": "aino",
       "characterName": "Aino",
       "element": "Hydro",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/aino",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/4/aino",
       "roles": [
         {
           "roleId": "reaction-support",
@@ -22,6 +28,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/aino?build=reaction-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -260,11 +267,15 @@
     },
     {
       "characterId": "Albedo",
+      "toolkitCharacterId": "Albedo",
+      "isToolkitCharacter": true,
       "characterSlug": "albedo",
       "characterName": "Albedo",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/albedo",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/albedo",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -273,6 +284,7 @@
           "reviewedVersion": "6.5 / Luna VI",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/albedo?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -613,11 +625,15 @@
     },
     {
       "characterId": "Alhaitham",
+      "toolkitCharacterId": "Alhaitham",
+      "isToolkitCharacter": true,
       "characterSlug": "alhaitham",
       "characterName": "Alhaitham",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/alhaitham",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/alhaitham",
       "roles": [
         {
           "roleId": "spread-dps",
@@ -626,6 +642,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/alhaitham?build=spread-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -1066,11 +1083,15 @@
     },
     {
       "characterId": "Aloy",
+      "toolkitCharacterId": "Aloy",
+      "isToolkitCharacter": true,
       "characterSlug": "aloy",
       "characterName": "Aloy",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/aloy",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/aloy",
       "roles": [
         {
           "roleId": "burst-support",
@@ -1079,6 +1100,7 @@
           "reviewedVersion": "3.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/aloy?build=burst-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -1509,11 +1531,15 @@
     },
     {
       "characterId": "Alyosha",
+      "toolkitCharacterId": "Alyosha",
+      "isToolkitCharacter": true,
       "characterSlug": "alyosha",
       "characterName": "Alyosha",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/alyosha",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/alyosha",
       "roles": [
         {
           "roleId": "buff-support",
@@ -1522,6 +1548,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/alyosha?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -1812,11 +1839,15 @@
     },
     {
       "characterId": "Amber",
+      "toolkitCharacterId": "Amber",
+      "isToolkitCharacter": true,
       "characterSlug": "amber",
       "characterName": "Amber",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/amber",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/amber",
       "roles": [
         {
           "roleId": "buff-support",
@@ -1825,6 +1856,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/amber?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -2091,6 +2123,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/amber?build=melt-DPS",
           "weapons": {
             "rankedGroups": [
               {
@@ -2533,11 +2566,15 @@
     },
     {
       "characterId": "AratakiItto",
+      "toolkitCharacterId": "AratakiItto",
+      "isToolkitCharacter": true,
       "characterSlug": "arataki-itto",
       "characterName": "Arataki Itto",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/arataki-itto",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/arataki-itto",
       "roles": [
         {
           "roleId": "dps",
@@ -2546,6 +2583,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/arataki-itto?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -2862,11 +2900,15 @@
     },
     {
       "characterId": "Arlecchino",
+      "toolkitCharacterId": "Arlecchino",
+      "isToolkitCharacter": true,
       "characterSlug": "arlecchino",
       "characterName": "Arlecchino",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/arlecchino",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/arlecchino",
       "roles": [
         {
           "roleId": "dps",
@@ -2875,6 +2917,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/arlecchino?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -3302,11 +3345,15 @@
     },
     {
       "characterId": "Baizhu",
+      "toolkitCharacterId": "Baizhu",
+      "isToolkitCharacter": true,
       "characterSlug": "baizhu",
       "characterName": "Baizhu",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/baizhu",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/baizhu",
       "roles": [
         {
           "roleId": "heal-support",
@@ -3315,6 +3362,7 @@
           "reviewedVersion": "4.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/baizhu?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -3654,11 +3702,15 @@
     },
     {
       "characterId": "Barbara",
+      "toolkitCharacterId": "Barbara",
+      "isToolkitCharacter": true,
       "characterSlug": "barbara",
       "characterName": "Barbara",
       "element": "Hydro",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/barbara",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/4/barbara",
       "roles": [
         {
           "roleId": "bloom-dps",
@@ -3667,6 +3719,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/barbara?build=bloom-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -3928,6 +3981,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/barbara?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -4199,11 +4253,15 @@
     },
     {
       "characterId": "Beidou",
+      "toolkitCharacterId": "Beidou",
+      "isToolkitCharacter": true,
       "characterSlug": "beidou",
       "characterName": "Beidou",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/beidou",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/beidou",
       "roles": [
         {
           "roleId": "high-energy-requirement",
@@ -4212,6 +4270,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/beidou?build=high-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -4675,6 +4734,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/beidou?build=low-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -5174,11 +5234,15 @@
     },
     {
       "characterId": "Bennett",
+      "toolkitCharacterId": "Bennett",
+      "isToolkitCharacter": true,
       "characterSlug": "bennett",
       "characterName": "Bennett",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/bennett",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/bennett",
       "roles": [
         {
           "roleId": "support",
@@ -5187,6 +5251,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/bennett?build=support",
           "weapons": {
             "rankedGroups": [
               {
@@ -5543,11 +5608,15 @@
     },
     {
       "characterId": "Candace",
+      "toolkitCharacterId": "Candace",
+      "isToolkitCharacter": true,
       "characterSlug": "candace",
       "characterName": "Candace",
       "element": "Hydro",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/candace",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/4/candace",
       "roles": [
         {
           "roleId": "buff-support",
@@ -5556,6 +5625,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/candace?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -5906,11 +5976,15 @@
     },
     {
       "characterId": "Charlotte",
+      "toolkitCharacterId": "Charlotte",
+      "isToolkitCharacter": true,
       "characterSlug": "charlotte",
       "characterName": "Charlotte",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/charlotte",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/charlotte",
       "roles": [
         {
           "roleId": "heal-support",
@@ -5919,6 +5993,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/charlotte?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -6288,11 +6363,15 @@
     },
     {
       "characterId": "Chasca",
+      "toolkitCharacterId": "Chasca",
+      "isToolkitCharacter": true,
       "characterSlug": "chasca",
       "characterName": "Chasca",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chasca",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/chasca",
       "roles": [
         {
           "roleId": "dps",
@@ -6301,6 +6380,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chasca?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -6650,11 +6730,15 @@
     },
     {
       "characterId": "Chevreuse",
+      "toolkitCharacterId": "Chevreuse",
+      "isToolkitCharacter": true,
       "characterSlug": "chevreuse",
       "characterName": "Chevreuse",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chevreuse",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/chevreuse",
       "roles": [
         {
           "roleId": "buff-support",
@@ -6663,6 +6747,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chevreuse?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -7013,6 +7098,7 @@
           "reviewedVersion": "5.7",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chevreuse?build=buff-support-damage",
           "weapons": {
             "rankedGroups": [
               {
@@ -7447,11 +7533,15 @@
     },
     {
       "characterId": "Chiori",
+      "toolkitCharacterId": "Chiori",
+      "isToolkitCharacter": true,
       "characterSlug": "chiori",
       "characterName": "Chiori",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chiori",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/chiori",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -7460,6 +7550,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chiori?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -7810,11 +7901,15 @@
     },
     {
       "characterId": "Chongyun",
+      "toolkitCharacterId": "Chongyun",
+      "isToolkitCharacter": true,
       "characterSlug": "chongyun",
       "characterName": "Chongyun",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chongyun",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/chongyun",
       "roles": [
         {
           "roleId": "burst-nuke",
@@ -7823,6 +7918,7 @@
           "reviewedVersion": "6.2 / Luna III",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chongyun?build=burst-nuke",
           "weapons": {
             "rankedGroups": [
               {
@@ -8287,6 +8383,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/chongyun?build=infusion-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -8537,11 +8634,15 @@
     },
     {
       "characterId": "Citlali",
+      "toolkitCharacterId": "Citlali",
+      "isToolkitCharacter": true,
       "characterSlug": "citlali",
       "characterName": "Citlali",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/citlali",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/citlali",
       "roles": [
         {
           "roleId": "buff-support",
@@ -8550,6 +8651,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/citlali?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -8835,11 +8937,15 @@
     },
     {
       "characterId": "Clorinde",
+      "toolkitCharacterId": "Clorinde",
+      "isToolkitCharacter": true,
       "characterSlug": "clorinde",
       "characterName": "Clorinde",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/clorinde",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/clorinde",
       "roles": [
         {
           "roleId": "electro-dendro-dps",
@@ -8848,6 +8954,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/clorinde?build=electro-dendro-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -9341,6 +9448,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/clorinde?build=electro-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -9788,11 +9896,15 @@
     },
     {
       "characterId": "Collei",
+      "toolkitCharacterId": "Collei",
+      "isToolkitCharacter": true,
       "characterSlug": "collei",
       "characterName": "Collei",
       "element": "Dendro",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/collei",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/4/collei",
       "roles": [
         {
           "roleId": "reaction-support",
@@ -9801,6 +9913,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/collei?build=reaction-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -10112,11 +10225,15 @@
     },
     {
       "characterId": "Columbina",
+      "toolkitCharacterId": "Columbina",
+      "isToolkitCharacter": true,
       "characterSlug": "columbina",
       "characterName": "Columbina",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/columbina",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/columbina",
       "roles": [
         {
           "roleId": "high-energy-requirement",
@@ -10125,6 +10242,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/columbina?build=high-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -10389,6 +10507,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/columbina?build=low-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -10675,6 +10794,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/columbina?build=on-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -11021,11 +11141,15 @@
     },
     {
       "characterId": "Cyno",
+      "toolkitCharacterId": "Cyno",
+      "isToolkitCharacter": true,
       "characterSlug": "cyno",
       "characterName": "Cyno",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/cyno",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/cyno",
       "roles": [
         {
           "roleId": "electro-dps",
@@ -11034,6 +11158,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/cyno?build=electro-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -11475,6 +11600,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/cyno?build=stellar-conduct-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -11897,11 +12023,15 @@
     },
     {
       "characterId": "Dahlia",
+      "toolkitCharacterId": "Dahlia",
+      "isToolkitCharacter": true,
       "characterSlug": "dahlia",
       "characterName": "Dahlia",
       "element": "Hydro",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dahlia",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/4/dahlia",
       "roles": [
         {
           "roleId": "shield-support",
@@ -11910,6 +12040,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dahlia?build=shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -12181,11 +12312,15 @@
     },
     {
       "characterId": "Dehya",
+      "toolkitCharacterId": "Dehya",
+      "isToolkitCharacter": true,
       "characterSlug": "dehya",
       "characterName": "Dehya",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dehya",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/dehya",
       "roles": [
         {
           "roleId": "on-field-dps",
@@ -12194,6 +12329,7 @@
           "reviewedVersion": "6.2 / Luna III",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dehya?build=on-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -12624,6 +12760,7 @@
           "reviewedVersion": "5.7",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dehya?build=reaction-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -12895,6 +13032,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dehya?build=support",
           "weapons": {
             "rankedGroups": [
               {
@@ -13170,11 +13308,15 @@
     },
     {
       "characterId": "Diluc",
+      "toolkitCharacterId": "Diluc",
+      "isToolkitCharacter": true,
       "characterSlug": "diluc",
       "characterName": "Diluc",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/diluc",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/diluc",
       "roles": [
         {
           "roleId": "dps",
@@ -13183,6 +13325,7 @@
           "reviewedVersion": "5.4",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/diluc?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -13627,11 +13770,15 @@
     },
     {
       "characterId": "Diona",
+      "toolkitCharacterId": "Diona",
+      "isToolkitCharacter": true,
       "characterSlug": "diona",
       "characterName": "Diona",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/diona",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/diona",
       "roles": [
         {
           "roleId": "heal-shield-support",
@@ -13640,6 +13787,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/diona?build=heal-shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -14008,11 +14156,15 @@
     },
     {
       "characterId": "Dori",
+      "toolkitCharacterId": "Dori",
+      "isToolkitCharacter": true,
       "characterSlug": "dori",
       "characterName": "Dori",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dori",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/dori",
       "roles": [
         {
           "roleId": "heal-support",
@@ -14021,6 +14173,7 @@
           "reviewedVersion": "4.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dori?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -14312,11 +14465,15 @@
     },
     {
       "characterId": "Durin",
+      "toolkitCharacterId": "Durin",
+      "isToolkitCharacter": true,
       "characterSlug": "durin",
       "characterName": "Durin",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/durin",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/durin",
       "roles": [
         {
           "roleId": "support-dps",
@@ -14325,6 +14482,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/durin?build=support-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -14789,6 +14947,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/durin?build=vape-melt-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -15256,11 +15415,15 @@
     },
     {
       "characterId": "Emilie",
+      "toolkitCharacterId": "Emilie",
+      "isToolkitCharacter": true,
       "characterSlug": "emilie",
       "characterName": "Emilie",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/emilie",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/emilie",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -15269,6 +15432,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/emilie?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -15699,11 +15863,15 @@
     },
     {
       "characterId": "Escoffier",
+      "toolkitCharacterId": "Escoffier",
+      "isToolkitCharacter": true,
       "characterSlug": "escoffier",
       "characterName": "Escoffier",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/escoffier",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/escoffier",
       "roles": [
         {
           "roleId": "high-energy-requirement-off-field-dps",
@@ -15712,6 +15880,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/escoffier?build=high-energy-requirement-off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -16195,6 +16364,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/escoffier?build=low-energy-requirement-off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -16665,11 +16835,15 @@
     },
     {
       "characterId": "Eula",
+      "toolkitCharacterId": "Eula",
+      "isToolkitCharacter": true,
       "characterSlug": "eula",
       "characterName": "Eula",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/eula",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/eula",
       "roles": [
         {
           "roleId": "dps",
@@ -16678,6 +16852,7 @@
           "reviewedVersion": "4.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/eula?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -17145,11 +17320,15 @@
     },
     {
       "characterId": "Faruzan",
+      "toolkitCharacterId": "Faruzan",
+      "isToolkitCharacter": true,
       "characterSlug": "faruzan",
       "characterName": "Faruzan",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/faruzan",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/faruzan",
       "roles": [
         {
           "roleId": "buff-support",
@@ -17158,6 +17337,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/faruzan?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -17501,11 +17681,15 @@
     },
     {
       "characterId": "Fischl",
+      "toolkitCharacterId": "Fischl",
+      "isToolkitCharacter": true,
       "characterSlug": "fischl",
       "characterName": "Fischl",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/fischl",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/fischl",
       "roles": [
         {
           "roleId": "off-field-aggravate-dps",
@@ -17514,6 +17698,7 @@
           "reviewedVersion": "6.4 / Luna V",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/fischl?build=off-field-aggravate-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -17973,6 +18158,7 @@
           "reviewedVersion": "6.4 / Luna V",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/fischl?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -18415,11 +18601,15 @@
     },
     {
       "characterId": "Flins",
+      "toolkitCharacterId": "Flins",
+      "isToolkitCharacter": true,
       "characterSlug": "flins",
       "characterName": "Flins",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/flins",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/flins",
       "roles": [
         {
           "roleId": "dps",
@@ -18428,6 +18618,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/flins?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -18841,11 +19032,15 @@
     },
     {
       "characterId": "Freminet",
+      "toolkitCharacterId": "Freminet",
+      "isToolkitCharacter": true,
       "characterSlug": "freminet",
       "characterName": "Freminet",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/freminet",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/freminet",
       "roles": [
         {
           "roleId": "cryo-dps",
@@ -18854,6 +19049,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/freminet?build=cryo-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -19388,6 +19584,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/freminet?build=physical-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -19986,11 +20183,15 @@
     },
     {
       "characterId": "Furina",
+      "toolkitCharacterId": "Furina",
+      "isToolkitCharacter": true,
       "characterSlug": "furina",
       "characterName": "Furina",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/furina",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/furina",
       "roles": [
         {
           "roleId": "high-energy-requirement",
@@ -19999,6 +20200,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/furina?build=high-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -20424,6 +20626,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/furina?build=low-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -20891,11 +21094,15 @@
     },
     {
       "characterId": "Gaming",
+      "toolkitCharacterId": "Gaming",
+      "isToolkitCharacter": true,
       "characterSlug": "gaming",
       "characterName": "Gaming",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/gaming",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/gaming",
       "roles": [
         {
           "roleId": "dps",
@@ -20904,6 +21111,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/gaming?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -21297,11 +21505,15 @@
     },
     {
       "characterId": "Ganyu",
+      "toolkitCharacterId": "Ganyu",
+      "isToolkitCharacter": true,
       "characterSlug": "ganyu",
       "characterName": "Ganyu",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ganyu",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/ganyu",
       "roles": [
         {
           "roleId": "freeze-dps",
@@ -21310,6 +21522,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ganyu?build=freeze-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -21636,6 +21849,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ganyu?build=melt-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -22018,6 +22232,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ganyu?build=mono-cryo-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -22331,11 +22546,15 @@
     },
     {
       "characterId": "Gorou",
+      "toolkitCharacterId": "Gorou",
+      "isToolkitCharacter": true,
       "characterSlug": "gorou",
       "characterName": "Gorou",
       "element": "Geo",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/gorou",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/4/gorou",
       "roles": [
         {
           "roleId": "buff-support",
@@ -22344,6 +22563,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/gorou?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -22640,11 +22860,15 @@
     },
     {
       "characterId": "HuTao",
+      "toolkitCharacterId": "HuTao",
+      "isToolkitCharacter": true,
       "characterSlug": "hu-tao",
       "characterName": "Hu Tao",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/hu-tao",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/hu-tao",
       "roles": [
         {
           "roleId": "dps",
@@ -22653,6 +22877,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/hu-tao?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -23149,11 +23374,15 @@
     },
     {
       "characterId": "Iansan",
+      "toolkitCharacterId": "Iansan",
+      "isToolkitCharacter": true,
       "characterSlug": "iansan",
       "characterName": "Iansan",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/iansan",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/iansan",
       "roles": [
         {
           "roleId": "buff-support",
@@ -23162,6 +23391,7 @@
           "reviewedVersion": "5.6",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/iansan?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -23474,11 +23704,15 @@
     },
     {
       "characterId": "Ifa",
+      "toolkitCharacterId": "Ifa",
+      "isToolkitCharacter": true,
       "characterSlug": "ifa",
       "characterName": "Ifa",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ifa",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/ifa",
       "roles": [
         {
           "roleId": "anemo-dps",
@@ -23487,6 +23721,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ifa?build=anemo-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -23937,6 +24172,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ifa?build=reaction-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -24229,11 +24465,15 @@
     },
     {
       "characterId": "Illuga",
+      "toolkitCharacterId": "Illuga",
+      "isToolkitCharacter": true,
       "characterSlug": "illuga",
       "characterName": "Illuga",
       "element": "Geo",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/illuga",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/4/illuga",
       "roles": [
         {
           "roleId": "buff-support",
@@ -24242,6 +24482,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/illuga?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -24470,11 +24711,15 @@
     },
     {
       "characterId": "Ineffa",
+      "toolkitCharacterId": "Ineffa",
+      "isToolkitCharacter": true,
       "characterSlug": "ineffa",
       "characterName": "Ineffa",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ineffa",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/ineffa",
       "roles": [
         {
           "roleId": "off-field-dps-buff-shield-support",
@@ -24483,6 +24728,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ineffa?build=off-field-dps-buff-shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -24923,11 +25169,15 @@
     },
     {
       "characterId": "Jahoda",
+      "toolkitCharacterId": "Jahoda",
+      "isToolkitCharacter": true,
       "characterSlug": "jahoda",
       "characterName": "Jahoda",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/jahoda",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/jahoda",
       "roles": [
         {
           "roleId": "off-field-reaction-dps-heal-support",
@@ -24936,6 +25186,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/jahoda?build=off-field-reaction-dps-heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -25198,11 +25449,15 @@
     },
     {
       "characterId": "Jean",
+      "toolkitCharacterId": "Jean",
+      "isToolkitCharacter": true,
       "characterSlug": "jean",
       "characterName": "Jean",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/jean",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/jean",
       "roles": [
         {
           "roleId": "heal-support-damage",
@@ -25211,6 +25466,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/jean?build=heal-support-damage",
           "weapons": {
             "rankedGroups": [
               {
@@ -25625,6 +25881,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/jean?build=reaction-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -25889,11 +26146,15 @@
     },
     {
       "characterId": "Kachina",
+      "toolkitCharacterId": "Kachina",
+      "isToolkitCharacter": true,
       "characterSlug": "kachina",
       "characterName": "Kachina",
       "element": "Geo",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kachina",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/4/kachina",
       "roles": [
         {
           "roleId": "buff-reaction-support",
@@ -25902,6 +26163,7 @@
           "reviewedVersion": "5.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kachina?build=buff-reaction-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -26168,11 +26430,15 @@
     },
     {
       "characterId": "KaedeharaKazuha",
+      "toolkitCharacterId": "KaedeharaKazuha",
+      "isToolkitCharacter": true,
       "characterSlug": "kaedehara-kazuha",
       "characterName": "Kaedehara Kazuha",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kaedehara-kazuha",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/kaedehara-kazuha",
       "roles": [
         {
           "roleId": "reaction-dps-buff-support",
@@ -26181,6 +26447,7 @@
           "reviewedVersion": "6.1 / Luna II",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kaedehara-kazuha?build=reaction-dps-buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -26454,11 +26721,15 @@
     },
     {
       "characterId": "Kaeya",
+      "toolkitCharacterId": "Kaeya",
+      "isToolkitCharacter": true,
       "characterSlug": "kaeya",
       "characterName": "Kaeya",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kaeya",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/kaeya",
       "roles": [
         {
           "roleId": "freeze-mono-cryo",
@@ -26467,6 +26738,7 @@
           "reviewedVersion": "5.6",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kaeya?build=freeze-mono-cryo",
           "weapons": {
             "rankedGroups": [
               {
@@ -26864,6 +27136,7 @@
           "reviewedVersion": "5.6",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kaeya?build=reverse-melt",
           "weapons": {
             "rankedGroups": [
               {
@@ -27322,11 +27595,15 @@
     },
     {
       "characterId": "KamisatoAyaka",
+      "toolkitCharacterId": "KamisatoAyaka",
+      "isToolkitCharacter": true,
       "characterSlug": "kamisato-ayaka",
       "characterName": "Kamisato Ayaka",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kamisato-ayaka",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/kamisato-ayaka",
       "roles": [
         {
           "roleId": "dps",
@@ -27335,6 +27612,7 @@
           "reviewedVersion": "4.1",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kamisato-ayaka?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -27735,11 +28013,15 @@
     },
     {
       "characterId": "KamisatoAyato",
+      "toolkitCharacterId": "KamisatoAyato",
+      "isToolkitCharacter": true,
       "characterSlug": "kamisato-ayato",
       "characterName": "Kamisato Ayato",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kamisato-ayato",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/kamisato-ayato",
       "roles": [
         {
           "roleId": "dps",
@@ -27748,6 +28030,7 @@
           "reviewedVersion": "4.4",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kamisato-ayato?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -28212,11 +28495,15 @@
     },
     {
       "characterId": "Kaveh",
+      "toolkitCharacterId": "Kaveh",
+      "isToolkitCharacter": true,
       "characterSlug": "kaveh",
       "characterName": "Kaveh",
       "element": "Dendro",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kaveh",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/4/kaveh",
       "roles": [
         {
           "roleId": "bloom-burgeon-driver",
@@ -28225,6 +28512,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kaveh?build=bloom-burgeon-driver",
           "weapons": {
             "rankedGroups": [
               {
@@ -28584,11 +28872,15 @@
     },
     {
       "characterId": "Keqing",
+      "toolkitCharacterId": "Keqing",
+      "isToolkitCharacter": true,
       "characterSlug": "keqing",
       "characterName": "Keqing",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/keqing",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/keqing",
       "roles": [
         {
           "roleId": "aggravate-dps",
@@ -28597,6 +28889,7 @@
           "reviewedVersion": "5.6",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/keqing?build=aggravate-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -29022,6 +29315,7 @@
           "reviewedVersion": "5.6",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/keqing?build=quickbloom-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -29471,11 +29765,15 @@
     },
     {
       "characterId": "Kinich",
+      "toolkitCharacterId": "Kinich",
+      "isToolkitCharacter": true,
       "characterSlug": "kinich",
       "characterName": "Kinich",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kinich",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/kinich",
       "roles": [
         {
           "roleId": "dps",
@@ -29484,6 +29782,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kinich?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -29832,11 +30131,15 @@
     },
     {
       "characterId": "Kirara",
+      "toolkitCharacterId": "Kirara",
+      "isToolkitCharacter": true,
       "characterSlug": "kirara",
       "characterName": "Kirara",
       "element": "Dendro",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kirara",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/4/kirara",
       "roles": [
         {
           "roleId": "shield-support",
@@ -29845,6 +30148,7 @@
           "reviewedVersion": "4.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kirara?build=shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -30164,11 +30468,15 @@
     },
     {
       "characterId": "Klee",
+      "toolkitCharacterId": "Klee",
+      "isToolkitCharacter": true,
       "characterSlug": "klee",
       "characterName": "Klee",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/klee",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/klee",
       "roles": [
         {
           "roleId": "dps",
@@ -30177,6 +30485,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/klee?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -30661,11 +30970,15 @@
     },
     {
       "characterId": "KujouSara",
+      "toolkitCharacterId": "KujouSara",
+      "isToolkitCharacter": true,
       "characterSlug": "kujou-sara",
       "characterName": "Kujou Sara",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kujou-sara",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/kujou-sara",
       "roles": [
         {
           "roleId": "buff-support-damage",
@@ -30674,6 +30987,7 @@
           "reviewedVersion": "5.1",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kujou-sara?build=buff-support-damage",
           "weapons": {
             "rankedGroups": [
               {
@@ -31085,11 +31399,15 @@
     },
     {
       "characterId": "KukiShinobu",
+      "toolkitCharacterId": "KukiShinobu",
+      "isToolkitCharacter": true,
       "characterSlug": "kuki-shinobu",
       "characterName": "Kuki Shinobu",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kuki-shinobu",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/kuki-shinobu",
       "roles": [
         {
           "roleId": "heal-support",
@@ -31098,6 +31416,7 @@
           "reviewedVersion": "4.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kuki-shinobu?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -31370,6 +31689,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/kuki-shinobu?build=hyperbloom",
           "weapons": {
             "rankedGroups": [
               {
@@ -31644,11 +31964,15 @@
     },
     {
       "characterId": "LanYan",
+      "toolkitCharacterId": "LanYan",
+      "isToolkitCharacter": true,
       "characterSlug": "lan-yan",
       "characterName": "Lan Yan",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lan-yan",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/lan-yan",
       "roles": [
         {
           "roleId": "shield-buff-support",
@@ -31657,6 +31981,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lan-yan?build=shield-buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -31916,11 +32241,15 @@
     },
     {
       "characterId": "Lauma",
+      "toolkitCharacterId": "Lauma",
+      "isToolkitCharacter": true,
       "characterSlug": "lauma",
       "characterName": "Lauma",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lauma",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/lauma",
       "roles": [
         {
           "roleId": "high-energy-requirement",
@@ -31929,6 +32258,7 @@
           "reviewedVersion": "7.1",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lauma?build=high-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -32209,6 +32539,7 @@
           "reviewedVersion": "7.1",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lauma?build=low-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -32528,11 +32859,15 @@
     },
     {
       "characterId": "Layla",
+      "toolkitCharacterId": "Layla",
+      "isToolkitCharacter": true,
       "characterSlug": "layla",
       "characterName": "Layla",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/layla",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/layla",
       "roles": [
         {
           "roleId": "shield-support",
@@ -32541,6 +32876,7 @@
           "reviewedVersion": "5.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/layla?build=shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -32850,6 +33186,7 @@
           "reviewedVersion": "5.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/layla?build=shield-support-damage",
           "weapons": {
             "rankedGroups": [
               {
@@ -33243,11 +33580,15 @@
     },
     {
       "characterId": "Linnea",
+      "toolkitCharacterId": "Linnea",
+      "isToolkitCharacter": true,
       "characterSlug": "linnea",
       "characterName": "Linnea",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/linnea",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/linnea",
       "roles": [
         {
           "roleId": "off-field-dps-buff-heal-support",
@@ -33256,6 +33597,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/linnea?build=off-field-dps-buff-heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -33568,11 +33910,15 @@
     },
     {
       "characterId": "Lisa",
+      "toolkitCharacterId": "Lisa",
+      "isToolkitCharacter": true,
       "characterSlug": "lisa",
       "characterName": "Lisa",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lisa",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/lisa",
       "roles": [
         {
           "roleId": "aggravate-dps",
@@ -33581,6 +33927,7 @@
           "reviewedVersion": "6.2 / Luna III",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lisa?build=aggravate-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -33992,6 +34339,7 @@
           "reviewedVersion": "6.2 / Luna III",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lisa?build=off-field-dps-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -34483,6 +34831,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lisa?build=reaction-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -34882,11 +35231,15 @@
     },
     {
       "characterId": "Lohen",
+      "toolkitCharacterId": "Lohen",
+      "isToolkitCharacter": true,
       "characterSlug": "lohen",
       "characterName": "Lohen",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lohen",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/lohen",
       "roles": [
         {
           "roleId": "dps",
@@ -34895,6 +35248,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lohen?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -35421,11 +35775,15 @@
     },
     {
       "characterId": "Lynette",
+      "toolkitCharacterId": "Lynette",
+      "isToolkitCharacter": true,
       "characterSlug": "lynette",
       "characterName": "Lynette",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lynette",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/lynette",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -35434,6 +35792,7 @@
           "reviewedVersion": "4.1",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lynette?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -35740,11 +36099,15 @@
     },
     {
       "characterId": "Lyney",
+      "toolkitCharacterId": "Lyney",
+      "isToolkitCharacter": true,
       "characterSlug": "lyney",
       "characterName": "Lyney",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lyney",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/lyney",
       "roles": [
         {
           "roleId": "dps",
@@ -35753,6 +36116,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/lyney?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -36170,11 +36534,15 @@
     },
     {
       "characterId": "Mavuika",
+      "toolkitCharacterId": "Mavuika",
+      "isToolkitCharacter": true,
       "characterSlug": "mavuika",
       "characterName": "Mavuika",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mavuika",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/mavuika",
       "roles": [
         {
           "roleId": "dps-buff-support",
@@ -36183,6 +36551,7 @@
           "reviewedVersion": "6.6 / Luna VII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mavuika?build=dps-buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -36535,11 +36904,15 @@
     },
     {
       "characterId": "Mika",
+      "toolkitCharacterId": "Mika",
+      "isToolkitCharacter": true,
       "characterSlug": "mika",
       "characterName": "Mika",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mika",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/mika",
       "roles": [
         {
           "roleId": "heal-buff-support",
@@ -36548,6 +36921,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mika?build=heal-buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -36936,11 +37310,15 @@
     },
     {
       "characterId": "Mitya",
+      "toolkitCharacterId": "Mitya",
+      "isToolkitCharacter": true,
       "characterSlug": "mitya",
       "characterName": "Mitya",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mitya",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/mitya",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -36949,6 +37327,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mitya?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -37415,6 +37794,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mitya?build=on-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -37841,11 +38221,15 @@
     },
     {
       "characterId": "Mona",
+      "toolkitCharacterId": "Mona",
+      "isToolkitCharacter": true,
       "characterSlug": "mona",
       "characterName": "Mona",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mona",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/mona",
       "roles": [
         {
           "roleId": "buff-support",
@@ -37854,6 +38238,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mona?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -38166,11 +38551,15 @@
     },
     {
       "characterId": "Mualani",
+      "toolkitCharacterId": "Mualani",
+      "isToolkitCharacter": true,
       "characterSlug": "mualani",
       "characterName": "Mualani",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mualani",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/mualani",
       "roles": [
         {
           "roleId": "vaporize-dps",
@@ -38179,6 +38568,7 @@
           "reviewedVersion": "6.2 / Luna III",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/mualani?build=vaporize-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -38539,11 +38929,15 @@
     },
     {
       "characterId": "Nahida",
+      "toolkitCharacterId": "Nahida",
+      "isToolkitCharacter": true,
       "characterSlug": "nahida",
       "characterName": "Nahida",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nahida",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/nahida",
       "roles": [
         {
           "roleId": "buff-support-damage",
@@ -38552,6 +38946,7 @@
           "reviewedVersion": "6.0 / Luna I",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nahida?build=buff-support-damage",
           "weapons": {
             "rankedGroups": [
               {
@@ -39036,11 +39431,15 @@
     },
     {
       "characterId": "Navia",
+      "toolkitCharacterId": "Navia",
+      "isToolkitCharacter": true,
       "characterSlug": "navia",
       "characterName": "Navia",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/navia",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/navia",
       "roles": [
         {
           "roleId": "dps",
@@ -39049,6 +39448,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/navia?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -39536,11 +39936,15 @@
     },
     {
       "characterId": "Nefer",
+      "toolkitCharacterId": "Nefer",
+      "isToolkitCharacter": true,
       "characterSlug": "nefer",
       "characterName": "Nefer",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nefer",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/nefer",
       "roles": [
         {
           "roleId": "dps",
@@ -39549,6 +39953,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nefer?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -39811,11 +40216,15 @@
     },
     {
       "characterId": "Neuvillette",
+      "toolkitCharacterId": "Neuvillette",
+      "isToolkitCharacter": true,
       "characterSlug": "neuvillette",
       "characterName": "Neuvillette",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/neuvillette",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/neuvillette",
       "roles": [
         {
           "roleId": "dps",
@@ -39824,6 +40233,7 @@
           "reviewedVersion": "6.2 / Luna III",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/neuvillette?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -40203,11 +40613,15 @@
     },
     {
       "characterId": "Nicole",
+      "toolkitCharacterId": "Nicole",
+      "isToolkitCharacter": true,
       "characterSlug": "nicole",
       "characterName": "Nicole",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nicole",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/nicole",
       "roles": [
         {
           "roleId": "shield-buff-support",
@@ -40216,6 +40630,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nicole?build=shield-buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -40571,11 +40986,15 @@
     },
     {
       "characterId": "Nilou",
+      "toolkitCharacterId": "Nilou",
+      "isToolkitCharacter": true,
       "characterSlug": "nilou",
       "characterName": "Nilou",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nilou",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/nilou",
       "roles": [
         {
           "roleId": "bloom-support",
@@ -40584,6 +41003,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/nilou?build=bloom-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -40819,11 +41239,15 @@
     },
     {
       "characterId": "Ningguang",
+      "toolkitCharacterId": "Ningguang",
+      "isToolkitCharacter": true,
       "characterSlug": "ningguang",
       "characterName": "Ningguang",
       "element": "Geo",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ningguang",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/4/ningguang",
       "roles": [
         {
           "roleId": "dps",
@@ -40832,6 +41256,7 @@
           "reviewedVersion": "5.4",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ningguang?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -41281,11 +41706,15 @@
     },
     {
       "characterId": "Noelle",
+      "toolkitCharacterId": "Noelle",
+      "isToolkitCharacter": true,
       "characterSlug": "noelle",
       "characterName": "Noelle",
       "element": "Geo",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/noelle",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/4/noelle",
       "roles": [
         {
           "roleId": "dps",
@@ -41294,6 +41723,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/noelle?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -41654,6 +42084,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/noelle?build=dps-lunar-crystallize",
           "weapons": {
             "rankedGroups": [
               {
@@ -42066,6 +42497,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/noelle?build=driver",
           "weapons": {
             "rankedGroups": [
               {
@@ -42442,11 +42874,15 @@
     },
     {
       "characterId": "Odette",
+      "toolkitCharacterId": "Odette",
+      "isToolkitCharacter": true,
       "characterSlug": "odette",
       "characterName": "Odette",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/odette",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/odette",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -42455,6 +42891,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/odette?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -42936,11 +43373,15 @@
     },
     {
       "characterId": "Ororon",
+      "toolkitCharacterId": "Ororon",
+      "isToolkitCharacter": true,
       "characterSlug": "ororon",
       "characterName": "Ororon",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ororon",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/ororon",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -42949,6 +43390,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ororon?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -43325,6 +43767,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/ororon?build=reaction-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -43694,11 +44137,15 @@
     },
     {
       "characterId": "Prune",
+      "toolkitCharacterId": "Prune",
+      "isToolkitCharacter": true,
       "characterSlug": "prune",
       "characterName": "Prune",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/prune",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/prune",
       "roles": [
         {
           "roleId": "buff-support",
@@ -43707,6 +44154,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/prune?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -43999,11 +44447,15 @@
     },
     {
       "characterId": "Qiqi",
+      "toolkitCharacterId": "Qiqi",
+      "isToolkitCharacter": true,
       "characterSlug": "qiqi",
       "characterName": "Qiqi",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/qiqi",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/qiqi",
       "roles": [
         {
           "roleId": "heal-support",
@@ -44012,6 +44464,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/qiqi?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -44352,11 +44805,15 @@
     },
     {
       "characterId": "RaidenShogun",
+      "toolkitCharacterId": "RaidenShogun",
+      "isToolkitCharacter": true,
       "characterSlug": "shogun-raiden",
       "characterName": "Raiden Shogun",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/shogun-raiden",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/shogun-raiden",
       "roles": [
         {
           "roleId": "dps-energy-support",
@@ -44365,6 +44822,7 @@
           "reviewedVersion": "5.7",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/shogun-raiden?build=dps-energy-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -44766,6 +45224,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/shogun-raiden?build=hyperbloom",
           "weapons": {
             "rankedGroups": [
               {
@@ -44961,11 +45420,15 @@
     },
     {
       "characterId": "Razor",
+      "toolkitCharacterId": "Razor",
+      "isToolkitCharacter": true,
       "characterSlug": "razor",
       "characterName": "Razor",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/razor",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/razor",
       "roles": [
         {
           "roleId": "dps",
@@ -44974,6 +45437,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/razor?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -45467,6 +45931,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/razor?build=hyperbloom-reaction-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -45756,11 +46221,15 @@
     },
     {
       "characterId": "Rosaria",
+      "toolkitCharacterId": "Rosaria",
+      "isToolkitCharacter": true,
       "characterSlug": "rosaria",
       "characterName": "Rosaria",
       "element": "Cryo",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/rosaria",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/4/rosaria",
       "roles": [
         {
           "roleId": "buff-support",
@@ -45769,6 +46238,7 @@
           "reviewedVersion": "5.5",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/rosaria?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -46094,6 +46564,7 @@
           "reviewedVersion": "5.5",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/rosaria?build=freeze",
           "weapons": {
             "rankedGroups": [
               {
@@ -46473,6 +46944,7 @@
           "reviewedVersion": "5.5",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/rosaria?build=reverse-melt",
           "weapons": {
             "rankedGroups": [
               {
@@ -46850,11 +47322,15 @@
     },
     {
       "characterId": "Sandrone",
+      "toolkitCharacterId": "Sandrone",
+      "isToolkitCharacter": true,
       "characterSlug": "sandrone",
       "characterName": "Sandrone",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sandrone",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/sandrone",
       "roles": [
         {
           "roleId": "dps",
@@ -46863,6 +47339,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sandrone?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -47221,11 +47698,15 @@
     },
     {
       "characterId": "SangonomiyaKokomi",
+      "toolkitCharacterId": "SangonomiyaKokomi",
+      "isToolkitCharacter": true,
       "characterSlug": "sangonomiya-kokomi",
       "characterName": "Sangonomiya Kokomi",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sangonomiya-kokomi",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/sangonomiya-kokomi",
       "roles": [
         {
           "roleId": "bloom-dps",
@@ -47234,6 +47715,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sangonomiya-kokomi?build=bloom-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -47524,6 +48006,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sangonomiya-kokomi?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -47862,6 +48345,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sangonomiya-kokomi?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -48188,11 +48672,15 @@
     },
     {
       "characterId": "Sayu",
+      "toolkitCharacterId": "Sayu",
+      "isToolkitCharacter": true,
       "characterSlug": "sayu",
       "characterName": "Sayu",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sayu",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/sayu",
       "roles": [
         {
           "roleId": "heal-support",
@@ -48201,6 +48689,7 @@
           "reviewedVersion": "4.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sayu?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -48572,11 +49061,15 @@
     },
     {
       "characterId": "Sethos",
+      "toolkitCharacterId": "Sethos",
+      "isToolkitCharacter": true,
       "characterSlug": "sethos",
       "characterName": "Sethos",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sethos",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/sethos",
       "roles": [
         {
           "roleId": "charged-attack-dps",
@@ -48585,6 +49078,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sethos?build=charged-attack-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -48837,6 +49331,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sethos?build=normal-attack-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -49110,11 +49605,15 @@
     },
     {
       "characterId": "Shenhe",
+      "toolkitCharacterId": "Shenhe",
+      "isToolkitCharacter": true,
       "characterSlug": "shenhe",
       "characterName": "Shenhe",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/shenhe",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/shenhe",
       "roles": [
         {
           "roleId": "buff-support",
@@ -49123,6 +49622,7 @@
           "reviewedVersion": "6.0 / Luna I",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/shenhe?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -49499,11 +49999,15 @@
     },
     {
       "characterId": "ShikanoinHeizou",
+      "toolkitCharacterId": "ShikanoinHeizou",
+      "isToolkitCharacter": true,
       "characterSlug": "shikanoin-heizou",
       "characterName": "Shikanoin Heizou",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/shikanoin-heizou",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/shikanoin-heizou",
       "roles": [
         {
           "roleId": "anemo-dps",
@@ -49512,6 +50016,7 @@
           "reviewedVersion": "5.4",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/shikanoin-heizou?build=anemo-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -49940,11 +50445,15 @@
     },
     {
       "characterId": "Sigewinne",
+      "toolkitCharacterId": "Sigewinne",
+      "isToolkitCharacter": true,
       "characterSlug": "sigewinne",
       "characterName": "Sigewinne",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sigewinne",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/sigewinne",
       "roles": [
         {
           "roleId": "heal-support",
@@ -49953,6 +50462,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sigewinne?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -50231,11 +50741,15 @@
     },
     {
       "characterId": "Skirk",
+      "toolkitCharacterId": "Skirk",
+      "isToolkitCharacter": true,
       "characterSlug": "skirk",
       "characterName": "Skirk",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/skirk",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/skirk",
       "roles": [
         {
           "roleId": "dps",
@@ -50244,6 +50758,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/skirk?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -50635,11 +51150,15 @@
     },
     {
       "characterId": "Sucrose",
+      "toolkitCharacterId": "Sucrose",
+      "isToolkitCharacter": true,
       "characterSlug": "sucrose",
       "characterName": "Sucrose",
       "element": "Anemo",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sucrose",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/4/sucrose",
       "roles": [
         {
           "roleId": "em-support",
@@ -50648,6 +51167,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/sucrose?build=em-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -50952,11 +51472,15 @@
     },
     {
       "characterId": "Tartaglia",
+      "toolkitCharacterId": "Tartaglia",
+      "isToolkitCharacter": true,
       "characterSlug": "tartaglia",
       "characterName": "Tartaglia",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/tartaglia",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/tartaglia",
       "roles": [
         {
           "roleId": "dps",
@@ -50965,6 +51489,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/tartaglia?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -51438,11 +51963,15 @@
     },
     {
       "characterId": "Thoma",
+      "toolkitCharacterId": "Thoma",
+      "isToolkitCharacter": true,
       "characterSlug": "thoma",
       "characterName": "Thoma",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/thoma",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/thoma",
       "roles": [
         {
           "roleId": "burgeon",
@@ -51451,6 +51980,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/thoma?build=burgeon",
           "weapons": {
             "rankedGroups": [
               {
@@ -51776,6 +52306,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/thoma?build=shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -52131,11 +52662,15 @@
     },
     {
       "characterId": "Tighnari",
+      "toolkitCharacterId": "Tighnari",
+      "isToolkitCharacter": true,
       "characterSlug": "tighnari",
       "characterName": "Tighnari",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/tighnari",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/tighnari",
       "roles": [
         {
           "roleId": "quick-swap-dps",
@@ -52144,6 +52679,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/tighnari?build=quick-swap-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -52619,11 +53155,15 @@
     },
     {
       "characterId": "TravelerAnemo",
+      "toolkitCharacterId": "TravelerAnemo",
+      "isToolkitCharacter": true,
       "characterSlug": "anemo-traveler",
       "characterName": "Anemo Traveler",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/anemo-traveler",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/traveler",
       "roles": [
         {
           "roleId": "anemo-quickswap-support",
@@ -52632,6 +53172,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/anemo-traveler?build=anemo-quickswap-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -53114,11 +53655,15 @@
     },
     {
       "characterId": "TravelerCryo",
+      "toolkitCharacterId": "TravelerCryo",
+      "isToolkitCharacter": true,
       "characterSlug": "cryo-traveler",
       "characterName": "Cryo Traveler",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/cryo-traveler",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/traveler",
       "roles": [
         {
           "roleId": "stellar-glimmer-dps",
@@ -53127,6 +53672,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/cryo-traveler?build=stellar-glimmer-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -53563,6 +54109,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/cryo-traveler?build=stellar-glimmer-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -53845,11 +54392,15 @@
     },
     {
       "characterId": "TravelerDendro",
+      "toolkitCharacterId": "TravelerDendro",
+      "isToolkitCharacter": true,
       "characterSlug": "dendro-traveler",
       "characterName": "Dendro Traveler",
       "element": "Dendro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dendro-traveler",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/5/traveler",
       "roles": [
         {
           "roleId": "reaction-support",
@@ -53858,6 +54409,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/dendro-traveler?build=reaction-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -54190,11 +54742,15 @@
     },
     {
       "characterId": "TravelerElectro",
+      "toolkitCharacterId": "TravelerElectro",
+      "isToolkitCharacter": true,
       "characterSlug": "electro-traveler",
       "characterName": "Electro Traveler",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/electro-traveler",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/traveler",
       "roles": [
         {
           "roleId": "energy-support",
@@ -54203,6 +54759,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/electro-traveler?build=energy-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -54505,11 +55062,15 @@
     },
     {
       "characterId": "TravelerGeo",
+      "toolkitCharacterId": "TravelerGeo",
+      "isToolkitCharacter": true,
       "characterSlug": "geo-traveler",
       "characterName": "Geo Traveler",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/geo-traveler",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/traveler",
       "roles": [
         {
           "roleId": "geo-quickswap-dps-and-support",
@@ -54518,6 +55079,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/geo-traveler?build=geo-quickswap-dps-and-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -55059,11 +55621,15 @@
     },
     {
       "characterId": "TravelerHydro",
+      "toolkitCharacterId": "TravelerHydro",
+      "isToolkitCharacter": true,
       "characterSlug": "hydro-traveler",
       "characterName": "Hydro Traveler",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/hydro-traveler",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/traveler",
       "roles": [
         {
           "roleId": "support",
@@ -55072,6 +55638,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/hydro-traveler?build=support",
           "weapons": {
             "rankedGroups": [
               {
@@ -55396,11 +55963,15 @@
     },
     {
       "characterId": "TravelerPyro",
+      "toolkitCharacterId": "TravelerPyro",
+      "isToolkitCharacter": true,
       "characterSlug": "pyro-traveler",
       "characterName": "Pyro Traveler",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/pyro-traveler",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/traveler",
       "roles": [
         {
           "roleId": "buff-support",
@@ -55409,6 +55980,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/pyro-traveler?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -55712,6 +56284,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/pyro-traveler?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -56133,11 +56706,15 @@
     },
     {
       "characterId": "Valeriy",
+      "toolkitCharacterId": "Valeriy",
+      "isToolkitCharacter": true,
       "characterSlug": "valeriy",
       "characterName": "Valeriy",
       "element": "Electro",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/valeriy",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/4/valeriy",
       "roles": [
         {
           "roleId": "buff-shield-support",
@@ -56146,6 +56723,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/valeriy?build=buff-shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -56522,11 +57100,15 @@
     },
     {
       "characterId": "Varesa",
+      "toolkitCharacterId": "Varesa",
+      "isToolkitCharacter": true,
       "characterSlug": "varesa",
       "characterName": "Varesa",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/varesa",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/varesa",
       "roles": [
         {
           "roleId": "plunge-dps",
@@ -56535,6 +57117,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/varesa?build=plunge-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -57002,11 +57585,15 @@
     },
     {
       "characterId": "Varka",
+      "toolkitCharacterId": "Varka",
+      "isToolkitCharacter": true,
       "characterSlug": "varka",
       "characterName": "Varka",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/varka",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/varka",
       "roles": [
         {
           "roleId": "dps",
@@ -57015,6 +57602,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/varka?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -57369,11 +57957,15 @@
     },
     {
       "characterId": "Venti",
+      "toolkitCharacterId": "Venti",
+      "isToolkitCharacter": true,
       "characterSlug": "venti",
       "characterName": "Venti",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/venti",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/venti",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -57382,6 +57974,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/venti?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -57820,6 +58413,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/venti?build=on-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -58222,11 +58816,15 @@
     },
     {
       "characterId": "Vesna",
+      "toolkitCharacterId": "Vesna",
+      "isToolkitCharacter": true,
       "characterSlug": "vesna",
       "characterName": "Vesna",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/vesna",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/vesna",
       "roles": [
         {
           "roleId": "dps",
@@ -58235,6 +58833,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/vesna?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -58709,11 +59308,15 @@
     },
     {
       "characterId": "Vodyanitsa",
+      "toolkitCharacterId": "Vodyanitsa",
+      "isToolkitCharacter": true,
       "characterSlug": "vodyanitsa",
       "characterName": "Vodyanitsa",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/vodyanitsa",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/vodyanitsa",
       "roles": [
         {
           "roleId": "heal-buff-support",
@@ -58722,6 +59325,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/vodyanitsa?build=heal-buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -59077,11 +59681,15 @@
     },
     {
       "characterId": "Wanderer",
+      "toolkitCharacterId": "Wanderer",
+      "isToolkitCharacter": true,
       "characterSlug": "wanderer",
       "characterName": "Wanderer",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/wanderer",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/wanderer",
       "roles": [
         {
           "roleId": "dps",
@@ -59090,6 +59698,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/wanderer?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -59628,11 +60237,15 @@
     },
     {
       "characterId": "Wriothesley",
+      "toolkitCharacterId": "Wriothesley",
+      "isToolkitCharacter": true,
       "characterSlug": "wriothesley",
       "characterName": "Wriothesley",
       "element": "Cryo",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/wriothesley",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/cryo/5/wriothesley",
       "roles": [
         {
           "roleId": "melt-dps",
@@ -59641,6 +60254,7 @@
           "reviewedVersion": "4.3",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/wriothesley?build=melt-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -60002,6 +60616,7 @@
           "reviewedVersion": "4.3",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/wriothesley?build=mono-cryo-freeze-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -60332,6 +60947,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/wriothesley?build=stellar-conduct-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -60781,11 +61397,15 @@
     },
     {
       "characterId": "Xiangling",
+      "toolkitCharacterId": "Xiangling",
+      "isToolkitCharacter": true,
       "characterSlug": "xiangling",
       "characterName": "Xiangling",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xiangling",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/xiangling",
       "roles": [
         {
           "roleId": "off-field-dps",
@@ -60794,6 +61414,7 @@
           "reviewedVersion": "6.5 / Luna VI",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xiangling?build=off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -61206,6 +61827,7 @@
           "reviewedVersion": "6.5 / Luna VI",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xiangling?build=off-field-vaporize-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -61715,11 +62337,15 @@
     },
     {
       "characterId": "Xianyun",
+      "toolkitCharacterId": "Xianyun",
+      "isToolkitCharacter": true,
       "characterSlug": "xianyun",
       "characterName": "Xianyun",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xianyun",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/xianyun",
       "roles": [
         {
           "roleId": "high-energy-requirement",
@@ -61728,6 +62354,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xianyun?build=high-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -62072,6 +62699,7 @@
           "reviewedVersion": "5.4",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xianyun?build=low-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -62497,11 +63125,15 @@
     },
     {
       "characterId": "Xiao",
+      "toolkitCharacterId": "Xiao",
+      "isToolkitCharacter": true,
       "characterSlug": "xiao",
       "characterName": "Xiao",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xiao",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/xiao",
       "roles": [
         {
           "roleId": "dps",
@@ -62510,6 +63142,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xiao?build=dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -63016,11 +63649,15 @@
     },
     {
       "characterId": "Xilonen",
+      "toolkitCharacterId": "Xilonen",
+      "isToolkitCharacter": true,
       "characterSlug": "xilonen",
       "characterName": "Xilonen",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xilonen",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/xilonen",
       "roles": [
         {
           "roleId": "buff-heal-support",
@@ -63029,6 +63666,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xilonen?build=buff-heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -63318,11 +63956,15 @@
     },
     {
       "characterId": "Xingqiu",
+      "toolkitCharacterId": "Xingqiu",
+      "isToolkitCharacter": true,
       "characterSlug": "xingqiu",
       "characterName": "Xingqiu",
       "element": "Hydro",
       "rarity": 4,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xingqiu",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/4/xingqiu",
       "roles": [
         {
           "roleId": "high-energy-requirement",
@@ -63331,6 +63973,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xingqiu?build=high-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -63712,6 +64355,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xingqiu?build=low-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -64200,11 +64844,15 @@
     },
     {
       "characterId": "Xinyan",
+      "toolkitCharacterId": "Xinyan",
+      "isToolkitCharacter": true,
       "characterSlug": "xinyan",
       "characterName": "Xinyan",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Claymore",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xinyan",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/xinyan",
       "roles": [
         {
           "roleId": "physical-dps",
@@ -64213,6 +64861,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xinyan?build=physical-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -64709,6 +65358,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xinyan?build=pyro-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -65272,6 +65922,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/xinyan?build=shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -65484,11 +66135,15 @@
     },
     {
       "characterId": "YaeMiko",
+      "toolkitCharacterId": "YaeMiko",
+      "isToolkitCharacter": true,
       "characterSlug": "yae-miko",
       "characterName": "Yae Miko",
       "element": "Electro",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yae-miko",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/electro/5/yae-miko",
       "roles": [
         {
           "roleId": "electro-off-field-dps",
@@ -65497,6 +66152,7 @@
           "reviewedVersion": "7.0",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yae-miko?build=electro-off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -66032,6 +66688,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yae-miko?build=stellar-conduct-off-field-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -66519,11 +67176,15 @@
     },
     {
       "characterId": "Yanfei",
+      "toolkitCharacterId": "Yanfei",
+      "isToolkitCharacter": true,
       "characterSlug": "yanfei",
       "characterName": "Yanfei",
       "element": "Pyro",
       "rarity": 4,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yanfei",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/4/yanfei",
       "roles": [
         {
           "roleId": "shield-support",
@@ -66532,6 +67193,7 @@
           "reviewedVersion": "6.5 / Luna VI",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yanfei?build=shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -66749,6 +67411,7 @@
           "reviewedVersion": "6.2 / Luna III",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yanfei?build=vaporize-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -67130,11 +67793,15 @@
     },
     {
       "characterId": "Yaoyao",
+      "toolkitCharacterId": "Yaoyao",
+      "isToolkitCharacter": true,
       "characterSlug": "yaoyao",
       "characterName": "Yaoyao",
       "element": "Dendro",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yaoyao",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/dendro/4/yaoyao",
       "roles": [
         {
           "roleId": "heal-support",
@@ -67143,6 +67810,7 @@
           "reviewedVersion": "4.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yaoyao?build=heal-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -67561,11 +68229,15 @@
     },
     {
       "characterId": "Yelan",
+      "toolkitCharacterId": "Yelan",
+      "isToolkitCharacter": true,
       "characterSlug": "yelan",
       "characterName": "Yelan",
       "element": "Hydro",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yelan",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/hydro/5/yelan",
       "roles": [
         {
           "roleId": "high-energy-requirement",
@@ -67574,6 +68246,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yelan?build=high-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -67879,6 +68552,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yelan?build=low-energy-requirement",
           "weapons": {
             "rankedGroups": [
               {
@@ -68263,11 +68937,15 @@
     },
     {
       "characterId": "Yoimiya",
+      "toolkitCharacterId": "Yoimiya",
+      "isToolkitCharacter": true,
       "characterSlug": "yoimiya",
       "characterName": "Yoimiya",
       "element": "Pyro",
       "rarity": 5,
       "weaponType": "Bow",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yoimiya",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/pyro/5/yoimiya",
       "roles": [
         {
           "roleId": "overload-dps",
@@ -68276,6 +68954,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yoimiya?build=overload-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -68697,6 +69376,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yoimiya?build=vape-melt-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -69151,11 +69831,15 @@
     },
     {
       "characterId": "YumemizukiMizuki",
+      "toolkitCharacterId": "YumemizukiMizuki",
+      "isToolkitCharacter": true,
       "characterSlug": "yumemizuki-mizuki",
       "characterName": "Yumemizuki Mizuki",
       "element": "Anemo",
       "rarity": 5,
       "weaponType": "Catalyst",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yumemizuki-mizuki",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/anemo/5/yumemizuki-mizuki",
       "roles": [
         {
           "roleId": "reaction-dps",
@@ -69164,6 +69848,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yumemizuki-mizuki?build=reaction-dps",
           "weapons": {
             "rankedGroups": [
               {
@@ -69439,6 +70124,7 @@
           "reviewedVersion": "7.2",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yumemizuki-mizuki?build=stellar-swirl",
           "weapons": {
             "rankedGroups": [
               {
@@ -69851,11 +70537,15 @@
     },
     {
       "characterId": "YunJin",
+      "toolkitCharacterId": "YunJin",
+      "isToolkitCharacter": true,
       "characterSlug": "yun-jin",
       "characterName": "Yun Jin",
       "element": "Geo",
       "rarity": 4,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yun-jin",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/4/yun-jin",
       "roles": [
         {
           "roleId": "buff-support",
@@ -69864,6 +70554,7 @@
           "reviewedVersion": "4.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/yun-jin?build=buff-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -70148,11 +70839,15 @@
     },
     {
       "characterId": "Zhongli",
+      "toolkitCharacterId": "Zhongli",
+      "isToolkitCharacter": true,
       "characterSlug": "zhongli",
       "characterName": "Zhongli",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Polearm",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/zhongli",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/zhongli",
       "roles": [
         {
           "roleId": "burst-support",
@@ -70161,6 +70856,7 @@
           "reviewedVersion": "5.4",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/zhongli?build=burst-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -70553,6 +71249,7 @@
           "reviewedVersion": "5.8",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/zhongli?build=shield-support",
           "weapons": {
             "rankedGroups": [
               {
@@ -70809,11 +71506,15 @@
     },
     {
       "characterId": "Zibai",
+      "toolkitCharacterId": "Zibai",
+      "isToolkitCharacter": true,
       "characterSlug": "zibai",
       "characterName": "Zibai",
       "element": "Geo",
       "rarity": 5,
       "weaponType": "Sword",
+      "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/zibai",
+      "sourceUrl": "https://github.com/Genshin-Impact-Helper-Team/genshin-builds/tree/be542cba19de28f31e4a352f8711ffaff9d2c838/src/content/geo/5/zibai",
       "roles": [
         {
           "roleId": "dps",
@@ -70822,6 +71523,7 @@
           "reviewedVersion": "6.7 / Luna VIII",
           "isWip": false,
           "status": "available",
+          "guideUrl": "https://genshin-impact-helper-team.github.io/genshin-builds/en/zibai?build=dps",
           "weapons": {
             "rankedGroups": [
               {

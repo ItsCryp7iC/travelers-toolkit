@@ -1,0 +1,95 @@
+name: Sync Character Builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force re-normalization even if upstream SHA and fingerprint match'
+        required: false
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Perform retrieval and validation without modifying builds.json'
+        required: false
+        type: boolean
+        default: false
+
+  # NOTE: Routine scheduled synchronization is explicitly deferred until final approval.
+  # DO NOT UNCOMMENT UNTIL CB2B MILESTONE APPROVAL:
+  # schedule:
+  #   - cron: '0 6 * * *' # Routine check once daily at 06:00 UTC
+
+concurrency:
+  group: sync-character-builds
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync-builds:
+    name: Upstream Sync & Verification Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Toolkit Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Character Builds Synchronization
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXTRA_FLAGS=""
+          if [ "${{ inputs.force }}" = "true" ]; then
+            EXTRA_FLAGS="$EXTRA_FLAGS --force"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            EXTRA_FLAGS="$EXTRA_FLAGS --dry-run"
+          fi
+          node scripts/sync-character-builds.mjs --summary-file sync-summary.md $EXTRA_FLAGS
+
+      - name: Publish Step Summary
+        if: always()
+        run: |
+          if [ -f sync-summary.md ]; then
+            cat sync-summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check for Catalog Updates
+        id: git-check
+        run: |
+          if [ -n "$(git status --porcelain src/data/builds.json)" ]; then
+            echo "updated=true" >> $GITHUB_OUTPUT
+            git diff src/data/builds.json > builds.diff
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Full Test Suite on Updated Catalog
+        if: steps.git-check.outputs.updated == 'true'
+        run: |
+          npm run test:run
+          npm run typecheck
+          npm run lint
+          npm run build
+
+      - name: Upload Proposed Catalog Diff & Summary Artifact
+        if: steps.git-check.outputs.updated == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: character-builds-update
+          path: |
+            builds.diff
+            sync-summary.md
+            src/data/builds.json
+          retention-days: 14

@@ -28,6 +28,10 @@ export const LICENSE_NOTICE =
   'Character build recommendations and editorial notes are Copyright © Genshin Impact Helper Team contributors. Used with explicit permission. Not licensed under MIT.';
 export const SOURCE_ATTRIBUTION_URL =
   'https://github.com/Genshin-Impact-Helper-Team/genshin-builds';
+export const DEFAULT_GUIDE_BASE_URL =
+  'https://genshin-impact-helper-team.github.io/genshin-builds';
+export const DEFAULT_SOURCE_REPO_URL =
+  'https://github.com/Genshin-Impact-Helper-Team/genshin-builds';
 
 /**
  * Escapes HTML characters for safe insertion into HTML markup.
@@ -80,11 +84,10 @@ export function readJsonFile(filePath) {
 
 /**
  * Resolves Git commit SHA of the source repository.
+ * Enforces strict agreement if expectedSha is provided.
  */
-export function getSourceCommitSha(sourceDir, fallbackSha = null) {
-  if (fallbackSha && /^[0-9a-f]{40}$/i.test(fallbackSha.trim())) {
-    return fallbackSha.trim();
-  }
+export function getSourceCommitSha(sourceDir, expectedSha = null) {
+  let actualSha = null;
 
   try {
     const stdout = execFileSync('git', ['-C', sourceDir, 'rev-parse', 'HEAD'], {
@@ -93,7 +96,7 @@ export function getSourceCommitSha(sourceDir, fallbackSha = null) {
     });
     const sha = stdout.trim();
     if (/^[0-9a-f]{40}$/i.test(sha)) {
-      return sha;
+      actualSha = sha;
     }
   } catch {
     // Fall back to reading .git/HEAD directly if git binary not in PATH
@@ -102,9 +105,8 @@ export function getSourceCommitSha(sourceDir, fallbackSha = null) {
       if (fs.existsSync(gitHeadPath)) {
         const headContent = fs.readFileSync(gitHeadPath, 'utf8').trim();
         if (/^[0-9a-f]{40}$/i.test(headContent)) {
-          return headContent;
-        }
-        if (headContent.startsWith('ref: ')) {
+          actualSha = headContent;
+        } else if (headContent.startsWith('ref: ')) {
           const refPath = path.join(
             sourceDir,
             '.git',
@@ -113,7 +115,7 @@ export function getSourceCommitSha(sourceDir, fallbackSha = null) {
           if (fs.existsSync(refPath)) {
             const refSha = fs.readFileSync(refPath, 'utf8').trim();
             if (/^[0-9a-f]{40}$/i.test(refSha)) {
-              return refSha;
+              actualSha = refSha;
             }
           }
         }
@@ -121,6 +123,28 @@ export function getSourceCommitSha(sourceDir, fallbackSha = null) {
     } catch {
       // Ignored
     }
+  }
+
+  // If Git verification was possible, enforce agreement with declared revision
+  if (actualSha) {
+    if (expectedSha) {
+      const trimmedExpected = expectedSha.trim();
+      if (
+        /^[0-9a-f]{40}$/i.test(trimmedExpected) &&
+        actualSha.toLowerCase() !== trimmedExpected.toLowerCase()
+      ) {
+        throw new Error(
+          `Source commit mismatch: declared --source-commit is "${trimmedExpected}", but actual Git repository HEAD is "${actualSha}". Refusing to proceed with mismatched revision.`,
+        );
+      }
+    }
+    return actualSha;
+  }
+
+  // If actual git head could not be inspected (e.g. unpacked archive),
+  // and expectedSha is provided:
+  if (expectedSha && /^[0-9a-f]{40}$/i.test(expectedSha.trim())) {
+    return expectedSha.trim();
   }
 
   throw new Error(
@@ -302,6 +326,43 @@ export function loadCanonicalWeapons(weaponsPath = 'src/data/weapons.json') {
     }
   }
   return { byId, byName };
+}
+
+/**
+ * Loads canonical Toolkit characters and Traveler variants for safe fallback matching.
+ */
+export function loadCanonicalCharacters(
+  charactersPath = 'src/data/characters.json',
+  travelerPath = 'src/data/traveler.json',
+) {
+  const bySlug = new Map();
+  if (charactersPath && fs.existsSync(charactersPath)) {
+    const chars = readJsonFile(charactersPath);
+    for (const c of chars) {
+      if (c && c.id) {
+        const stripped = String(c.id).toLowerCase().replace(/[^a-z0-9]/g, '');
+        bySlug.set(stripped, c.id);
+        if (c.name) {
+          const normName = String(c.name).toLowerCase().replace(/[^a-z0-9]/g, '');
+          bySlug.set(normName, c.id);
+        }
+      }
+    }
+  }
+  if (travelerPath && fs.existsSync(travelerPath)) {
+    const travelers = readJsonFile(travelerPath);
+    for (const t of travelers) {
+      if (t && t.id) {
+        const stripped = String(t.id).toLowerCase().replace(/[^a-z0-9]/g, '');
+        bySlug.set(stripped, t.id);
+        if (t.name) {
+          const normName = String(t.name).toLowerCase().replace(/[^a-z0-9]/g, '');
+          bySlug.set(normName, t.id);
+        }
+      }
+    }
+  }
+  return bySlug;
 }
 
 /**
@@ -924,6 +985,7 @@ export function normalizeRoleBuild({
   dictionaries,
   mappings,
   canonicalWeapons = null,
+  guideUrl = null,
 }) {
   const buildNotesFile = path.join(roleDir, 'build-notes.json');
   const buildNotes = fs.existsSync(buildNotesFile)
@@ -1154,6 +1216,7 @@ export function normalizeRoleBuild({
     reviewedVersion,
     isWip,
     status,
+    guideUrl,
     weapons,
     artifacts,
     talents,
@@ -1174,6 +1237,10 @@ export function normalizeCharacterBuild({
   dictionaries,
   mappings,
   canonicalWeapons = null,
+  canonicalCharacters = null,
+  sourceCommitSha = 'main',
+  guideBaseUrl = DEFAULT_GUIDE_BASE_URL,
+  sourceRepoUrl = DEFAULT_SOURCE_REPO_URL,
 }) {
   const metadataPath = path.join(characterDir, 'metadata.json');
   if (!fs.existsSync(metadataPath)) {
@@ -1193,10 +1260,25 @@ export function normalizeCharacterBuild({
   const publicSlug =
     characterSlug === 'traveler' ? `${element}-traveler` : characterSlug;
 
-  const characterId = mappings.characterMap[publicSlug];
+  let characterId = mappings.characterMap[publicSlug] || null;
+  let isToolkitCharacter = characterId !== null;
+
+  // Safe fallback to canonical character matching
+  if (!characterId && canonicalCharacters) {
+    const stripped = publicSlug.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matched = canonicalCharacters.get(stripped);
+    if (matched) {
+      characterId = matched;
+      isToolkitCharacter = true;
+    }
+  }
+
+  // Preserved as source-only if unmapped in Toolkit
   if (!characterId) {
-    throw new Error(
-      `Character slug "${publicSlug}" (${characterDir}) is not mapped in characterMap.json!`,
+    isToolkitCharacter = false;
+    characterId = toTitleCase(publicSlug).replace(/[^a-zA-Z0-9]/g, '');
+    console.warn(
+      `[WARN] Unknown upstream character "${publicSlug}" (${characterDir}) awaiting Toolkit mapping. Preserved as source-only recommendation.`,
     );
   }
 
@@ -1204,8 +1286,11 @@ export function normalizeCharacterBuild({
     characterSlug === 'traveler'
       ? `${dictionaries.elements[element] || toTitleCase(element)} Traveler`
       : dictionaries.characters[characterSlug] ||
-      dictionaries.characters[characterSlug.toLowerCase()] ||
-      toTitleCase(characterSlug);
+        dictionaries.characters[characterSlug.toLowerCase()] ||
+        toTitleCase(characterSlug);
+
+  const characterGuideUrl = `${guideBaseUrl.replace(/\/+$/, '')}/en/${publicSlug}`;
+  const characterSourceUrl = `${sourceRepoUrl.replace(/\/+$/, '')}/tree/${sourceCommitSha}/src/content/${element}/${rarity}/${characterSlug}`;
 
   // Scan role subdirectories
   const roleEntries = fs
@@ -1229,24 +1314,39 @@ export function normalizeCharacterBuild({
       dictionaries,
       mappings,
       canonicalWeapons,
+      guideUrl: `${characterGuideUrl}?build=${roleId}`,
     });
   });
 
   return {
     characterId,
+    toolkitCharacterId: isToolkitCharacter ? characterId : null,
+    isToolkitCharacter,
     characterSlug: publicSlug,
     characterName,
     element: toTitleCase(element),
     rarity: charRarity,
     weaponType,
+    guideUrl: characterGuideUrl,
+    sourceUrl: characterSourceUrl,
     roles,
   };
 }
 
 /**
  * Validates the complete normalized catalog against schema and sanity invariants.
+ * Supports dynamic character/role counts, minimum sanity guards, and removal detection.
  */
-export function validateCatalogSchema(catalog) {
+export function validateCatalogSchema(catalog, options = {}) {
+  const {
+    minCharacters = 50,
+    minRoles = 50,
+    expectedCharactersCount = null,
+    expectedRolesCount = null,
+    previousCatalog = null,
+    maxRemovalPercentage = 0.1,
+  } = options;
+
   if (!catalog || typeof catalog !== 'object') {
     throw new Error('Catalog root is not an object');
   }
@@ -1289,10 +1389,48 @@ export function validateCatalogSchema(catalog) {
     throw new Error('Catalog characters is not an array');
   }
 
-  if (catalog.characters.length !== 129) {
+  // Dynamic character count validation & sanity guards
+  if (expectedCharactersCount !== null) {
+    if (catalog.characters.length !== expectedCharactersCount) {
+      throw new Error(
+        `Character count mismatch: expected ${expectedCharactersCount} characters, found ${catalog.characters.length}`,
+      );
+    }
+  } else if (catalog.characters.length < minCharacters) {
     throw new Error(
-      `Character count mismatch: expected 129 characters, found ${catalog.characters.length}`,
+      `Sanity guard failure: character count (${catalog.characters.length}) is below minimum threshold (${minCharacters}). Potential incomplete or corrupted source extraction.`,
     );
+  }
+
+  // Regression / Removal detection against previously valid catalog
+  if (previousCatalog && Array.isArray(previousCatalog.characters)) {
+    const prevCount = previousCatalog.characters.length;
+    const currentCount = catalog.characters.length;
+    if (
+      prevCount > 0 &&
+      (prevCount - currentCount) / prevCount > maxRemovalPercentage
+    ) {
+      throw new Error(
+        `Unusual catalog reduction: character count dropped from ${prevCount} to ${currentCount} (>${maxRemovalPercentage * 100}% reduction). Failing to prevent accidental mass deletion.`,
+      );
+    }
+
+    const prevSlugs = new Set(
+      previousCatalog.characters.map((c) => c.characterSlug),
+    );
+    const currentSlugs = new Set(
+      catalog.characters.map((c) => c.characterSlug),
+    );
+    const removedSlugs = [...prevSlugs].filter((s) => !currentSlugs.has(s));
+    if (removedSlugs.length > 5) {
+      throw new Error(
+        `Detected ${removedSlugs.length} removed characters in upstream update (${removedSlugs.slice(0, 5).join(', ')}...). Exceeds safety threshold for automatic synchronization.`,
+      );
+    } else if (removedSlugs.length > 0) {
+      console.warn(
+        `[WARN] Characters removed in new catalog compared to previous catalog (${removedSlugs.length}): ${removedSlugs.join(', ')}`,
+      );
+    }
   }
 
   const characterIds = new Set();
@@ -1318,6 +1456,26 @@ export function validateCatalogSchema(catalog) {
     }
     characterSlugs.add(char.characterSlug);
 
+    // Validate character URLs
+    if (
+      !char.guideUrl ||
+      !/^https:\/\/[^/]+\/genshin-builds\/en\/[a-z0-9-]+$/i.test(char.guideUrl)
+    ) {
+      throw new Error(
+        `Invalid character guideUrl for ${char.characterId}: ${char.guideUrl}`,
+      );
+    }
+    if (
+      !char.sourceUrl ||
+      !/^https:\/\/github\.com\/[^/]+\/genshin-builds\/tree\/[0-9a-f]{40}\/src\/content\//i.test(
+        char.sourceUrl,
+      )
+    ) {
+      throw new Error(
+        `Invalid character sourceUrl for ${char.characterId}: ${char.sourceUrl}`,
+      );
+    }
+
     if (char.characterId.startsWith('Traveler')) {
       travelerVariants.add(char.characterId);
     }
@@ -1328,12 +1486,20 @@ export function validateCatalogSchema(catalog) {
 
     totalRoles += char.roles.length;
 
+    // Validate unique role IDs within each character
+    const roleIds = new Set();
     for (const role of char.roles) {
       if (!role.roleId || !role.displayName) {
         throw new Error(
           `Character ${char.characterId} role missing roleId or displayName`,
         );
       }
+      if (roleIds.has(role.roleId)) {
+        throw new Error(
+          `Duplicate roleId "${role.roleId}" in character "${char.characterId}"`,
+        );
+      }
+      roleIds.add(role.roleId);
 
       // Check weapon invariants
       for (const group of role.weapons.rankedGroups) {
@@ -1359,12 +1525,31 @@ export function validateCatalogSchema(catalog) {
           );
         }
       }
+
+      // Check role guideUrl format if present
+      if (
+        role.guideUrl &&
+        !/^https:\/\/[^/]+\/genshin-builds\/en\/[a-z0-9-]+\?build=[a-z0-9-]+$/i.test(
+          role.guideUrl,
+        )
+      ) {
+        throw new Error(
+          `Invalid role guideUrl in role ${role.roleId}: ${role.guideUrl}`,
+        );
+      }
     }
   }
 
-  if (totalRoles !== 184) {
+  // Dynamic roles count validation & sanity guards
+  if (expectedRolesCount !== null) {
+    if (totalRoles !== expectedRolesCount) {
+      throw new Error(
+        `Total role builds mismatch: expected ${expectedRolesCount} roles, found ${totalRoles}`,
+      );
+    }
+  } else if (totalRoles < minRoles) {
     throw new Error(
-      `Total role builds mismatch: expected 184 roles, found ${totalRoles}`,
+      `Sanity guard failure: total role builds (${totalRoles}) is below minimum threshold (${minRoles}). Potential incomplete or corrupted source extraction.`,
     );
   }
 
@@ -1401,6 +1586,9 @@ export async function runImporter({
   force = false,
   validateOnly = false,
   allowDirty = false,
+  previousCatalog = null,
+  guideBaseUrl = DEFAULT_GUIDE_BASE_URL,
+  sourceRepoUrl = DEFAULT_SOURCE_REPO_URL,
 }) {
   const startTime = Date.now();
   console.log('--- Starting Character Builds Normalization Engine (CB2A) ---');
@@ -1463,6 +1651,20 @@ export async function runImporter({
   const dictionaries = loadUpstreamDictionaries(sourceDir);
   const mappings = loadProjectMappings(mappingsDir);
   const canonicalWeapons = loadCanonicalWeapons(weaponsFile);
+  const canonicalCharacters = loadCanonicalCharacters(
+    charactersFile,
+    travelerFile,
+  );
+
+  // Read existing catalog for regression / removal validation if not explicitly provided
+  let priorCatalog = previousCatalog;
+  if (!priorCatalog && fs.existsSync(outputFile)) {
+    try {
+      priorCatalog = readJsonFile(outputFile);
+    } catch {
+      // Ignored if unparseable
+    }
+  }
 
   // 5. Discover and traverse content tree
   console.log('Traversing content tree and normalizing builds...');
@@ -1504,6 +1706,10 @@ export async function runImporter({
           dictionaries,
           mappings,
           canonicalWeapons,
+          canonicalCharacters,
+          sourceCommitSha,
+          guideBaseUrl,
+          sourceRepoUrl,
         });
 
         characters.push(normalizedChar);
@@ -1521,13 +1727,15 @@ export async function runImporter({
     sourceCommitSha,
     normalizerVersion: NORMALIZER_VERSION,
     mappingFingerprint,
+    isReproducible: !allowDirty,
+    isDirtySource: Boolean(allowDirty),
     generatedAt: new Date().toISOString(),
     characters,
   };
 
   // 6. Validation gate
   console.log('Executing schema validation and integrity assertions...');
-  validateCatalogSchema(catalog);
+  validateCatalogSchema(catalog, { previousCatalog: priorCatalog });
 
   if (validateOnly) {
     console.log(
@@ -1558,7 +1766,7 @@ export async function runImporter({
 
     // Validate staged file by reading it back from disk prior to publication
     const stagedContent = readJsonFile(stagingFile);
-    validateCatalogSchema(stagedContent);
+    validateCatalogSchema(stagedContent, { previousCatalog: priorCatalog });
 
     // Atomic replacement using same-filesystem renameSync
     // Guarantees existing published destination is never deleted or truncated before replacement
@@ -1613,6 +1821,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   let force = false;
   let validateOnly = false;
   let allowDirty = false;
+  let guideBaseUrl = DEFAULT_GUIDE_BASE_URL;
+  let sourceRepoUrl = DEFAULT_SOURCE_REPO_URL;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -1632,6 +1842,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       artifactsFile = args[++i];
     } else if (arg === '--source-commit' && i + 1 < args.length) {
       sourceCommit = args[++i];
+    } else if (arg === '--guide-base-url' && i + 1 < args.length) {
+      guideBaseUrl = args[++i];
+    } else if (arg === '--source-repo-url' && i + 1 < args.length) {
+      sourceRepoUrl = args[++i];
     } else if (arg === '--force') {
       force = true;
     } else if (arg === '--validate-only') {
@@ -1642,14 +1856,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   }
 
   if (!sourceDir) {
-    const defaultScratch = path.resolve(
-      process.cwd(),
-      '../.gemini/antigravity/brain/83029ac3-ae6f-49dd-bc83-f3de1dee8eb1/scratch/genshin-builds',
-    );
-    if (fs.existsSync(defaultScratch)) {
-      sourceDir = defaultScratch;
+    if (
+      process.env.GENSHIN_BUILDS_SOURCE_DIR &&
+      fs.existsSync(process.env.GENSHIN_BUILDS_SOURCE_DIR)
+    ) {
+      sourceDir = process.env.GENSHIN_BUILDS_SOURCE_DIR;
     } else {
-      console.error('Error: --source-dir <path> argument is required.');
+      console.error(
+        'Error: --source-dir <path> argument is required (or set GENSHIN_BUILDS_SOURCE_DIR environment variable).',
+      );
       process.exit(1);
     }
   }
@@ -1666,6 +1881,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     force,
     validateOnly,
     allowDirty,
+    guideBaseUrl,
+    sourceRepoUrl,
   }).catch((err) => {
     console.error('Importer Error:', err.message);
     process.exit(1);
