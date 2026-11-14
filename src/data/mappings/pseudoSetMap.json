@@ -1,0 +1,58 @@
+{
+  "anemo-set": {
+    "label": "+15% Anemo DMG Bonus set",
+    "tag": "anemo-set"
+  },
+  "atk-set": {
+    "label": "+18% ATK set",
+    "tag": "atk-set"
+  },
+  "cryo-set": {
+    "label": "+15% Cryo DMG Bonus set",
+    "tag": "cryo-set"
+  },
+  "def-set": {
+    "label": "+30% DEF set",
+    "tag": "def-set"
+  },
+  "dendro-set": {
+    "label": "+15% Dendro DMG Bonus set",
+    "tag": "dendro-set"
+  },
+  "electro-set": {
+    "label": "+15% Electro DMG Bonus set",
+    "tag": "electro-set"
+  },
+  "em-set": {
+    "label": "+80 EM set",
+    "tag": "em-set"
+  },
+  "er-set": {
+    "label": "+20% ER set",
+    "tag": "er-set"
+  },
+  "geo-set": {
+    "label": "+15% Geo DMG Bonus set",
+    "tag": "geo-set"
+  },
+  "healing-set": {
+    "label": "+15% Healing Bonus set",
+    "tag": "healing-set"
+  },
+  "hp-set": {
+    "label": "+20% HP set",
+    "tag": "hp-set"
+  },
+  "hydro-set": {
+    "label": "+15% Hydro DMG Bonus set",
+    "tag": "hydro-set"
+  },
+  "physical-set": {
+    "label": "+25% Physical DMG set",
+    "tag": "physical-set"
+  },
+  "pyro-set": {
+    "label": "+15% Pyro DMG Bonus set",
+    "tag": "pyro-set"
+  }
+}
