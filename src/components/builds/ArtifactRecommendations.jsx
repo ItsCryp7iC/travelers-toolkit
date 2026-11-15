@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import SafeHtml from './SafeHtml';
+import GenshinImage from '../GenshinImage';
+import { getArtifactSetIcon, getAttributeIcon } from '../../utils/assetHelper';
 
 // Source-backed explanations for generic pseudo-set categories
 export const PSEUDO_SET_EXPLANATIONS = {
@@ -79,13 +81,27 @@ function ArtifactItemRow({ item }) {
   const pseudoInfo = item.pseudoStatTag
     ? PSEUDO_SET_EXPLANATIONS[item.pseudoStatTag]
     : null;
+  const iconSrc = isPseudo
+    ? getAttributeIcon(item.pseudoStatTag || item.name)
+    : getArtifactSetIcon(item.name, item.sourceSetId);
+  const fallbackEmoji = item.pieces === 4 ? '🏺' : '🧩';
 
   return (
     <div className="flex-1 min-w-0 bg-slate-950/60 border border-white/5 rounded-xl p-2.5 sm:p-3 transition-colors hover:border-white/15">
       <div className="flex items-start gap-2.5">
-        {/* Artifact Slot / Piece Badge */}
-        <div className="w-9 h-9 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center flex-shrink-0 text-base shadow-sm">
-          {item.pieces === 4 ? '🏺' : '🧩'}
+        {/* Artifact Set / Category Icon */}
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-900 border border-white/10 flex items-center justify-center relative shadow-sm">
+          <GenshinImage
+            src={iconSrc}
+            alt=""
+            className="w-full h-full object-contain p-0.5"
+            loading="lazy"
+            fallback={
+              <span className="text-base select-none" aria-hidden="true">
+                {fallbackEmoji}
+              </span>
+            }
+          />
         </div>
 
         <div className="flex-1 min-w-0 space-y-1">

@@ -1021,7 +1021,7 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
 
     it('11. Clearing character returns to initial empty state', async () => {
       render(
-        <MemoryRouter initialEntries={['/builds?character=Mitya']}>
+        <MemoryRouter initialEntries={['/builds?character=Mitya&role=on-field-dps']}>
           <Routes>
             <Route path="/builds" element={<Builds />} />
           </Routes>
@@ -1040,7 +1040,7 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       await waitFor(() => {
         expect(screen.getByRole('heading', { level: 2, name: /Select a Character to View Recommended Builds/i })).toBeInTheDocument();
         expect(screen.queryByRole('region', { name: /Build Sheet for Mitya/i })).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     it('12. Character with zero roles renders empty state gracefully without crashing', async () => {

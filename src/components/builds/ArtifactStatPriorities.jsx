@@ -1,5 +1,7 @@
 import React from 'react';
 import SafeHtml from './SafeHtml';
+import GenshinImage from '../GenshinImage';
+import { getArtifactSlotIcon, getAttributeIcons } from '../../utils/assetHelper';
 
 /**
  * Main stat slot config (Sands, Goblet, Circlet)
@@ -9,7 +11,7 @@ const MAIN_STAT_SLOTS = [
     key: 'sands',
     title: 'Sands of Eon',
     shortLabel: 'Sands',
-    icon: '⏳',
+    fallbackEmoji: '⏳',
     color: 'text-amber-300',
     border: 'border-amber-500/20',
   },
@@ -17,7 +19,7 @@ const MAIN_STAT_SLOTS = [
     key: 'goblet',
     title: 'Goblet of Eonothem',
     shortLabel: 'Goblet',
-    icon: '🍷',
+    fallbackEmoji: '🍷',
     color: 'text-rose-300',
     border: 'border-rose-500/20',
   },
@@ -25,7 +27,7 @@ const MAIN_STAT_SLOTS = [
     key: 'circlet',
     title: 'Circlet of Logos',
     shortLabel: 'Circlet',
-    icon: '👑',
+    fallbackEmoji: '👑',
     color: 'text-sky-300',
     border: 'border-sky-500/20',
   },
@@ -79,9 +81,18 @@ export default function ArtifactStatPriorities({ artifacts }) {
                 className={`bg-slate-950/70 border ${slot.border} rounded-xl p-3 sm:p-3.5 space-y-2 flex flex-col justify-between`}
               >
                 <div className="flex items-center gap-2 border-b border-white/5 pb-2">
-                  <span className="text-base" aria-hidden="true">
-                    {slot.icon}
-                  </span>
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-slate-900 border border-white/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <GenshinImage
+                      src={getArtifactSlotIcon(slot.key)}
+                      alt=""
+                      className="w-full h-full object-contain p-0.5"
+                      fallback={
+                        <span className="text-sm select-none" aria-hidden="true">
+                          {slot.fallbackEmoji}
+                        </span>
+                      }
+                    />
+                  </div>
                   <div>
                     <span className="text-xs font-bold text-white block">
                       {slot.shortLabel}
@@ -98,28 +109,46 @@ export default function ArtifactStatPriorities({ artifacts }) {
                   </p>
                 ) : (
                   <div className="space-y-2 py-0.5">
-                    {statItems.map((st, idx) => (
-                      <div
-                        key={st.statKey || `${slot.key}-${idx}`}
-                        className="space-y-1"
-                      >
-                        <div className="flex items-center gap-1.5">
-                          {idx > 0 && (
-                            <span className="text-slate-500 text-xs font-semibold">
-                              /
-                            </span>
-                          )}
-                          <span className="text-xs font-semibold text-slate-100">
-                            {st.name}
-                          </span>
-                        </div>
-                        {st.note && (
-                          <div className="text-[10px] text-slate-400 leading-normal pl-2 border-l border-white/10">
-                            <SafeHtml content={st.note} />
+                    {statItems.map((st, idx) => {
+                      const icons = getAttributeIcons(st.name, st.statKey);
+
+                      return (
+                        <div
+                          key={st.statKey || `${slot.key}-${idx}`}
+                          className="space-y-1"
+                        >
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {idx > 0 && (
+                              <span className="text-slate-500 text-xs font-semibold">
+                                /
+                              </span>
+                            )}
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              {icons.map((iconSrc, iIdx) => (
+                                <span
+                                  key={iIdx}
+                                  className="w-4 h-4 rounded bg-slate-900 border border-white/10 inline-flex items-center justify-center flex-shrink-0 overflow-hidden"
+                                >
+                                  <GenshinImage
+                                    src={iconSrc}
+                                    alt=""
+                                    className="w-full h-full object-contain"
+                                  />
+                                </span>
+                              ))}
+                              <span className="text-xs font-semibold text-slate-100">
+                                {st.name}
+                              </span>
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {st.note && (
+                            <div className="text-[10px] text-slate-400 leading-normal pl-2 border-l border-white/10">
+                              <SafeHtml content={st.note} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -174,18 +203,36 @@ export default function ArtifactStatPriorities({ artifacts }) {
                   {/* Substat alternatives within this priority tier */}
                   <div className="flex-1 min-w-0 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      {items.map((sub, idx) => (
-                        <React.Fragment key={sub.statKey || idx}>
-                          {idx > 0 && (
-                            <span className="text-slate-500 text-xs font-semibold">
-                              ≈
+                      {items.map((sub, idx) => {
+                        const icons = getAttributeIcons(sub.name, sub.statKey);
+
+                        return (
+                          <React.Fragment key={sub.statKey || idx}>
+                            {idx > 0 && (
+                              <span className="text-slate-500 text-xs font-semibold">
+                                ≈
+                              </span>
+                            )}
+                            <span className="inline-flex items-center gap-1 min-w-0">
+                              {icons.map((iconSrc, iIdx) => (
+                                <span
+                                  key={iIdx}
+                                  className="w-4 h-4 rounded bg-slate-900 border border-white/10 inline-flex items-center justify-center flex-shrink-0 overflow-hidden"
+                                >
+                                  <GenshinImage
+                                    src={iconSrc}
+                                    alt=""
+                                    className="w-full h-full object-contain"
+                                  />
+                                </span>
+                              ))}
+                              <span className="text-xs font-semibold text-white">
+                                {sub.name}
+                              </span>
                             </span>
-                          )}
-                          <span className="text-xs font-semibold text-white">
-                            {sub.name}
-                          </span>
-                        </React.Fragment>
-                      ))}
+                          </React.Fragment>
+                        );
+                      })}
                     </div>
 
                     {/* Any notes on individual substats in this group */}
