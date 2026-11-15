@@ -12,7 +12,7 @@ export default function BuildEditorialNotes({
   calculationCredits = [],
   guideRoleUrl,
 }) {
-  const [showRotationGlossary, setShowRotationGlossary] = useState(false);
+  const [showRotationGlossary, setShowRotationGlossary] = useState(true);
 
   const hasNotes = notes.length > 0;
   const hasTips = gameplayTips.length > 0;
