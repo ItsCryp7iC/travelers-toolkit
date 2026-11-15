@@ -19,6 +19,7 @@ const navSections = [
       { to: '/', label: 'Dashboard', icon: '/Dashboard.png', id: 'nav-dashboard' },
       { to: '/characters', label: 'Characters', icon: '/Characters.png', id: 'nav-characters' },
       { to: '/weapons', label: 'Weapons', icon: '/Weapons.png', id: 'nav-weapons' },
+      { to: '/builds', label: 'Character Builds', icon: '📖', id: 'nav-builds' },
       { to: '/planner', label: 'Planner', icon: '/Planner.png', id: 'nav-planner' },
       { to: '/inventory', label: 'Inventory', icon: '/Inventory.png', id: 'nav-inventory' },
     ],

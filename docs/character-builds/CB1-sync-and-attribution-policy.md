@@ -93,7 +93,7 @@ Option A is recommended as the simplest, most technically sound solution for Tra
 
 **Strict Publication Safeguards under Option A:**
 1. **Explicit Third-Party Notice:** `src/data/builds.json` explicitly states:
-   `"licenseNotice": "Character build recommendations and editorial notes are Copyright © 2026 Genshin Impact Helper Team contributors. Used with explicit permission. Not licensed under MIT."`
+   `"licenseNotice": "Character build recommendations and editorial notes are Copyright © 2026 Genshin Impact Helper Team contributors."`
 2. **Clear Licensing Separation:** Toolkit's root `LICENSE` file remains MIT, governing our application code only. Third-party recommendation data is isolated in `src/data/builds.json`.
 3. **No Unnecessary Redistribution:** Only normalized text and recommendation data are included. Upstream website source code, Astro layouts, and character WebP images are **strictly excluded**.
 4. **Preserved Provenance:** Every catalog file records the exact upstream commit SHA and synchronization timestamp.
@@ -162,7 +162,7 @@ Traveler's Toolkit and the Genshin Impact Helper Team's repository operate under
 - Distributing `src/data/builds.json` does **not** grant downstream consumers the right to relicense the recommendation text under the MIT license.
 - The `src/data/builds.json` header explicitly states:
   ```json
-  "licenseNotice": "Character build recommendations and editorial notes are Copyright © 2026 Genshin Impact Helper Team contributors. Used with explicit permission. Not licensed under MIT."
+  "licenseNotice": "Character build recommendations and editorial notes are Copyright © 2026 Genshin Impact Helper Team contributors."
   ```
 - Toolkit's root `LICENSE` file remains MIT, governing our application code only.
 

@@ -25,7 +25,7 @@ export const SCHEMA_VERSION = 1;
 export const NORMALIZER_VERSION = '1.0.0';
 export const NORMALIZER_SCRIPT_PATH = fileURLToPath(import.meta.url);
 export const LICENSE_NOTICE =
-  'Character build recommendations and editorial notes are Copyright © Genshin Impact Helper Team contributors. Used with explicit permission. Not licensed under MIT.';
+  'Character build recommendations and editorial notes are Copyright © Genshin Impact Helper Team contributors.';
 export const SOURCE_ATTRIBUTION_URL =
   'https://github.com/Genshin-Impact-Helper-Team/genshin-builds';
 export const DEFAULT_GUIDE_BASE_URL =
@@ -1286,8 +1286,8 @@ export function normalizeCharacterBuild({
     characterSlug === 'traveler'
       ? `${dictionaries.elements[element] || toTitleCase(element)} Traveler`
       : dictionaries.characters[characterSlug] ||
-        dictionaries.characters[characterSlug.toLowerCase()] ||
-        toTitleCase(characterSlug);
+      dictionaries.characters[characterSlug.toLowerCase()] ||
+      toTitleCase(characterSlug);
 
   const characterGuideUrl = `${guideBaseUrl.replace(/\/+$/, '')}/en/${publicSlug}`;
   const characterSourceUrl = `${sourceRepoUrl.replace(/\/+$/, '')}/tree/${sourceCommitSha}/src/content/${element}/${rarity}/${characterSlug}`;

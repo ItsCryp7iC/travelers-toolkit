@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, Suspense, lazy } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useParams, useSearchParams } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import ScrollManager from './components/ScrollManager'
 import Dashboard from './pages/Dashboard'
@@ -9,6 +9,7 @@ const Planner = lazy(() => import('./pages/Planner'))
 const Inventory = lazy(() => import('./pages/Inventory'))
 const Characters = lazy(() => import('./pages/Characters'))
 const Weapons = lazy(() => import('./pages/Weapons'))
+const Builds = lazy(() => import('./pages/Builds'))
 const Achievements = lazy(() => import('./pages/Achievements'))
 const ActivityHistory = lazy(() => import('./pages/ActivityHistory'))
 const Settings = lazy(() => import('./pages/Settings'))
@@ -34,6 +35,16 @@ const withSuspense = (Component) => (
     <Component />
   </Suspense>
 )
+
+function LegacyBuildsRedirect() {
+  const { characterId } = useParams();
+  const [searchParams] = useSearchParams();
+  const role = searchParams.get('role');
+  const params = new URLSearchParams();
+  if (characterId) params.set('character', characterId);
+  if (role) params.set('role', role);
+  return <Navigate to={`/builds?${params.toString()}`} replace />;
+}
 
 export default function App() {
   const showDbBuilder = useStore((s) => s.showDbBuilder)
@@ -68,6 +79,8 @@ export default function App() {
             path="weapons"
             element={withSuspense(Weapons)}
           />
+          <Route path="builds" element={withSuspense(Builds)} />
+          <Route path="builds/:characterId" element={<LegacyBuildsRedirect />} />
           <Route path="planner"   element={withSuspense(Planner)} />
           <Route path="inventory" element={withSuspense(Inventory)} />
           <Route path="achievements" element={withSuspense(Achievements)} />

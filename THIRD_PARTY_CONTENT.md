@@ -22,7 +22,6 @@ In accordance with community best practices:
 
 2. **Third-Party Editorial Content:**
    Character build recommendations, tier rankings, editorial guides, rotation notes, and theorycrafting summaries contained in `src/data/builds.json` are **Copyright © 2020–present Genshin Impact Helper Team contributors**.
-   - This editorial content is used with explicit permission.
    - It is **not** licensed under the MIT License.
    - Any redistribution, scraping, or separate publication of recommendation datasets must acknowledge the Helper Team as the original source and respect their community contribution guidelines.
 

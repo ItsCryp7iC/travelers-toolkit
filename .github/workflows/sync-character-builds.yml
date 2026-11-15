@@ -46,8 +46,6 @@ jobs:
         run: npm ci
 
       - name: Run Character Builds Synchronization
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           EXTRA_FLAGS=""
           if [ "${{ inputs.force }}" = "true" ]; then
@@ -84,7 +82,7 @@ jobs:
           npm run build
 
       - name: Upload Proposed Catalog Diff & Summary Artifact
-        if: steps.git-check.outputs.updated == 'true'
+        if: always() && steps.git-check.outputs.updated == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: character-builds-update

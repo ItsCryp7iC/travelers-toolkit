@@ -574,6 +574,7 @@ describe('AppLayout Accessibility & Polish', () => {
       expect(progGroup.querySelector('a[href="/"]')).not.toBeNull();
       expect(progGroup.querySelector('a[href="/characters"]')).not.toBeNull();
       expect(progGroup.querySelector('a[href="/weapons"]')).not.toBeNull();
+      expect(progGroup.querySelector('a[href="/builds"]')).not.toBeNull();
       expect(progGroup.textContent).toContain('Planner');
       expect(progGroup.textContent).toContain('Inventory');
       expect(progGroup.querySelector('a[href="/achievements"]')).toBeNull();
