@@ -11,6 +11,11 @@ import {
   getWeaponTypeIcon,
 } from '../utils/assetHelper';
 import { ELEMENTS } from '../utils/gameData';
+import WeaponRecommendations from '../components/builds/WeaponRecommendations';
+import ArtifactRecommendations from '../components/builds/ArtifactRecommendations';
+import ArtifactStatPriorities from '../components/builds/ArtifactStatPriorities';
+import TalentPriorities from '../components/builds/TalentPriorities';
+import BuildEditorialNotes from '../components/builds/BuildEditorialNotes';
 
 export default function Builds() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -922,135 +927,27 @@ export default function Builds() {
           </section>
 
           {/* Section B: Primary Equipment Recommendations */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Region 1: Weapons Recommendation Boundary */}
-            <section
-              aria-label="Weapons Recommendations"
-              className="bg-slate-900/40 border border-white/10 rounded-2xl p-5 space-y-3"
-            >
-              <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                  <span>⚔️</span>
-                  <span>Weapons Recommendations</span>
-                </h3>
-                <span className="text-[11px] text-slate-500">
-                  {selectedRole.weapons?.rankedGroups?.length || 0} Ranked Tiers
-                </span>
-              </div>
-              <div className="bg-slate-950/40 border border-dashed border-white/10 rounded-xl p-6 text-center text-xs text-slate-400">
-                <p className="font-medium text-slate-300 mb-1">
-                  Weapons Ranking Cards Foundation
-                </p>
-                <p>
-                  Ranked weapon tiers, conditional refinements (R1 vs. R5), and
-                  calculation notes will render here in CB3B.
-                </p>
-              </div>
-            </section>
-
-            {/* Region 2: Artifact Sets & Combinations Boundary */}
-            <section
-              aria-label="Artifact Recommendations"
-              className="bg-slate-900/40 border border-white/10 rounded-2xl p-5 space-y-3"
-            >
-              <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                  <span>🏺</span>
-                  <span>Artifact Sets & Combinations</span>
-                </h3>
-                <span className="text-[11px] text-slate-500">
-                  {selectedRole.artifacts?.rankedSets?.length || 0} Set Options
-                </span>
-              </div>
-              <div className="bg-slate-950/40 border border-dashed border-white/10 rounded-xl p-6 text-center text-xs text-slate-400">
-                <p className="font-medium text-slate-300 mb-1">
-                  Artifact Sets & Combinations Foundation
-                </p>
-                <p>
-                  Ranked 4-piece sets, 2-piece alternatives, and set comparisons
-                  render in CB3B.
-                </p>
-              </div>
-            </section>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <WeaponRecommendations
+              weapons={selectedRole.weapons}
+              weaponType={selectedCharacter.weaponType}
+            />
+            <ArtifactRecommendations artifacts={selectedRole.artifacts} />
           </div>
 
           {/* Section C: Optimization Recommendations */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Region 3: Artifact Main Stats & Substats Priority Boundary */}
-            <section
-              aria-label="Artifact Stats & Substats"
-              className="bg-slate-900/40 border border-white/10 rounded-2xl p-5 space-y-3"
-            >
-              <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                  <span>📊</span>
-                  <span>Artifact Main Stats & Substats</span>
-                </h3>
-                <span className="text-[11px] text-slate-500">
-                  Stat Priorities
-                </span>
-              </div>
-              <div className="bg-slate-950/40 border border-dashed border-white/10 rounded-xl p-6 text-center text-xs text-slate-400">
-                <p className="font-medium text-slate-300 mb-1">
-                  Main Stats & Substats Optimization
-                </p>
-                <p>
-                  Sands, Goblet, and Circlet primary stat recommendations and
-                  substat priority sequences render in CB3B.
-                </p>
-              </div>
-            </section>
-
-            {/* Region 4: Talent Priorities Boundary */}
-            <section
-              aria-label="Talent Priorities"
-              className="bg-slate-900/40 border border-white/10 rounded-2xl p-5 space-y-3"
-            >
-              <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                  <span>✨</span>
-                  <span>Talent Priority Sequence</span>
-                </h3>
-                <span className="text-[11px] text-slate-500">
-                  Leveling Order
-                </span>
-              </div>
-              <div className="bg-slate-950/40 border border-dashed border-white/10 rounded-xl p-6 text-center text-xs text-slate-400">
-                <p className="font-medium text-slate-300 mb-1">
-                  Talent Leveling Progression
-                </p>
-                <p>
-                  Sequential talent leveling progression with priority connectors
-                  renders in CB3B.
-                </p>
-              </div>
-            </section>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <ArtifactStatPriorities artifacts={selectedRole.artifacts} />
+            <TalentPriorities talents={selectedRole.talents} />
           </div>
 
-          {/* Section D: Editorial Guidance */}
-          <section
-            aria-label="Build Notes and Gameplay Tips"
-            className="bg-slate-900/40 border border-white/10 rounded-2xl p-5 space-y-3"
-          >
-            <div className="flex items-center justify-between border-b border-white/5 pb-3">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <span>📝</span>
-                <span>Build Notes & Gameplay Guidance</span>
-              </h3>
-              <span className="text-[11px] text-slate-500">
-                Editorial Advice
-              </span>
-            </div>
-            <div className="bg-slate-950/40 border border-dashed border-white/10 rounded-xl p-6 text-center text-xs text-slate-400">
-              <p className="font-medium text-slate-300 mb-1">
-                Editorial Notes, Rotation Markers & Nuances
-              </p>
-              <p>
-                Energy Recharge requirements, ability interactions, rotation
-                notations, and gameplay tips render in CB3B.
-              </p>
-            </div>
-          </section>
+          {/* Section D: Editorial Guidance, Gameplay Tips & Credits */}
+          <BuildEditorialNotes
+            notes={selectedRole.notes}
+            gameplayTips={selectedRole.gameplayTips}
+            calculationCredits={selectedRole.calculationCredits}
+            guideRoleUrl={guideRoleUrl}
+          />
         </main>
       )}
 
@@ -1066,11 +963,11 @@ export default function Builds() {
             className="text-sky-400 hover:text-sky-300 underline underline-offset-2"
           >
             Genshin Impact Helper Team
-          </a>
+          </a>{' '}
         </p>
         <p>
           Traveler&apos;s Toolkit is an independent companion utility and is not
-          affiliated with or endorsed by the Genshin Impact Helper Team.
+          affiliated with or endorsed by the Genshin Impact Helper Team or HoYoverse.
         </p>
       </footer>
     </div>
