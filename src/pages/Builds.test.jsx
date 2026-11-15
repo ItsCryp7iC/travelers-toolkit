@@ -181,6 +181,80 @@ const mockCatalog = {
         },
       ],
     },
+    {
+      characterId: 'Mitya',
+      characterSlug: 'mitya',
+      characterName: 'Mitya',
+      element: 'Anemo',
+      weaponType: 'Bow',
+      rarity: 5,
+      guideUrl: 'https://genshin-impact-helper-team.github.io/genshin-builds/en/mitya',
+      roles: [
+        {
+          roleId: 'off-field-dps',
+          roleSlug: 'off-field-dps',
+          displayName: 'Off-Field DPS',
+          isBest: false,
+          status: 'complete',
+          reviewedVersion: '5.2',
+          weapons: { rankedGroups: [] },
+          artifacts: { rankedGroups: [] },
+          talents: { priorityGroups: [] },
+          notes: [],
+        },
+        {
+          roleId: 'on-field-dps',
+          roleSlug: 'on-field-dps',
+          displayName: 'On-Field DPS',
+          isBest: true,
+          status: 'complete',
+          reviewedVersion: '5.2',
+          weapons: { rankedGroups: [] },
+          artifacts: { rankedGroups: [] },
+          talents: { priorityGroups: [] },
+          notes: [],
+        },
+      ],
+    },
+    {
+      characterId: 'NoBestChar',
+      characterSlug: 'no-best-char',
+      characterName: 'No Best Char',
+      element: 'Geo',
+      weaponType: 'Claymore',
+      rarity: 4,
+      roles: [
+        {
+          roleId: 'geo-sub-dps',
+          displayName: 'Geo Sub DPS',
+          isBest: false,
+          status: 'complete',
+          weapons: { rankedGroups: [] },
+          artifacts: { rankedGroups: [] },
+          talents: { priorityGroups: [] },
+          notes: [],
+        },
+        {
+          roleId: 'geo-shield',
+          displayName: 'Geo Shield Support',
+          isBest: false,
+          status: 'complete',
+          weapons: { rankedGroups: [] },
+          artifacts: { rankedGroups: [] },
+          talents: { priorityGroups: [] },
+          notes: [],
+        },
+      ],
+    },
+    {
+      characterId: 'ZeroRoleChar',
+      characterSlug: 'zero-role-char',
+      characterName: 'Zero Role Character',
+      element: 'Hydro',
+      weaponType: 'Catalyst',
+      rarity: 4,
+      roles: [],
+    },
   ],
 };
 
@@ -325,7 +399,7 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       expect(disabledPrompt.closest('[aria-disabled="true"]')).toBeInTheDocument();
     });
 
-    it('renders single role button for single-role character', async () => {
+    it('renders and automatically activates single role button for single-role character', async () => {
       render(
         <MemoryRouter initialEntries={['/builds?character=Bennett']}>
           <Routes>
@@ -341,8 +415,12 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       const toolbarRoleGroup = screen.getByRole('group', { name: /Select Build Role/i });
       const roleBtnsInToolbar = toolbarRoleGroup.querySelectorAll('button');
       expect(roleBtnsInToolbar.length).toBe(1);
-      expect(roleBtnsInToolbar[0]).toHaveAttribute('aria-pressed', 'false');
+      // CB4C: Single-role character automatically activates the role
+      expect(roleBtnsInToolbar[0]).toHaveAttribute('aria-pressed', 'true');
       expect(within(toolbarRoleGroup).getByRole('button', { name: /Burst Support/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('region', { name: /Build Sheet for Bennett \(Burst Support\)/i }),
+      ).toBeInTheDocument();
     });
 
     it('renders all available roles as buttons for multi-role characters', async () => {
@@ -403,7 +481,7 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       expect(within(toolbarRoleGroup).getByText('WIP')).toBeInTheDocument();
     });
 
-    it('clicking a role button activates it, marks aria-pressed="true", and displays recommendation regions', async () => {
+    it('automatically activates default role, and clicking another role switches active state and build sheet', async () => {
       render(
         <MemoryRouter initialEntries={['/builds?character=RaidenShogun']}>
           <Routes>
@@ -420,21 +498,14 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       const dpsBtn = within(toolbarRoleGroup).getByRole('button', { name: /General DPS/i });
       const hyperBtn = within(toolbarRoleGroup).getByRole('button', { name: /Hyperbloom Trigger/i });
 
-      expect(dpsBtn).toHaveAttribute('aria-pressed', 'false');
+      // CB4C: General DPS is automatically active on initial load
+      expect(dpsBtn).toHaveAttribute('aria-pressed', 'true');
       expect(hyperBtn).toHaveAttribute('aria-pressed', 'false');
+      expect(
+        screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(General DPS\)/i }),
+      ).toBeInTheDocument();
 
-      // Click General DPS
-      fireEvent.click(dpsBtn);
-
-      await waitFor(() => {
-        expect(dpsBtn).toHaveAttribute('aria-pressed', 'true');
-        expect(hyperBtn).toHaveAttribute('aria-pressed', 'false');
-        expect(
-          screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(General DPS\)/i }),
-        ).toBeInTheDocument();
-      });
-
-      // All 4 content regions are present
+      // All 5 content regions are present
       expect(screen.getByLabelText(/Weapons Recommendations/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Artifact Recommendations/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Artifact Stats & Substats/i)).toBeInTheDocument();
@@ -451,11 +522,22 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
           screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(Hyperbloom Trigger\)/i }),
         ).toBeInTheDocument();
       });
+
+      // Switch back to General DPS
+      fireEvent.click(dpsBtn);
+
+      await waitFor(() => {
+        expect(dpsBtn).toHaveAttribute('aria-pressed', 'true');
+        expect(hyperBtn).toHaveAttribute('aria-pressed', 'false');
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(General DPS\)/i }),
+        ).toBeInTheDocument();
+      });
     });
 
-    it('changing character resets previously selected role', async () => {
+    it('changing character automatically selects the new character default role instead of previous role', async () => {
       render(
-        <MemoryRouter initialEntries={['/builds?character=RaidenShogun&role=general-dps']}>
+        <MemoryRouter initialEntries={['/builds?character=RaidenShogun&role=hyperbloom-trigger']}>
           <Routes>
             <Route path="/builds" element={<Builds />} />
           </Routes>
@@ -464,7 +546,7 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
 
       await waitFor(() => {
         expect(
-          screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(General DPS\)/i }),
+          screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(Hyperbloom Trigger\)/i }),
         ).toBeInTheDocument();
       });
 
@@ -476,13 +558,13 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       const ayakaOption = screen.getByRole('option', { name: /Kamisato Ayaka/i });
       fireEvent.mouseDown(ayakaOption);
 
-      // Previous role is cleared; role selection prompt for Ayaka is shown
+      // CB4C: Raiden's role is not reused; Ayaka's default Best role (Freeze DPS) is immediately loaded
       await waitFor(() => {
         expect(
           screen.queryByRole('region', { name: /Build Sheet for Raiden Shogun/i }),
         ).not.toBeInTheDocument();
         expect(
-          screen.getByText(/Select a Build Role for Kamisato Ayaka/i),
+          screen.getByRole('region', { name: /Build Sheet for Kamisato Ayaka \(Freeze DPS\)/i }),
         ).toBeInTheDocument();
       });
     });
@@ -634,6 +716,346 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       expect(rootWrapper.className).toContain('space-y-6');
       // Verifies no redundant px-4 that squeezes 320px mobile viewports
       expect(rootWrapper.className).not.toContain('px-4 sm:px-6');
+    });
+  });
+
+  describe('CB4C: Automatic Recommended Role Selection', () => {
+    it('1. Selecting Mitya defaults to On-Field DPS (isBest: true) even though off-field-dps is listed first', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument();
+      });
+
+      const combobox = screen.getByRole('combobox');
+      fireEvent.focus(combobox);
+      fireEvent.change(combobox, { target: { value: 'Mitya' } });
+
+      const mityaOption = screen.getByRole('option', { name: /Mitya/i });
+      fireEvent.mouseDown(mityaOption);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(On-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      const toolbarRoleGroup = screen.getByRole('group', { name: /Select Build Role/i });
+      const onFieldBtn = within(toolbarRoleGroup).getByRole('button', { name: /On-Field DPS/i });
+      const offFieldBtn = within(toolbarRoleGroup).getByRole('button', { name: /Off-Field DPS/i });
+
+      expect(onFieldBtn).toHaveAttribute('aria-pressed', 'true');
+      expect(offFieldBtn).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('2. Selecting Raiden Shogun defaults to her recommended Best role', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument();
+      });
+
+      const combobox = screen.getByRole('combobox');
+      fireEvent.focus(combobox);
+      fireEvent.change(combobox, { target: { value: 'Raiden' } });
+
+      const raidenOption = screen.getByRole('option', { name: /Raiden Shogun/i });
+      fireEvent.mouseDown(raidenOption);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(General DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      const toolbarRoleGroup = screen.getByRole('group', { name: /Select Build Role/i });
+      const dpsBtn = within(toolbarRoleGroup).getByRole('button', { name: /General DPS/i });
+      expect(dpsBtn).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('3. Single-role characters automatically display build sheet immediately', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument();
+      });
+
+      const combobox = screen.getByRole('combobox');
+      fireEvent.focus(combobox);
+      fireEvent.change(combobox, { target: { value: 'Bennett' } });
+
+      const bennettOption = screen.getByRole('option', { name: /Bennett/i });
+      fireEvent.mouseDown(bennettOption);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Bennett \(Burst Support\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      expect(screen.queryByText(/Select a Build Role for Bennett/i)).not.toBeInTheDocument();
+    });
+
+    it('4. Characters with multiple Best roles pick the first Best role in catalog order', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=KamisatoAyaka']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Kamisato Ayaka \(Freeze DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      const toolbarRoleGroup = screen.getByRole('group', { name: /Select Build Role/i });
+      const freezeBtn = within(toolbarRoleGroup).getByRole('button', { name: /Freeze DPS/i });
+      const monoBtn = within(toolbarRoleGroup).getByRole('button', { name: /Mono Cryo/i });
+
+      expect(freezeBtn).toHaveAttribute('aria-pressed', 'true');
+      expect(monoBtn).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('5. Characters without a Best role fall back to the first available non-wip role', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=NoBestChar']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for No Best Char \(Geo Sub DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      const toolbarRoleGroup = screen.getByRole('group', { name: /Select Build Role/i });
+      const subDpsBtn = within(toolbarRoleGroup).getByRole('button', { name: /Geo Sub DPS/i });
+      const shieldBtn = within(toolbarRoleGroup).getByRole('button', { name: /Geo Shield Support/i });
+
+      expect(subDpsBtn).toHaveAttribute('aria-pressed', 'true');
+      expect(shieldBtn).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('6. Direct URL loading with a valid role preserves explicit selection', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=Mitya&role=off-field-dps']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(Off-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      const toolbarRoleGroup = screen.getByRole('group', { name: /Select Build Role/i });
+      const onFieldBtn = within(toolbarRoleGroup).getByRole('button', { name: /On-Field DPS/i });
+      const offFieldBtn = within(toolbarRoleGroup).getByRole('button', { name: /Off-Field DPS/i });
+
+      expect(offFieldBtn).toHaveAttribute('aria-pressed', 'true');
+      expect(onFieldBtn).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('7. Direct URL loading with missing role resolves to default role and canonicalizes URL with replace: true', async () => {
+      let latestSearchParams = null;
+      function TestURLConsumer() {
+        const [params] = useSearchParams();
+        latestSearchParams = params;
+        return null;
+      }
+
+      render(
+        <MemoryRouter initialEntries={['/builds?character=Mitya']}>
+          <Routes>
+            <Route
+              path="/builds"
+              element={
+                <>
+                  <Builds />
+                  <TestURLConsumer />
+                </>
+              }
+            />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(On-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(latestSearchParams.get('role')).toBe('on-field-dps');
+        expect(latestSearchParams.get('character')).toBe('Mitya');
+      });
+    });
+
+    it('8. Direct URL loading with invalid role ID recovers safely to default role and canonicalizes URL', async () => {
+      let latestSearchParams = null;
+      function TestURLConsumer() {
+        const [params] = useSearchParams();
+        latestSearchParams = params;
+        return null;
+      }
+
+      render(
+        <MemoryRouter initialEntries={['/builds?character=Mitya&role=completely-invalid-role']}>
+          <Routes>
+            <Route
+              path="/builds"
+              element={
+                <>
+                  <Builds />
+                  <TestURLConsumer />
+                </>
+              }
+            />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(On-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(latestSearchParams.get('role')).toBe('on-field-dps');
+      });
+    });
+
+    it('9. Switching characters updates active role to the newly selected character default role', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=RaidenShogun&role=hyperbloom-trigger']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Raiden Shogun \(Hyperbloom Trigger\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      // Switch to Mitya
+      const combobox = screen.getByRole('combobox');
+      fireEvent.focus(combobox);
+      fireEvent.change(combobox, { target: { value: 'Mitya' } });
+
+      const mityaOption = screen.getByRole('option', { name: /Mitya/i });
+      fireEvent.mouseDown(mityaOption);
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(On-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      // Raiden's hyperbloom-trigger was not reused
+      expect(screen.queryByRole('region', { name: /Build Sheet for Raiden Shogun/i })).not.toBeInTheDocument();
+    });
+
+    it('10. Clicking another role updates the active role without being reverted by default selection', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=Mitya']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(On-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      const toolbarRoleGroup = screen.getByRole('group', { name: /Select Build Role/i });
+      const offFieldBtn = within(toolbarRoleGroup).getByRole('button', { name: /Off-Field DPS/i });
+
+      fireEvent.click(offFieldBtn);
+
+      await waitFor(() => {
+        expect(offFieldBtn).toHaveAttribute('aria-pressed', 'true');
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(Off-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      // Wait a tick to ensure effect does not overwrite manual choice
+      const onFieldBtn = within(toolbarRoleGroup).getByRole('button', { name: /On-Field DPS/i });
+      expect(onFieldBtn).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('11. Clearing character returns to initial empty state', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=Mitya']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Mitya \(On-Field DPS\)/i }),
+        ).toBeInTheDocument();
+      });
+
+      const clearBtn = screen.getByRole('button', { name: /Clear selected character/i });
+      fireEvent.click(clearBtn);
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 2, name: /Select a Character to View Recommended Builds/i })).toBeInTheDocument();
+        expect(screen.queryByRole('region', { name: /Build Sheet for Mitya/i })).not.toBeInTheDocument();
+      });
+    });
+
+    it('12. Character with zero roles renders empty state gracefully without crashing', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=ZeroRoleChar']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/No Builds Available for Zero Role Character/i)).toBeInTheDocument();
+        expect(screen.getByText(/No build recommendations have been published for this character yet/i)).toBeInTheDocument();
+      });
     });
   });
 });

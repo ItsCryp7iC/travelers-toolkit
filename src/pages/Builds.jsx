@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import {
   loadBuildsCatalog,
   findCharacterBuild,
+  getDefaultRoleId,
 } from '../services/buildsCatalogService';
 import GenshinImage from '../components/GenshinImage';
 import {
@@ -78,14 +79,34 @@ export default function Builds() {
     ) {
       return null;
     }
+    // If an explicit roleParam is provided, check if it matches a valid role
     if (roleParam) {
       const match = selectedCharacter.roles.find(
         (r) => r.roleId.toLowerCase() === roleParam.toLowerCase(),
       );
       if (match) return match;
     }
-    return null;
+    // If roleParam is missing or invalid, resolve the recommended default role
+    const defaultRoleId = getDefaultRoleId(selectedCharacter);
+    if (defaultRoleId) {
+      const match = selectedCharacter.roles.find(
+        (r) => r.roleId.toLowerCase() === defaultRoleId.toLowerCase(),
+      );
+      if (match) return match;
+    }
+    return selectedCharacter.roles[0] || null;
   }, [selectedCharacter, roleParam]);
+
+  // 5. Canonicalize URL when character is selected but roleParam is missing or invalid
+  useEffect(() => {
+    if (!selectedCharacter || !selectedRole) return;
+    if (roleParam !== selectedRole.roleId) {
+      setSearchParams(
+        { character: selectedCharacter.characterId, role: selectedRole.roleId },
+        { replace: true },
+      );
+    }
+  }, [selectedCharacter, selectedRole, roleParam, setSearchParams]);
 
   // Click outside listener for combobox
   useEffect(() => {
@@ -141,7 +162,13 @@ export default function Builds() {
         return;
       }
 
-      setSearchParams({ character: char.characterId }, { replace: false });
+      const defaultRoleId = getDefaultRoleId(char);
+      const nextParams = { character: char.characterId };
+      if (defaultRoleId) {
+        nextParams.role = defaultRoleId;
+      }
+
+      setSearchParams(nextParams, { replace: false });
       setComboboxQuery('');
       setIsComboboxOpen(false);
     },
@@ -160,7 +187,15 @@ export default function Builds() {
     (roleId) => {
       if (!selectedCharacter) return;
       if (!roleId) {
-        setSearchParams({ character: selectedCharacter.characterId }, { replace: false });
+        const defaultRoleId = getDefaultRoleId(selectedCharacter);
+        if (defaultRoleId) {
+          setSearchParams(
+            { character: selectedCharacter.characterId, role: defaultRoleId },
+            { replace: false },
+          );
+        } else {
+          setSearchParams({ character: selectedCharacter.characterId }, { replace: false });
+        }
       } else {
         setSearchParams(
           { character: selectedCharacter.characterId, role: roleId },
@@ -728,7 +763,9 @@ export default function Builds() {
                   <span>•</span>
                   <span>{selectedCharacter.weaponType}</span>
                   <span>•</span>
-                  <span>{selectedCharacter.roles.length} Available Roles</span>
+                  <span>
+                    {selectedCharacter.roles?.length || 0} Available Roles
+                  </span>
                 </div>
               </div>
             </div>
@@ -741,49 +778,54 @@ export default function Builds() {
             </div>
             <div className="max-w-md mx-auto space-y-1">
               <h3 className="text-lg font-bold text-white">
-                Select a Build Role for {selectedCharacter.characterName}
+                {selectedCharacter.roles?.length === 0
+                  ? `No Builds Available for ${selectedCharacter.characterName}`
+                  : `Select a Build Role for ${selectedCharacter.characterName}`}
               </h3>
               <p className="text-xs text-slate-400">
-                Choose an available playstyle role button above or below
-                to load the complete build sheet.
+                {selectedCharacter.roles?.length === 0
+                  ? 'No build recommendations have been published for this character yet.'
+                  : 'Choose an available playstyle role button above or below to load the complete build sheet.'}
               </p>
             </div>
 
             {/* Clickable Role Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2 max-w-3xl mx-auto text-left">
-              {selectedCharacter.roles.map((role) => (
-                <button
-                  key={role.roleId}
-                  type="button"
-                  onClick={() => handleSelectRole(role.roleId)}
-                  className="p-3.5 rounded-xl bg-slate-950/70 border border-white/10 hover:border-sky-400/50 hover:bg-slate-900 transition flex flex-col justify-between gap-2 group"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-sm font-semibold text-white group-hover:text-sky-300 transition-colors">
-                      {role.displayName}
-                    </span>
-                    {role.isBest && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex-shrink-0">
-                        ★ Best
+            {selectedCharacter.roles?.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2 max-w-3xl mx-auto text-left">
+                {selectedCharacter.roles.map((role) => (
+                  <button
+                    key={role.roleId}
+                    type="button"
+                    onClick={() => handleSelectRole(role.roleId)}
+                    className="p-3.5 rounded-xl bg-slate-950/70 border border-white/10 hover:border-sky-400/50 hover:bg-slate-900 transition flex flex-col justify-between gap-2 group"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-sm font-semibold text-white group-hover:text-sky-300 transition-colors">
+                        {role.displayName}
                       </span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-white/5">
-                    <span>
-                      {role.reviewedVersion
-                        ? `v${role.reviewedVersion}`
-                        : 'Reviewed'}
-                    </span>
-                    {role.status === 'wip' && (
-                      <span className="text-amber-400 font-medium">WIP</span>
-                    )}
-                    <span className="text-sky-400 text-xs group-hover:translate-x-0.5 transition-transform">
-                      Select →
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
+                      {role.isBest && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex-shrink-0">
+                          ★ Best
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-white/5">
+                      <span>
+                        {role.reviewedVersion
+                          ? `v${role.reviewedVersion}`
+                          : 'Reviewed'}
+                      </span>
+                      {role.status === 'wip' && (
+                        <span className="text-amber-400 font-medium">WIP</span>
+                      )}
+                      <span className="text-sky-400 text-xs group-hover:translate-x-0.5 transition-transform">
+                        Select →
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}
