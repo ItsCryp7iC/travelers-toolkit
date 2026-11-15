@@ -49,7 +49,7 @@ export default function ArtifactStatPriorities({ artifacts }) {
       className="bg-slate-900/40 border border-white/10 rounded-2xl p-4 sm:p-5 space-y-5"
     >
       {/* Section Header */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
         <div className="flex items-center gap-2">
           <span className="text-base" aria-hidden="true">
             📊

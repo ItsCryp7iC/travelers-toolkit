@@ -588,4 +588,52 @@ describe('Character Build Sheet (CB3A.2 Stacking & Role Buttons)', { timeout: 20
       expect(storeAfter).toBe(storeBefore);
     });
   });
+
+  describe('CB4B Responsive Corrections Regression Suite', () => {
+    it('CB4-D1: Character Builds header uses lg:flex-row transition to remain stacked on tablet viewports', async () => {
+      render(
+        <MemoryRouter initialEntries={['/builds?character=RaidenShogun&role=general-dps']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { level: 1, name: /Character Build Sheet/i }),
+        ).toBeInTheDocument();
+      });
+
+      const header = screen.getByRole('banner');
+      const headerRow = header.querySelector('div');
+      expect(headerRow).not.toBeNull();
+      // Verifies the fix: uses lg:flex-row so title and attribution stack on 768px tablet viewports
+      expect(headerRow.className).toContain('lg:flex-row');
+      expect(headerRow.className).toContain('lg:items-center');
+      expect(headerRow.className).not.toContain('md:flex-row');
+    });
+
+    it('CB4-D2: Build Sheet root container avoids redundant mobile padding', async () => {
+      const { container } = render(
+        <MemoryRouter initialEntries={['/builds?character=RaidenShogun&role=general-dps']}>
+          <Routes>
+            <Route path="/builds" element={<Builds />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /Build Sheet for Raiden Shogun/i }),
+        ).toBeInTheDocument();
+      });
+
+      const rootWrapper = container.firstChild;
+      expect(rootWrapper.className).toContain('max-w-7xl');
+      expect(rootWrapper.className).toContain('space-y-6');
+      // Verifies no redundant px-4 that squeezes 320px mobile viewports
+      expect(rootWrapper.className).not.toContain('px-4 sm:px-6');
+    });
+  });
 });

@@ -1275,5 +1275,25 @@ describe('AppLayout Accessibility & Polish', () => {
       // When empty it renders null, AppLayout remains fully mounted
       expect(container.querySelector('#app-topbar')).not.toBeNull();
     });
+
+    it('17. CB4-D2: topbar and mobile telemetry strip apply responsive padding preventing 320px overflow', () => {
+      act(() => {
+        root.render(
+          <MemoryRouter>
+            <AppLayout />
+          </MemoryRouter>
+        );
+      });
+
+      const topbarPrimaryRow = container.querySelector('#app-topbar > div');
+      const telemetryStrip = container.querySelector('#mobile-telemetry-strip');
+
+      expect(topbarPrimaryRow).not.toBeNull();
+      expect(topbarPrimaryRow.className).toContain('px-3 sm:px-4 md:px-0');
+
+      expect(telemetryStrip).not.toBeNull();
+      expect(telemetryStrip.className).toContain('px-2 sm:px-3');
+      expect(telemetryStrip.className).toContain('gap-2 sm:gap-3');
+    });
   });
 });

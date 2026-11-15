@@ -447,7 +447,7 @@ export default function AppLayout() {
   {/* ── Top Bar (Full Width) ────────────────────────────────── */}
   <header className="topbar" id="app-topbar">
     {/* Primary Row */}
-    <div className="flex items-center justify-between w-full h-14 md:h-16 px-4 md:px-0">
+    <div className="flex items-center justify-between w-full h-14 md:h-16 px-3 sm:px-4 md:px-0">
       {/* Left: Menu (mobile) + Brand + Desktop resource trackers */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {/* Mobile burger */}
@@ -580,7 +580,7 @@ export default function AppLayout() {
     <div
       id="mobile-telemetry-strip"
       data-testid="mobile-telemetry-strip"
-      className={`md:hidden flex items-center ${hasCookie && syncPayload ? 'justify-between' : 'justify-center'} w-full h-9 px-3 border-t border-[var(--border)] bg-[#00041e]/80 backdrop-blur-md gap-3`}
+      className={`md:hidden flex items-center ${hasCookie && syncPayload ? 'justify-between' : 'justify-center'} w-full h-9 px-2 sm:px-3 border-t border-[var(--border)] bg-[#00041e]/80 backdrop-blur-md gap-2 sm:gap-3`}
       aria-label="Mobile resource telemetry"
     >
       {hasCookie && syncPayload && (
